@@ -417,8 +417,8 @@ public class FormatManager {
             for (String version : readerClasses.get(extension).keySet()) {
                 FormatType lAnnotation = readerClasses.get(extension).get(version).getAnnotation(FormatType.class);
                 String description = lAnnotation.description();
-                int indexDot;
-                if ((indexDot = description.indexOf('.')) > -1) {
+                int indexDot = description.indexOf('.');
+                if (indexDot > -1) {
                     description = description.substring(0, indexDot);
                 }
                 readers.put(description, lAnnotation.extension());

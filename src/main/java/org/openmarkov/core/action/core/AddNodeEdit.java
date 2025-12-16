@@ -54,7 +54,7 @@ import org.openmarkov.core.model.network.constraint.*;
      */
     public AddNodeEdit(ProbNet probNet, Variable variable, NodeType nodeType, Point2D.Double cursorPosition) {
         super(probNet);
-        this.cursorPosition = (Point2D.Double) cursorPosition.clone();
+        this.cursorPosition = cursorPosition.clone();
         this.probNet = probNet;
         this.nodeType = nodeType;
         this.variable = variable;

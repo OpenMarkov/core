@@ -53,7 +53,7 @@ public class CEP implements Cloneable {
             this.effectivities.add(effectivity);
             try {
                 return new CEP(
-                        this.strategyTrees.stream().toArray(StrategyTree[]::new),
+                        this.strategyTrees.toArray(StrategyTree[]::new),
                         this.costs.stream().mapToDouble(Double::doubleValue).toArray(),
                         this.effectivities.stream().mapToDouble(Double::doubleValue).toArray(),
                         this.thresholds.stream().mapToDouble(Double::doubleValue).toArray(),

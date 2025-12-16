@@ -972,7 +972,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     }
     
     public void addNodeConsistently(Variable variable, NodeType nodeType, Point2D.Double cursorPosition) {
-        cursorPosition = (Point2D.Double) cursorPosition.clone();
+        cursorPosition = cursorPosition.clone();
         // Adds the new variable to network ( creates a node instance )
         Node newNode = addNode(variable, nodeType);
         // TODO revisar si es conveniente utilizar una constraint

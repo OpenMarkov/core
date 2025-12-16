@@ -108,7 +108,7 @@ public final class AddLinkEdit extends BaseLinkEdit {
                 Node nodeTo = probNet.getNode(this.getVariableTo());
                 if (nodeTo.getNodeType() == NodeType.UTILITY) {
                     Node nodeFrom = probNet.getNode(this.getVariableFrom());
-                    var newParentsList = nodeTo.getParents().stream().collect(Collectors.toCollection(ArrayList::new));
+                    var newParentsList = new ArrayList<>(nodeTo.getParents());
                     newParentsList.add(nodeFrom);
                     constraint.checkParents(nodeTo, newParentsList, constraintChecker);
                 }

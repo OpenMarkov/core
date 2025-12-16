@@ -83,7 +83,7 @@ import java.util.stream.Collectors;
             Node nodeTo = probNet.getNode(this.getVariableTo());
             if (nodeTo.getNodeType() == NodeType.UTILITY) {
                 Node nodeFrom = probNet.getNode(this.getVariableFrom());
-                var newParents = nodeFrom.getParents().stream().collect(Collectors.toCollection(ArrayList::new));
+                var newParents = new ArrayList<>(nodeFrom.getParents());
                 newParents.add(nodeTo);
                 constraint.checkParents(nodeFrom, newParents, constraintChecker);
             }

@@ -19,7 +19,7 @@ public final class LocalizationFormatter {
     public final @NotNull LocalizationFormatterLength desiredLength;
     public final @NotNull ListFormat listSeparator;
     
-    enum ListFormat {
+    public enum ListFormat {
         INLINE, DETAIL;
         
         public @NotNull String globalPrefix() {
@@ -44,10 +44,7 @@ public final class LocalizationFormatter {
         }
         
         public @NotNull String itemSuffix() {
-            return switch (this) {
-                case INLINE -> "";
-                case DETAIL -> "";
-            };
+            return "";
         }
         
         

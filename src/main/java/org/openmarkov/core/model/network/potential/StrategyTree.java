@@ -539,9 +539,7 @@ public class StrategyTree extends TreeADDPotential implements Cloneable {
                     Potential uncastedBranchPotential = branch.getPotential();
                     StrategyTree branchPotential = (StrategyTree) uncastedBranchPotential;
                     stillEqual &= !(
-                            (strategyTreeBranchPotential == null && branchPotential != null) || (
-                                    strategyTreeBranchPotential != null && branchPotential == null
-                            )
+                            strategyTreeBranchPotential == null ? branchPotential != null : branchPotential == null
                     );
                     // Recursive part (it won't be evaluated when already false)
                     stillEqual &= strategyTreeBranchPotential == null || strategyTreeBranchPotential.equals(branchPotential);

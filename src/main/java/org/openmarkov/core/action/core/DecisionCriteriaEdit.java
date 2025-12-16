@@ -21,25 +21,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SuppressWarnings("serial") public class DecisionCriteriaEdit extends PNEdit {
-	private StateAction stateAction;
-	private List<Criterion> lastCriteria;
-	private Criterion modifiedCriterion;
+    private StateAction stateAction;
+    private List<Criterion> lastCriteria;
+    private Criterion modifiedCriterion;
     private final @Nullable String newName;
-
-	public DecisionCriteriaEdit(ProbNet probnet, StateAction stateAction, Criterion modifiedCriterion, String newName) {
-		super(probnet);
-		this.modifiedCriterion = modifiedCriterion;
+    
+    public DecisionCriteriaEdit(ProbNet probnet, StateAction stateAction, Criterion modifiedCriterion, String newName) {
+        super(probnet);
+        this.modifiedCriterion = modifiedCriterion;
         
         if (stateAction == StateAction.ADD) {
-			this.newName = modifiedCriterion.getCriterionName();
+            this.newName = modifiedCriterion.getCriterionName();
         } else if (stateAction == StateAction.RENAME) {
-			this.newName = newName;
+            this.newName = newName;
         } else {
             this.newName = null;
         }
-		this.stateAction = stateAction;
-		this.lastCriteria = new ArrayList<>(probnet.getDecisionCriteria());
-	}
+        this.stateAction = stateAction;
+        this.lastCriteria = new ArrayList<>(probnet.getDecisionCriteria());
+    }
     
     @Override public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
         if (probNet.getConstraintOfClass(ValidCriterionName.class) instanceof ValidCriterionName constraint) {
@@ -60,60 +60,40 @@ import java.util.List;
             }
         }
     }
-	
-	@Override protected void doEdit() {
-		List<Criterion> criteria = probNet.getDecisionCriteria();
-		switch (stateAction) {
-		case ADD:
-			criteria.add(modifiedCriterion);
-			break;
-		case REMOVE:
-
-			criteria.remove(modifiedCriterion);
-            
-            if (criteria.isEmpty()) {
+    
+    @Override protected void doEdit() {
+        List<Criterion> criteria = this.probNet.getDecisionCriteria();
+        switch (this.stateAction) {
+            case ADD -> criteria.add(modifiedCriterion);
+            case REMOVE -> criteria.remove(modifiedCriterion);
+            case DOWN, UP -> {
+                int criterionIndex = criteria.indexOf(modifiedCriterion);
+                Criterion swapPos = criteria.get(criterionIndex);
+                int movingPos = this.stateAction == StateAction.DOWN ? 1 : -1;
+                criteria.set(criterionIndex, criteria.get(criterionIndex + movingPos));
+                criteria.set(criterionIndex + movingPos, swapPos);
             }
-			break;
-		case DOWN:
-
-			int criterionIndex = criteria.indexOf(modifiedCriterion);
-			Criterion swapDown = criteria.get(criterionIndex);
-			criteria.set(criterionIndex, criteria.get(criterionIndex + 1));
-			criteria.set(criterionIndex + 1, swapDown);
-
-			break;
-		case UP:
-			criterionIndex = criteria.indexOf(modifiedCriterion);
-
-			Criterion swapUp = criteria.get(criterionIndex);
-			criteria.set(criterionIndex, criteria.get(criterionIndex - 1));
-			criteria.set(criterionIndex - 1, swapUp);
-
-			break;
-		case RENAME:
-			String oldName = modifiedCriterion.getCriterionName();
-			modifiedCriterion.setCriterionName(newName);
-			break;
-		default:
-			break;
-		}
-	}
+            case RENAME -> this.modifiedCriterion.setCriterionName(newName);
+            default -> {
+            }
+        }
+    }
     
     public String getNewName() {
-		return newName;
-	}
-
-	public StateAction getStateAction() {
-		return stateAction;
-	}
-
-	public List<Criterion> getLastCriteria() {
-		return lastCriteria;
-	}
-
-	@Override public void undo() {
-		super.undo();
-		probNet.setDecisionCriteria(lastCriteria);
-
-	}
+        return newName;
+    }
+    
+    public StateAction getStateAction() {
+        return stateAction;
+    }
+    
+    public List<Criterion> getLastCriteria() {
+        return lastCriteria;
+    }
+    
+    @Override public void undo() {
+        super.undo();
+        probNet.setDecisionCriteria(lastCriteria);
+        
+    }
 }

@@ -14,8 +14,7 @@ import org.openmarkov.core.model.network.constraint.PNConstraint;
 
 import java.util.HashMap;
 
-public abstract sealed class NetworkType implements ClassLocalizable
-        permits BayesianNetworkType, DecisionAnalysisNetworkType, DynamicBayesianNetwork, DynamicLimidType, InfluenceDiagramType, LIMIDType, MDPType, MIDType, MarkovNetworkType, POMDPType, TuningNetworkType {
+public abstract class NetworkType implements ClassLocalizable {
 	protected HashMap<Class<? extends PNConstraint>, ConstraintBehavior> constraints;
 
 	public NetworkType() {

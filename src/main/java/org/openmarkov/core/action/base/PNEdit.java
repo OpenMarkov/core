@@ -32,6 +32,17 @@ import org.openmarkov.core.model.network.ProbNet;
     public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
     }
     
+    public final boolean constraintsWillBeMet() {
+        try {
+            ConstraintChecker constraintChecker = new ConstraintChecker(probNet);
+            this.checkConstraintsWillBeMet(constraintChecker);
+            constraintChecker.buildAndThrow();
+            return true;
+        } catch (ConstraintViolatedException ex) {
+            return false;
+        }
+    }
+    
     /**
      * Abstract method to be defined in derived classes
      *

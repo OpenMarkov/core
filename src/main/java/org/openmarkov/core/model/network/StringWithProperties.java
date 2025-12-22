@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.model.network;
 
+import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.java.cloneUtils.CloneUtils;
 
 /**
@@ -14,7 +15,7 @@ import org.openmarkov.java.cloneUtils.CloneUtils;
  *
  * @author Manuel Arias
  */
-public class StringWithProperties implements Cloneable {
+public class StringWithProperties implements Cloneable, ClassLocalizable {
     
     // Attributes
     public String string;
@@ -80,5 +81,9 @@ public class StringWithProperties implements Cloneable {
         StringWithProperties copiedStringWithProperties = new StringWithProperties(string);
         copiedStringWithProperties.properties = CloneUtils.safeClone(this.properties);
         return copiedStringWithProperties;
+    }
+    
+    @Override public String toString() {
+        return this.localize();
     }
 }

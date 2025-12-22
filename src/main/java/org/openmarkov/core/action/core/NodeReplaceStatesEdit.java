@@ -28,35 +28,17 @@ import java.util.Map;
  */
 
 @SuppressWarnings("serial") public class NodeReplaceStatesEdit extends PNEdit {
-
-
-	/**
-	 * The current default states of the network
-	 */
-	private State[] lastStates;
-
-	/**
-	 * The new default states of the network
-	 */
-	private State[] newStates;
+    
+    
+    private State[] lastStates;
+    
+    private State[] newStates;
 
 	private Node node;
-
-
-
-
-
-	/**
-	 * Creates a {@code NodeReplaceStatesEdit} with the node and new states
-	 * specified for replace.
-	 *
-	 * @param node      the node that will be modified.
-	 * @param newStates the new states.
-	 */
-	public NodeReplaceStatesEdit(Node node, State[] newStates) {
+    
+    public NodeReplaceStatesEdit(Node node, State[] newStates) {
 		super(node.getProbNet());
 		this.node = node;
-
 		this.lastStates = node.getVariable().getStates();
 		this.newStates = newStates;
 	}
@@ -66,33 +48,9 @@ import java.util.Map;
 		node.getVariable().replaceStates(node,newStates);
 	}
     
-    @Override @SuppressWarnings("unchecked") public void undo() {
+    @Override public void undo() {
 		super.undo();
         node.getVariable().replaceStates(node,lastStates);
-		/*if (lastStates != null) {
-			node.getVariable().setStates(lastStates);
-			if (lastStates.length != newStates.length) {
-				node.setPotentials(lastPotential);
-				List<Node> nodes = probNet.getChildren(node);
-				for (Node child : nodes) {
-					child.setPotential(childrenLastPotential.get(0));
-				}
-			}
-		}
-		for (Link<Node> link : linkRestrictionMap.keySet()) {
-			link.initializesRestrictionsPotential();
-			TablePotential restrictionPotential = (TablePotential) link.getRestrictionsPotential();
-			restrictionPotential.setValues(linkRestrictionMap.get(link));
-		}
-		for (Link<Node> link : revelationConditionMap.keySet()) {
-			VariableType varType = link.getNode1().getVariable().getVariableType();
-			if ((varType == VariableType.NUMERIC)) {
-				link.setRevealingIntervals(revelationConditionMap.get(link));
-			} else {
-				link.setRevealingStates(revelationConditionMap.get(link));
-			}
-
-		}*/
 	}
 
 

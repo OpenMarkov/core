@@ -30,8 +30,8 @@ import java.util.List;
 	@Override protected void doEdit() {
 		node.getPotentials().get(0).setVariables(newVariables);
 	}
-
-	public void undoEdit() {
-		node.getPotentials().get(0).setVariables(oldVariables);
-	}
+    
+    @Override public void undo() {
+        node.getPotentials().get(0).setVariables(oldVariables);
+    }
 }

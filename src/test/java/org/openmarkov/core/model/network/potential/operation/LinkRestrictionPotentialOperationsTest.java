@@ -126,10 +126,10 @@ public class LinkRestrictionPotentialOperationsTest {
         net.addPotential(potential);
         List<Link<Node>> links = net.getLinks();
         for (Link<Node> link : links) {
-            if (link.getNode1().getVariable().equals(varA)) {
+            if (link.getFrom().getVariable().equals(varA)) {
                 this.link = link;
             }
-            if (link.getNode1().getVariable().equals(varC)) {
+            if (link.getFrom().getVariable().equals(varC)) {
                 this.link2 = link;
             }
             

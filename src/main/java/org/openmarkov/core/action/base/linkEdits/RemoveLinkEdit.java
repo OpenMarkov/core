@@ -50,7 +50,6 @@ import java.util.List;
      */
     private List<Potential> newPotentials = new ArrayList<>();
     private List<Potential> oldPotentials;
-    private Logger logger;
     private boolean updatePotentials;
     // Constructor
     
@@ -70,7 +69,6 @@ import java.util.List;
         
         this.updatePotentials = updatePotentials;
         this.link = null;
-        this.logger = LogManager.getLogger(RemoveLinkEdit.class);
     }
     
     public RemoveLinkEdit(ProbNet probNet, Variable variable1, Variable variable2, boolean isDirected) {

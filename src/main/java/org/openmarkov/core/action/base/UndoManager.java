@@ -10,7 +10,7 @@ package org.openmarkov.core.action.base;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayDeque;
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 /**
  * This class is based on undoManager copy from Sun by Ray Ryan.
@@ -78,4 +78,11 @@ public class UndoManager {
         doneEdits.addFirst(edit);
     }
     
+    public ArrayList<PNEdit> getDoneEdits() {
+        return new ArrayList<>(this.doneEdits);
+    }
+    
+    public ArrayList<PNEdit> getUndoneEdits() {
+        return new ArrayList<>(this.undoneEdits);
+    }
 }

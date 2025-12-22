@@ -12,13 +12,14 @@ import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.network.ProbNet;
 
 /**
  * Abstract class that defines the basic attribute (a {@code ProbNet})
  * and operations of editions.
  */
-@SuppressWarnings("serial") public abstract class PNEdit {
+@SuppressWarnings("serial") public abstract class PNEdit implements ClassLocalizable {
     
     //Start interface
     
@@ -88,8 +89,6 @@ import org.openmarkov.core.model.network.ProbNet;
     //All simple edits are significant
     private boolean significant = true;
     
-    private Logger logger;
-    
     // Constructor
     
     /**
@@ -97,7 +96,6 @@ import org.openmarkov.core.model.network.ProbNet;
      */
     public PNEdit(ProbNet probNet) {
         this.probNet = probNet;
-        this.logger = LogManager.getLogger(PNEdit.class);
     }
     
     // Methods
@@ -146,4 +144,7 @@ import org.openmarkov.core.model.network.ProbNet;
         this.belongsToACompoundEdit = true;
     }
     
+    @Override public String toString() {
+        return this.localize();
+    }
 }

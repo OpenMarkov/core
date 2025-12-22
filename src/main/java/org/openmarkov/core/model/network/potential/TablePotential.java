@@ -487,7 +487,8 @@ import java.util.*;
                 Variable variable = variables.get(i);
                 if ((evidenceCase != null) && evidenceCase.contains(variable)) {
                     state = evidenceCase.getState(variable);
-                    firstPosition += state * offsets[i];
+                    int offset = state * offsets[i];
+                    firstPosition += offset;
                 }
             }
             if (numUnobservedVariables == 0) {// Projection = constant potential

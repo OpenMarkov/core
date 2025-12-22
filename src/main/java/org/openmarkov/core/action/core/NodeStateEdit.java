@@ -13,7 +13,6 @@ import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.constraint.ValidState;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.action.base.StateAction;
 
@@ -48,9 +47,6 @@ public class NodeStateEdit extends PNEdit {
      */
     private int selectedStateIndex;
     
-    
-    //This field is probably a wrong field someone did because they couldn't find indexState, so they created stateIndex
-    //private int stateIndex;
     /**
      * The node that the stats belongs to
      */
@@ -184,7 +180,7 @@ public class NodeStateEdit extends PNEdit {
                     restrictionPotential.setValues(linkRestrictionMap.get(link));
                 }
                 for (Link<Node> link : revelationConditionMap.keySet()) {
-                    VariableType varType = link.getNode1().getVariable().getVariableType();
+                    VariableType varType = link.getFrom().getVariable().getVariableType();
                     if ((varType == VariableType.NUMERIC)) {
                         link.setRevealingIntervals(revelationConditionMap.get(link));
                     } else {
@@ -256,7 +252,7 @@ public class NodeStateEdit extends PNEdit {
         for (Node child : node.getChildren()) {
             Link<Node> link = probNet.getLink(node, child, true);
             if (link.hasRevealingConditions()) {
-                VariableType varType = link.getNode1().getVariable().getVariableType();
+                VariableType varType = link.getFrom().getVariable().getVariableType();
                 if (varType == VariableType.NUMERIC) {
                     this.revelationConditionMap.put(link, link.getRevealingIntervals());
                     link.setRevealingIntervals(new ArrayList<PartitionedInterval>());

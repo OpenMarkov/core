@@ -57,7 +57,7 @@ public class LinkRestrictionPotentialOperations {
 		List<Node> parents = node.getParents();
 
 		for (Link<Node> link : links) {
-			if (parents.contains(link.getNode1()) && link.hasRestrictions()) {
+            if (parents.contains(link.getFrom()) && link.hasRestrictions()) {
 				linksWithRestriction.add(link);
 			}
 		}
@@ -79,9 +79,9 @@ public class LinkRestrictionPotentialOperations {
 		List<int[]> stateList = new ArrayList<>();
 		List<Link<Node>> links = getParentLinksWithRestriction(node);
 		for (Link<Node> link : links) {
-			Variable var1 = link.getNode1().getVariable();
+            Variable var1 = link.getFrom().getVariable();
 			State[] var1States = var1.getStates();
-			Variable var2 = link.getNode2().getVariable();
+            Variable var2 = link.getTo().getVariable();
 			State[] var2States = var2.getStates();
 			Map<Integer, Integer> independentVariables = new HashMap<>();
 			int var1Index = 0, var2Index = 0;
@@ -130,7 +130,7 @@ public class LinkRestrictionPotentialOperations {
 			List<Variable> nodeVariables, int nodeStateIndex) {
 		State[] nodeStates = node.getVariable().getStates();
 		for (Link<Node> link : links) {
-			Variable var1 = link.getNode1().getVariable();
+            Variable var1 = link.getFrom().getVariable();
 			State[] var1States = var1.getStates();
 			int var1Index = nodeVariables.indexOf(var1);
 			int var1StateIndex = combination[var1Index];
@@ -267,7 +267,7 @@ public class LinkRestrictionPotentialOperations {
 		List<Link<Node>> parentLinks = getParentLinksWithRestriction(node);
 
 		for (Link<Node> link : parentLinks) {
-			potential = (TablePotential) updatePotentialByLinkRestriction(link.getNode2(),
+            potential = (TablePotential) updatePotentialByLinkRestriction(link.getTo(),
 					(TablePotential) link.getRestrictionsPotential(), potential);
 		}
 		return potential;

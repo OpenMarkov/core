@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.action.core;
 
+import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -15,27 +16,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RemovePolicyEdit extends PNEdit {
-
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
-	private Potential lastPotential;
-	private Variable variable;
-	private PolicyType lastPolicyType;
-	private Node node;
+    
+    private final @Nullable Potential oldPotential;
+    private final Node node;
 
 	/**
 	 * @param node Node
 	 */
 	public RemovePolicyEdit(Node node) {
 		super(node.getProbNet());
-		this.variable = node.getVariable();
-		if (node.getNodeType() == NodeType.DECISION && node.getPolicyType() != PolicyType.OPTIMAL) {
-			lastPotential = node.getPotentials().get(0);
-			lastPolicyType = node.getPolicyType();
-		}
-
+        this.node = node;
+        if (node.getNodeType() == NodeType.DECISION && node.getPolicyType() != PolicyType.OPTIMAL) {
+            oldPotential = node.getPotentials().get(0);
+        } else {
+            oldPotential = null;
+        }
 	}
 
 	
@@ -45,9 +40,7 @@ public class RemovePolicyEdit extends PNEdit {
 			probNet.getNode(variable).setPolicyType(PolicyType.OPTIMAL);
 			probNet.getNode(variable).setPotentials(potentials);
 		}*/
-
-		List<Potential> noPolicy = new ArrayList<>();
-		node.setPotentials(noPolicy);
+        node.clearPotentials();
 	}
     
     @Override public void undo() {
@@ -58,8 +51,10 @@ public class RemovePolicyEdit extends PNEdit {
 			probNet.getNode(variable).setPotentials(potentials);
 			probNet.getNode(variable).setPolicyType(lastPolicyType);
 		}*/
-		List<Potential> potentials = new ArrayList<>();
-		potentials.add(lastPotential);
-		node.setPotentials(potentials);
+        if (oldPotential != null) {
+            node.setPotential(oldPotential);
+        } else {
+            node.clearPotentials();
+        }
 	}
 }

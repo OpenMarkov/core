@@ -30,7 +30,7 @@ public class NoMultipleLinks extends PNConstraint {
         List<Node> nodesGraph = probNet.getNodes();
         for (Node node : nodesGraph) {
             for (Link<Node> link : probNet.getLinks(node)) {
-                this.checkLink(probNet, constraintChecker, link.getNode1(), link.getNode2(), link.isDirected());
+                this.checkLink(probNet, constraintChecker, link.getFrom(), link.getTo(), link.isDirected());
             }
         }
     }

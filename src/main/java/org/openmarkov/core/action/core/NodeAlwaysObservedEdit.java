@@ -24,17 +24,8 @@ import static org.openmarkov.core.model.network.constraint.NoAlwaysObservedDesce
 
 @SuppressWarnings("serial") public class NodeAlwaysObservedEdit extends PNEdit {
     
-    /**
-     * The last 'alwaysObserved' before the edition
-     */
     private boolean lastAlwaysObserved;
-    /**
-     * The new 'alwaysObserved' after the edition
-     */
     private boolean newAlwaysObserved;
-    /**
-     * The edited node
-     */
     private Node node;
     
     /**

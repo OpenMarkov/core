@@ -57,10 +57,10 @@ public class PartialOrderDAN {
 		for (Node dec : order.getNodes()) {
 			List<Link<Node>> decLinks = order.getLinks(dec);
 			for (int i = 0; i < decLinks.size(); i++) {
-				Node nodeI = decLinks.get(i).getNode2();
+                Node nodeI = decLinks.get(i).getTo();
 				for (int j = 0; j < decLinks.size(); j++) {
 					Link<Node> linkJ = decLinks.get(j);
-					Node nodeJ = linkJ.getNode2();
+                    Node nodeJ = linkJ.getTo();
 					if ((nodeI != nodeJ) && order.existsPath(nodeI, nodeJ, true)) {
 						linksToRemove.add(linkJ);
 
@@ -93,8 +93,8 @@ public class PartialOrderDAN {
 		}
 
 		for (Link<Node> link : links) {
-			Node node1 = link.getNode1();
-			Node node2 = link.getNode2();
+            Node node1 = link.getFrom();
+            Node node2 = link.getTo();
 
 			content = content + getNameWithQuotes(node1) + "-> " + getNameWithQuotes(node2) + "\n";
 

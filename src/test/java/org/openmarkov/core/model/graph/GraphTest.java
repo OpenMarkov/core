@@ -55,8 +55,8 @@ public class GraphTest {
         assertEquals(1, linksOfA.size());
         Link<String> linkABinA = linksOfA.get(0);
         assertTrue(linkABinA.isDirected());
-        assertEquals(linkABinA.getNode1(), nodeA);
-        assertEquals(linkABinA.getNode2(), nodeB);
+        assertEquals(linkABinA.getFrom(), nodeA);
+        assertEquals(linkABinA.getTo(), nodeB);
         
         // test all the links involving node B
         List<Link<String>> linksOfB = graph.getLinks(nodeB);
@@ -72,8 +72,8 @@ public class GraphTest {
             }
             if (link.contains(nodeC)) {
                 existsLinkBCinB = true;
-                assertEquals(link.getNode1(), nodeB);
-                assertEquals(link.getNode2(), nodeC);
+                assertEquals(link.getFrom(), nodeB);
+                assertEquals(link.getTo(), nodeC);
                 assertTrue(link.isDirected());
             }
             if (link.contains(nodeD)) {
@@ -152,8 +152,8 @@ public class GraphTest {
         // check  that link A->B is directed
         assertNull(graph.getLink(nodeA, nodeB, false));
         Link<String> link = graph.getLink(nodeA, nodeB, true);
-        assertEquals(nodeA, link.getNode1());
-        assertEquals(nodeB, link.getNode2());
+        assertEquals(nodeA, link.getFrom());
+        assertEquals(nodeB, link.getTo());
         assertTrue(link.isDirected());
         // check  that link D-B is undirected
         assertNull(graph.getLink(nodeB, nodeD, true));
@@ -173,9 +173,9 @@ public class GraphTest {
                 assertTrue(link.contains(nodeD));
             } else {
                 if (!link.contains(nodeA)) {
-                    assertEquals(link.getNode2(), nodeC);
+                    assertEquals(link.getTo(), nodeC);
                 } else {
-                    assertEquals(link.getNode2(), nodeB);
+                    assertEquals(link.getTo(), nodeB);
                 }
             }
         }

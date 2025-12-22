@@ -84,7 +84,7 @@ import java.util.zip.ZipFile;
     private static void loadJavaClasses() {
         FileSystem fs = FileSystems.getFileSystem(URI.create("jrt:/"));
         Path modules = fs.getPath("/modules");
-        var javaClasses = new ArrayList<Class<Object>>();
+        var classesToLoad = new ArrayList<String>();
         try (Stream<Path> pathStream = Files.walk(modules)) {
             for (var path : pathStream.toList()) {
                 if (!path.toString().endsWith(PluginLoader.CLASS_EXTENSION)) {
@@ -92,26 +92,34 @@ import java.util.zip.ZipFile;
                 }
                 var subpath = path.subpath(2, path.getNameCount());
                 var className = subpath.toString().replace("/", ".");
-                try {
-                    Class<Object> loadedClass = (Class<Object>) PluginLoader.CLASS_LOADER.loadClass(className.substring(0, className.length() - PluginLoader.CLASS_EXTENSION.length()));
-                    if (PluginLoader.verifyClass(loadedClass)){
-                        javaClasses.add(loadedClass);
-                    }
-                } catch (ClassNotFoundException | NoClassDefFoundError ignored) {
-                }
+                classesToLoad.add(className.substring(0, className.length() - PluginLoader.CLASS_EXTENSION.length()));
             }
         } catch (IOException ignored) {
         }
-        PluginLoader.LOADED_CLASSES.put(PluginClassCategory.JAVA, javaClasses);
+        PluginLoader.LOADED_CLASSES.put(PluginClassCategory.JAVA, classesToLoad
+                .stream()
+                .parallel()
+                .map(classToLoad -> {
+                    try {
+                        Class<Object> loadedClass = (Class<Object>) PluginLoader.CLASS_LOADER.loadClass(classToLoad);
+                        if (PluginLoader.verifyClass(loadedClass)) {
+                            return loadedClass;
+                        }
+                    } catch (ClassNotFoundException | NoClassDefFoundError ignored) {
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .toList());
     }
     
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private static boolean verifyClass(Class<Object> loadedClass) {
-        try{
+        try {
             loadedClass.getName();
             loadedClass.getSimpleName();
             return true;
-        }catch (NoClassDefFoundError | IncompatibleClassChangeError e){
+        } catch (NoClassDefFoundError | IncompatibleClassChangeError e) {
             return false;
         }
     }
@@ -130,27 +138,35 @@ import java.util.zip.ZipFile;
         ScanResult scan = new ClassGraph().scan();
         var classPaths = scan.getClasspathURLs().stream().map(URL::getFile).toList();
         scan.close();
-        List<Class<Object>> loadedClasses = new ArrayList<>();
+        var classesToLoad = new ArrayList<String>();
         for (var classPath : classPaths) {
             classPath = URLDecoder.decode(classPath, StandardCharsets.UTF_8);
             for (var classQualifiedName : PluginLoader.getClassesQualifiedNames(classPath)) {
-                try {
-                    boolean isValidClass = switch (category) {
-                        case OPENMARKOV -> classQualifiedName.startsWith(PluginLoader.OPEN_MARKOV_PATH_PREFIX);
-                        case EXTERNAL_DEPENDENCY -> !classQualifiedName.startsWith(PluginLoader.OPEN_MARKOV_PATH_PREFIX);
-                        default -> false;
-                    };
-                    if (isValidClass) {
-                        Class<Object> loadedClass = (Class<Object>) PluginLoader.CLASS_LOADER.loadClass(classQualifiedName);
-                        if (PluginLoader.verifyClass(loadedClass)){
-                            loadedClasses.add(loadedClass);
-                        }
-                    }
-                } catch (ClassNotFoundException | NoClassDefFoundError | ClassFormatError ignored) {
+                boolean isValidClass = switch (category) {
+                    case OPENMARKOV -> classQualifiedName.startsWith(PluginLoader.OPEN_MARKOV_PATH_PREFIX);
+                    case EXTERNAL_DEPENDENCY -> !classQualifiedName.startsWith(PluginLoader.OPEN_MARKOV_PATH_PREFIX);
+                    default -> false;
+                };
+                if (isValidClass) {
+                    classesToLoad.add(classQualifiedName);
                 }
             }
         }
-        PluginLoader.LOADED_CLASSES.put(category, loadedClasses);
+        PluginLoader.LOADED_CLASSES.put(category, classesToLoad
+                .stream()
+                .parallel()
+                .map(classToLoad -> {
+                    try {
+                        Class<Object> loadedClass = (Class<Object>) PluginLoader.CLASS_LOADER.loadClass(classToLoad);
+                        if (PluginLoader.verifyClass(loadedClass)) {
+                            return loadedClass;
+                        }
+                    } catch (ClassNotFoundException | NoClassDefFoundError | ClassFormatError ignored) {
+                    }
+                    return null;
+                })
+                .filter(Objects::nonNull)
+                .toList());
     }
     
     
@@ -158,6 +174,7 @@ import java.util.zip.ZipFile;
      * Returns all classes names.
      *
      * @param classpath the path where searches starts.
+     *
      * @return a list of classes names.
      */
     private static @NotNull List<String> getClassesQualifiedNames(@NotNull String classpath) {
@@ -172,6 +189,7 @@ import java.util.zip.ZipFile;
      * Returns all classes names of a jar file.
      *
      * @param file the jar file.
+     *
      * @return a list of classes names.
      */
     @SuppressWarnings("OverlyBroadCatchBlock")
@@ -196,6 +214,7 @@ import java.util.zip.ZipFile;
      * Returns all resources matching with a pattern type from a directory.
      *
      * @param classpath the classpath.
+     *
      * @return a list of resource names.
      */
     private static @NotNull List<String> getClassesNamesFromDirectory(@NotNull File classpath) {
@@ -244,6 +263,7 @@ import java.util.zip.ZipFile;
      *
      * @param iterator        The iterator to turn into a {@link Stream}.
      * @param <IteratorValue> Value type of the {@link Iterator}.
+     *
      * @return A {@link Stream} with the elements of the {@link Iterator}.
      */
     private static <IteratorValue> @NotNull Stream<IteratorValue>

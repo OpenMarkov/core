@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.model.network;
 
+import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.java.cloneUtils.CloneUtils;
 
 import java.util.HashMap;
@@ -16,7 +17,7 @@ import java.util.Set;
  * This class is a wrapper of a HashMap(key=String,value=String).<p>
  * It gives the possibility to store String attributes accessed by a name (the key).
  */
-public class Properties implements Cloneable {
+public class Properties implements Cloneable, ClassLocalizable {
 
 	// Attributes
 	protected HashMap<String, String> information;
@@ -74,4 +75,8 @@ public class Properties implements Cloneable {
 		cloned.information = CloneUtils.safeClone(information);
 		return cloned;
 	}
+    
+    @Override public String toString() {
+        return this.localize();
+    }
 }

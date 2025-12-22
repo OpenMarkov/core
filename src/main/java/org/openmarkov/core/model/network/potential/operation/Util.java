@@ -7,10 +7,6 @@
 
 package org.openmarkov.core.model.network.potential.operation;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import javax.security.auth.login.Configuration;
 import java.io.File;
 import java.util.Stack;
 
@@ -23,23 +19,8 @@ import java.util.Stack;
  * in the rest of this application
  */
 public class Util {
-
-	// Attributes
-	public static Configuration openMarkovConfiguration = null;
-	private static Logger logger = LogManager.getLogger(Util.class);
     
     /**
-	 * @param condition {@code boolean} it it's true there is no mistake
-	 * @param message   The string that is show to the user if condition
-	 *                  is false
-	 */ // Quitar ???
-	public static void argumentCondition(boolean condition, String message) {
-		if (!condition) {
-			logger.info(message);
-		}
-	}
-
-	/**
 	 * Returns a {@code String} with a integer with commas.<p>
 	 * Example: {@code printInteger(1510000)} returns 1,510,000
 	 *

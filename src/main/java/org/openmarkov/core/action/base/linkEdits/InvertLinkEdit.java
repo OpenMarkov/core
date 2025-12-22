@@ -19,7 +19,6 @@ import org.openmarkov.core.model.network.potential.Potential;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Inverts an existing link.
@@ -29,11 +28,11 @@ import java.util.stream.Collectors;
     /**
      * parent node
      */
-    private Node node1;
+    private Node parent;
     /**
      * child node
      */
-    private Node node2;
+    private Node child;
     
     /**
      * Parent node's old potentials
@@ -54,8 +53,8 @@ import java.util.stream.Collectors;
      */
     public InvertLinkEdit(ProbNet probNet, Variable variable1, Variable variable2, boolean isDirected) {
         super(probNet, variable1, variable2, isDirected);
-        node1 = probNet.getNode(variable1.getName());
-        node2 = probNet.getNode(variable2.getName());
+        parent = probNet.getNode(this.getVariableFrom());
+        child = probNet.getNode(this.getVariableTo());
     }
     
     
@@ -106,35 +105,35 @@ import java.util.stream.Collectors;
      */
     @Override protected void doEdit() throws DoEditException.CannotInvertLink {
         // Remove links first
-        probNet.removeLink(node1, node2, isDirected);
-        if (node2.getNodeType() != NodeType.DECISION) {
+        probNet.removeLink(parent, child, isDirected);
+        if (child.getNodeType() != NodeType.DECISION) {
             // Update potentials
             List<Potential> newPotentials = new ArrayList<>();
-            this.childOldPotentials = node2.getPotentials();
+            this.childOldPotentials = child.getPotentials();
             for (Potential oldPotential : childOldPotentials) {
-                Potential newPotential = oldPotential.removeVariable(node1.getVariable());
+                Potential newPotential = oldPotential.removeVariable(parent.getVariable());
                 newPotentials.add(newPotential);
             }
-            node2.setPotentials(newPotentials);
+            child.setPotentials(newPotentials);
         }
         
         // Add inverse link
-        probNet.addLink(node2, node1, isDirected);
-        if (node2.getNodeType() != NodeType.DECISION) {
-            this.parentOldPotentials = node1.getPotentials();
+        probNet.addLink(child, parent, isDirected);
+        if (child.getNodeType() != NodeType.DECISION) {
+            this.parentOldPotentials = parent.getPotentials();
             List<Potential> newPotentials = new ArrayList<>();
             for (Potential oldPotential : parentOldPotentials) {
                 // Update potential
-                Potential newPotential = oldPotential.addVariable(node2.getVariable());
+                Potential newPotential = oldPotential.addVariable(child.getVariable());
                 newPotentials.add(newPotential);
             }
-            node1.setPotentials(newPotentials);
+            parent.setPotentials(newPotentials);
         }
         
         // Checks that the inversion is legal, i.e. it does not produce cycles.
         if (!probNet.checkProbNet()) {
             undo();
-            throw new DoEditException.CannotInvertLink(node1, node2, probNet, probNet.getUnsatisfiedConstraints());
+            throw new DoEditException.CannotInvertLink(parent, child, probNet, probNet.getUnsatisfiedConstraints());
         }
     }
     
@@ -142,8 +141,8 @@ import java.util.stream.Collectors;
         super.undo();
         probNet.removeLink(variableTo, variableFrom, isDirected);
         probNet.addLink(variableFrom, variableTo, isDirected);
-        node1.setPotentials(parentOldPotentials);
-        node2.setPotentials(childOldPotentials);
+        parent.setPotentials(parentOldPotentials);
+        child.setPotentials(childOldPotentials);
     }
     
     /**

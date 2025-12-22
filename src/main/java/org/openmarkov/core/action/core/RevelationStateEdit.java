@@ -26,7 +26,7 @@ import org.openmarkov.core.model.network.State;
 	private boolean selected;
 
 	public RevelationStateEdit(Link<Node> link, State state, boolean selected) {
-		super(link.getNode1().getProbNet());
+        super(link.getFrom().getProbNet());
 		this.link = link;
 		this.selected = selected;
 		this.newState = state;
@@ -38,9 +38,7 @@ import org.openmarkov.core.model.network.State;
 			link.addRevealingState(newState);
 		} else {
 			link.removeRevealingState(newState);
-
 		}
-
 	}
     
     @Override public void undo() {

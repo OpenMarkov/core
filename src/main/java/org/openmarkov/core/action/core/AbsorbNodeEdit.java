@@ -16,10 +16,8 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.operation.AuxiliaryOperations;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
 
@@ -176,7 +174,7 @@ import java.util.*;
         // Restore deleted links
         if (!linksDeleted.isEmpty()) {
             for (Link<Node> link : linksDeleted) {
-                probNet.addLink(link.getNode1(), link.getNode2(), true);
+                probNet.addLink(link.getFrom(), link.getTo(), true);
             }
         }
 
@@ -184,7 +182,7 @@ import java.util.*;
         // Destroy created utility links
         if (!newParentLinks.isEmpty()) {
             for (Link<Node> link : newParentLinks) {
-                probNet.removeLink(link.getNode1(), link.getNode2(), true);
+                probNet.removeLink(link.getFrom(), link.getTo(), true);
             }
         }
 
@@ -199,7 +197,7 @@ import java.util.*;
             }
             // Restore their links
             for (Link<Node> link : oldChildrenLinks) {
-                probNet.addLink(link.getNode1(), link.getNode2(), true);
+                probNet.addLink(link.getFrom(), link.getTo(), true);
             }
 
         }
@@ -225,7 +223,7 @@ import java.util.*;
         // Re-create utility links
         if (!newParentLinks.isEmpty()) {
             for (Link<Node> link : newParentLinks) {
-                probNet.addLink(link.getNode1(), link.getNode2(), true);
+                probNet.addLink(link.getFrom(), link.getTo(), true);
             }
         }
         absorbedNode.getChildren().get(0).setPotentials(newPotentials);

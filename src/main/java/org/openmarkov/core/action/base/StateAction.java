@@ -7,6 +7,10 @@
 
 package org.openmarkov.core.action.base;
 
+import org.jetbrains.annotations.NotNull;
+import org.openmarkov.core.localize.Localizable;
+import org.openmarkov.core.stringformat.LocalizationFormatter;
+
 import java.io.Serializable;
 
 /**
@@ -15,7 +19,7 @@ import java.io.Serializable;
  * @author mpalacios
  * @version 1.0
  */
-public enum StateAction implements Serializable {
+public enum StateAction implements Serializable, Localizable {
     ADD,
     REMOVE,
     RENAME,
@@ -23,4 +27,16 @@ public enum StateAction implements Serializable {
     DOWN,
     MODIFY_DELIMITER_INTERVAL,
     MODIFY_VALUE_INTERVAL;
+    
+    @Override public @NotNull String path() {
+        return "";
+    }
+    
+    @Override public @NotNull String localize(LocalizationFormatter formatter) {
+        return this.name();
+    }
+    
+    @Override public String toString() {
+        return this.localize();
+    }
 }

@@ -7,7 +7,12 @@
 
 package org.openmarkov.core.inference;
 
-public class MulticriteriaOptions implements Cloneable {
+import org.jetbrains.annotations.NotNull;
+import org.openmarkov.core.localize.ClassLocalizable;
+import org.openmarkov.core.localize.Localizable;
+import org.openmarkov.core.stringformat.LocalizationFormatter;
+
+public class MulticriteriaOptions implements Cloneable, ClassLocalizable {
 
 	private Type multicriteriaType;
 	private String mainUnit;
@@ -64,8 +69,25 @@ public class MulticriteriaOptions implements Cloneable {
 	public void setCeOptionsShowed(boolean ceOptionsShowed) {
 		this.ceOptionsShowed = ceOptionsShowed;
 	}
-
-	public enum Type {
-		UNICRITERION, COST_EFFECTIVENESS
-	}
+    
+    public enum Type implements Localizable {
+        UNICRITERION, COST_EFFECTIVENESS;
+        
+        
+        @Override public @NotNull String path() {
+            return "";
+        }
+        
+        @Override public @NotNull String localize(LocalizationFormatter formatter) {
+            return super.name();
+        }
+        
+        @Override public String toString() {
+            return this.localize();
+        }
+    }
+    
+    @Override public String toString() {
+        return this.localize();
+    }
 }

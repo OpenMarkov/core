@@ -1,6 +1,7 @@
 package org.openmarkov.core.model.network;
 
 import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.localize.ClassLocalizable;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -12,7 +13,7 @@ public class Point2D {
      *
      * @since 1.2
      */
-    public static class Double implements Serializable {
+    public static class Double implements Serializable, ClassLocalizable {
         /**
          * The X coordinate of this {@code Point2D}.
          *

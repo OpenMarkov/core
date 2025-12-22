@@ -10,14 +10,10 @@ package org.openmarkov.core.action.core;
 import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.DistinctVariableNames;
 import org.openmarkov.core.model.network.constraint.NoEmptyName;
 import org.openmarkov.core.model.network.constraint.ValidName;
 import org.openmarkov.core.action.base.PNEdit;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * {@code NodeNameEdit} is a simple edit that allow modify the node
@@ -27,15 +23,14 @@ import java.util.List;
  * @version 1.0 21/12/10
  */
 @SuppressWarnings("serial") public class NodeNameEdit extends PNEdit {
-    /**
-     * Current node name
-     */
-    private String previousName;
-    /**
-     * New node name
-     */
-    private String newName;
-
+    
+    
+    private final String previousName;
+    
+    private final String newName;
+    
+    private final Node node;
+    
     /**
      * Creates a new {@code NodeNameEdit} with the node and new name
      * specified.
@@ -66,8 +61,8 @@ import java.util.List;
             if ((this.newName == null) || (this.newName.contentEquals(""))) {
                 constraintChecker.addException(new ConstraintViolatedException.NameOfVariableCannotBeEmpty(constraint, this.node.getVariable()));
             }
-            if (!ValidName.nameIsAlreadyPresent(this.getNewName(), this.getPreviousName(), probNet)) {
-                constraintChecker.addException(new ConstraintViolatedException.NameOfVariableIsAlreadyPresent(constraint, this.getNewName()));
+            if (!ValidName.nameIsAlreadyPresent(newName, previousName, probNet)) {
+                constraintChecker.addException(new ConstraintViolatedException.NameOfVariableIsAlreadyPresent(constraint, newName));
             }
         }
     }
@@ -81,23 +76,4 @@ import java.util.List;
         node.getVariable().setBaseName(previousName);
     }
     
-    /**
-     * Gets the new name of the node
-     *
-     * @return the new name of the node
-     */
-    public String getNewName() {
-        return newName;
-    }
-    
-    /**
-     * Gets the previous name of the node
-     *
-     * @return the previous name of the node
-     */
-    public String getPreviousName() {
-        return previousName;
-    }
-    
-    private final Node node;
 }

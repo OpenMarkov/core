@@ -1,5 +1,113 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ClassLocalizations>
+    <Localization class="org.openmarkov.core.action.base.CloseParenthesisEdit"
+                  value="Close parenthesis"/>
+    <Localization class="org.openmarkov.core.action.base.OpenParenthesisEdit"
+                  value="Open parenthesis"/>
+    <Localization class="org.openmarkov.core.action.base.linkEdits.AddLinkEdit"
+                  value="Add link from {nodeFrom} to {nodeTo}. Is directed? {isDirected}"/>
+    <Localization class="org.openmarkov.core.action.base.linkEdits.InvertLinkAndUpdatePotentialsEdit"
+                  value="Invert and update potentials of Link from {variableFrom} to {variableTo}"/>
+    <Localization class="org.openmarkov.core.action.base.linkEdits.InvertLinkEdit"
+                  value="Invert link from {variableFrom} to {variableTo}"/>
+    <Localization class="org.openmarkov.core.action.base.linkEdits.OrientLinkEdit"
+                  value="Orient link from {variableFrom} to {variableTo}. Is directed? {isDirected}"/>
+    <Localization class="org.openmarkov.core.action.base.linkEdits.RemoveLinkEdit"
+                  value="Remove link from {variableFrom} to {variableTo}. Is directed? {isDirected}"/>
+    <Localization class="org.openmarkov.core.action.core.AbsorbNodeEdit"
+                  value="Absorb node {absorbedNode}"/>
+    <Localization class="org.openmarkov.core.action.core.AbsorbParentsEdit"
+                  value="Absorb parents {node}"/>
+    <Localization class="org.openmarkov.core.action.core.AddNodeEdit"
+                  value="Add node for {variable} of type {nodeType}"/>
+    <Localization class="org.openmarkov.core.action.core.AddPotentialEdit"
+                  value="Add potential {potential}"/>
+    <Localization class="org.openmarkov.core.action.core.COrientLinksEdit"
+                  value="Compound orient links:\n{orientLinkEdits}"/>
+    <Localization class="org.openmarkov.core.action.core.CRemoveNodeEdit"
+                  value="Compound remove node for node {node}"/>
+    <Localization class="org.openmarkov.core.action.core.ChangeNetworkTypeEdit"
+                  value="Change network type from {currentNetworkType} to {newNetworkType}"/>
+    <Localization class="org.openmarkov.core.action.core.CycleLengthEdit"
+                  value="Change cycle from {oldTemporalUnit} to {newTemporalUnit}"/>
+    <Localization class="org.openmarkov.core.action.core.DecisionCriteriaEdit"
+                  value="Change decision criteria {modifiedCriterion} with action {stateAction}. New name is {newName}"/>
+    <Localization class="org.openmarkov.core.action.core.DecisionCriterionUnitEdit"
+                  value="Change unit from {oldUnit} to {newUnit} for decision criteria {criterion}"/>
+    <Localization class="org.openmarkov.core.action.core.ICIPotentialEdit"
+                  value="Edit ICI Potential {potential} for {variable}"/>
+    <Localization class="org.openmarkov.core.action.core.MulticriteriaEdit"
+                  value="Edit decision criteria\n{oldDecisionCriteria}\n with options {oldMulticriteriaOptions} to new decision criteria {newDecisionCriteria}\n with options {newMulticriteriaOptions}"/>
+    <Localization class="org.openmarkov.core.action.core.NetworkCommentEdit"
+                  value="Change comment\nOriginal comment: {currentComment}\n\nnew comment{newComment}"/>
+    <Localization class="org.openmarkov.core.action.core.NetworkDefaultStatesEdit"
+                  value="Change default states from {currentDefaultStates} to {newDefaultStates}"/>
+    <Localization class="org.openmarkov.core.action.core.NodeAlwaysObservedEdit"
+                  value="Change always observed from {lastAlwaysObserved} to {newAlwaysObserved} for {node}"/>
+    <Localization class="org.openmarkov.core.action.core.NodeCommentEdit"
+                  value="Change comment of node {node}.\nOld comment: {currentComment}\n\nNew comment: {newComment}"/>
+    <Localization class="org.openmarkov.core.action.core.NodeNameEdit"
+                  value="Change node name of {node} from {previousName} to {newName}"/>
+    <Localization class="org.openmarkov.core.action.core.NodeReplaceStatesEdit"
+                  value="Replace states of {node} from {lastStates} to {newStates}"/>
+    <Localization class="org.openmarkov.core.action.core.NodeStateEdit"
+                  value="Edit state for {node} with action {stateAction}"/>
+    <Localization class="org.openmarkov.core.action.core.PotentialChangeEdit"
+                  value="Change potential for {node} from {oldPotential} to {newPotential}"/>
+    <Localization class="org.openmarkov.core.action.core.PrecisionEdit"
+                  value="Change precision of {node} from {lastPrecision} to {newPrecision}"/>
+    <Localization class="org.openmarkov.core.action.core.PurposeEdit"
+                  value="Change purpose of {node} from {lastPurpose} to {newPurpose}"/>
+    <Localization class="org.openmarkov.core.action.core.RelevanceEdit"
+                  value="Change relevance of {node} from {lastRelevance} to {newRelevance}"/>
+    <Localization class="org.openmarkov.core.action.core.RemoveNodeEdit"
+                  value="Remove node {node}"/>
+    <Localization class="org.openmarkov.core.action.core.RemoveMarkovNetNodeEdit"
+                  value="Remove node {node}"/>
+    <Localization class="org.openmarkov.core.action.core.RemovePolicyEdit"
+                  value="Remove policy of node {node}. Previous policy was {oldPotential}"/>
+    <Localization class="org.openmarkov.core.action.core.RemovePotentialEdit"
+                  value="Remove potential {oldPotential}"/>
+    <Localization class="org.openmarkov.core.action.core.RemovePotentialsEdit"
+                  value="Remove potentials: {potentialsToDelete}"/>
+    <Localization class="org.openmarkov.core.action.core.RevelationStateEdit"
+                  value="Add or remove revealing state {newState} from link {link}. If it is add, this text should show true: {selected}"/>
+    <Localization class="org.openmarkov.core.action.core.SetPotentialEdit"
+                  value="Change potential for {node} from {lastPotential} to {newPotential}"/>
+    <Localization class="org.openmarkov.core.action.core.SetPotentialVariablesEdit"
+                  value="Change potential variables of {node} from {oldVariables} to {newVariables}"/>
+    <Localization class="org.openmarkov.core.action.core.TemporalOptionsEdit"
+                  value="Change temporal options from {oldTemporalOptions} to {newTemporalOptions}"/>
+    <Localization class="org.openmarkov.core.action.core.TimeSliceEdit"
+                  value="Change time slice for {variable} from {lastTimeSlice} to {newTimeSlice};"/>
+    <Localization class="org.openmarkov.core.action.core.UncertainValuesEdit"
+                  value="Change uncertain values for {node}"/>
+    <Localization class="org.openmarkov.core.action.core.UncertainValuesRemoveEdit"
+                  value="Remove uncertain values for {node}"/>
+    <Localization class="org.openmarkov.core.action.core.UnitEdit"
+                  value="Change units for {node} from {lastUnit} to {newUnit}"/>
+    <Localization class="org.openmarkov.core.action.core.VariableTypeConstraintEdit"
+                  value="Change (network's) variable constraint from {lastConstraint} to {newVariableTypeConstraint}"/>
+    <Localization class="org.openmarkov.core.action.core.VariableTypeEdit"
+                  value="Change variable type from {currentType} to {newType} for {node}"/>
+    <Localization class="org.openmarkov.core.model.network.StringWithProperties"
+                  value="{string} (Properties: {properties})"/>
+    <Localization class="org.openmarkov.core.model.network.Properties"
+                  value="{information}"/>
+    <Localization class="org.openmarkov.core.inference.MulticriteriaOptions"
+                  value="{multicriteriaType} criteria with unit {mainUnit}. unicriterion showed? {unicriterionOptionsShowed}. CE Showed= {ceOptionsShowed}."/>
+    <Localization class="org.openmarkov.core.inference.TemporalOptions"
+                  value="{transition} temporal option with horizon {horizon}"/>
+    <Localization class="org.openmarkov.core.model.network.CycleLength"
+                  value="Cycle length of {value} {unit}(s)"/>
+    <Localization class="org.openmarkov.core.model.graph.Link"
+                  value="Link from {from} to {to}"/>
+    <Localization class="org.openmarkov.core.model.graph.LabelledLink"
+                  value="Labelled link from {from} to {to}"/>
+    <Localization class="org.openmarkov.core.model.network.PartitionedInterval"
+                  value="Interval with limits: {limits}"/>
+    <Localization class="org.openmarkov.core.model.network.Point2D$Double"
+                  value="{x: {x}, y: {y}}"/>
     <Localization
             class="org.openmarkov.core.exception.ConstraintViolatedException$AlwaysObservedVariableIsDescendantOfDecisionNode"
             value="Always observed variable {alwaysObservedNode} is a descendant of decision node {decisionNode}."/>
@@ -88,67 +196,123 @@
                   value="There is already a variable named {name} in the network."/>
     <Localization class="org.openmarkov.core.exception.CannotNormalizePotentialException"
                   value="All the values are 0.0 in potential {potential}"/>
-    <Localization class="org.openmarkov.core.exception.CostEffectivenessException$PartitionsAndProbabilitiesHaveDifferentSizes" value="There are {partitions.size} partitions and {probabilities.size}, while they should both be the same"/>
-    <Localization class="org.openmarkov.core.exception.CostEffectivenessException$PotentialsMustBeOfSameType" value="Potentials should be of the same type, while first potential is {firstPotential.getClass.getName} and the second if {secondPotential.getClass.getName}"/>
-    <Localization class="org.openmarkov.core.exception.CostEffectivenessException$WrongNumberOfCostsEffectivitiesAndInterventions" value="There are {costs.size} costs, {effectivities.size} effectivities and {strategyTrees.size} interventions, while they should both be the same"/>
-    <Localization class="org.openmarkov.core.exception.CostEffectivenessException$WrongNumberOfThresholds" value="There are {costs.size} costs and {thresholds.size} thresholds, while there should be one threshold less than costs"/>
-    <Localization class="org.openmarkov.core.exception.DoEditException$CannotDoEditException" value="{originException}"/>
-    <Localization class="org.openmarkov.core.exception.DoEditException$CannotInvertLink" value="Cannot invert link from {from} to {to} of {probNet} due to {unsatisfiedConstraint}"/>
-    <Localization class="org.openmarkov.core.exception.DoEditException$CannotRemovePotential" value="Can not remove potential: {oldPotential} of {probNet}"/>
+    <Localization
+            class="org.openmarkov.core.exception.CostEffectivenessException$PartitionsAndProbabilitiesHaveDifferentSizes"
+            value="There are {partitions.size} partitions and {probabilities.size}, while they should both be the same"/>
+    <Localization class="org.openmarkov.core.exception.CostEffectivenessException$PotentialsMustBeOfSameType"
+                  value="Potentials should be of the same type, while first potential is {firstPotential.getClass.getName} and the second if {secondPotential.getClass.getName}"/>
+    <Localization
+            class="org.openmarkov.core.exception.CostEffectivenessException$WrongNumberOfCostsEffectivitiesAndInterventions"
+            value="There are {costs.size} costs, {effectivities.size} effectivities and {strategyTrees.size} interventions, while they should both be the same"/>
+    <Localization class="org.openmarkov.core.exception.CostEffectivenessException$WrongNumberOfThresholds"
+                  value="There are {costs.size} costs and {thresholds.size} thresholds, while there should be one threshold less than costs"/>
+    <Localization class="org.openmarkov.core.exception.DoEditException$CannotDoEditException"
+                  value="{originException}"/>
+    <Localization class="org.openmarkov.core.exception.DoEditException$CannotInvertLink"
+                  value="Cannot invert link from {from} to {to} of {probNet} due to {unsatisfiedConstraint}"/>
+    <Localization class="org.openmarkov.core.exception.DoEditException$CannotRemovePotential"
+                  value="Can not remove potential: {oldPotential} of {probNet}"/>
     <Localization class="org.openmarkov.core.exception.ConstraintViolatedException"
                   value="Could not met the constraint: {constraint}"/>
     <Localization class="org.openmarkov.core.model.network.constraint.ValidName"
                   value="Variable names must not be empty and it two variables cannot have the same name"/>
     <Localization class="org.openmarkov.core.model.network.constraint.ValidState"
                   value="All state have names and two states cannot have the same name"/>
-    <Localization class="org.openmarkov.core.exception.DoEditException$InstanceAlreadyExists" value="Instance {instanceName} already exists"/>
-    <Localization class="org.openmarkov.core.exception.DoEditException$NodeIsNull" value="No node is selected, try selecting a node from the {probNet}"/>
-    <Localization class="org.openmarkov.core.exception.EmptyDatabaseException" value="Database from {source} is empty."/>
-    <Localization class="org.openmarkov.core.exception.IncompatibleEvidenceException$EvidenceIsIncompatibleWithOther" value="The new evidence {newFinding} is not compatible with an old evidente: {oldFinding}"/>
-    <Localization class="org.openmarkov.core.exception.IncompatibleEvidenceException$FindingVariableIsMissingAState" value="The variable {variable.getName} has no state {state}, so this finding cannot be translated."/>
-    <Localization class="org.openmarkov.core.exception.IncompatibleEvidenceException$SamplesWeigthIsZero" value="Samples weigth is zero"/>
-    <Localization class="org.openmarkov.core.exception.IntervalsAreNotEvenException" value="The total number of subintervals or time horizon is not even."/>
-    <Localization class="org.openmarkov.core.exception.IntervalsAreNotMultipleOf3Exception" value="The total number of subintervals or time horizon is not multiple of three."/>
-    <Localization class="org.openmarkov.core.exception.InvalidNetworkTypeException$NotAllowedType" value="{probNet} is not of an allowed type: {allowedTypes}"/>
-    <Localization class="org.openmarkov.core.exception.InvalidNetworkTypeException$UnmetConstraints" value="{probNet} cannot be converted to {newNetworkType} as it would not satisfy constraints: {unsatisfiedConstraints}"/>
+    <Localization class="org.openmarkov.core.exception.DoEditException$InstanceAlreadyExists"
+                  value="Instance {instanceName} already exists"/>
+    <Localization class="org.openmarkov.core.exception.DoEditException$NodeIsNull"
+                  value="No node is selected, try selecting a node from the {probNet}"/>
+    <Localization class="org.openmarkov.core.exception.EmptyDatabaseException"
+                  value="Database from {source} is empty."/>
+    <Localization class="org.openmarkov.core.exception.IncompatibleEvidenceException$EvidenceIsIncompatibleWithOther"
+                  value="The new evidence {newFinding} is not compatible with an old evidente: {oldFinding}"/>
+    <Localization class="org.openmarkov.core.exception.IncompatibleEvidenceException$FindingVariableIsMissingAState"
+                  value="The variable {variable.getName} has no state {state}, so this finding cannot be translated."/>
+    <Localization class="org.openmarkov.core.exception.IncompatibleEvidenceException$SamplesWeigthIsZero"
+                  value="Samples weigth is zero"/>
+    <Localization class="org.openmarkov.core.exception.IntervalsAreNotEvenException"
+                  value="The total number of subintervals or time horizon is not even."/>
+    <Localization class="org.openmarkov.core.exception.IntervalsAreNotMultipleOf3Exception"
+                  value="The total number of subintervals or time horizon is not multiple of three."/>
+    <Localization class="org.openmarkov.core.exception.InvalidNetworkTypeException$NotAllowedType"
+                  value="{probNet} is not of an allowed type: {allowedTypes}"/>
+    <Localization class="org.openmarkov.core.exception.InvalidNetworkTypeException$UnmetConstraints"
+                  value="{probNet} cannot be converted to {newNetworkType} as it would not satisfy constraints: {unsatisfiedConstraints}"/>
     <Localization class="org.openmarkov.core.exception.NetworkHasNoNodesException" value="{probNet} has no nodes."/>
-    <Localization class="org.openmarkov.core.exception.NonProjectablePotentialException$CannotEvaluate" value="Cannot evaluate '{elementToEvaluate}' due to {evaluationException.getMessage}"/>
-    <Localization class="org.openmarkov.core.exception.NonProjectablePotentialException$MissingEvidenceInVariable" value="There is required evidence to be present in variable {timeVariable}, but there is no evidence"/>
-    <Localization class="org.openmarkov.core.exception.NonProjectablePotentialException$MissingVariableInEvidence" value="Variable {variable} cannot be found in evidence case {evidenceCase}"/>
-    <Localization class="org.openmarkov.core.exception.NonProjectablePotentialException$PotentialCannotBeConvertedToATable" value="Potential {potential} cannot be converted to a table"/>
-    <Localization class="org.openmarkov.core.exception.NonProjectablePotentialException$PotentialCannotBeConvertedToATableDueToVariable" value="Potential {potential} cannot be converted to a table due to variable {variable.getName()} being a {variable.getVariableType()} variable"/>
-    <Localization class="org.openmarkov.core.exception.NonProjectablePotentialException$SuperValueMustBeSumOrProduct" value="Potential {potential} must be sum or product"/>
-    <Localization class="org.openmarkov.core.exception.NonProjectablePotentialException$TopVariableNotInDomain" value="There was no top variable value was not within any domain (Domains: {branches})"/>
-    <Localization class="org.openmarkov.core.exception.NotEvaluableNetworkException$NotApplicableNetwork" value="This algorithm cannot evaluate {probNet}, as it can only evaluate networks of type: {possibleNetworkTypes}."/>
-    <Localization class="org.openmarkov.core.exception.NotEvaluableNetworkException$UnsatisfiedContraints" value="This algorithm cannot evaluate {probNet} because it does not satisfy the following constraints: {unsatisfiedConstraints}"/>
-    <Localization class="org.openmarkov.core.exception.NotEvaluableNetworkException$VariableIsNotTemporal" value="Variable {variable} is not temporal."/>
-    <Localization class="org.openmarkov.core.exception.ParserException$CannotOpenFile" value="Cannot open file {filename}."/>
-    <Localization class="org.openmarkov.core.exception.ParserException$CannotReadConstraint" value="Could not read a constraint."/>
-    <Localization class="org.openmarkov.core.exception.ParserException$MismatchedToken" value="Expected token {expected}, but found {found}"/>
-    <Localization class="org.openmarkov.core.exception.ParserException$MissingPotential" value="Potential {potential} does not exist."/>
-    <Localization class="org.openmarkov.core.exception.ParserException$MissingProbabilisticNetworkInformation" value="No ProbNet in ProbNetInfo."/>
-    <Localization class="org.openmarkov.core.exception.ParserException$MissingPropertiesOfContiousVariable" value="Variable {variableName} is missing properties: {missingProperties}."/>
+    <Localization class="org.openmarkov.core.exception.NonProjectablePotentialException$CannotEvaluate"
+                  value="Cannot evaluate '{elementToEvaluate}' due to {evaluationException.getMessage}"/>
+    <Localization class="org.openmarkov.core.exception.NonProjectablePotentialException$MissingEvidenceInVariable"
+                  value="There is required evidence to be present in variable {timeVariable}, but there is no evidence"/>
+    <Localization class="org.openmarkov.core.exception.NonProjectablePotentialException$MissingVariableInEvidence"
+                  value="Variable {variable} cannot be found in evidence case {evidenceCase}"/>
+    <Localization
+            class="org.openmarkov.core.exception.NonProjectablePotentialException$PotentialCannotBeConvertedToATable"
+            value="Potential {potential} cannot be converted to a table"/>
+    <Localization
+            class="org.openmarkov.core.exception.NonProjectablePotentialException$PotentialCannotBeConvertedToATableDueToVariable"
+            value="Potential {potential} cannot be converted to a table due to variable {variable.getName()} being a {variable.getVariableType()} variable"/>
+    <Localization class="org.openmarkov.core.exception.NonProjectablePotentialException$SuperValueMustBeSumOrProduct"
+                  value="Potential {potential} must be sum or product"/>
+    <Localization class="org.openmarkov.core.exception.NonProjectablePotentialException$TopVariableNotInDomain"
+                  value="There was no top variable value was not within any domain (Domains: {branches})"/>
+    <Localization class="org.openmarkov.core.exception.NotEvaluableNetworkException$NotApplicableNetwork"
+                  value="This algorithm cannot evaluate {probNet}, as it can only evaluate networks of type: {possibleNetworkTypes}."/>
+    <Localization class="org.openmarkov.core.exception.NotEvaluableNetworkException$UnsatisfiedContraints"
+                  value="This algorithm cannot evaluate {probNet} because it does not satisfy the following constraints: {unsatisfiedConstraints}"/>
+    <Localization class="org.openmarkov.core.exception.NotEvaluableNetworkException$VariableIsNotTemporal"
+                  value="Variable {variable} is not temporal."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$CannotOpenFile"
+                  value="Cannot open file {filename}."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$CannotReadConstraint"
+                  value="Could not read a constraint."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$MismatchedToken"
+                  value="Expected token {expected}, but found {found}"/>
+    <Localization class="org.openmarkov.core.exception.ParserException$MissingPotential"
+                  value="Potential {potential} does not exist."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$MissingProbabilisticNetworkInformation"
+                  value="No ProbNet in ProbNetInfo."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$MissingPropertiesOfContiousVariable"
+                  value="Variable {variableName} is missing properties: {missingProperties}."/>
     <Localization class="org.openmarkov.core.exception.ParserException$MissingToken" value="Token {token} is missing;"/>
-    <Localization class="org.openmarkov.core.exception.ParserException$MissingVariable" value="Variable {variableName} is missing."/>
-    <Localization class="org.openmarkov.core.exception.ParserException$MoreThanOneInputOpened" value="You have requested to open {amountOfInputsRequested} files, but only 1 is allowed."/>
-    <Localization class="org.openmarkov.core.exception.ParserException$PGMXInvalid" value="Invalid PGMX Structure due to: {message}."/>
-    <Localization class="org.openmarkov.core.exception.ParserException$ProbabilisticNetworkTypeMissing" value="Network type is missing."/>
-    <Localization class="org.openmarkov.core.exception.ParserException$ProbabilisticNetworkTypeNotRecognized" value="Cannot recognize network type {networkType}."/>
-    <Localization class="org.openmarkov.core.exception.ParserException$SomeSubpotentialsArentLinkedToAnICIPotential" value="There are {subPotentials.size} not linked no an ICIPotential ({subPotentials})."/>
-    <Localization class="org.openmarkov.core.exception.ParserException$WrongNumberOfStates" value="There was expected to find {expectedLength} states in variable {variableName}, but {actualLength} were found."/>
-    <Localization class="org.openmarkov.core.exception.ParserException$WrongVersion" value="Version {version} is not supported."/>
-    <Localization class="org.openmarkov.core.exception.ParserException$XMLInvalid" value="Can not parse XML {netName} document due to: {originException.getMessage}."/>
-    <Localization class="org.openmarkov.core.exception.ParsingSourceException$CouldNotParseSourceException" value="{originException}"/>
-    <Localization class="org.openmarkov.core.exception.PotentialOperationException$DifferentSizesInPotentialsAndStates" value="Found {variable.getNumStates} states in variable {variable.getName}, but there are {potentials.size} instead of {variable.getNumStates}."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$MissingVariable"
+                  value="Variable {variableName} is missing."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$MoreThanOneInputOpened"
+                  value="You have requested to open {amountOfInputsRequested} files, but only 1 is allowed."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$PGMXInvalid"
+                  value="Invalid PGMX Structure due to: {message}."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$ProbabilisticNetworkTypeMissing"
+                  value="Network type is missing."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$ProbabilisticNetworkTypeNotRecognized"
+                  value="Cannot recognize network type {networkType}."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$SomeSubpotentialsArentLinkedToAnICIPotential"
+                  value="There are {subPotentials.size} not linked no an ICIPotential ({subPotentials})."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$WrongNumberOfStates"
+                  value="There was expected to find {expectedLength} states in variable {variableName}, but {actualLength} were found."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$WrongVersion"
+                  value="Version {version} is not supported."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$XMLInvalid"
+                  value="Can not parse XML {netName} document due to: {originException.getMessage}."/>
+    <Localization class="org.openmarkov.core.exception.ParsingSourceException$CouldNotParseSourceException"
+                  value="{originException}"/>
+    <Localization class="org.openmarkov.core.exception.PotentialOperationException$DifferentSizesInPotentialsAndStates"
+                  value="Found {variable.getNumStates} states in variable {variable.getName}, but there are {potentials.size} instead of {variable.getNumStates}."/>
     <Localization class="org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException"
                   value="Node {node} has no potentials, while at least one is expected."/>
-    <Localization class="org.openmarkov.core.exception.UnexpectedInferenceException$ThereIsMoreThanOneConditioningVariable" value="There is more than one conditioning variables in the potential table ({tablePotential.getNumVariables} variables)."/>
-    <Localization class="org.openmarkov.core.exception.WriterException$CannotCreateFile" value="Can not create file {filename}."/>
-    <Localization class="org.openmarkov.core.exception.WriterException$ICIModelNotSupportedByElvira" value="ICI Model {modelType} is not supported by Elvira."/>
-    <Localization class="org.openmarkov.core.exception.WriterException$NonProjectablePotentialException" value="{originException}"/>
-    <Localization class="org.openmarkov.core.exception.WriterException$TryingToWriteANullProbNet" value="Tried to write a null Probabilistic Network"/>
-    <Localization class="org.openmarkov.core.exception.WriterException$TryingToWriteAProbNetWithoutName" value="There is no name for {probNet}."/>
-    <Localization class="org.openmarkov.core.exception.WriterException$UnknownNetworkType" value="Network type {networkType} is unknown, only it is allowed to use network types: {allowedTypes}."/>
+    <Localization
+            class="org.openmarkov.core.exception.UnexpectedInferenceException$ThereIsMoreThanOneConditioningVariable"
+            value="There is more than one conditioning variables in the potential table ({tablePotential.getNumVariables} variables)."/>
+    <Localization class="org.openmarkov.core.exception.WriterException$CannotCreateFile"
+                  value="Can not create file {filename}."/>
+    <Localization class="org.openmarkov.core.exception.WriterException$ICIModelNotSupportedByElvira"
+                  value="ICI Model {modelType} is not supported by Elvira."/>
+    <Localization class="org.openmarkov.core.exception.WriterException$NonProjectablePotentialException"
+                  value="{originException}"/>
+    <Localization class="org.openmarkov.core.exception.WriterException$TryingToWriteANullProbNet"
+                  value="Tried to write a null Probabilistic Network"/>
+    <Localization class="org.openmarkov.core.exception.WriterException$TryingToWriteAProbNetWithoutName"
+                  value="There is no name for {probNet}."/>
+    <Localization class="org.openmarkov.core.exception.WriterException$UnknownNetworkType"
+                  value="Network type {networkType} is unknown, only it is allowed to use network types: {allowedTypes}."/>
     <Localization class="org.openmarkov.core.exception.ConstraintViolatedException$LinkAlreadyExists"
                   value="There is a link from {from} to {to}."/>
     <Localization class="org.openmarkov.core.io.exception.NoReaderForExtension"
@@ -250,8 +414,10 @@
     <Localization class="org.openmarkov.core.model.network.type.TuningNetworkType" value="Tuning"/>
     <Localization class="org.openmarkov.java.cloneUtils.CloneUtils$CloneBadlyImplementedException"
                   value="The clone method of {cloneableClass.getName} is badly implemented, as it returns the original object"/>
-    <Localization class="org.openmarkov.learning.core.exception.EmptyModelNetException" value="There is no network selected to use as model, and one is required."/>
-    <Localization class="org.openmarkov.learning.core.exception.UnobservedVariablesException" value="Algorithm {algorithmType.name} does not support unobserved variables, which are: {unobservedVariables}"/>
+    <Localization class="org.openmarkov.learning.core.exception.EmptyModelNetException"
+                  value="There is no network selected to use as model, and one is required."/>
+    <Localization class="org.openmarkov.learning.core.exception.UnobservedVariablesException"
+                  value="Algorithm {algorithmType.name} does not support unobserved variables, which are: {unobservedVariables}"/>
     <Localization class="org.openmarkov.core.model.network.constraint.ModelNetworkConstraint"
                   value="Tried to add, remove or invert the wrong link"/>
     <Localization class="org.openmarkov.core.io.format.annotation.NoReaderForFileException"

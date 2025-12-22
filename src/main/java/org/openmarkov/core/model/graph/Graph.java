@@ -158,8 +158,8 @@ public class Graph<T> {
 	}
 
 	private void addLink(Link<T> link) {
-		nodeLinks.get(link.getNode1()).add(link);
-		nodeLinks.get(link.getNode2()).add(link);
+        nodeLinks.get(link.getFrom()).add(link);
+        nodeLinks.get(link.getTo()).add(link);
 	}
 
 	/**
@@ -206,8 +206,8 @@ public class Graph<T> {
 	 * @param link Link&#60;T&#62;
 	 */
 	public void removeLink(Link<T> link) {
-		T node1 = link.getNode1();
-		T node2 = link.getNode2();
+        T node1 = link.getFrom();
+        T node2 = link.getTo();
 
 		nodeLinks.get(node1).remove(link);
 		nodeLinks.get(node2).remove(link);
@@ -227,7 +227,7 @@ public class Graph<T> {
 		List<Link<T>> linksNode1 = nodeLinks.get(node1);
 		if (linksNode1 != null) {
 			for (Link<T> link : linksNode1) {
-				if (directed && link.isDirected() && link.getNode2().equals(node2) || !directed && !link.isDirected()
+                if (directed && link.isDirected() && link.getTo().equals(node2) || !directed && !link.isDirected()
 						&& link.contains(node2)) {
 					return link;
 				}
@@ -351,7 +351,7 @@ public class Graph<T> {
 		List<Link<T>> links = new ArrayList<>();
 		for (T node : nodes) {
 			for (Link<T> link : nodeLinks.get(node)) {
-				if (link.getNode1().equals(node))
+                if (link.getFrom().equals(node))
 					links.add(link);
 			}
 		}
@@ -511,7 +511,7 @@ public class Graph<T> {
 			for (T node : nodeLinks.keySet()) {
 				List<Link<T>> links = nodeLinks.get(node);
 				for (Link<T> link : links) {
-					if (node.equals(link.getNode1()))
+                    if (node.equals(link.getFrom()))
 						buffer.append(link.toString() + "\n");
 				}
 			}

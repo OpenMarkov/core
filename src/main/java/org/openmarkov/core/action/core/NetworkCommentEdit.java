@@ -18,18 +18,9 @@ import org.openmarkov.core.action.base.PNEdit;
  * @version 1.0 21/12/10
  */
 @SuppressWarnings("serial") public class NetworkCommentEdit extends PNEdit {
-	/**
-	 * The current network comment
-	 */
-	private String currentComment;
-	/**
-	 * The new network comment
-	 */
+    
+    private String currentComment;
 	private String newComment;
-
-	/**
-	 * Indicates whether the comment should be shown when opening the net
-	 */
 	private boolean showCommentWhenOpening;
 
 	/**

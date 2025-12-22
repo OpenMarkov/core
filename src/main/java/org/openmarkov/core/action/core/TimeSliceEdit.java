@@ -20,33 +20,16 @@ import java.util.List;
  * @author myebra
  */
 @SuppressWarnings("serial") public class TimeSliceEdit extends PNEdit {
-    
-    /**
-     * The last time slice before the edition
-     */
     private int lastTimeSlice;
-    
-    /**
-     * The new time slice after the edition
-     */
     private int newTimeSlice;
     
     // TODO node is not used, check why
-    /**
-     * The edited node
-     */
+    // Answer: It uses Variable, instead of Node.
     //private Node node = null;
     
-    /**
-     * the last base name of the temporal variable
-     */
+
     private String lastBaseName;
-    
-    /**
-     * The last variable name
-     */
     private String lastName;
-    
     private Variable variable;
     
     /**
@@ -55,7 +38,7 @@ import java.util.List;
      */
     public TimeSliceEdit(Node node, int timeSlice) {
         super(node.getProbNet());
-        variable = node.getVariable();
+        this.variable = node.getVariable();
         this.lastTimeSlice = variable.getTimeSlice();
         this.newTimeSlice = timeSlice;
         this.lastBaseName = variable.getBaseName();

@@ -785,8 +785,8 @@ public class ProbNetOperationsTest {
         for (Link<Node> nodeLink : influenceDiagram.getLinks()) {
             shareAllLinks = false;
             for (Link<Node> limidLink : allLinks) {
-                if (nodeLink.getNode1().getName().compareTo(limidLink.getNode1().getName()) == 0 &&
-                        nodeLink.getNode2().getName().compareTo(limidLink.getNode2().getName()) == 0 &&
+                if (nodeLink.getFrom().getName().compareTo(limidLink.getFrom().getName()) == 0 &&
+                        nodeLink.getTo().getName().compareTo(limidLink.getTo().getName()) == 0 &&
                         nodeLink.isDirected() == limidLink.isDirected()) {
                     shareAllLinks = true;
                     break;

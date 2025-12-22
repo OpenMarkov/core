@@ -7,8 +7,6 @@
 
 package org.openmarkov.core.action.base.linkEdits;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.graph.Link;
@@ -50,14 +48,12 @@ import java.util.Set;
  */
 @SuppressWarnings("serial")
 public final class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
-
-    // Logger
-    private Logger logger;
-
-	// x (parent) node
-	private final Node x;
+    
+    
+    // x (parent) node
+    private final Node parent;
 	// y (child) node
-	private final Node y;
+    private final Node child;
 	// In case of undo, this list will keep the links created so they can be deleted
 	private final List<Link> linksToUndo = new ArrayList<>();
 	// Parent node's old potentials
@@ -65,26 +61,22 @@ public final class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 	// Child node's old potentials
 	private List<Potential> childsOldPotentials;
     // Parent node's new potentials
-    private TablePotential xNewPotential;
+    private TablePotential parentNewPotential;
     // Child node's new potentials
-    private TablePotential yNewPotential;
+    private TablePotential childNewPotential;
 
 	// Constructor
 
 	/**
 	 * @param probNet   {@code ProbNet}
-	 * @param variable1 {@code Variable}
-	 * @param variable2 {@code Variable}
+     * @param variableFrom {@code Variable}
+     * @param variableTo {@code Variable}
 	 */
-	public InvertLinkAndUpdatePotentialsEdit(ProbNet probNet, Variable variable1, Variable variable2) {
-
-		super(probNet, variable1, variable2, true);
-		x = probNet.getNode(variable1);
-		y = probNet.getNode(variable2);
-
-		logger = LogManager.getLogger(InvertLinkAndUpdatePotentialsEdit.class.getName());
-
-	}
+    public InvertLinkAndUpdatePotentialsEdit(ProbNet probNet, Variable variableFrom, Variable variableTo) {
+        super(probNet, variableFrom, variableTo, true);
+        parent = probNet.getNode(this.getVariableFrom());
+        child = probNet.getNode(this.getVariableTo());
+    }
 
 	// Methods
 
@@ -93,54 +85,53 @@ public final class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 	 * @throws DoEditException DoEditException
 	 */
 	@Override protected void doEdit() throws DoEditException.CannotDoEditException {
-
 		// The parents of x are retrieved
-		List<Node> xParents = x.getParents();
+        List<Node> parentParents = parent.getParents();
 		// The parents of y are retrieved
-		List<Node> yParents = y.getParents();
+        List<Node> childParents = child.getParents();
 		// The nodes will share their parents
         
         // 1. Invert the arc.
 		// The link between i and j can be removed
-		probNet.removeLink(x, y, true);
+        probNet.removeLink(parent, child, true);
 		// and the link between j and i can be created
-		probNet.addLink(y, x, true);
+        probNet.addLink(child, parent, true);
 
 		// 2. Share parents between the nodes.
 		// The list of created links is emptied
 		linksToUndo.clear();
 		// {C(x) \ C(y)} must be parents of y
 		// The new parents of y will be those nodes that are parents of x,
-        List<Node> newParents = xParents;
+        List<Node> newParents = parentParents;
 		// and weren't already parents of y
-		newParents.removeAll(yParents);
+        newParents.removeAll(childParents);
 
 		// The new links are created
 		for (Node newParent : newParents) {
 			// creating the Link is creating a Link in the node and thus in the graph
-			linksToUndo.add(new Link(newParent, y, true));
+            linksToUndo.add(new Link(newParent, child, true));
 			//probNet.addLink(probNet.getNode(newParent), y, true);
 		}
 
 		// {C(y) \ C(x) \ x}
 		// The new parents of x will be those nodes that are parents of y,
-		newParents = yParents;
+        newParents = childParents;
 		// and weren't already parents of i
-		newParents.removeAll(xParents);
+        newParents.removeAll(parentParents);
 		// excluding also the i node itself
-		newParents.remove(x);
+        newParents.remove(parent);
 
 		// The new links are created
 		for (Node newParent : newParents) {
 			// creating the Link is creating a Link in the node and thus in the graph
-			linksToUndo.add(new Link(newParent, x, true));
+            linksToUndo.add(new Link(newParent, parent, true));
 			//probNet.addLink(probNet.getNode(newParent), x, true);
 		}
 
 		List<TablePotential> xyPotentials = new ArrayList<>();
-
-		parentsOldPotentials = x.getPotentials();
-		childsOldPotentials = y.getPotentials();
+        
+        parentsOldPotentials = parent.getPotentials();
+        childsOldPotentials = child.getPotentials();
 
 
 		// 3. 	Calculate P(x, y|a, b, c) through P(x, y|a, b, c) = P(x|a, b) · P(y|x, b, c)
@@ -185,16 +176,16 @@ public final class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 		xyPotentialMultiplied = (TablePotential) xyPotentialMultiplied.reorder(new ArrayList<>(orderedVariables));
 
 		// 4. Calculate P(y|a, b, c) through P(y|a, b, c) = Σ(x) P(x, y|a, b, c) and assign to node Y this probability.
-		yNewPotential = DiscretePotentialOperations.marginalize(xyPotentialMultiplied, x.getVariable());
-		y.setPotential(yNewPotential);
+        childNewPotential = DiscretePotentialOperations.marginalize(xyPotentialMultiplied, parent.getVariable());
+        child.setPotential(childNewPotential);
 
 		// 5. Calculate P(x|a, b, c, y) through P(x|a, b, c, y) = P(x, y|a, b, c) / P(y|a, b, c) and assign to node X this probability.
-		xNewPotential = DiscretePotentialOperations.divide(xyPotentialMultiplied, yNewPotential);
-        xNewPotential = DiscretePotentialOperations.imposeOtherDistributionWhenDistributionIsZero(xNewPotential);
-		x.setPotential(xNewPotential);
+        parentNewPotential = DiscretePotentialOperations.divide(xyPotentialMultiplied, childNewPotential);
+        parentNewPotential = DiscretePotentialOperations.imposeOtherDistributionWhenDistributionIsZero(parentNewPotential);
+        parent.setPotential(parentNewPotential);
 
 		for (Link link : linksToUndo) {
-			probNet.addLink((Node) link.getNode1(), (Node) link.getNode2(), true);
+            probNet.addLink((Node) link.getFrom(), (Node) link.getTo(), true);
 		}
 	}
 	
@@ -206,12 +197,12 @@ public final class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
         probNet.addLink(variableFrom, variableTo, isDirected);
         // Delete the links created when the nodes shared their fathers
         for (Link<Node> undoLink : linksToUndo) {
-            probNet.removeLink(undoLink.getNode1(), undoLink.getNode2(), true);
+            probNet.removeLink(undoLink.getFrom(), undoLink.getTo(), true);
         }
         // The potentials of X are restored to the original ones
-        x.setPotentials(parentsOldPotentials);
+        parent.setPotentials(parentsOldPotentials);
         // The potentials of Y are restored to the original ones
-        y.setPotentials(childsOldPotentials);
+        child.setPotentials(childsOldPotentials);
     }
 
 
@@ -224,18 +215,18 @@ public final class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
         probNet.addLink(variableTo, variableFrom, isDirected);
         // Re-created the links of shared fathers
         for (Link<Node> linkToRedo : linksToUndo) {
-            probNet.addLink(linkToRedo.getNode1(), linkToRedo.getNode2(), true);
+            probNet.addLink(linkToRedo.getFrom(), linkToRedo.getTo(), true);
         }
         // The potentials of X are restored to the original ones. I convert the only potential to a list of one
         // element to use the same method in undo() and redo(). Using setPotential() (withous s) will modify the
         // parentsOldPotentials and childOldPotential objects, making the next undo()'s useless.
         List<Potential> xNewPotentials= new ArrayList<>();
-        xNewPotentials.add(xNewPotential);
-        x.setPotentials(xNewPotentials);
+        xNewPotentials.add(parentNewPotential);
+        parent.setPotentials(xNewPotentials);
         // The potentials of Y are restored to the original ones
         List<Potential> yNewPotentials= new ArrayList<>();
-        xNewPotentials.add(yNewPotential);
-        y.setPotentials(yNewPotentials);
+        xNewPotentials.add(childNewPotential);
+        child.setPotentials(yNewPotentials);
         
     }
 

@@ -62,7 +62,7 @@ public class Node implements Cloneable, ClassLocalizable {
     /**
      * Network
      */
-    protected ProbNet probNet;
+    protected transient ProbNet probNet;
     
     /**
      * Each {@code Node} has a list of potentials

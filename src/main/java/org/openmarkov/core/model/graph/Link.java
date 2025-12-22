@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.model.graph;
 
+import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.State;
@@ -28,18 +29,18 @@ import java.util.*;
  * @see Graph
  * @since OpenMarkov 1.0
  */
-public class Link<T> {
+public class Link<T> implements ClassLocalizable {
 
 	// Attributes
 	/**
 	 * The first node. If the link is directed, this node is the parent.
 	 */
-	private T node1;
+    private T from;
 
 	/**
 	 * The second node. If the link is directed, this node is the child.
 	 */
-	private T node2;
+    private T to;
 
 	/**
 	 * If true, the link is directed. Otherwise, it is an undirected link.
@@ -69,14 +70,14 @@ public class Link<T> {
 	 * This constructor should be called only from the {@code addLink}
 	 * function in the class Graph. Both nodes must belong to the same graph.
 	 *
-	 * @param node1    {@code Node}.
-	 * @param node2    {@code Node}.
+     * @param from    {@code Node}.
+     * @param to    {@code Node}.
 	 * @param directed {@code boolean}.
 	 *
 	 */
-	public Link(T node1, T node2, boolean directed) {
-		this.node1 = node1;
-		this.node2 = node2;
+    public Link(T from, T to, boolean directed) {
+        this.from = from;
+        this.to = to;
 		this.directed = directed;
 		revealingStates = new ArrayList<>();
 		revealingIntervals = new ArrayList<>();
@@ -89,16 +90,16 @@ public class Link<T> {
 	 * @return The parent (if the link is directed) or the first node (if the
 	 * link is undirected).
 	 */
-	public T getNode1() {
-		return node1;
+    public T getFrom() {
+        return from;
 	}
 
 	/**
 	 * @return The child (if the link is directed) or the second node (if the
 	 * link is undirected).
 	 */
-	public T getNode2() {
-		return node2;
+    public T getTo() {
+        return to;
 	}
 
 	/**
@@ -106,7 +107,7 @@ public class Link<T> {
 	 * @return {@code true} if the link contains {@code node}.
 	 */
 	public boolean contains(T node) {
-		return ((node1 == node) || (node2 == node));
+        return ((from == node) || (to == node));
 	}
 
 	/**
@@ -195,8 +196,8 @@ public class Link<T> {
 	 */
 	public void initializesRestrictionsPotential() {
 		List<Variable> variables = new ArrayList<>();
-		variables.add(((Node) node1).getVariable());
-		variables.add(((Node) node2).getVariable());
+        variables.add(((Node) from).getVariable());
+        variables.add(((Node) to).getVariable());
 		restrictionsPotential = new TablePotential(variables, PotentialRole.LINK_RESTRICTION);
         Arrays.fill(restrictionsPotential.getValues(), 1);
 
@@ -289,13 +290,13 @@ public class Link<T> {
 	 * @return String
 	 */
 	public String toString() {
-		StringBuilder buffer = new StringBuilder(node1.toString());
+        StringBuilder buffer = new StringBuilder(from.toString());
 		if (!directed) {
 			buffer.append(" --- ");
 		} else {
 			buffer.append(" --> ");
 		}
-		buffer.append(node2.toString());
+        buffer.append(to.toString());
 		return buffer.toString();
 	}
 
@@ -306,8 +307,8 @@ public class Link<T> {
 	 * @return {@code true} if there exist revealing conditions.
 	 */
 	public boolean hasRevealingConditions() {
-
-		VariableType varType = ((Node) node1).getVariable().getVariableType();
+        
+        VariableType varType = ((Node) from).getVariable().getVariableType();
         
         if (varType == VariableType.NUMERIC) {
 			return !revealingIntervals.isEmpty();

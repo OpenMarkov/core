@@ -8,7 +8,7 @@
 package org.openmarkov.core.model.network;
 
 import org.openmarkov.core.exception.*;
-import org.openmarkov.core.inference.TransitionTime;
+import org.openmarkov.core.inference.TemporalOptions;
 import org.openmarkov.core.inference.tasks.TaskUtilities;
 import org.openmarkov.core.model.network.potential.*;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -274,9 +274,11 @@ public class TemporalNetOperations {
     public static void applyTransitionTime(ProbNet network) {
         int numSlices = network.getInferenceOptions().getTemporalOptions().getHorizon();
         List<Node> utilityNodes = network.getNodes(NodeType.UTILITY);
-        TransitionTime transitionTime = network.getInferenceOptions().getTemporalOptions().getTransition();
+        TemporalOptions.TransitionTime transitionTime = network.getInferenceOptions()
+                                                               .getTemporalOptions()
+                                                               .getTransition();
         List<Node> nodesToRemove = new ArrayList<>();
-        if (transitionTime == TransitionTime.HALF) {
+        if (transitionTime == TemporalOptions.TransitionTime.HALF) {
             // Half cycle correction
             Map<String, Node[]> temporalNodes = new HashMap<>();
             for (Node utilityNode : utilityNodes) {
@@ -322,14 +324,14 @@ public class TemporalNetOperations {
             }
             
         }
-        if (transitionTime == TransitionTime.BEGINNING || transitionTime == TransitionTime.HALF) {
+        if (transitionTime == TemporalOptions.TransitionTime.BEGINNING || transitionTime == TemporalOptions.TransitionTime.HALF) {
             // prune zero cycle utilities
             for (Node utilityNode : utilityNodes) {
                 if (utilityNode.getVariable().getTimeSlice() == 0) {
                     nodesToRemove.add(utilityNode);
                 }
             }
-        } else if (transitionTime == TransitionTime.END) {
+        } else if (transitionTime == TemporalOptions.TransitionTime.END) {
             // Prune last cycle utilities
             for (Node utilityNode : utilityNodes) {
                 if (utilityNode.getVariable().getTimeSlice() == numSlices) {

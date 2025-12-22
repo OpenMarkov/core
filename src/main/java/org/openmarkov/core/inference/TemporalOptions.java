@@ -7,7 +7,12 @@
 
 package org.openmarkov.core.inference;
 
-public class TemporalOptions implements Cloneable {
+import org.jetbrains.annotations.NotNull;
+import org.openmarkov.core.localize.ClassLocalizable;
+import org.openmarkov.core.localize.Localizable;
+import org.openmarkov.core.stringformat.LocalizationFormatter;
+
+public class TemporalOptions implements Cloneable, ClassLocalizable {
 
 	private int horizon;
 
@@ -43,5 +48,25 @@ public class TemporalOptions implements Cloneable {
 	@Override public TemporalOptions clone() {
 		return new TemporalOptions(this);
 	}
-
+    
+    public enum TransitionTime implements Localizable {
+        BEGINNING, HALF, END;
+        
+        
+        @Override public @NotNull String path() {
+            return "";
+        }
+        
+        @Override public @NotNull String localize(LocalizationFormatter formatter) {
+            return super.name();
+        }
+        
+        @Override public String toString() {
+            return this.localize();
+        }
+    }
+    
+    @Override public String toString() {
+        return this.localize();
+    }
 }

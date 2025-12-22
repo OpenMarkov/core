@@ -19,31 +19,16 @@ import org.openmarkov.core.model.network.ProbNet;
  */
 public class DecisionCriterionUnitEdit extends PNEdit {
 
-	/**
-	 * Default serial version uid
-	 */
+
 	private static final long serialVersionUID = 1L;
-	/**
-	 * New unit name
-	 */
-	private String newUnit;
-	/**
-	 * Old unit name
-	 */
-	private String oldUnit;
-	/**
-	 * Criterion to be modified
-	 */
-	private String criterionName;
-	/**
-	 * Criterion in the net
-	 */
-	private Criterion criterion;
+    
+    private String oldUnit;
+    private String newUnit;
+    private Criterion criterion;
 
 	public DecisionCriterionUnitEdit(ProbNet probnet, String criterionName, String newUnit) {
 		super(probnet);
-		this.criterionName = criterionName;
-		this.newUnit = newUnit;
+        this.newUnit = newUnit;
 
 		// Search the criterion in where we want set the new unit of measure
 		for (Criterion criterion : probnet.getDecisionCriteria()) {

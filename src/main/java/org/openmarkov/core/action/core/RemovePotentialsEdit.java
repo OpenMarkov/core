@@ -18,7 +18,7 @@ import java.util.ArrayList;
 /*
   Removes several potentials
  */
-public class RemoveSeveralPotentialsEdit extends PNEdit {
+public class RemovePotentialsEdit extends PNEdit {
 
 	private ArrayList<Potential> potentialsToDelete;
 
@@ -26,7 +26,7 @@ public class RemoveSeveralPotentialsEdit extends PNEdit {
 	 * @param probNet    {@code ProbNet}
 	 * @param potentials {@code ArrayList} of {@code Potential}s
 	 */
-	public RemoveSeveralPotentialsEdit(ProbNet probNet, ArrayList<Potential> potentials) {
+    public RemovePotentialsEdit(ProbNet probNet, ArrayList<Potential> potentials) {
 		super(probNet);
 		potentialsToDelete = new ArrayList<>(potentials);
 	}

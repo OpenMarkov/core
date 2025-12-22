@@ -504,8 +504,8 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         if (hasExplicitLinks()) {
             copyNet.makeLinksExplicit(false);
             for (Link<Node> originalLink : getLinks()) {
-                Node copyNode1 = copyNet.getNode(originalLink.getNode1().getVariable());
-                Node copyNode2 = copyNet.getNode(originalLink.getNode2().getVariable());
+                Node copyNode1 = copyNet.getNode(originalLink.getFrom().getVariable());
+                Node copyNode2 = copyNet.getNode(originalLink.getTo().getVariable());
                 Link<Node> copyLink = copyNet.addLink(copyNode1, copyNode2, originalLink.isDirected());
                 copyLink.setRestrictionsPotential(originalLink.getRestrictionsPotential());
                 copyLink.setRevealingIntervals(originalLink.getRevealingIntervals());
@@ -1426,8 +1426,8 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
             copyNet.makeLinksExplicit(false);
             for (Link<Node> originalLink : getLinks()) {
                 
-                Node copyNode1 = copyNet.getNode(originalLink.getNode1().getVariable().getName());
-                Node copyNode2 = copyNet.getNode(originalLink.getNode2().getVariable().getName());
+                Node copyNode1 = copyNet.getNode(originalLink.getFrom().getVariable().getName());
+                Node copyNode2 = copyNet.getNode(originalLink.getTo().getVariable().getName());
                 
                 Link<Node> copyLink = copyNet.addLink(copyNode1, copyNode2, originalLink.isDirected());
                 if (originalLink.getRestrictionsPotential() != null) {

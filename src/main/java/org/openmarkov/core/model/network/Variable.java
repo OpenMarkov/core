@@ -375,7 +375,8 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
         if (variableType == VariableType.FINITE_STATES) {
             return getStateIndex(String.valueOf(round(value)));
         }
-        return partitionedInterval.indexOfSubinterval(value);
+        int indexOfSubinterval = partitionedInterval.indexOfSubinterval(value);
+        return indexOfSubinterval;
     }
     
     /**
@@ -750,7 +751,7 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
         for (Node child : children) {
             Link<Node> link = probNet.getLink(node, child, true);
             if (link.hasRevealingConditions()) {
-                VariableType varType = link.getNode1().getVariable().getVariableType();
+                VariableType varType = link.getFrom().getVariable().getVariableType();
                 if (varType == VariableType.NUMERIC) {
                     revelationConditionMap.put(link, link.getRevealingIntervals());
                     link.setRevealingIntervals(new ArrayList<PartitionedInterval>());

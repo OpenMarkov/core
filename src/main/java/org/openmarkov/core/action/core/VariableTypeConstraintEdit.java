@@ -25,13 +25,8 @@ import java.util.List;
 
 @SuppressWarnings("serial") public class VariableTypeConstraintEdit extends PNEdit {
 	// Attributes
-	/**
-	 * The new constraint for variable type
-	 */
-	private PNConstraint newVariableTypeConstraint;
-	/**
-	 * The last constraint before the edit
-	 */
+    
+    private PNConstraint newVariableTypeConstraint;
 	private PNConstraint lastConstraint;
 
 	// Constructor

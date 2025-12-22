@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network;
 
+import org.openmarkov.core.localize.ClassLocalizable;
+
 import java.io.Serializable;
 
 /**
@@ -18,7 +20,7 @@ import java.io.Serializable;
  * invariant belongsToLeftSide.length = limits.length
  * @since OpenMarkov 1.0
  */
-public class PartitionedInterval implements Cloneable, Serializable {
+public class PartitionedInterval implements Cloneable, Serializable, ClassLocalizable {
     
     // Attributes
     /**
@@ -124,6 +126,12 @@ public class PartitionedInterval implements Cloneable, Serializable {
      * or -1 if it is outside
      */
     public int indexOfSubinterval(double number) {
+        if (number == Double.NEGATIVE_INFINITY && this.limits[0] == Double.NEGATIVE_INFINITY) {
+            return 0;
+        }
+        if (number == Double.POSITIVE_INFINITY && this.limits[this.limits.length - 1] == Double.POSITIVE_INFINITY) {
+            return this.limits.length - 1 - 1;
+        }
         for (int i = 0; i < limits.length - 1; i++) {
             if (((limits[i] < number) && (number < limits[i + 1])) || ((number == limits[i]) && !belongsToLeftSide[i])
                     || ((number == limits[i + 1]) && belongsToLeftSide[i + 1])) {

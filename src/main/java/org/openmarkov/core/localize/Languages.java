@@ -43,7 +43,7 @@ public class Languages {
             return element;
         }
         try {
-            return StringDatabase.getUniqueInstance().getString(element + ".LongName.Text.Label");
+            return StringDatabase.getUniqueInstance().getString(element + ".LongName.Text");
         } catch (MissingResourceException e) {
             return element;
         }
@@ -111,7 +111,7 @@ public class Languages {
             return element;
         }
         try {
-            return StringDatabase.getUniqueInstance().getString(element + ".ShortName.Text.Label");
+            return StringDatabase.getUniqueInstance().getString(element + ".ShortName.Text");
         } catch (MissingResourceException e) {
             return element;
         }
@@ -127,7 +127,7 @@ public class Languages {
      * @return a string that contains the short name of the specified language.
      */
     public static String getShortNameByIndex(int index) {
-            return StringDatabase.getUniqueInstance().getString(LIST.get(index) + ".ShortName.Text.Label");
+        return StringDatabase.getUniqueInstance().getString(LIST.get(index) + ".ShortName.Text");
     }
     
     /**

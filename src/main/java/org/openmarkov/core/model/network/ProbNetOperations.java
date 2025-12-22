@@ -713,9 +713,9 @@ public class ProbNetOperations {
         for (Link<Node> link : probNet.getLinks()) {
             // There is asymmetry if there are total restrictions or if only some states reveal a certain variable
             asymmetryFound |= link.hasTotalRestriction() || (
-                    link.hasRestrictions() && link.getNode2().getNodeType() == NodeType.DECISION
+                    link.hasRestrictions() && link.getTo().getNodeType() == NodeType.DECISION
             ) || (
-                    link.hasRevealingConditions() && link.getRevealingStates().size() < link.getNode1().getVariable()
+                    link.hasRevealingConditions() && link.getRevealingStates().size() < link.getFrom().getVariable()
                                                                                             .getNumStates()
             );
         }
@@ -819,7 +819,7 @@ public class ProbNetOperations {
                     Link<Node> link = null;
                     for (int i = 0; (i < links.size()) && !isFound; i++) {
                         link = links.get(i);
-                        isFound = link.getNode1().equals(nodeToProcess) && link.getNode2() == child;
+                        isFound = link.getFrom().equals(nodeToProcess) && link.getTo() == child;
                     }
                     if (link.hasRevealingConditions()) {
                         observable.add(child);

@@ -46,7 +46,7 @@
                   value="Change always observed from {lastAlwaysObserved} to {newAlwaysObserved} for {node}"/>
     <Localization class="org.openmarkov.core.action.core.NodeCommentEdit"
                   value="Change comment of node {node}.\nOld comment: {currentComment}\n\nNew comment: {newComment}"/>
-    <Localization class="org.openmarkov.core.action.core.NodeNameEdit"
+    <Localization class="org.openmarkov.core.action.core.NodeBaseNameEdit"
                   value="Change node name of {node} from {previousName} to {newName}"/>
     <Localization class="org.openmarkov.core.action.core.NodeReplaceStatesEdit"
                   value="Replace states of {node} from {lastStates} to {newStates}"/>

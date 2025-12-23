@@ -15,17 +15,14 @@ import org.openmarkov.core.model.network.constraint.NoEmptyName;
 import org.openmarkov.core.model.network.constraint.ValidName;
 import org.openmarkov.core.action.base.PNEdit;
 
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-
 /**
- * {@code NodeNameEdit} is a simple edit that allow modify the node
+ * {@code NodeBaseNameEdit} is a simple edit that allow modify the node
  * name.
  *
  * @author Miguel Palacios
  * @version 1.0 21/12/10
  */
-@SuppressWarnings("serial") public class NodeNameEdit extends PNEdit {
+@SuppressWarnings("serial") public class NodeBaseNameEdit extends PNEdit {
     
     
     private final String previousName;
@@ -35,13 +32,13 @@ import java.util.stream.Collectors;
     private final Node node;
     
     /**
-     * Creates a new {@code NodeNameEdit} with the node and new name
+     * Creates a new {@code NodeBaseNameEdit} with the node and new name
      * specified.
      *
      * @param node    the node that will be modified
      * @param newName the new name of the node
      */
-    public NodeNameEdit(Node node, String newName) {
+    public NodeBaseNameEdit(Node node, String newName) {
         super(node.getProbNet());
         this.node = node;
         this.previousName = this.node.getVariable().getBaseName();

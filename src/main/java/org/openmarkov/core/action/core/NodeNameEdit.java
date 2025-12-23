@@ -15,6 +15,9 @@ import org.openmarkov.core.model.network.constraint.NoEmptyName;
 import org.openmarkov.core.model.network.constraint.ValidName;
 import org.openmarkov.core.action.base.PNEdit;
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 /**
  * {@code NodeNameEdit} is a simple edit that allow modify the node
  * name.
@@ -48,7 +51,7 @@ import org.openmarkov.core.action.base.PNEdit;
     @Override
     public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
         if (probNet.getConstraintOfClass(DistinctVariableNames.class) instanceof DistinctVariableNames constraint) {
-            if (probNet.getVariablesNames().contains(newName)) {
+            if (ValidName.nameIsAlreadyPresent(node, newName)) {
                 constraintChecker.addException(new ConstraintViolatedException.VariableNameIsAlreadyPresent(constraint, this.newName));
             }
         }
@@ -61,11 +64,12 @@ import org.openmarkov.core.action.base.PNEdit;
             if ((this.newName == null) || (this.newName.contentEquals(""))) {
                 constraintChecker.addException(new ConstraintViolatedException.NameOfVariableCannotBeEmpty(constraint, this.node.getVariable()));
             }
-            if (!ValidName.nameIsAlreadyPresent(newName, previousName, probNet)) {
+            if (ValidName.nameIsAlreadyPresent(node, newName)) {
                 constraintChecker.addException(new ConstraintViolatedException.NameOfVariableIsAlreadyPresent(constraint, newName));
             }
         }
     }
+    
     
     @Override protected void doEdit() {
         node.getVariable().setBaseName(newName);

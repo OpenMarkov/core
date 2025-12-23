@@ -32,11 +32,15 @@ import org.openmarkov.core.model.network.ProbNet;
     public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
     }
     
+    public final void tryConstraintsWillBeMet() throws ConstraintViolatedException {
+        ConstraintChecker constraintChecker = new ConstraintChecker(probNet);
+        this.checkConstraintsWillBeMet(constraintChecker);
+        constraintChecker.buildAndThrow();
+    }
+    
     public final boolean constraintsWillBeMet() {
         try {
-            ConstraintChecker constraintChecker = new ConstraintChecker(probNet);
-            this.checkConstraintsWillBeMet(constraintChecker);
-            constraintChecker.buildAndThrow();
+            this.tryConstraintsWillBeMet();
             return true;
         } catch (ConstraintViolatedException ex) {
             return false;

@@ -86,8 +86,8 @@ public class PNESupport /*extends UndoableEditSupport*/ {
         }
         // Same as the undo method but counting the number of edits between parenthesis
         PNEdit undoneEdit = undoManager.undo();
+        undoneEdits.add(undoneEdit);
         if (!(undoneEdit instanceof CloseParenthesisEdit closeParenthesisEdit)) {
-            undoneEdits.add(undoneEdit);
             for (PNUndoableEditListener listener : listeners) {
                 listener.afterUndoingEdit(new PNUndoableEditEvent(undoneEdit));
             }
@@ -95,18 +95,17 @@ public class PNESupport /*extends UndoableEditSupport*/ {
         }
         while (true) {
             undoneEdit = undoManager.undo();
+            undoneEdits.add(undoneEdit);
             if (undoneEdit instanceof OpenParenthesisEdit openParenthesisEdit
                     && openParenthesisEdit == closeParenthesisEdit.getOpenParenthesisEdit()) {
                 for (PNUndoableEditListener listener : listeners) {
                     listener.afterUndoingEdit(new PNUndoableEditEvent(undoneEdit));
                 }
-                undoneEdits.add(undoneEdit);
                 return undoneEdits;
             }
             for (PNUndoableEditListener listener : listeners) {
                 listener.afterUndoingEdit(new PNUndoableEditEvent(undoneEdit));
             }
-            undoneEdits.add(undoneEdit);
         }
     }
     

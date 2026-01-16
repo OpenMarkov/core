@@ -29,7 +29,7 @@ import java.util.List;
     
     public static final String PSEUDO_VARIABLE = "pseudoVariableDistributionName";
     private static String INITIALIZATION_VALUE = "1";
-    protected AugmentedTable distributionTable;
+    protected AugmentedProbTable distributionTable;
     /**
      * finiteStateVariables contains the node variable (Numeric) and the finite-states parents
      */
@@ -121,7 +121,7 @@ import java.util.List;
         parameterVariables = potential.getParameterVariables();
         
         setProbDensFunctionClass(potential.getProbDensFunctionClass());
-        setDistributionTable((AugmentedTable) (potential.getDistributionTable()).copy());
+        setDistributionTable((AugmentedProbTable) (potential.getDistributionTable()).copy());
         
     }
     
@@ -298,26 +298,26 @@ import java.util.List;
         this.pseudoVariableDistribution = pseudoVariableDistribution;
     }
     
-    public AugmentedTable getAugmentedTable() {
+    public AugmentedProbTable getAugmentedProbTable() {
         return distributionTable;
     }
     
-    public AugmentedTable getDistributionTable() {
+    public AugmentedProbTable getDistributionTable() {
         return distributionTable;
     }
     
-    public void setDistributionTable(AugmentedTable tableDistr) {
+    public void setDistributionTable(AugmentedProbTable tableDistr) {
         this.distributionTable = tableDistr;
     }
     
     public void setDistributionTable() {
         List<Variable> vDistributionTable = new ArrayList<Variable>(finiteStatesVariables);
         vDistributionTable.add(0, pseudoVariableDistribution);
-        setDistributionTable(new AugmentedTable(vDistributionTable, role));
-        initializeAugmentedTable();
+        setDistributionTable(new AugmentedProbTable(vDistributionTable, role));
+        initializeAugmentedProbTable();
     }
     
-    protected void initializeAugmentedTable() {
+    protected void initializeAugmentedProbTable() {
         String[] functionValues = distributionTable.getFunctionValues();
         Arrays.fill(functionValues, INITIALIZATION_VALUE);
     }
@@ -416,7 +416,7 @@ import java.util.List;
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
         int size = newOrderOfVariables.size();
-        // orderVariables has the order of the parents of the augmentedTable, so
+        // orderVariables has the order of the parents of the AugmentedProbTable, so
         // parameterVariables should be added
         newOrderOfVariables.addAll(getParameterVariables());
         UnivariateDistrPotential newPotential = new UnivariateDistrPotential(newOrderOfVariables,
@@ -424,8 +424,8 @@ import java.util.List;
         newOrderOfVariables.remove(0);
         // I do use getVariable(0) for be compliant with the comparison in int[]
         // accOffsets = potential.getAccumulatedOffsets(orderVariables);
-        newOrderOfVariables.add(0, getAugmentedTable().getVariable(0));
-        AugmentedTable newDistributionTable = (AugmentedTable) getAugmentedTable()
+        newOrderOfVariables.add(0, getAugmentedProbTable().getVariable(0));
+        AugmentedProbTable newDistributionTable = (AugmentedProbTable) getAugmentedProbTable()
                 .reorder(newOrderOfVariables.subList(0, size));
         newPotential.setDistributionTable(newDistributionTable);
         return newPotential;

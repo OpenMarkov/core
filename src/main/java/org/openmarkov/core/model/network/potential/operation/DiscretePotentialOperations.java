@@ -1739,7 +1739,7 @@ public final class DiscretePotentialOperations {
         return multiplyAndMaximizeUniformly(potentialsVariable, variablesToKeep, variableToMaximize);
     }
     
-    // For AugmentedTable
+    // For AugmentedProbTable
     
     /**
      * @param potential          one {@code TablePotential}.

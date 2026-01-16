@@ -145,13 +145,14 @@
                                                         </xs:complexType>
                                                     </xs:element>
                                                     <xs:element name="Values" minOccurs="0"/>
-                                                    <xs:element name="UncertainValues" minOccurs="0">
+                                                    <xs:element name="UncertainParameters" minOccurs="0">
                                                         <xs:complexType>
                                                             <xs:sequence>
-                                                                <xs:element name="Value" maxOccurs="unbounded"/>
+                                                                <xs:element name="Param" maxOccurs="unbounded"/>
                                                             </xs:sequence>
                                                         </xs:complexType>
                                                     </xs:element>
+                                                    <xs:element name="Functions" minOccurs="0"/>
                                                     <!-- ICIModel Structure -->
                                                     <xs:element name="Model" minOccurs="0"/>
                                                     <xs:element name="Subpotentials" minOccurs="0"/>

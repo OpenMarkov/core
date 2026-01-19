@@ -10,9 +10,12 @@ package org.openmarkov.core.io.database;
 import org.openmarkov.core.developmentStaticAnalysis.requirements.ImplementationRequirements;
 import org.openmarkov.core.developmentStaticAnalysis.requirements.RequiredConstructor;
 
+import java.io.File;
 import java.io.IOException;
+
 
 @ImplementationRequirements(requiresOneOfTheseConstructors = @RequiredConstructor({}))
 public interface CaseDatabaseWriter {
-	void save(String filename, CaseDatabase database) throws IOException;
+	void save(File file, CaseDatabase database) throws IOException;
+ 
 }

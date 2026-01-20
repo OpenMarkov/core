@@ -26,9 +26,7 @@ import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import javax.xml.validation.Validator;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
 import java.util.HashMap;
@@ -462,12 +460,27 @@ public class FormatManager {
     
     public void checkStructure(URL url) throws SAXException, IOException, ParserException.BadlyStructuredFile {
         InputStream xsd = getClass().getClassLoader().getResourceAsStream("val_v4.xsd");
+        read(getClass().getClassLoader().getResourceAsStream("val_v4.xsd"));
         SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Schema schema = factory.newSchema(new StreamSource(xsd));
+        Schema schema = SchemaFactory.newDefaultInstance().newSchema(new StreamSource(xsd));
         try {
             schema.newValidator().validate(new StreamSource(url.openStream()));
         } catch (SAXParseException e) {
             throw new ParserException.BadlyStructuredFile(url, e);
+        }
+    }
+    
+    void read(InputStream inputStream){
+        System.out.println("Reading "+inputStream);
+        try {
+            final BufferedReader reader = new BufferedReader(                    new InputStreamReader(inputStream));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+            reader.close();
+        } catch (final Exception e) {
+            e.printStackTrace();
         }
     }
     

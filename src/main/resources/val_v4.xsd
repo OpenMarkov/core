@@ -216,6 +216,7 @@
                                                     <xs:element name="Log" minOccurs="0"/>
                                                     <!-- Function Structure -->
                                                     <xs:element name="Function" minOccurs="0"/>
+                                                    <xs:element name="Parameters" minOccurs="0"/>
                                                 </xs:choice>
                                                 <xs:anyAttribute processContents="skip"/>
                                             </xs:complexType>

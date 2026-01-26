@@ -21,8 +21,6 @@ import org.openmarkov.core.model.network.potential.operation.AuxiliaryOperations
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
 import org.openmarkov.core.model.network.potential.operation.Util;
-import org.openmarkov.core.model.network.potential.plugin.PotentialManager;
-import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import org.openmarkov.java.cloneUtils.CloneUtils;
 
 import java.util.ArrayList;
@@ -775,24 +773,7 @@ public class Node implements Cloneable, ClassLocalizable {
 
 
     public void setPotentialConsistently(Potential newPotential){
-        Potential lastPotential = getPotential();
-        String newPotentialType = newPotential.getClass().getAnnotation(PotentialType.class).name();
-
-        List<Variable> variables = lastPotential.getVariables();
-        PotentialRole role = lastPotential.getPotentialRole();
-
         List<Potential> potentials = new ArrayList<>();
-        if (newPotential == null) {
-            PotentialManager relationTypeManager = new PotentialManager();
-
-            if (newPotentialType.equals(PotentialManager.getPotentialName(CycleLengthShift.class))) {
-                newPotential = relationTypeManager
-                        .getByName(newPotentialType, variables, role, probNet.getCycleLength());
-            } else {
-                newPotential = relationTypeManager.getByName(newPotentialType, variables, role);
-            }
-        }
-
         potentials.add(newPotential);
         setPotentials(potentials);
         // update potential with link restriction

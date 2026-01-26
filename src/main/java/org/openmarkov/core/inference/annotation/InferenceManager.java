@@ -209,7 +209,7 @@ public class InferenceManager {
      *
      * @return a list with the plugins detected with InferenceType annotations.
      */
-    private static @NotNull Stream<Class<InferenceAlgorithm>> findAllInferencePlugins() {
+    private static @NotNull Stream<Class<? extends InferenceAlgorithm>> findAllInferencePlugins() {
         return PluginSearch.init()
                            .annotatedWith(InferenceAnnotation.class)
                            .childrenOf(InferenceAlgorithm.class)

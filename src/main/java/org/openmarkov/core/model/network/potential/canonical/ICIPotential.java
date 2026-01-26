@@ -20,9 +20,11 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
+import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.*;
 
+@PotentialType(names = "ICIModel")
 public abstract class ICIPotential extends Potential {
     
     /* Model type may be OR, causal MAX, AND, etc. */

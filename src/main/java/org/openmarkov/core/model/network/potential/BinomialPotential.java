@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 //UNCLEAR I think this potential does not belong to the GLM Family
-@PotentialType(name = "Binomial")
+@PotentialType(names = "Binomial")
 
 public class BinomialPotential extends Potential {
     

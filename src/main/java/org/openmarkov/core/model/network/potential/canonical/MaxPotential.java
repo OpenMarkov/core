@@ -18,7 +18,7 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import java.util.ArrayList;
 import java.util.List;
 
-@PotentialType(name = "OR / MAX", family = "ICI") public class MaxPotential extends MinMaxPotential {
+@PotentialType(names = "OR / MAX") public class MaxPotential extends MinMaxPotential {
 
 	/**
 	 * @param model     {@code ICIModel}.

@@ -57,4 +57,5 @@ open module org.openmarkov.core {
     exports org.openmarkov.core.developmentStaticAnalysis.requirements;
     exports org.openmarkov.java.classUtils;
     exports org.openmarkov.core.developmentStaticAnalysis.mutability;
+    exports org.openmarkov.core.expression;
 }

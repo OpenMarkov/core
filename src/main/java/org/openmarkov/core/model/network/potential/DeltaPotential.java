@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-@PotentialType(name = "Delta") public class DeltaPotential extends Potential {
+@PotentialType(names = "Delta") public class DeltaPotential extends Potential {
     
     // state and stateIndex are used for finite states variables
     private State state = null;

@@ -145,7 +145,7 @@ public class StringDatabase {
     
     private Map<String, StringBundle> calculateAllBundles() {
         //Iterable<LocalizeResourcesProvider> providers = ServiceLoader.load(LocalizeResourcesProvider.class);
-        Iterable<LocalizeResourcesProvider> providers = getBundleProviders()
+        Iterable<? extends LocalizeResourcesProvider> providers = getBundleProviders()
                 .toList();
         Map<String, StringBundle> bundlesMap = new LinkedHashMap<>();
         for (LocalizeResourcesProvider provider : providers) {
@@ -154,7 +154,7 @@ public class StringDatabase {
         return bundlesMap;
     }
     
-    public static @NotNull Stream<LocalizeResourcesProvider> getBundleProviders() {
+    public static @NotNull Stream<? extends LocalizeResourcesProvider> getBundleProviders() {
         return PluginSearch.init()
                            .childrenOf(LocalizeResourcesProvider.class)
                            .stream()

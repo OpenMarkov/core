@@ -27,7 +27,7 @@ import java.util.List;
  * It is defined by two potentials, namely the mean and the variance potentials
  * In the case of discrete variables it uses each state index
  */
-@PotentialType(name = "Conditional Gaussian") public class ConditionalGaussianPotential extends Potential {
+@PotentialType(names = "Conditional Gaussian") public class ConditionalGaussianPotential extends Potential {
     
     private Potential mean;
     private Potential variance;

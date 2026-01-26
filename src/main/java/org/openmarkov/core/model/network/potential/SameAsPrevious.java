@@ -24,7 +24,7 @@ import java.util.List;
  * @author marias
  * @version 1.0
  */
-@PotentialType(name = "Same as previous", family = "Temporal") public class SameAsPrevious extends Potential {
+@PotentialType(names = "Same as previous") public class SameAsPrevious extends Potential {
     // Constructors
     
     /**

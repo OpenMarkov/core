@@ -27,7 +27,7 @@ import java.util.List;
  *
  * @author Iñigo
  */
-@PotentialType(name = "Tuning", family = "ICI")
+@PotentialType(names = "Tuning")
 public class TuningPotential extends ICIPotential {
     /**
      * The canonical model is limited to a child with only tree states

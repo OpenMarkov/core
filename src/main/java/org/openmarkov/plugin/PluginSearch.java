@@ -29,12 +29,13 @@ public final class PluginSearch<T> {
      * It initially contains classes from the OpenMarkov project when calling {@link PluginSearch#init()}
      */
     private final Stream<Class<T>> classStream;
+    private final Class<T> currentClass;
     
     /**
      * Initializes a new search over OpenMarkov's classes.
      */
     public static PluginSearch<Object> init() {
-        return new PluginSearch<>(PluginLoader.pluginsStream(PluginClassCategory.OPENMARKOV));
+        return new PluginSearch<>(PluginLoader.pluginsStream(PluginClassCategory.OPENMARKOV), Object.class);
     }
     
     /**
@@ -42,7 +43,7 @@ public final class PluginSearch<T> {
      */
     public static PluginSearch<Object> full() {
         return new PluginSearch<>(
-                Arrays.stream(PluginClassCategory.values()).flatMap(PluginLoader::pluginsStream));
+                Arrays.stream(PluginClassCategory.values()).flatMap(PluginLoader::pluginsStream), Object.class);
     }
     
     /**
@@ -52,28 +53,29 @@ public final class PluginSearch<T> {
         categories = new java.util.ArrayList<>(categories);
         categories.removeIf(Objects::isNull);
         if (categories.isEmpty()) {
-            return new PluginSearch<>(Stream.empty());
+            return new PluginSearch<>(Stream.empty(), Object.class);
         }
         categories = categories.stream().distinct().collect(Collectors.toCollection(ArrayList::new));
         Stream<Class<Object>> pluginsStream = PluginLoader.pluginsStream(categories.remove(0));
         while (!categories.isEmpty()) {
             pluginsStream = Stream.concat(pluginsStream, PluginLoader.pluginsStream(categories.remove(0)));
         }
-        return new PluginSearch<>(pluginsStream);
+        return new PluginSearch<>(pluginsStream, Object.class);
     }
     
     /**
      * Creates a new search with an initial stream.
      */
-    private PluginSearch(Stream<Class<T>> classStream) {
+    private PluginSearch(Stream<Class<T>> classStream, Class<T> currentClass) {
         this.classStream = classStream;
+        this.currentClass = currentClass;
     }
     
     /**
      * Filters the search to classes matching this predicate.
      */
     public PluginSearch<T> filter(Predicate<? super Class<T>> predicate) {
-        return new PluginSearch<>(this.classStream.filter(predicate));
+        return new PluginSearch<>(this.classStream.filter(predicate), this.currentClass);
     }
     
     /**
@@ -85,7 +87,8 @@ public final class PluginSearch<T> {
         return new PluginSearch<>(
                 this.classStream
                         .filter(extendingClass::isAssignableFrom)
-                        .map(baseClass -> (Class<ExtendingClass>) baseClass)
+                        .map(baseClass -> (Class<ExtendingClass>) baseClass),
+                extendingClass
         );
     }
     
@@ -110,8 +113,15 @@ public final class PluginSearch<T> {
     /**
      * Returns the stream containing the filtered classes.
      */
-    public Stream<Class<T>> stream() {
-        return this.classStream;
+    public Stream<Class<? extends T>> stream() {
+        return this.classStream.map(aClass -> aClass);
+    }
+    
+    /**
+     * Returns an extension tree. The class starts from the base class for the parameter {@code T}.
+     */
+    public ExtensionTree<T> extensionTree() {
+        return ExtensionTree.start(this.currentClass, this.stream());
     }
     
     /**

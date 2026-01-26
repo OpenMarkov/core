@@ -101,7 +101,7 @@ public class ConstraintManager {
         return defaultConstraintBehaviors.get(constraintClass);
     }
     
-    public static @NotNull Stream<Class<PNConstraint>> findAllConstraints() {
+    public static @NotNull Stream<Class<? extends PNConstraint>> findAllConstraints() {
         return PluginSearch.init().annotatedWith(Constraint.class).childrenOf(PNConstraint.class).stream();
     }
 }

@@ -44,7 +44,7 @@ import java.util.Stack;
  *
  * @author myebra
  */
-@PotentialType(name = "Tree/ADD", family = "Tree")
+@PotentialType(names = "Tree/ADD")
 public class TreeADDPotential extends Potential {
     
     // Attributes

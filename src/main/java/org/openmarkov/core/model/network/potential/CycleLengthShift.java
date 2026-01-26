@@ -24,7 +24,8 @@ import java.util.List;
  * @author marias
  * @version 1.0
  */
-@PotentialType(name = "CycleLengthShift", family = "Temporal") public class CycleLengthShift extends Potential {
+@PotentialType(names = "CycleLengthShift")
+public class CycleLengthShift extends Potential {
     
     private CycleLength cycleLength;
     

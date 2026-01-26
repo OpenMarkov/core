@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@PotentialType(name = "UnivariateDistr") public class UnivariateDistrPotential extends Potential {
+@PotentialType(names = "UnivariateDistr") public class UnivariateDistrPotential extends Potential {
     
     public static final String PSEUDO_VARIABLE = "pseudoVariableDistributionName";
     private static String INITIALIZATION_VALUE = "1";

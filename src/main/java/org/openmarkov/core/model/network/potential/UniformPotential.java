@@ -29,7 +29,7 @@ import java.util.Random;
  * @author marias
  * @version 1.0
  */
-@PotentialType(name = "Uniform") public class UniformPotential extends Potential {
+@PotentialType(names = "Uniform") public class UniformPotential extends Potential {
     // Attributes
     /**
      * Value of a potential configuration when all the variables are discrete.

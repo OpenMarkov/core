@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-@PotentialType(name = "Linear combination", family = "GLM", altNames = "Linear regression")
+@PotentialType(names = {"Linear combination", "Linear regression"})
 public class LinearCombinationPotential extends GLMPotential {
     
     public LinearCombinationPotential(List<Variable> variables, PotentialRole role) {

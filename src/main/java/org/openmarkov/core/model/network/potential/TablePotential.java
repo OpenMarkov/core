@@ -39,7 +39,8 @@ import java.util.*;
  * @version 1.0
  * @since OpenMarkov 1.0
  */
-@PotentialType(name = "Table") public class TablePotential extends Potential implements Comparable<TablePotential> {
+@PotentialType(names = {"Table", "ProbTable"})
+public class TablePotential extends Potential implements Comparable<TablePotential> {
     // Attributes
     /**
      * Table storing the numerical values of the potential. This attribute is

@@ -24,7 +24,7 @@ import java.util.List;
 /**
  * Wrapper for TablePotential
  */
-@PotentialType(name = "Exact") public class ExactDistrPotential extends Potential {
+@PotentialType(names = "Exact") public class ExactDistrPotential extends Potential {
     
     
     // Attributes

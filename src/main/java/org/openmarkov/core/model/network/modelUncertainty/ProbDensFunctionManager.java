@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 public class ProbDensFunctionManager {
     
     private static final ProbDensFunctionManager INSTANCE = new ProbDensFunctionManager();
-    private Map<String, Class<ProbDensFunction>> probDensFunctions;
+    private Map<String, Class<? extends ProbDensFunction>> probDensFunctions;
     
     //For Univariate
     private Map<String, List<String[]>> probDensParametrizations;
@@ -123,13 +123,13 @@ public class ProbDensFunctionManager {
     }
     
     public String[] getParameters(String functionName) {
-        Class<ProbDensFunction> functionClass = probDensFunctions.get(functionName);
+        Class<? extends ProbDensFunction> functionClass = probDensFunctions.get(functionName);
         ProbDensFunctionType annotation = functionClass.getAnnotation(ProbDensFunctionType.class);
         return annotation.parameters();
     }
     
     public ProbDensFunction newInstance(String functionName, double[] parameters) {
-        Class<ProbDensFunction> probDensFunctionClass = probDensFunctions.get(functionName);
+        Class<? extends ProbDensFunction> probDensFunctionClass = probDensFunctions.get(functionName);
         try {
             ProbDensFunction newInstance = probDensFunctionClass.getDeclaredConstructor().newInstance();
             newInstance.setParameters(parameters);
@@ -140,7 +140,7 @@ public class ProbDensFunctionManager {
         }
     }
     
-    private static @NotNull Stream<Class<ProbDensFunction>> findAllProbDensFunctions() {
+    private static @NotNull Stream<Class<? extends ProbDensFunction>> findAllProbDensFunctions() {
         return PluginSearch.init()
                            .annotatedWith(ProbDensFunctionType.class)
                            .childrenOf(ProbDensFunction.class)

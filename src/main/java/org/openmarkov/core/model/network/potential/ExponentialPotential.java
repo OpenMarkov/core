@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-@PotentialType(name = "Exponential", family = "GLM") public class ExponentialPotential extends GLMPotential {
+@PotentialType(names = "Exponential") public class ExponentialPotential extends GLMPotential {
     
     public ExponentialPotential(List<Variable> variables, PotentialRole role) {
         super(variables, role);

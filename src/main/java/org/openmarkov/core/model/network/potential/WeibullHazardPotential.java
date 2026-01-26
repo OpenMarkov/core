@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-@PotentialType(name = "Hazard (Weibull)", family = "GLM") public class WeibullHazardPotential extends GLMPotential {
+@PotentialType(names = "Hazard (Weibull)") public class WeibullHazardPotential extends GLMPotential {
     
     protected static final String GAMMA = "Gamma";
     protected static final String[] MANDATORY_COVARIATES = new String[]{GAMMA, CONSTANT};

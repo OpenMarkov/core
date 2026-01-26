@@ -88,7 +88,7 @@ public class NetworkTypeManager {
      *
      * @return a list with the plugins detected with ProbNetType annotations.
      */
-    private static @NotNull Stream<Class<NetworkType>> findAllNetworkTypes() {
+    private static @NotNull Stream<Class<? extends NetworkType>> findAllNetworkTypes() {
         return PluginSearch.init()
                            .annotatedWith(ProbNetType.class)
                            .childrenOf(NetworkType.class)

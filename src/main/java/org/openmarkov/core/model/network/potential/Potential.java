@@ -10,6 +10,7 @@ package org.openmarkov.core.model.network.potential;
 import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.developmentStaticAnalysis.requirements.ImplementationRequirements;
 import org.openmarkov.core.developmentStaticAnalysis.requirements.RequiredConstructor;
+import org.openmarkov.core.developmentStaticAnalysis.requirements.RequiredMethod;
 import org.openmarkov.core.developmentStaticAnalysis.requirements.SelfClass;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
@@ -30,12 +31,18 @@ import java.util.*;
  * @version 1.0
  * @since OpenMarkov 1.0
  */
-@ImplementationRequirements(requiresOneOfTheseConstructors = {
-        @RequiredConstructor({List.class, CycleLength.class}),
-        @RequiredConstructor({List.class, PotentialRole.class}),
-        @RequiredConstructor(List.class),
-        @RequiredConstructor(SelfClass.class)
-})
+@ImplementationRequirements(
+        requiresOneOfTheseConstructors = {
+                @RequiredConstructor({List.class, CycleLength.class}),
+                @RequiredConstructor({List.class, PotentialRole.class}),
+                @RequiredConstructor(List.class),
+                @RequiredConstructor(SelfClass.class)
+        },
+        requiresMethods = @RequiredMethod(
+                methodKind = RequiredMethod.MethodKind.Instance, methodName = "validate",
+                returnType = Boolean.class, parameters = {Node.class, List.class, PotentialRole.class}
+        )
+)
 public abstract class Potential implements Localizable {
     
     // Constants

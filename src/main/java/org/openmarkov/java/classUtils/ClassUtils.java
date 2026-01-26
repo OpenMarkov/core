@@ -5,9 +5,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.lang.reflect.Modifier;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,13 +24,7 @@ public class ClassUtils {
      * {@code n-2}... but it cannot be a child of classes in positions {@code n+1}, {@code n+2}...
      */
     public static ArrayList<Class<?>> extensionClassesOf(Class<?> aClass) {
-        var superClasses = new ArrayList<Class<?>>();
-        var superClass = aClass.getSuperclass();
-        //Adds every superclass
-        while (superClass != null) {
-            superClasses.add(superClass);
-            superClass = superClass.getSuperclass();
-        }
+        var superClasses = superClassesOf(aClass);
         //Adds all the interfaces of the class and its superclasses
         superClasses.addAll(
                 Stream.concat(superClasses.stream(), Stream.of(aClass))
@@ -51,6 +43,34 @@ public class ClassUtils {
         //Interfaces are before classes, and then they are ordered by inheritance
         superClasses.sort(compareIsInterface.reversed().thenComparing(compareExtension));
         return superClasses;
+    }
+    
+    public static ArrayList<Class<?>> superClassesOf(Class<?> aClass) {
+        var superClasses = new ArrayList<Class<?>>();
+        var superClass = aClass.getSuperclass();
+        //Adds every superclass
+        while (superClass != null) {
+            superClasses.add(superClass);
+            superClass = superClass.getSuperclass();
+        }
+        return superClasses;
+    }
+    
+    public static HashSet<Class<?>> allInterfacesOf(Class<?> theClass) {
+        HashSet<Class<?>> interfacesToVisit = extensionClassesOf(theClass).stream()
+                                                                          .flatMap(aClass -> Arrays.stream(aClass.getInterfaces()))
+                                                                          .collect(Collectors.toCollection(HashSet::new));
+        interfacesToVisit.addAll(List.of(theClass.getInterfaces()));
+        HashSet<Class<?>> visitedInterfaces = new HashSet<>();
+        while (interfacesToVisit.size() > 0) {
+            Class<?> currentInterface = interfacesToVisit.stream().findFirst().get();
+            visitedInterfaces.add(currentInterface);
+            interfacesToVisit.remove(currentInterface);
+            Arrays.stream(currentInterface.getInterfaces())
+                  .filter(interfaceToVisit -> !visitedInterfaces.contains(interfaceToVisit))
+                  .forEach(interfacesToVisit::add);
+        }
+        return visitedInterfaces;
     }
     
     public static boolean isConcrete(Class<?> aClass) {

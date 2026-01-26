@@ -26,7 +26,7 @@ import java.util.List;
  * It is defined by two potentials, namely the median and the scale potentials
  * In the case of discrete variables it uses each state index
  */
-@PotentialType(name = "Discretized Cauchy") public class DiscretizedCauchyPotential extends Potential {
+@PotentialType(names = "Discretized Cauchy") public class DiscretizedCauchyPotential extends Potential {
     
     private Potential median;
     private Potential scale;

@@ -31,7 +31,7 @@ import java.util.Map;
  * @author carmenyago
  * @version 1.0 2016
  */
-@PotentialType(name = "Function") public class FunctionPotential extends GLMPotential {
+@PotentialType(names = "Function") public class FunctionPotential extends GLMPotential {
     
     /**
      * The default function

@@ -30,7 +30,7 @@ import java.util.List;
  * @author mkpalacio
  * @version 1.0
  */
-@PotentialType(name = "Sum", family = "Utility") public class SumPotential extends Potential {
+@PotentialType(names = "Sum") public class SumPotential extends Potential {
     
     // Constructor
     //	/**

@@ -22,11 +22,9 @@ public interface ProbNetReader {
 	 * @return A {@code ProbNetInfo} or {@code null}
 	 */
 	ProbNetInfo loadProbNetInfo(String netName, InputStream file) throws IOException, ParserException;
-
-	ProbNetInfo loadProbNetInfo(String netName) throws IOException, ParserException;
-
-
-	/**
+    
+    
+    /**
 	 * @param file File
 	 * @param netName = path + network name + extension. {@code String}
 	 * @throws ParserException ParserException
@@ -34,9 +32,5 @@ public interface ProbNetReader {
 	 */
 	ProbNet loadProbNet(String netName, InputStream file) throws IOException, ParserException;
     
-    ProbNet loadProbNet(String netName) throws IOException, ParserException;
     
-    
-
-
 }

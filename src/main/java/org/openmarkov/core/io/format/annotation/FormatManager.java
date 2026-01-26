@@ -150,7 +150,7 @@ public class FormatManager {
      *
      * @return a list with the plugins detected with FormatTypeProbModelXML annotations.
      */
-    private static Stream<Class<Object>> findAllFormatPlugins() {
+    private static Stream<Class<? extends Object>> findAllFormatPlugins() {
         return PluginSearch.init().annotatedWith(FormatType.class).stream();
     }
     //	/**

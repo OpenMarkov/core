@@ -30,11 +30,11 @@ public class CaseDatabaseManager {
     /**
      * The list of case database reader plugins detected in the project
      */
-    private HashMap<String, Class<CaseDatabaseReader>> readerPlugins;
+    private HashMap<String, Class<? extends CaseDatabaseReader>> readerPlugins;
     /**
      * The list of case database writer plugins detected in the project
      */
-    private HashMap<String, Class<CaseDatabaseWriter>> writerPlugins;
+    private HashMap<String, Class<? extends CaseDatabaseWriter>> writerPlugins;
     
     /**
      * Gets a FormatManager instance
@@ -52,13 +52,13 @@ public class CaseDatabaseManager {
         });
     }
     
-    private static @NotNull Stream<Class<CaseDatabaseReader>> findAllReaderPlugins() {
+    private static @NotNull Stream<Class<? extends CaseDatabaseReader>> findAllReaderPlugins() {
         return PluginSearch.init().annotatedWith(CaseDatabaseFormat.class)
                            .childrenOf(CaseDatabaseReader.class)
                            .stream();
     }
     
-    private static @NotNull Stream<Class<CaseDatabaseWriter>> findAllWriterPlugins() {
+    private static @NotNull Stream<Class<? extends CaseDatabaseWriter>> findAllWriterPlugins() {
         return PluginSearch.init().annotatedWith(CaseDatabaseFormat.class)
                            .childrenOf(CaseDatabaseWriter.class)
                            .stream();
@@ -73,7 +73,7 @@ public class CaseDatabaseManager {
      */
     public CaseDatabaseWriter getWriter(String extension) throws NoReaderForExtension {
         try {
-            Class<CaseDatabaseWriter> writerClass = this.writerPlugins.get(extension);
+            Class<? extends CaseDatabaseWriter> writerClass = this.writerPlugins.get(extension);
             if (writerClass == null) {
                 throw new NoReaderForExtension(extension);
             }
@@ -91,7 +91,7 @@ public class CaseDatabaseManager {
      */
     public CaseDatabaseReader getReader(String extension) throws NoWriterForExtensionException {
         try {
-            Class<CaseDatabaseReader> readerClass = readerPlugins.get(extension);
+            Class<? extends CaseDatabaseReader> readerClass = readerPlugins.get(extension);
             if (readerClass == null) {
                 throw new NoWriterForExtensionException(extension);
             }

@@ -19,7 +19,8 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import java.util.ArrayList;
 import java.util.List;
 
-@PotentialType(name = "AugmentedProbTable") public class AugmentedProbTablePotential extends Potential {
+@PotentialType(names = "AugmentedProbTable")
+public class AugmentedProbTablePotential extends Potential {
 
     protected AugmentedProbTable AugmentedProbTable;
     private List<Variable> finiteStatesVariables;

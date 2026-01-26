@@ -1,6 +1,6 @@
 package org.openmarkov.core.inference.tasks;
 
-import org.openmarkov.core.decisiontree.DecisionTreeNode;
+import org.openmarkov.core.model.decisiontree.DecisionTreeNode;
 import org.openmarkov.core.exception.*;
 
 public interface GenerateDecisionTree extends Task {

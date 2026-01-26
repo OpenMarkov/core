@@ -5,9 +5,9 @@ open module org.openmarkov.core {
     requires org.apache.logging.log4j;
     requires org.jetbrains.annotations;
     //requires transitive java.desktop;
-    
+
     requires java.xml;
-    
+
     requires java.instrument;
     requires io.github.classgraph;
     requires org.openmarkov.annotation_processing;
@@ -16,9 +16,9 @@ open module org.openmarkov.core {
     requires org.apache.commons.collections4;
     requires org.apache.commons.io;
     requires antlr;
-    
+
     exports org.openmarkov.core.action.core;
-    exports org.openmarkov.core.decisiontree;
+    exports org.openmarkov.core.model.decisiontree;
     exports org.openmarkov.core.exception;
     exports org.openmarkov.core.inference;
     exports org.openmarkov.core.inference.heuristic;

@@ -39,11 +39,14 @@ public class ReferencedExpression<T> {
     }
     
     public final String asStringExpression() {
-        return contents.stream().map(expressionContent -> switch (expressionContent) {
-            case ExpressionContent.VariableReference<T>(T reference) ->
-                    "{" + this.stringifyReference.apply(reference) + "}";
-            case ExpressionContent.UnparsedExpression<T>(String unparsed) -> unparsed;
-        }).collect(Collectors.joining());
+        return contents.stream()
+            .map(content -> (ExpressionContent<T>) content) // Forzamos el tipo aquí
+            .map(expressionContent -> switch (expressionContent) {
+                case ExpressionContent.VariableReference<T> vr -> 
+                        "{" + this.stringifyReference.apply(vr.reference()) + "}";
+                case ExpressionContent.UnparsedExpression<T> ue -> 
+                        ue.unparsed();
+            }).collect(Collectors.joining());
     }
     
     /**

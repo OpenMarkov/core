@@ -556,14 +556,6 @@ public class Node implements Cloneable, ClassLocalizable {
             return 0.0;
         }
         Potential firstPotential = potentials.getFirst();
-        switch (firstPotential) {
-            case SumPotential ignored -> {
-            }
-            case ProductPotential ignored -> {
-            }
-            default -> throw new NonProjectablePotentialException.SuperValueMustBeSumOrProduct(firstPotential);
-        }
-        ;
         if (!this.isSuperValueNode()) {
             List<TablePotential> tableProject = firstPotential.tableProject(null, null);
             double[] values = !tableProject.isEmpty() ? tableProject.getFirst().values : new double[1];
@@ -775,17 +767,12 @@ public class Node implements Cloneable, ClassLocalizable {
             return getPotentials().get(0);
         }
     }
-    
+    //TODO: very possibly removal
     public Potential getPreviousPotential() {
         int x = getPotentials().size() - 1;
         return getPotentials().get(x);
     }
-    
-    public void finalizePotentialEdition() {
-        List<Potential> potentials = new ArrayList<>();
-        potentials.add(getPotential());
-        setPotentials(potentials);
-    }
+
 
     public void setPotentialConsistently(Potential newPotential){
         Potential lastPotential = getPotential();

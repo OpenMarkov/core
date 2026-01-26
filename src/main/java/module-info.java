@@ -4,7 +4,7 @@ open module org.openmarkov.core {
     requires colt;
     requires org.apache.logging.log4j;
     requires org.jetbrains.annotations;
-    //requires transitive java.desktop;
+    // requires transitive java.desktop;
 
     requires java.xml;
 
@@ -19,6 +19,7 @@ open module org.openmarkov.core {
 
     exports org.openmarkov.core.action.core;
     exports org.openmarkov.core.model.decisiontree;
+    exports org.openmarkov.core.model.decisiontree.operation;
     exports org.openmarkov.core.exception;
     exports org.openmarkov.core.inference;
     exports org.openmarkov.core.inference.heuristic;

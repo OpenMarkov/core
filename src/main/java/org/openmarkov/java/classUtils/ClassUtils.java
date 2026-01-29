@@ -56,6 +56,17 @@ public class ClassUtils {
         return superClasses;
     }
     
+    //Only usable on testing
+    public static File getResourceAsFile(Class<?> sourceClass, String resource){
+        var is = sourceClass.getResource(resource).getFile();
+        while(is.startsWith("/")){
+            is=is.replaceFirst("/","");
+        }
+        is=is.replaceFirst("target/test-classes/", "src/test/resources/")
+             .replaceFirst("target/classes/", "src/main/resources/");
+        return new File(is);
+    }
+    
     public static HashSet<Class<?>> allInterfacesOf(Class<?> theClass) {
         HashSet<Class<?>> interfacesToVisit = extensionClassesOf(theClass).stream()
                                                                           .flatMap(aClass -> Arrays.stream(aClass.getInterfaces()))

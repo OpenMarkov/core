@@ -35,22 +35,11 @@ public class RemovePolicyEdit extends PNEdit {
 
 	
 	@Override protected void doEdit() {
-		/*ArrayList<Potential> potentials = new ArrayList<>();
-		if (probNet.getNode(variable).getNodeType() == NodeType.DECISION && lastPolicyType != PolicyType.OPTIMAL) {
-			probNet.getNode(variable).setPolicyType(PolicyType.OPTIMAL);
-			probNet.getNode(variable).setPotentials(potentials);
-		}*/
         node.clearPotentials();
 	}
     
     @Override public void undo() {
 		super.undo();
-		/*ArrayList<Potential> potentials = new ArrayList<>();
-		if (probNet.getNode(variable).getNodeType() == NodeType.DECISION && lastPolicyType != PolicyType.OPTIMAL) {
-			potentials.add(lastPotential);
-			probNet.getNode(variable).setPotentials(potentials);
-			probNet.getNode(variable).setPolicyType(lastPolicyType);
-		}*/
         if (oldPotential != null) {
             node.setPotential(oldPotential);
         } else {

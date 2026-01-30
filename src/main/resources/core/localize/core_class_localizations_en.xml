@@ -66,8 +66,6 @@
                   value="Remove node {node}"/>
     <Localization class="org.openmarkov.core.action.core.RemovePolicyEdit"
                   value="Remove policy of node {node}. Previous policy was {oldPotential}"/>
-    <Localization class="org.openmarkov.core.action.core.RemovePotentialEdit"
-                  value="Remove potential {oldPotential}"/>
     <Localization class="org.openmarkov.core.action.core.RemovePotentialsEdit"
                   value="Remove potentials: {potentialsToDelete}"/>
     <Localization class="org.openmarkov.core.action.core.RevelationStateEdit"

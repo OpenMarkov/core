@@ -8,6 +8,7 @@ package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
+import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -21,6 +22,7 @@ import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +38,7 @@ import java.util.Map;
     /**
      * The default function
      */
-    public static final String DEFAULT_FUNCTION = "0";
+    public static final VariableExpression DEFAULT_FUNCTION = new VariableExpression(Collections.emptyList(), "0");
     
     /**
      * The coefficient
@@ -50,7 +52,7 @@ import java.util.Map;
      * @param role      Potential role
      */
     public FunctionPotential(List<Variable> variables, PotentialRole role) {
-        super(variables, role, new String[]{DEFAULT_FUNCTION}, new double[]{COEFFICIENT});
+        super(variables, role, new VariableExpression[]{DEFAULT_FUNCTION}, new double[]{COEFFICIENT});
     }
     
     /**
@@ -60,8 +62,8 @@ import java.util.Map;
      * @param role      - the role of the potential
      * @param function  - A string representing the function
      */
-    public FunctionPotential(List<Variable> variables, PotentialRole role, String function) {
-        super(variables, role, new String[]{function}, new double[]{COEFFICIENT});
+    public FunctionPotential(List<Variable> variables, PotentialRole role, VariableExpression function) {
+        super(variables, role, new VariableExpression[]{function}, new double[]{COEFFICIENT});
     }
     
     /**
@@ -96,8 +98,8 @@ import java.util.Map;
      *
      * @return the function contained in the FunctionPotential
      */
-    public String getFunction() {
-        return unprocessCovariates(variables, processedCovariates)[0];
+    public VariableExpression getFunction() {
+        return covariates[0];
     }
     
     /**
@@ -106,8 +108,8 @@ import java.util.Map;
      * @param function - The function (unprocessed) to be set
      */
     
-    public void setFunction(String function) {
-        setCovariates(new String[]{function});
+    public void setFunction(VariableExpression function) {
+        setCovariates(new VariableExpression[]{function});
     }
     
     /**
@@ -131,8 +133,8 @@ import java.util.Map;
      * @throws NonProjectablePotentialException NonProjectablePotentialException
      */
     @Override protected List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-                                                          double[] coefficients, String[] covariates, List<Variable> evidencelessVariables,
-                                                          Map<String, String> variableValues) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
+                                                          double[] coefficients, VariableExpression[] covariates, List<Variable> evidencelessVariables,
+                                                          Map<Variable, String> variableValues) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
         throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
         
     }
@@ -148,8 +150,7 @@ import java.util.Map;
      */
     @Override public void scalePotential(double scale) {
         String scaleString = String.valueOf(scale);
-        String function = scaleString + "*" + processedCovariates[0];
-        processedCovariates[0] = function;
+        covariates[0] = new VariableExpression(this.variables, scaleString + "*" + this.covariates[0].asStringExpression());
     }
     
     /**
@@ -165,7 +166,7 @@ import java.util.Map;
             List<Variable> newVariables = new ArrayList<>(variables);
             newVariables.add(variable);
             newPotential = new FunctionPotential(newVariables, this.role);
-            newPotential.setCovariates(processedCovariates);
+            newPotential.setCovariates(covariates);
             newPotential.setCoefficients(new double[]{1});
         } else {
             newPotential = new FunctionPotential(this);
@@ -185,9 +186,7 @@ import java.util.Map;
         if (variables.contains(variable)) {
             List<Variable> newVariables = new ArrayList<>(variables);
             newVariables.remove(variable);
-            int index = variables.indexOf(variable);
-            String variableToRemove = "#{v" + index + "}";
-            if (processedCovariates[0].contains(variableToRemove)) {
+            if (covariates[0].references().contains(variable)) {
                 return new FunctionPotential(newVariables, this.role);
             }
         }
@@ -199,7 +198,7 @@ import java.util.Map;
     }
     
     @Override public String toString() {
-        return unprocessCovariates(variables, processedCovariates)[0];
+        return covariates[0].toString();
     }
     
     /**
@@ -210,23 +209,6 @@ import java.util.Map;
         return false;
     }
     
-    
-    /**
-     * @param values Values
-     *
-     * @return The value obtained by evaluation the function for the assignment of variables given by 'values'
-     *
-     * @throws EvaluationException EvaluationException
-     */
-    public String getValue(Map<String, String> values) throws NonProjectablePotentialException.CannotEvaluate {
-        Evaluator evaluator = new Evaluator();
-        evaluator.setVariables(values);
-        try {
-            return evaluator.evaluate(this.processedCovariates[0]);
-        } catch (EvaluationException e) {
-            throw new NonProjectablePotentialException.CannotEvaluate(this.processedCovariates[0], e);
-        }
-    }
     
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {

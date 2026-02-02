@@ -10,6 +10,7 @@ import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
+import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -36,7 +37,7 @@ public class LinearCombinationPotential extends GLMPotential {
     //        this.utilityVariable = utilityVariable;
     //    }
     
-    public LinearCombinationPotential(List<Variable> variables, PotentialRole role, String[] covariates,
+    public LinearCombinationPotential(List<Variable> variables, PotentialRole role, VariableExpression[] covariates,
                                       double[] coefficients) {
         super(variables, role, covariates, coefficients);
     }
@@ -66,8 +67,8 @@ public class LinearCombinationPotential extends GLMPotential {
     }
     
     @Override protected List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-                                                          double[] coefficients, String[] covariates, List<Variable> evidencelessVariables,
-                                                          Map<String, String> variableValues) throws NonProjectablePotentialException.CannotEvaluate {
+                                                          double[] coefficients, VariableExpression[] covariates, List<Variable> evidencelessVariables,
+                                                          Map<Variable, String> variableValues) throws NonProjectablePotentialException.CannotEvaluate {
         Variable conditionedVariable = getConditionedVariable();
         int numStates = conditionedVariable.getNumStates();
         Evaluator evaluator = new Evaluator();
@@ -93,19 +94,14 @@ public class LinearCombinationPotential extends GLMPotential {
                 } catch (NumberFormatException e) {
                     // ignore
                 }
-                variableValues.put("v" + variables.indexOf(variable), String.valueOf(value));
+                variableValues.put(variable, String.valueOf(value));
             }
-            evaluator.setVariables(variableValues);
             double regression = coefficients[constantIndex];
             for (int j = 0; j < coefficients.length; ++j) {
                 
                 if (j != constantIndex) {
-                    try {
-                        double covariateValue = Double.parseDouble(evaluator.evaluate(covariates[j]));
+                    double covariateValue = Double.parseDouble(covariates[j].evaluateWith(variableValues));
                         regression += covariateValue * coefficients[j];
-                    } catch (EvaluationException e) {
-                        throw new NonProjectablePotentialException.CannotEvaluate(covariates[j], e);
-                    }
                 }
             }
             if (getConditionedVariable().getVariableType() == VariableType.NUMERIC) {
@@ -138,10 +134,11 @@ public class LinearCombinationPotential extends GLMPotential {
             List<Variable> newVariables = new ArrayList<>(variables);
             newVariables.add(variable);
             newPotential = new LinearCombinationPotential(newVariables, this.role);
-            String[] newCovariates = new String[processedCovariates.length + 1];
-            for (int i = 0; i < processedCovariates.length; ++i)
-                newCovariates[i] = processedCovariates[i];
-            newCovariates[processedCovariates.length] = processCovariate(variable.getName(), newVariables);
+            VariableExpression[] newCovariates = new VariableExpression[covariates.length + 1];
+            for (int i = 0; i < covariates.length; ++i) {
+                newCovariates[i] = covariates[i];
+            }
+            newCovariates[covariates.length] = new VariableExpression(newVariables, "{" + variable.getName() + "}");
             newPotential.setCovariates(newCovariates);
             
             double[] newCoefficients = new double[coefficients.length + 1];
@@ -164,16 +161,14 @@ public class LinearCombinationPotential extends GLMPotential {
             newPotential = new LinearCombinationPotential(newVariables, this.role);
             List<String> newCovariates = new ArrayList<>();
             List<Double> newCoefficients = new ArrayList<>();
-            removeVariableFromCovariates(variables, variable, processedCovariates, coefficients, newCovariates,
-                                         newCoefficients);
             
-            String[] newCovariatesArray = new String[newCovariates.size()];
             double[] newCoefficientsArray = new double[newCoefficients.size()];
             for (int i = 0; i < newCoefficients.size(); ++i) {
                 newCoefficientsArray[i] = newCoefficients.get(i);
-                newCovariatesArray[i] = newCovariates.get(i);
             }
-            newPotential.setCovariates(newCovariatesArray);
+            
+            /// TODO: New potential should have the covariates.
+            //newPotential.setCovariates(newCovariatesArray);
             newPotential.setCoefficients(newCoefficientsArray);
         } else {
             newPotential = new LinearCombinationPotential(this);
@@ -187,7 +182,7 @@ public class LinearCombinationPotential extends GLMPotential {
     
     @Override public String toString() {
         StringBuilder sb = new StringBuilder(super.toString() + " = ");
-        String[] covariates = unprocessCovariates(variables, processedCovariates);
+        VariableExpression[] covariates = this.covariates;
         boolean first = true;
         for (int i = 0; i < covariates.length; ++i) {
             if (this.coefficients[i] != 0.0) {

@@ -11,7 +11,8 @@ public class VariableExpression extends ReferencedExpression<Variable> {
         super(
                 possibleVariables.stream().collect(Collectors.toMap(Variable::getName, v -> v)),
                 expression,
-                Variable::getName
+                Variable::getName,
+                v -> null
         );
     }
     

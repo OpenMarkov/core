@@ -11,6 +11,7 @@ import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
+import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -20,15 +21,12 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @PotentialType(names = "Hazard (Weibull)") public class WeibullHazardPotential extends GLMPotential {
     
-    protected static final String GAMMA = "Gamma";
-    protected static final String[] MANDATORY_COVARIATES = new String[]{GAMMA, CONSTANT};
+    protected static final VariableExpression GAMMA = new VariableExpression(Collections.emptyList(), "Gamma");
+    protected static final VariableExpression[] MANDATORY_COVARIATES = new VariableExpression[]{GAMMA, CONSTANT};
     
     /**
      * Determines whether it represents a log hazard
@@ -40,12 +38,12 @@ import java.util.Map;
      */
     private Variable timeVariable = null;
     
-    public WeibullHazardPotential(List<Variable> variables, PotentialRole role, String[] covariates,
+    public WeibullHazardPotential(List<Variable> variables, PotentialRole role, VariableExpression[] covariates,
                                   double[] coefficients) {
         super(variables, role, covariates, coefficients);
     }
     
-    public WeibullHazardPotential(List<Variable> variables, PotentialRole role, String[] covariates,
+    public WeibullHazardPotential(List<Variable> variables, PotentialRole role, VariableExpression[] covariates,
                                   double[] coefficients, double[] covarianceMatrix) {
         super(variables, role, covariates, coefficients, covarianceMatrix);
     }
@@ -56,7 +54,7 @@ import java.util.Map;
               covarianceMatrix);
     }
     
-    public WeibullHazardPotential(List<Variable> variables, PotentialRole role, String[] covariates,
+    public WeibullHazardPotential(List<Variable> variables, PotentialRole role, VariableExpression[] covariates,
                                   double[] coefficients, double[] uncertaintyMatrix, MatrixType matrixType) {
         super(variables, role, covariates, coefficients, uncertaintyMatrix, matrixType);
     }
@@ -100,16 +98,17 @@ import java.util.Map;
     }
     
     public double getGamma() {
-        return coefficients[getGammaIndex(processedCovariates)];
+        return coefficients[getGammaIndex(covariates)];
     }
     
     public void setGamma(double gamma) {
-        this.coefficients[getGammaIndex(processedCovariates)] = gamma;
+        this.coefficients[getGammaIndex(covariates)] = gamma;
     }
     
-    @Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-                                                       double[] coefficients, String[] covariates, List<Variable> evidencelessVariables,
-                                                       Map<String, String> variableValues) throws NonProjectablePotentialException.MissingEvidenceInVariable, NonProjectablePotentialException.CannotEvaluate {
+    @Override
+    public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
+                                             double[] coefficients, VariableExpression[] covariates, List<Variable> evidencelessVariables,
+                                             Map<Variable, String> variableValues) throws NonProjectablePotentialException.MissingEvidenceInVariable, NonProjectablePotentialException.CannotEvaluate {
         Variable conditionedVariable = getConditionedVariable();
         // Fill arrays numericValues and evidencelessVariables
         
@@ -153,7 +152,6 @@ import java.util.Map;
             ts[0] = t;
         }
         double shape = Math.exp(coefficients[gammaIndex]);
-        Evaluator evaluator = new Evaluator();
         for (int timeVariableState = 0; timeVariableState < ts.length; ++timeVariableState) {
             double t = ts[timeVariableState];
             for (int i = 0; i < numConfigurations; i++) {
@@ -169,18 +167,13 @@ import java.util.Map;
                     } catch (NumberFormatException e) {
                         // ignore
                     }
-                    variableValues.put("v" + variables.indexOf(variable), String.valueOf(value));
+                    variableValues.put(variable, String.valueOf(value));
                 }
-                evaluator.setVariables(variableValues);
                 double lambda = coefficients[constantIndex];
                 for (int j = 0; j < coefficients.length; ++j) {
                     if (j != gammaIndex && j != constantIndex) {
-                        try {
-                            double covariateValue = Double.parseDouble(evaluator.evaluate(covariates[j]));
-                            lambda += covariateValue * coefficients[j];
-                        } catch (EvaluationException e) {
-                            throw new NonProjectablePotentialException.CannotEvaluate(covariates[j], e);
-                        }
+                        double covariateValue = Double.parseDouble(covariates[j].evaluateWith(variableValues));
+                        lambda += covariateValue * coefficients[j];
                     }
                 }
                 if (log) {
@@ -231,11 +224,11 @@ import java.util.Map;
         }
     }
     
-    protected static int getGammaIndex(String[] covariates) {
+    protected static int getGammaIndex(VariableExpression[] covariates) {
         int gammaIndex = -1;
         int i = 0;
         while (i < covariates.length && gammaIndex == -1) {
-            if (covariates[i].equals(GAMMA)) {
+            if (covariates[i].asStringExpression().equals(GAMMA.asStringExpression())) {
                 gammaIndex = i;
             }
             ++i;

@@ -8,6 +8,7 @@
 package org.openmarkov.core.exception;
 
 import net.sourceforge.jeval.EvaluationException;
+import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -88,6 +89,11 @@ public abstract sealed class NonProjectablePotentialException extends Exception 
     public static final class CannotEvaluate extends NonProjectablePotentialException {
         public CannotEvaluate(String elementToEvaluate, EvaluationException evaluationException) {
             this.elementToEvaluate = elementToEvaluate;
+            this.evaluationException = evaluationException;
+        }
+        
+        public CannotEvaluate(VariableExpression elementToEvaluate, EvaluationException evaluationException) {
+            this.elementToEvaluate = elementToEvaluate.toString();
             this.evaluationException = evaluationException;
         }
         

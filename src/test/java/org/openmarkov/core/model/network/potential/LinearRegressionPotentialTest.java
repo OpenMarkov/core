@@ -13,10 +13,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Variable;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
@@ -36,10 +38,12 @@ public class LinearRegressionPotentialTest {
         
         List<Variable> variables = Arrays.asList(ageAtStateEntryVar, ageVar, timeInStateVar);
         double[] coefficients = new double[]{0, 1, -1};
-        String[] covariates = new String[]{"Constant", "Age", "Time in state"};
-        
-        potential = new LinearCombinationPotential(variables, PotentialRole.CONDITIONAL_PROBABILITY, covariates,
-                                                   coefficients);
+        VariableExpression[] covariates = new VariableExpression[]{
+                new VariableExpression(Collections.emptyList(), "Constant"),
+                ageVar.asVariableExpression(),
+                timeInStateVar.asVariableExpression()
+        };
+        potential = new LinearCombinationPotential(variables, PotentialRole.CONDITIONAL_PROBABILITY, covariates, coefficients);
     }
     
     @Test public void testTableProject() throws NonProjectablePotentialException {

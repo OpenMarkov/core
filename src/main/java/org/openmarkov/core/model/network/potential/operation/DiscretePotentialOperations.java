@@ -2386,8 +2386,6 @@ public final class DiscretePotentialOperations {
         int[][] offsetAccumulate = DiscretePotentialOperations.getAccumulatedOffsets(potentials, resultVariables);
         int[] resultCoordinate = initializeCoordinates(numVariables);
         int[] potentialsPositions = initializeToZero(numPotentials);
-        
-        // Multiply
         int incrementedVariable = 0;
         
         int[] dimensions = TablePotential.calculateDimensions(resultVariables);
@@ -2433,13 +2431,19 @@ public final class DiscretePotentialOperations {
                 resultCoordinate[iVariable] = 0;
             }
             
-            Map<String, String> assignment = new Hashtable<>();
+            Map<Variable, String> assignment = new HashMap<>();
             // multiply
             for (int iPotential = 0; iPotential < numPotentials; iPotential++) {
                 int potentialsPositionIPotential = potentialsPositions[iPotential];
-                String varNameInExpressionToEvaluate = "v" + (iPotential + 1);
+                String varNameInExpressionToEvaluate = "U" + (iPotential + 1);
                 // String varNameInExpressionToEvaluate = utilityVariablesNames.get(iPotential);
-                assignment.put(varNameInExpressionToEvaluate, "" + tables[iPotential][potentialsPositionIPotential]);
+                assignment.put(
+                        utilityPotential.getVariables()
+                                        .stream()
+                                        .filter(variable -> variable.getName().equals(varNameInExpressionToEvaluate))
+                                        .findFirst()
+                                        .get()
+                        , "" + tables[iPotential][potentialsPositionIPotential]);
                 // Obtain the intervention
                 if (thereAreInterventions && indexPotentialWithInterventions == iPotential) {
                     strategyTree = inputStrategyTrees[potentialsPositionIPotential];
@@ -2449,7 +2453,7 @@ public final class DiscretePotentialOperations {
                     potentialsPositions[iPotential] += offsetAccumulate[iPotential][incrementedVariable];
                 }
             }
-            resultValues[resultPosition] = Double.parseDouble(utilityPotential.getValue(assignment));
+            resultValues[resultPosition] = Double.parseDouble(utilityPotential.getCovariates()[0].evaluateWith(assignment));
             if (thereAreInterventions) {
                 resultStrategyTrees[resultPosition] = strategyTree;
             }

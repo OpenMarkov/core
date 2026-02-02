@@ -86,18 +86,6 @@ public class AugmentedProbTablePotential extends Potential {
         this.parameterVariables = parameterVariables;
     }
     
-    /**
-     * Creates a functionPotential whose parents are the Numeric variables
-     *
-     * @param numericVariables Numeric variables
-     * @param functionString   Function string
-     *
-     * @return a function potential whose parents are the Numeric variables
-     */
-    public FunctionPotential createFunctionPotential(List<Variable> numericVariables, String functionString) {
-        return new FunctionPotential(numericVariables, this.role, functionString);
-    }
-    
     @Override
     public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials) {
         // TODO Auto-generated method stub

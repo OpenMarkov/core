@@ -7,12 +7,14 @@
 
 package org.openmarkov.core.model.network.potential;
 
+import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 
+import java.util.Collections;
 import java.util.List;
 
 // TODO Add documentation
@@ -21,10 +23,10 @@ public class AugmentedProbTable extends TablePotential {
     /**
      * The default function
      */
-    private static final String DEFAULT_FUNCTION = "1";
-    private static final String COMPLEMENT_FUNCTION = "Complement";
+    private static final VariableExpression DEFAULT_FUNCTION = new VariableExpression(Collections.emptyList(), "1");
+    private static final VariableExpression COMPLEMENT_FUNCTION = new VariableExpression(Collections.emptyList(), "Complement");
     
-    private String[] functionValues;
+    private VariableExpression[] functionValues;
     
     /*Note should be discrete variables*/
     @SuppressWarnings("ThrowInsideCatchBlockWhichIgnoresCaughtException")
@@ -42,7 +44,7 @@ public class AugmentedProbTable extends TablePotential {
             offsets = calculateOffsets(dimensions);
             tableSize = computeTableSize(stateVariables);
             try {
-                functionValues = new String[tableSize];
+                functionValues = new VariableExpression[tableSize];
                 // Get  public int getPosition(int[] coordinates)
                 int increment = variables.get(0).getNumStates();
                 for (int i = 0; i < tableSize; i++) {
@@ -56,12 +58,12 @@ public class AugmentedProbTable extends TablePotential {
             }
         } else {// In this case the potential is a constant
             tableSize = 1;
-            setFunctionValues(new String[tableSize]);
+            setFunctionValues(new VariableExpression[tableSize]);
             offsets = new int[0];
         }
     }
     
-    public AugmentedProbTable(List<Variable> stateVariables, PotentialRole role, String[] functionValues) {
+    public AugmentedProbTable(List<Variable> stateVariables, PotentialRole role, VariableExpression[] functionValues) {
         this(stateVariables, role);
         this.functionValues = functionValues;
     }
@@ -77,7 +79,7 @@ public class AugmentedProbTable extends TablePotential {
      * @param offsets         of variables. {@code int[]}
      * @param dimensions      . Number of states of each variable. {@code int[]}
      */
-    private AugmentedProbTable(List<Variable> stateVariables, PotentialRole role, String[] table, int initialPosition,
+    private AugmentedProbTable(List<Variable> stateVariables, PotentialRole role, VariableExpression[] table, int initialPosition,
                            int[] offsets, int[] dimensions) {
         super(stateVariables, role);
         // this.originalVariables = this.variables;
@@ -137,7 +139,7 @@ public class AugmentedProbTable extends TablePotential {
      *            . {@code int[]}
      * @param function value to be assigned
      */
-    public void setValue(List<Variable> variables, int[] statesIndexes, String function) {
+    public void setValue(List<Variable> variables, int[] statesIndexes, VariableExpression function) {
         int position = 0;
         for (int i = 0; i < variables.size(); i++) {
             Variable variable = variables.get(i);
@@ -160,7 +162,7 @@ public class AugmentedProbTable extends TablePotential {
      * Condition: All the variables in this potentials are included into the
      * received variables.
      */
-    public String getFunctionValue(List<Variable> stateVariables, int[] statesIndices) {
+    public VariableExpression getFunctionValue(List<Variable> stateVariables, int[] statesIndices) {
         int position = 0;
         for (int i = 0; i < stateVariables.size(); i++) {
             Variable variable = stateVariables.get(i);
@@ -176,11 +178,11 @@ public class AugmentedProbTable extends TablePotential {
      * @return : Table containing the values of the
      * potential.
      */
-    public String[] getFunctionValues() {
+    public VariableExpression[] getFunctionValues() {
         return functionValues;
     }
     
-    public void setFunctionValues(String[] functionValues) {
+    public void setFunctionValues(VariableExpression[] functionValues) {
         this.functionValues = functionValues;
     }
     
@@ -224,8 +226,8 @@ public class AugmentedProbTable extends TablePotential {
         int[] accOffsets = getAccumulatedOffsets(newOrderOfVariables);
         int[] potentialPositions = new int[getNumVariables()];
         int[] potentialDimensions = getDimensions();
-        String[] valuesOrigPotential = getFunctionValues();
-        String[] valuesNewPotential = newPotential.getFunctionValues();
+        VariableExpression[] valuesOrigPotential = getFunctionValues();
+        VariableExpression[] valuesNewPotential = newPotential.getFunctionValues();
         
         int copyTablePosition = 0;
         int numVariables = newOrderOfVariables.size();

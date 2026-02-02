@@ -10,6 +10,7 @@ package org.openmarkov.core.model.network;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.action.base.StateAction;
 import org.openmarkov.core.exception.InvalidArgumentException;
+import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -979,6 +980,10 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
             }
         }
         return true;
+    }
+    
+    public VariableExpression asVariableExpression() {
+        return new VariableExpression(List.of(this), "{" + this.getName() + "}");
     }
     
     /**

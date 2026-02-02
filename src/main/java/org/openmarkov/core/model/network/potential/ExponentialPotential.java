@@ -10,6 +10,7 @@ import net.sourceforge.jeval.EvaluationException;
 import net.sourceforge.jeval.Evaluator;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
+import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -35,7 +36,7 @@ import java.util.Map;
     //		this.utilityVariable = utilityVariable;
     //	}
     
-    public ExponentialPotential(List<Variable> variables, PotentialRole role, String[] covariates,
+    public ExponentialPotential(List<Variable> variables, PotentialRole role, VariableExpression[] covariates,
                                 double[] coefficients) {
         super(variables, role, covariates, coefficients);
     }
@@ -65,8 +66,8 @@ import java.util.Map;
     }
     
     @Override protected List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-                                                          double[] coefficients, String[] covariates, List<Variable> evidencelessVariables,
-                                                          Map<String, String> variableValues) throws NonProjectablePotentialException.CannotEvaluate {
+                                                          double[] coefficients, VariableExpression[] covariates, List<Variable> evidencelessVariables,
+                                                          Map<Variable, String> variableValues) throws NonProjectablePotentialException.CannotEvaluate {
         // Fill arrays numericValues and evidencelessVariables
         int constantIndex = getConstantIndex(covariates);
         
@@ -78,7 +79,6 @@ import java.util.Map;
         int parentFirstIndex = (conditionedVariable == projectedPotentialVariables.get(0)) ? 1 : 0;
         int[] offsets = projectedPotential.getOffsets();
         int[] dimensions = projectedPotential.getDimensions();
-        Evaluator evaluator = new Evaluator();
         for (int i = 0; i < projectedPotential.values.length; i += numStates) {
             // Set the values of variables without evidence
             for (int j = parentFirstIndex; j < projectedPotentialVariables.size(); ++j) {
@@ -90,20 +90,14 @@ import java.util.Map;
                 } catch (NumberFormatException e) {
                     // ignore
                 }
-                variableValues.put("v" + j, String.valueOf(value));
+                variableValues.put(variable, String.valueOf(value));
             }
-            evaluator.setVariables(variableValues);
             double regression = coefficients[constantIndex];
             for (int j = 0; j < coefficients.length; ++j) {
                 double covariateValue;
                 if (j != constantIndex) {
-                    try {
-                        String evaluation = evaluator.evaluate(covariates[j]);
-                        covariateValue = Double.parseDouble(evaluation);
+                    covariateValue = Double.parseDouble(covariates[j].evaluateWith(variableValues));
                         regression += covariateValue * coefficients[j];
-                    } catch (EvaluationException e) {
-                        throw new NonProjectablePotentialException.CannotEvaluate(covariates[j], e);
-                    }
                 }
             }
             projectedPotential.values[i] = Math.exp(regression);

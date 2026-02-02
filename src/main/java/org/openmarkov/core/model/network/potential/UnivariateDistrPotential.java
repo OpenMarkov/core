@@ -8,6 +8,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.InvalidArgumentException;
+import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -23,12 +24,13 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @PotentialType(names = "UnivariateDistr") public class UnivariateDistrPotential extends Potential {
     
     public static final String PSEUDO_VARIABLE = "pseudoVariableDistributionName";
-    private static String INITIALIZATION_VALUE = "1";
+    private static VariableExpression INITIALIZATION_VALUE = new VariableExpression(Collections.emptyList(), "1");
     protected AugmentedProbTable distributionTable;
     /**
      * finiteStateVariables contains the node variable (Numeric) and the finite-states parents
@@ -318,7 +320,7 @@ import java.util.List;
     }
     
     protected void initializeAugmentedProbTable() {
-        String[] functionValues = distributionTable.getFunctionValues();
+        VariableExpression[] functionValues = distributionTable.getFunctionValues();
         Arrays.fill(functionValues, INITIALIZATION_VALUE);
     }
     

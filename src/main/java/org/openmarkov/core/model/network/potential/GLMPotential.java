@@ -7,6 +7,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
@@ -16,21 +17,17 @@ import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.NormalFunction;
 import org.openmarkov.core.model.network.modelUncertainty.XORShiftRandom;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Generalised Linear Model potential
  */
 public abstract class GLMPotential extends Potential {
-    protected static final String CONSTANT = "Constant";
+    protected static final VariableExpression CONSTANT = new VariableExpression(Collections.emptyList(), "Constant");
     /**
      * Covariates
      */
-    protected String[] processedCovariates;
+    protected VariableExpression[] covariates;
     /**
      * Coefficients for the parameters of the function
      */
@@ -52,17 +49,17 @@ public abstract class GLMPotential extends Potential {
         super(variables, role);
         this.sampledCoefficients = null;
         setCovariates(getDefaultCovariates(variables, role));
-        setCoefficients(new double[processedCovariates.length]);
+        setCoefficients(new double[covariates.length]);
     }
     
-    public GLMPotential(List<Variable> variables, PotentialRole role, String[] covariates, double[] coefficients) {
+    public GLMPotential(List<Variable> variables, PotentialRole role, VariableExpression[] covariates, double[] coefficients) {
         super(variables, role);
         this.sampledCoefficients = null;
         setCoefficients(coefficients);
         setCovariates(covariates);
     }
     
-    public GLMPotential(List<Variable> variables, PotentialRole role, String[] covariates, double[] coefficients,
+    public GLMPotential(List<Variable> variables, PotentialRole role, VariableExpression[] covariates, double[] coefficients,
                         double[] uncertaintyMatrix, MatrixType matrixType) {
         this(variables, role, covariates, coefficients);
         if (matrixType == MatrixType.COVARIANCE) {
@@ -73,14 +70,14 @@ public abstract class GLMPotential extends Potential {
         }
     }
     
-    public GLMPotential(List<Variable> variables, PotentialRole role, String[] covariates, double[] coefficients,
+    public GLMPotential(List<Variable> variables, PotentialRole role, VariableExpression[] covariates, double[] coefficients,
                         double[] covarianceMatrix) {
         this(variables, role, covariates, coefficients, covarianceMatrix, MatrixType.COVARIANCE);
     }
     
     public GLMPotential(GLMPotential potential) {
         super(potential);
-        setCovariates(potential.processedCovariates.clone());
+        setCovariates(potential.covariates.clone());
         setCoefficients(potential.coefficients.clone());
         if (potential.covarianceMatrix != null) {
             setCovarianceMatrix(potential.covarianceMatrix.clone());
@@ -124,18 +121,18 @@ public abstract class GLMPotential extends Potential {
         return cholesky;
     }
     
-    public static String[] getMandatoryCovariates() {
-        return new String[]{CONSTANT};
+    public static VariableExpression[] getMandatoryCovariates() {
+        return new VariableExpression[]{CONSTANT};
     }
     
-    protected static String[] getDefaultCovariates(List<Variable> variables, PotentialRole role) {
+    protected static VariableExpression[] getDefaultCovariates(List<Variable> variables, PotentialRole role) {
         return getDefaultCovariates(variables, role, getMandatoryCovariates());
     }
     
-    protected static String[] getDefaultCovariates(List<Variable> variables, PotentialRole role,
-                                                   String[] mandatoryCovariates) {
+    protected static VariableExpression[] getDefaultCovariates(List<Variable> variables, PotentialRole role,
+                                                               VariableExpression[] mandatoryCovariates) {
         int firstParentIndex = 1;
-        String[] covariates = new String[mandatoryCovariates.length + variables.size() - firstParentIndex];
+        VariableExpression[] covariates = new VariableExpression[mandatoryCovariates.length + variables.size() - firstParentIndex];
         
         int j = 0;
         while (j < mandatoryCovariates.length) {
@@ -143,17 +140,17 @@ public abstract class GLMPotential extends Potential {
             ++j;
         }
         for (int i = firstParentIndex; i < variables.size(); ++i) {
-            covariates[j++] = variables.get(i).getName();
+            covariates[j++] = variables.get(i).asVariableExpression();
         }
         return covariates;
     }
     
-    public String[] getCovariates() {
-        return unprocessCovariates(variables, processedCovariates);
+    public VariableExpression[] getCovariates() {
+        return covariates;
     }
     
-    public void setCovariates(String[] covariates) {
-        this.processedCovariates = processCovariates(variables, covariates);
+    public void setCovariates(VariableExpression[] covariates) {
+        this.covariates = covariates;
     }
     
     public double[] getCoefficients() {
@@ -165,11 +162,11 @@ public abstract class GLMPotential extends Potential {
     }
     
     public double getConstant() {
-        return coefficients[getConstantIndex(processedCovariates)];
+        return coefficients[getConstantIndex(covariates)];
     }
     
     public void setConstant(double constant) {
-        this.coefficients[getConstantIndex(processedCovariates)] = constant;
+        this.coefficients[getConstantIndex(covariates)] = constant;
     }
     
     public double[] getCovarianceMatrix() {
@@ -197,7 +194,7 @@ public abstract class GLMPotential extends Potential {
     public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException {
         double[] coefficients = (sampledCoefficients == null) ? this.coefficients : this.sampledCoefficients;
         List<Variable> evidencelessVariables = new ArrayList<>();
-        Map<String, String> variableValues = new HashMap<>();
+        Map<Variable, String> variableValues = new HashMap<>();
         int firstParentVariableIndex = 1;
         for (int i = firstParentVariableIndex; i < variables.size(); ++i) {
             Variable variable = variables.get(i);
@@ -206,7 +203,7 @@ public abstract class GLMPotential extends Potential {
                     throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATableDueToVariable(this, variable);
                 }
                 evidencelessVariables.add(variable);
-                variableValues.put("v" + i, "0.0");
+                variableValues.put(variable, "0.0");
             } else {
                 double numericValue;
                 Finding finding = evidenceCase.getFinding(variable);
@@ -222,16 +219,15 @@ public abstract class GLMPotential extends Potential {
                         // ignore
                     }
                 }
-                variableValues.put("v" + i, String.valueOf(numericValue));
+                variableValues.put(variable, String.valueOf(numericValue));
             }
         }
-        return tableProject(evidenceCase, inferenceOptions, coefficients, processedCovariates, evidencelessVariables,
-                            variableValues);
+        return tableProject(evidenceCase, inferenceOptions, coefficients, covariates, evidencelessVariables, variableValues);
     }
     
     protected abstract List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-                                                         double[] coefficients, String[] covariates, List<Variable> evidencelessVariables,
-                                                         Map<String, String> variableValues) throws NonProjectablePotentialException;
+                                                         double[] coefficients, VariableExpression[] covariates, List<Variable> evidencelessVariables,
+                                                         Map<Variable, String> variableValues) throws NonProjectablePotentialException;
     
     @Override public Potential sample() {
         if (choleskyDecomposition != null) {
@@ -258,15 +254,6 @@ public abstract class GLMPotential extends Potential {
             }
         }
         return this;
-    }
-    
-    protected static String[] processCovariates(List<Variable> variables, String[] covariates) {
-        String[] processedCovariates = new String[covariates.length];
-        
-        for (int i = 0; i < covariates.length; ++i) {
-            processedCovariates[i] = processCovariate(covariates[i], variables);
-        }
-        return processedCovariates;
     }
     
     protected static String processCovariate(String covariate, List<Variable> variables) {
@@ -299,28 +286,11 @@ public abstract class GLMPotential extends Potential {
         return covariates;
     }
     
-    protected static void removeVariableFromCovariates(List<Variable> variables, Variable variable, String[] covariates,
-                                                       double[] coefficients, List<String> newCovariates, List<Double> newCoefficients) {
-        int index = variables.indexOf(variable);
-        String variableToRemove = "#{v" + index + "}";
-        for (int i = 0; i < covariates.length; ++i) {
-            if (!covariates[i].contains(variableToRemove)) {
-                String newCovariate = covariates[i];
-                for (int j = index + 1; j < variables.size(); ++j) {
-                    if (newCovariate.contains("#{v" + j + "}"))
-                        newCovariate = newCovariate.replace("#{v" + j + "}", "#{v" + (j - 1) + "}");
-                }
-                newCovariates.add(newCovariate);
-                newCoefficients.add(coefficients[i]);
-            }
-        }
-    }
-    
-    protected static int getConstantIndex(String[] covariates) {
+    protected static int getConstantIndex(VariableExpression[] covariates) {
         int constantIndex = -1;
         int i = 0;
         while (i < covariates.length && constantIndex == -1) {
-            if (covariates[i].equals(CONSTANT)) {
+            if (covariates[i].asStringExpression().equals(CONSTANT.asStringExpression())) {
                 constantIndex = i;
             }
             ++i;
@@ -346,8 +316,8 @@ public abstract class GLMPotential extends Potential {
             potential.covarianceMatrix = this.covarianceMatrix.clone();
         }
         
-        if (this.processedCovariates != null) {
-            potential.processedCovariates = this.processedCovariates.clone();
+        if (this.covariates != null) {
+            potential.covariates = this.covariates.clone();
         }
         
         if (sampledCoefficients != null) {

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.constraint.NoCycle;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
@@ -575,21 +576,34 @@ public class ProbNetOperationsTest {
                                                                                                              ageVar_0,
                                                                                                              timeInStateVar_0),
                                                                                                role);
-        ageAtStateEntryPotential_0.setCovariates(new String[]{"Constant", "Age [0]", "Time in state [0]"});
+        ageAtStateEntryPotential_0.setCovariates(new VariableExpression[]{
+                new VariableExpression(Collections.emptyList(), "Constant"),
+                ageAtStateEntryVar_0.asVariableExpression(),
+                timeInStateVar_0.asVariableExpression()}
+        );
         ageAtStateEntryPotential_0.setCoefficients(new double[]{0, 1, -1});
         probNet.getNode(ageAtStateEntryVar_0).setPotential(ageAtStateEntryPotential_0);
         LinearCombinationPotential ageAtStateEntryPotential_1 = new LinearCombinationPotential(Arrays.asList(ageAtStateEntryVar_1,
                                                                                                              ageVar_1,
                                                                                                              timeInStateVar_1),
                                                                                                role);
-        ageAtStateEntryPotential_1.setCovariates(new String[]{"Constant", "Age [1]", "Time in state [1]"});
+        ageAtStateEntryPotential_1.setCovariates(new VariableExpression[]{
+                new VariableExpression(Collections.emptyList(), "Constant"),
+                ageAtStateEntryVar_1.asVariableExpression(),
+                timeInStateVar_1.asVariableExpression()}
+        );
+        
         ageAtStateEntryPotential_1.setCoefficients(new double[]{0, 1, -1});
         probNet.getNode(ageAtStateEntryVar_1).setPotential(ageAtStateEntryPotential_1);
         LinearCombinationPotential ageAtStateEntryPotential_2 = new LinearCombinationPotential(Arrays.asList(ageAtStateEntryVar_2,
                                                                                                              ageVar_2,
                                                                                                              timeInStateVar_2),
                                                                                                role);
-        ageAtStateEntryPotential_2.setCovariates(new String[]{"Constant", "Age [2]", "Time in state [2]"});
+        ageAtStateEntryPotential_2.setCovariates(new VariableExpression[]{
+                new VariableExpression(Collections.emptyList(), "Constant"),
+                ageAtStateEntryVar_2.asVariableExpression(),
+                timeInStateVar_2.asVariableExpression()}
+        );
         ageAtStateEntryPotential_2.setCoefficients(new double[]{0, 1, -1});
         probNet.getNode(ageAtStateEntryVar_2).setPotential(ageAtStateEntryPotential_2);
         Potential timeInStatePotential_0 = new DeltaPotential(Arrays.asList(timeInStateVar_0), role);
@@ -618,12 +632,20 @@ public class ProbNetOperationsTest {
         probNet.getNode(timeInStateVar_2).setPotential(timeInStatePotential_2);
         WeibullHazardPotential transitionPotential_1 = new WeibullHazardPotential(Arrays.asList(transitionVar_1, ageAtStateEntryVar_0, timeInStateVar_0), role);
         transitionPotential_1.setTimeVariable(timeInStateVar_0);
-        transitionPotential_1.setCovariates(new String[]{"Gamma", "Constant", "Age at state entry [0]"});
+        transitionPotential_1.setCovariates(new VariableExpression[]{
+                new VariableExpression(Collections.emptyList(), "Gamma"),
+                new VariableExpression(Collections.emptyList(), "Constant"),
+                ageAtStateEntryVar_0.asVariableExpression()
+        });
         transitionPotential_1.setCoefficients(new double[]{0.3757164, -1.166541, 0.002097});
         probNet.getNode(transitionVar_1).setPotential(transitionPotential_1);
         WeibullHazardPotential transitionPotential_2 = new WeibullHazardPotential(Arrays.asList(transitionVar_2, ageAtStateEntryVar_1, timeInStateVar_1), role);
         transitionPotential_2.setTimeVariable(timeInStateVar_1);
-        transitionPotential_2.setCovariates(new String[]{"Gamma", "Constant", "Age at state entry [1]"});
+        transitionPotential_2.setCovariates(new VariableExpression[]{
+                new VariableExpression(Collections.emptyList(), "Gamma"),
+                new VariableExpression(Collections.emptyList(), "Constant"),
+                ageAtStateEntryVar_1.asVariableExpression()
+        });
         transitionPotential_2.setCoefficients(new double[]{0.3757164, -1.166541, 0.002097});
         probNet.getNode(transitionVar_2).setPotential(transitionPotential_2);
         probNet.getNode(transitionVar_3).setPotential(new UniformPotential(Arrays.asList(transitionVar_3), role));

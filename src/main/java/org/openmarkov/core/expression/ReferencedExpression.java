@@ -1,14 +1,15 @@
 package org.openmarkov.core.expression;
 
-import org.jetbrains.annotations.NotNull;
+import net.sourceforge.jeval.EvaluationException;
+import org.jetbrains.annotations.Nullable;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.java.regexUtils.SplitByRegex;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  * The difference between a normal expression (A {@link String}) and a ReferencedExpression is that the latter
@@ -19,11 +20,13 @@ public class ReferencedExpression<T> {
     private final List<T> references;
     private final Function<T, String> stringifyReference;
     private final List<? extends ExpressionContent<T>> contents;
+    private final Function<T, @Nullable String> resolveToJEval;
     
-    public ReferencedExpression(Map<String, T> references, String expression, Function<T, String> stringifyReference) {
+    public ReferencedExpression(Map<String, T> references, String expression, Function<T, String> stringifyReference, Function<T, @Nullable String> resolveToJEval) {
         this.references = new ArrayList<>();
         this.stringifyReference = stringifyReference;
-        var allRanges = splitAll(EXTRACT_VARIABLE_PATTERN, expression);
+        this.resolveToJEval = resolveToJEval;
+        var allRanges = SplitByRegex.splitAll(EXTRACT_VARIABLE_PATTERN, expression);
         this.contents = allRanges
                 .stream()
                 .map(subString -> {
@@ -49,43 +52,79 @@ public class ReferencedExpression<T> {
             }).collect(Collectors.joining());
     }
     
-    /**
-     * Splits the input string into substrings where the pattern matches and where it does not.
-     */
-    private static @NotNull List<String> splitAll(Pattern pattern, String input) {
-        var matchesRanges = pattern.matcher(input).results()
-                                   .map(matchResult -> new Range(matchResult.start(), matchResult.end()))
-                                   .toList();
+    public final String processedExpression(Map<T, String> variablesValues) {
         
-        var unmatchesRanges = new ArrayList<Range>();
-        if (matchesRanges.isEmpty()) {
-            unmatchesRanges.add(new Range(0, input.length()));
-        }
-        if (!matchesRanges.isEmpty() && matchesRanges.getFirst().start() != 0) {
-            unmatchesRanges.add(new Range(0, matchesRanges.getFirst().start()));
-        }
-        if (!matchesRanges.isEmpty() && matchesRanges.getLast().end() != input.length()) {
-            unmatchesRanges.add(new Range(matchesRanges.getLast().end(), input.length()));
-        }
-        IntStream.range(0, matchesRanges.size() - 1).forEach(i -> {
-            unmatchesRanges.add(new Range(matchesRanges.get(i).end(), matchesRanges.get(i + 1).start()));
-        });
-        return Stream.concat(unmatchesRanges.stream(), matchesRanges.stream())
-                     .sorted(Comparator.comparing(Range::start))
-                     .map(range -> input.substring(range.start(), range.end()))
-                     .toList();
+        var variableResolver = new VariableResolver<T>(this, variablesValues);
+        return contents.stream()
+                       .map(expressionContent -> expressionContent.resolve(variableResolver))
+                       .collect(Collectors.joining());
     }
     
-    record Range(int start, int end) {
+    public List<T> references() {
+        return contents.stream().filter(expressionContent -> switch (expressionContent) {
+                           case ExpressionContent.VariableReference<T>(T reference) -> true;
+                           default -> false;
+                       })
+                       .map(expressionContent -> ((ExpressionContent.VariableReference<T>) expressionContent).reference)
+                       .toList();
     }
     
     sealed interface ExpressionContent<T> {
         record VariableReference<T>(T reference) implements ExpressionContent<T> {
+            @Override public String resolve(VariableResolver<T> variableResolver) {
+                if (variableResolver.constantsFromValue.containsKey(reference)) {
+                    return variableResolver.constantsFromValue.get(reference);
+                }
+                String variableName = variableResolver.referencedExpression.stringifyReference.apply(reference);
+                if (variableResolver.constantsFromName.containsKey(variableName)) {
+                    return variableResolver.constantsFromName.get(variableName);
+                }
+                String inlineResolve = variableResolver.referencedExpression.resolveToJEval.apply(reference);
+                if (inlineResolve != null) {
+                    return inlineResolve;
+                }
+                return "{" + variableName + "}";
+            }
         }
         
         record UnparsedExpression<T>(String unparsed) implements ExpressionContent<T> {
+            @Override public String resolve(VariableResolver<T> variableResolver) {
+                return unparsed;
+            }
+        }
+        
+        String resolve(VariableResolver<T> variableResolver);
+        
+    }
+    
+    @Override public String toString() {
+        return this.asStringExpression();
+    }
+    
+    public String evaluateWith(Map<T, String> variablesValues) throws NonProjectablePotentialException.CannotEvaluate {
+        String processedExpression = this.processedExpression(variablesValues);
+        try {
+            return new net.sourceforge.jeval.Evaluator().evaluate(processedExpression);
+        } catch (EvaluationException e) {
+            throw new NonProjectablePotentialException.CannotEvaluate(processedExpression, e);
         }
     }
     
-    
+    record VariableResolver<T>(ReferencedExpression<T> referencedExpression, Map<T, String> constantsFromValue,
+                               Map<String, String> constantsFromName) {
+        public VariableResolver(ReferencedExpression<T> referencedExpression, Map<T, String> constantsFromValue) {
+            this(referencedExpression, constantsFromValue, resolveConstantsFromName(referencedExpression, constantsFromValue));
+        }
+        
+        private static <T> Map<String, String> resolveConstantsFromName(ReferencedExpression<T> referencedExpression, Map<T, String> constantsFromValue) {
+            HashMap<String, String> constantsFromName = new HashMap<>();
+            for (Map.Entry<T, String> entry : constantsFromValue.entrySet()) {
+                String name = referencedExpression.stringifyReference.apply(entry.getKey());
+                if (!constantsFromName.containsKey(name)) {
+                    constantsFromName.put(name, entry.getValue());
+                }
+            }
+            return constantsFromName;
+        }
+    }
 }

@@ -10,6 +10,7 @@ package org.openmarkov.core.model.network.potential;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.openmarkov.core.exception.NotSupportedOperationException;
+import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
@@ -18,6 +19,7 @@ import org.openmarkov.core.util.UtilTestMethods;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -323,8 +325,16 @@ public class PotentialTest {
         potential.setCoefficients(new double[]{4, 5, 6});
         potential.setConstant(3);
         potential.setCovarianceMatrix(new double[]{8, 9, 10});
-        potential.setCovariates(new String[]{"11", "12", "13"});
-        potential.processedCovariates = new String[]{"14", "15", "16"};
+        potential.setCovariates(new VariableExpression[]{
+                new VariableExpression(Collections.emptyList(), "11"),
+                new VariableExpression(Collections.emptyList(), "12"),
+                new VariableExpression(Collections.emptyList(), "13"),
+        });
+        potential.covariates = new VariableExpression[]{
+                new VariableExpression(Collections.emptyList(), "14"),
+                new VariableExpression(Collections.emptyList(), "15"),
+                new VariableExpression(Collections.emptyList(), "16"),
+        };
         potential.sampledCoefficients = new double[]{17, 18, 19};
         
         ExponentialPotential potentialCopy = (ExponentialPotential) potential.deepCopy(probNet);
@@ -335,7 +345,7 @@ public class PotentialTest {
         assertNotSame(potential.getCoefficients(), potentialCopy.getCoefficients());
         assertNotSame(potential.getCovarianceMatrix(), potentialCopy.getCovarianceMatrix());
         assertNotSame(potential.getCovariates(), potentialCopy.getCovariates());
-        assertNotSame(potential.processedCovariates, potentialCopy.processedCovariates);
+        assertNotSame(potential.covariates, potentialCopy.covariates);
         assertNotSame(potential.sampledCoefficients, potentialCopy.sampledCoefficients);
         
     }
@@ -355,8 +365,17 @@ public class PotentialTest {
         potential.setCoefficients(new double[]{4, 5, 6});
         potential.setConstant(3);
         potential.setCovarianceMatrix(new double[]{8, 9, 10});
-        potential.setCovariates(new String[]{"11", "12", "13"});
-        potential.processedCovariates = new String[]{"14", "15", "16"};
+        potential.setCovariates(new VariableExpression[]{
+                new VariableExpression(Collections.emptyList(), "11"),
+                new VariableExpression(Collections.emptyList(), "12"),
+                new VariableExpression(Collections.emptyList(), "13"),
+        });
+        potential.covariates = new VariableExpression[]{
+                new VariableExpression(Collections.emptyList(), "14"),
+                new VariableExpression(Collections.emptyList(), "15"),
+                new VariableExpression(Collections.emptyList(), "16"),
+        };
+        
         potential.sampledCoefficients = new double[]{17, 18, 19};
         
         LinearCombinationPotential potentialCopy = (LinearCombinationPotential) potential.deepCopy(probNet);
@@ -367,7 +386,7 @@ public class PotentialTest {
         assertNotSame(potential.getCoefficients(), potentialCopy.getCoefficients());
         assertNotSame(potential.getCovarianceMatrix(), potentialCopy.getCovarianceMatrix());
         assertNotSame(potential.getCovariates(), potentialCopy.getCovariates());
-        assertNotSame(potential.processedCovariates, potentialCopy.processedCovariates);
+        assertNotSame(potential.covariates, potentialCopy.covariates);
         assertNotSame(potential.sampledCoefficients, potentialCopy.sampledCoefficients);
         
     }
@@ -452,8 +471,16 @@ public class PotentialTest {
         potential.setCholeskyDecomposition(new double[]{1, 2, 3});
         potential.setCoefficients(new double[]{4, 5, 6});
         potential.setCovarianceMatrix(new double[]{8, 9, 10});
-        potential.setCovariates(new String[]{"11", "12", "13"});
-        potential.processedCovariates = new String[]{"14", "15", "16"};
+        potential.setCovariates(new VariableExpression[]{
+                new VariableExpression(Collections.emptyList(), "11"),
+                new VariableExpression(Collections.emptyList(), "12"),
+                new VariableExpression(Collections.emptyList(), "13"),
+        });
+        potential.covariates = new VariableExpression[]{
+                new VariableExpression(Collections.emptyList(), "14"),
+                new VariableExpression(Collections.emptyList(), "15"),
+                new VariableExpression(Collections.emptyList(), "16"),
+        };
         potential.sampledCoefficients = new double[]{17, 18, 19};
         potential.setLog(true);
         
@@ -465,7 +492,7 @@ public class PotentialTest {
         assertNotSame(potential.getCoefficients(), potentialCopy.getCoefficients());
         assertNotSame(potential.getCovarianceMatrix(), potentialCopy.getCovarianceMatrix());
         assertNotSame(potential.getCovariates(), potentialCopy.getCovariates());
-        assertNotSame(potential.processedCovariates, potentialCopy.processedCovariates);
+        assertNotSame(potential.covariates, potentialCopy.covariates);
         assertNotSame(potential.sampledCoefficients, potentialCopy.sampledCoefficients);
         assertEquals(potential.isLog(), potentialCopy.isLog());
         

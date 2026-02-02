@@ -7,6 +7,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -20,8 +21,8 @@ import java.util.Map;
 
 @PotentialType(names = "Hazard (Exponential)")
 public class ExponentialHazardPotential extends WeibullHazardPotential {
-
-	protected static final String[] MANDATORY_COVARIATES = new String[] { CONSTANT };
+    
+    protected static final VariableExpression[] MANDATORY_COVARIATES = new VariableExpression[]{CONSTANT};
 
 	public ExponentialHazardPotential(List<Variable> variables, PotentialRole role) {
 		super(variables, role, getDefaultCovariates(variables, role, MANDATORY_COVARIATES),
@@ -31,8 +32,8 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
 	public ExponentialHazardPotential(List<Variable> variables, PotentialRole role, double[] coefficients) {
 		this(variables, role, getDefaultCovariates(variables, role, MANDATORY_COVARIATES), null, null);
 	}
-
-	public ExponentialHazardPotential(List<Variable> variables, PotentialRole role, String[] covariates,
+    
+    public ExponentialHazardPotential(List<Variable> variables, PotentialRole role, VariableExpression[] covariates,
 			double[] coefficients, double[] covarianceMatrix) {
 		super(variables, role, covariates, coefficients, covarianceMatrix);
 	}
@@ -42,8 +43,8 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
 		super(variables, role, getDefaultCovariates(variables, role, MANDATORY_COVARIATES), coefficients,
 				covarianceMatrix);
 	}
-
-	public ExponentialHazardPotential(List<Variable> variables, PotentialRole role, String[] covariates,
+    
+    public ExponentialHazardPotential(List<Variable> variables, PotentialRole role, VariableExpression[] covariates,
 			double[] coefficients, double[] uncertaintyMatrix, MatrixType matrixType) {
 		super(variables, role, covariates, coefficients, uncertaintyMatrix, matrixType);
 	}
@@ -71,16 +72,16 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
 		return !variables.isEmpty() && variables.get(0).getVariableType() == VariableType.FINITE_STATES
 				&& variables.get(0).getNumStates() == 2;
 	}
-
-	public static String[] getMandatoryCovariates() {
-		return new String[] { CONSTANT };
+    
+    public static VariableExpression[] getMandatoryCovariates() {
+        return new VariableExpression[]{CONSTANT};
 	}
 
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-			double[] coefficients, String[] covariates, List<Variable> evidencelessVariables,
-			Map<String, String> variableValues) throws NonProjectablePotentialException.MissingEvidenceInVariable, NonProjectablePotentialException.CannotEvaluate {
+                                                       double[] coefficients, VariableExpression[] covariates, List<Variable> evidencelessVariables,
+                                                       Map<Variable, String> variableValues) throws NonProjectablePotentialException.MissingEvidenceInVariable, NonProjectablePotentialException.CannotEvaluate {
 		double[] weibullCoeficients = new double[coefficients.length + 1];
-		String[] weibullCovariates = new String[covariates.length + 1];
+        VariableExpression[] weibullCovariates = new VariableExpression[covariates.length + 1];
 		// The exponential is a special case of Weibull where k=1 (gamma= ln(k));
 		weibullCoeficients[0] = 0;
 		weibullCovariates[0] = GAMMA;

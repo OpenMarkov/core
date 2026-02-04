@@ -11,9 +11,10 @@ import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.constraint.OnlyDirectedLinks;
 import org.openmarkov.core.model.network.constraint.OnlyUndirectedLinks;
-import org.openmarkov.core.model.network.type.plugin.ProbNetType;
+import org.openmarkov.core.model.network.type.plugin.NetworkTypeInfo;
 
-@ProbNetType(name = "MarkovNetwork") public final class MarkovNetworkType extends NetworkType {
+@NetworkTypeInfo(name = "MarkovNetwork", visualName = "Markov Network")
+public final class MarkovNetworkType extends NetworkType {
     private static final MarkovNetworkType INSTANCE = new MarkovNetworkType();
 
 	// Constructor

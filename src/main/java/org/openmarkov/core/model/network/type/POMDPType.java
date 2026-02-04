@@ -10,9 +10,10 @@ package org.openmarkov.core.model.network.type;
 import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyTemporalVariables;
-import org.openmarkov.core.model.network.type.plugin.ProbNetType;
+import org.openmarkov.core.model.network.type.plugin.NetworkTypeInfo;
 
-@ProbNetType(name = "POMDP") public class POMDPType extends NetworkType {
+@NetworkTypeInfo(name = "POMDP", visualName = "POMDP")
+public class POMDPType extends NetworkType {
     private static final POMDPType INSTANCE = new POMDPType();
 
 	// Constructor

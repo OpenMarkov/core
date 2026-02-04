@@ -9,9 +9,9 @@ package org.openmarkov.core.model.network.type;
 
 import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
 import org.openmarkov.core.model.network.constraint.OnlyOneAgent;
-import org.openmarkov.core.model.network.type.plugin.ProbNetType;
+import org.openmarkov.core.model.network.type.plugin.NetworkTypeInfo;
 
-@ProbNetType(name = "DEC_POMDP") public class DECPOMDPType extends POMDPType {
+@NetworkTypeInfo(name = "DEC_POMDP", visualName = "DEC POMDP") public final class DECPOMDPType extends POMDPType {
     private static final DECPOMDPType INSTANCE = new DECPOMDPType();
 
 	// Constructor

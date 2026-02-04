@@ -10,9 +10,9 @@ package org.openmarkov.core.model.network.type;
 import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyTemporalVariables;
-import org.openmarkov.core.model.network.type.plugin.ProbNetType;
+import org.openmarkov.core.model.network.type.plugin.NetworkTypeInfo;
 
-@ProbNetType(name = "MID", alternativeNames = "MPAD")
+@NetworkTypeInfo(name = "MID", visualName = "Markov Influence Diagram", alternativeNames = "MPAD")
 public final class MIDType extends NetworkType {
 	// Attributes
     private static final MIDType INSTANCE = new MIDType();

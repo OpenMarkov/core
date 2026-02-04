@@ -7,9 +7,10 @@
 
 package org.openmarkov.core.model.network.type;
 
-import org.openmarkov.core.model.network.type.plugin.ProbNetType;
+import org.openmarkov.core.model.network.type.plugin.NetworkTypeInfo;
 
-@ProbNetType(name = "InfluenceDiagram") public final class InfluenceDiagramType extends NetworkType {
+@NetworkTypeInfo(name = "InfluenceDiagram", visualName = "Influence Diagram")
+public final class InfluenceDiagramType extends NetworkType {
     private static final InfluenceDiagramType INSTANCE = new InfluenceDiagramType();
 
 	// Constructor

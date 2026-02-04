@@ -7,9 +7,9 @@
 
 package org.openmarkov.core.model.network.type;
 
-import org.openmarkov.core.model.network.type.plugin.ProbNetType;
+import org.openmarkov.core.model.network.type.plugin.NetworkTypeInfo;
 
-@ProbNetType(name = "LIMID") public final class LIMIDType extends NetworkType {
+@NetworkTypeInfo(name = "LIMID", visualName = "LIMID") public final class LIMIDType extends NetworkType {
     private static final LIMIDType INSTANCE = new LIMIDType();
 
 	// Constructor

@@ -11,9 +11,10 @@ import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
 import org.openmarkov.core.model.network.constraint.OnlyAtemporalVariables;
 import org.openmarkov.core.model.network.constraint.OnlyChanceNodes;
 import org.openmarkov.core.model.network.constraint.OnlyTemporalVariables;
-import org.openmarkov.core.model.network.type.plugin.ProbNetType;
+import org.openmarkov.core.model.network.type.plugin.NetworkTypeInfo;
 
-@ProbNetType(name = "DBN") public final class DynamicBayesianNetwork extends NetworkType {
+@NetworkTypeInfo(name = "DBN", visualName = "Dynamic Bayesian Network")
+public final class DynamicBayesianNetwork extends NetworkType {
     private static final DynamicBayesianNetwork INSTANCE = new DynamicBayesianNetwork();
 
 	// Constructor

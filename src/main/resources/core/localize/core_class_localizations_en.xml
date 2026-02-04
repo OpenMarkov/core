@@ -400,13 +400,14 @@
                   value="TreeADDBranch for {rootVariable} with potential {potential} and states {states}"/>
     <Localization class="org.openmarkov.core.model.network.type.BayesianNetworkType" value="Bayesian"/>
     <Localization class="org.openmarkov.core.model.network.type.DECPOMDPType" value="Dec-POMDP"/>
+    <Localization class="org.openmarkov.core.model.network.type.MarkovDynamicBayesianNetwork"/>
     <Localization class="org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType" value="Decision analysis"/>
     <Localization class="org.openmarkov.core.model.network.type.DynamicBayesianNetwork" value="Dynamic Bayesian"/>
     <Localization class="org.openmarkov.core.model.network.type.DynamicLimidType" value="Dynamic LIMID"/>
     <Localization class="org.openmarkov.core.model.network.type.InfluenceDiagramType" value="Influence diagram"/>
     <Localization class="org.openmarkov.core.model.network.type.LIMIDType" value="LIMID"/>
     <Localization class="org.openmarkov.core.model.network.type.MDPType" value="MPAD"/>
-    <Localization class="org.openmarkov.core.model.network.type.MIDType" value="MID"/>
+    <Localization class="org.openmarkov.core.model.network.type.MIDType" value="Markov Influence Diagram"/>
     <Localization class="org.openmarkov.core.model.network.type.MarkovNetworkType" value="Markov"/>
     <Localization class="org.openmarkov.core.model.network.type.POMDPType" value="POMDP"/>
     <Localization class="org.openmarkov.core.model.network.type.TuningNetworkType" value="Tuning"/>

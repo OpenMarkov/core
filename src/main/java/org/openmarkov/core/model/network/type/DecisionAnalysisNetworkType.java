@@ -10,9 +10,10 @@ package org.openmarkov.core.model.network.type;
 import org.openmarkov.core.model.network.constraint.ConstraintBehavior;
 import org.openmarkov.core.model.network.constraint.NoLinkRestriction;
 import org.openmarkov.core.model.network.constraint.NoRevelationArc;
-import org.openmarkov.core.model.network.type.plugin.ProbNetType;
+import org.openmarkov.core.model.network.type.plugin.NetworkTypeInfo;
 
-@ProbNetType(name = "DAN") public final class DecisionAnalysisNetworkType extends NetworkType {
+@NetworkTypeInfo(name = "DAN", visualName = "Decision Analysis Network")
+public final class DecisionAnalysisNetworkType extends NetworkType {
     private static final DecisionAnalysisNetworkType INSTANCE = new DecisionAnalysisNetworkType();
 
 	// Constructor

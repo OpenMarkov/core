@@ -59,6 +59,7 @@ public class InferenceManager {
      * given instance of ProbNet
      *
      * @param probNet Network
+     *
      * @return the list of the names of the algorithms that can evaluate the network
      */
     public List<String> getInferenceAlgorithmNames(ProbNet probNet) {
@@ -82,20 +83,19 @@ public class InferenceManager {
      * given instance of ProbNet
      *
      * @param probNet Network
+     *
      * @return the list of the names of the algorithms that can evaluate the network
      */
     public List<InferenceAlgorithm> getInferenceAlgorithms(ProbNet probNet) {
         List<InferenceAlgorithm> inferenceAlgorithms = new ArrayList<>();
         for (String algorithmName : this.inferenceAlgorithms.keySet()) {
-            Constructor<? extends InferenceAlgorithm> constructor;
-            Method checkEval;
-            @ToCheck(reasonKind = ToCheck.ReasonKind.CODE_QUALITY, reasonDescription = "isEvaluable is always true")
-            boolean isEvaluable = true;
             try {
                 Class<? extends InferenceAlgorithm> inferenceAlgorithmClass = this.inferenceAlgorithms
                         .get(algorithmName);
-                constructor = this.inferenceAlgorithms.get(algorithmName).getConstructor(ProbNet.class);
-                checkEval = inferenceAlgorithmClass.getMethod("checkEvaluability", ProbNet.class);
+                Constructor<? extends InferenceAlgorithm> constructor = this.inferenceAlgorithms.get(algorithmName)
+                                                                                                .getConstructor(ProbNet.class);
+                Method checkEval = inferenceAlgorithmClass.getMethod("checkEvaluability", ProbNet.class);
+                @ToCheck(reasonKind = ToCheck.ReasonKind.CODE_QUALITY, reasonDescription = "isEvaluable is always true") boolean isEvaluable = true;
                 try {
                     checkEval.invoke(inferenceAlgorithmClass, probNet);
                 } catch (InvocationTargetException e) {
@@ -105,7 +105,8 @@ public class InferenceManager {
                     InferenceAlgorithm inferenceAlgorithm = constructor.newInstance(probNet);
                     inferenceAlgorithms.add(inferenceAlgorithm);
                 }
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException |
+                     InstantiationException e) {
                 throw new UnreacheableException(e);
             }
         }
@@ -118,47 +119,40 @@ public class InferenceManager {
      *
      * @param algorithmName Algorithm name
      * @param probNet       Network
+     *
      * @return an instance of the algorithm whose names we receive as a parameter
+     *
      * @throws NotEvaluableNetworkException NotEvaluableNetworkException
      * @throws NoSuchMethodException        NoSuchMethodException
      */
     public @Nullable InferenceAlgorithm getInferenceAlgorithmByName(String algorithmName, ProbNet probNet)
             throws NotEvaluableNetworkException, NoSuchMethodException {
-        InferenceAlgorithm instance = null;
-        Constructor<? extends InferenceAlgorithm> constructor = null;
         Class<? extends InferenceAlgorithm> inferenceAlgorithmClass = inferenceAlgorithms.get(algorithmName);
-        Method checkEval;
         try {
-            constructor = inferenceAlgorithmClass.getConstructor(ProbNet.class);
-            checkEval = inferenceAlgorithmClass.getMethod("checkEvaluability", ProbNet.class);
-        } catch (SecurityException e1) {
-            throw new UnreacheableException(e1);
-        }
-        try {
+            Constructor<? extends InferenceAlgorithm> constructor = inferenceAlgorithmClass.getConstructor(ProbNet.class);
+            Method checkEval = inferenceAlgorithmClass.getMethod("checkEvaluability", ProbNet.class);
             checkEval.invoke(inferenceAlgorithms.get(algorithmName), probNet);
+            return constructor.newInstance(probNet);
         } catch (InvocationTargetException e) {
             Throwable targetExcep = e.getTargetException();
             if (targetExcep instanceof NotEvaluableNetworkException notEvaluableNetworkException) {
                 //noinspection ThrowInsideCatchBlockWhichIgnoresCaughtException
                 throw notEvaluableNetworkException;
             }
-        } catch (IllegalAccessException | IllegalArgumentException e) {
             throw new UnreacheableException(e);
-        }
-        try {
-            instance = constructor.newInstance(probNet);
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException |
-                 InvocationTargetException e) {
+                 SecurityException e) {
             throw new UnreacheableException(e);
         }
-        return instance;
     }
     
     /**
      * Returns an instance of the default algorithm given the ProbNet
      *
      * @param probNet Network
+     *
      * @return an instance of the default algorithm
+     *
      * @throws NotEvaluableNetworkException NotEvaluableNetworkException
      */
     public InferenceAlgorithm getDefaultInferenceAlgorithm(ProbNet probNet) throws NotEvaluableNetworkException {
@@ -189,7 +183,9 @@ public class InferenceManager {
      * ProbNet
      *
      * @param probNet Network
+     *
      * @return An instance of the default approximate algorithm
+     *
      * @throws NotEvaluableNetworkException NotEvaluableNetworkException
      */
     public InferenceAlgorithm getDefaultApproximateAlgorithm(ProbNet probNet) throws NotEvaluableNetworkException {

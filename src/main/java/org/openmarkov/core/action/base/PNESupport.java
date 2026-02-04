@@ -109,6 +109,28 @@ public class PNESupport /*extends UndoableEditSupport*/ {
         }
     }
     
+    public ArrayList<PNEdit> removeLastEdit() {
+        ArrayList<PNEdit> undoneEdits = new ArrayList<>();
+        if (!(undoManager.canUndo() && undoManager.canUndo())) {
+            return undoneEdits;
+        }
+        // Same as the undo method but counting the number of edits between parenthesis
+        PNEdit undoneEdit = undoManager.removeLastDone();
+        undoneEdits.add(undoneEdit);
+        if (!(undoneEdit instanceof CloseParenthesisEdit closeParenthesisEdit)) {
+            return undoneEdits;
+        }
+        while (true) {
+            undoneEdit = undoManager.removeLastDone();
+            undoneEdits.add(undoneEdit);
+            if (undoneEdit instanceof OpenParenthesisEdit openParenthesisEdit
+                    && openParenthesisEdit == closeParenthesisEdit.getOpenParenthesisEdit()) {
+                
+                return undoneEdits;
+            }
+        }
+    }
+    
     @ToCheck(reasonDescription = "This does not produce the expected events in PNEditEventListener", reasonKind = ToCheck.ReasonKind.PROBABLE_BUG)
     /**
      * @see javax.swing.undo.UndoManager#canRedo()

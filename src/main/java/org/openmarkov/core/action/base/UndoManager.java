@@ -57,6 +57,18 @@ public class UndoManager {
         return undoneEdit;
     }
     
+    /**
+     * Similar to undo, but it does not append the undone edit to the undoneEdits list, nor it triggers the undo event.
+     * <p>
+     * This is used to make an edit to disappear silently.
+     */
+    public @Nullable PNEdit removeLastDone() {
+        if (!canUndo()) {
+            return null;
+        }
+        return doneEdits.removeFirst();
+    }
+    
     public @Nullable PNEdit redo() {
         if (!canRedo()) {
             return null;

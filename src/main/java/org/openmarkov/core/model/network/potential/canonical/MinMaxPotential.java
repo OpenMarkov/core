@@ -105,7 +105,8 @@ public abstract class MinMaxPotential extends ICIPotential {
     @Override
     public List<TablePotential> tableProject(EvidenceCase evidence, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) {
         List<TablePotential> potentials = new ArrayList<>();
-        for (TablePotential subPotential : buildSubpotentialList()) {
+        List<TablePotential> subPotentials = buildSubpotentialList();
+        for (TablePotential subPotential : subPotentials) {
             potentials.addAll(subPotential.tableProject(evidence, null, projectedPotentials));
         }
         List<TablePotential> singleElementPotentialList = new ArrayList<>();

@@ -71,7 +71,6 @@ public class LinearCombinationPotential extends GLMPotential {
                                                           Map<Variable, String> variableValues) throws NonProjectablePotentialException.CannotEvaluate {
         Variable conditionedVariable = getConditionedVariable();
         int numStates = conditionedVariable.getNumStates();
-        Evaluator evaluator = new Evaluator();
         // Fill arrays numericValues and evidencelessVariables
         
         int constantIndex = getConstantIndex(covariates);

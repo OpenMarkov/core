@@ -117,31 +117,26 @@ import java.util.Random;
     @Override
     public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) {
         List<TablePotential> newProjectedPotentials = new ArrayList<>();
-        switch (role) {
-            case CONDITIONAL_PROBABILITY:
-            case JOINT_PROBABILITY:
-            case POLICY:
-                TablePotential projectedPotential = null;
+        switch (this.role) {
+            case LINK_RESTRICTION, UNSPECIFIED -> {
+            }
+            case CONDITIONAL_PROBABILITY, JOINT_PROBABILITY, POLICY -> {
                 Variable conditionedVariable = variables.get(0);
                 boolean isNumeric = conditionedVariable.getVariableType() == VariableType.NUMERIC;
                 if (evidenceCase != null && evidenceCase.contains(conditionedVariable)) {
                     if (!isNumeric) {
                         // returns a constant
-                        projectedPotential = new TablePotential(new ArrayList<Variable>(), role);
+                        TablePotential projectedPotential = new TablePotential(new ArrayList<Variable>(), role);
                         projectedPotential.values[0] = 1.0 / conditionedVariable.getNumStates();
+                        newProjectedPotentials.add(projectedPotential);
                     }
                 } else {
                     if (!isNumeric) {
-                        projectedPotential = createUniformTablePotential(evidenceCase, variables);
+                        newProjectedPotentials.add(createUniformTablePotential(evidenceCase, variables));
                     }
                 }
-                if (projectedPotential != null) {
-                    newProjectedPotentials.add(projectedPotential);
-                }
-                break;
-            default:
-                break;
-        } // end of switch/case statement
+            }
+        }
         return newProjectedPotentials;
     }
     

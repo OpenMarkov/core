@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.potential;
 
+import org.jetbrains.annotations.NotNull;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -115,29 +117,27 @@ import java.util.Random;
      *
      */
     @Override
-    public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) {
-        List<TablePotential> newProjectedPotentials = new ArrayList<>();
+    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
         switch (this.role) {
             case LINK_RESTRICTION, UNSPECIFIED -> {
+                throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
             }
             case CONDITIONAL_PROBABILITY, JOINT_PROBABILITY, POLICY -> {
                 Variable conditionedVariable = variables.get(0);
                 boolean isNumeric = conditionedVariable.getVariableType() == VariableType.NUMERIC;
-                if (evidenceCase != null && evidenceCase.contains(conditionedVariable)) {
-                    if (!isNumeric) {
-                        // returns a constant
-                        TablePotential projectedPotential = new TablePotential(new ArrayList<Variable>(), role);
-                        projectedPotential.values[0] = 1.0 / conditionedVariable.getNumStates();
-                        newProjectedPotentials.add(projectedPotential);
-                    }
-                } else {
-                    if (!isNumeric) {
-                        newProjectedPotentials.add(createUniformTablePotential(evidenceCase, variables));
-                    }
+                if (isNumeric) {
+                    throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
                 }
+                if (evidenceCase != null && evidenceCase.contains(conditionedVariable)) {
+                    // returns a constant
+                    TablePotential projectedPotential = new TablePotential(new ArrayList<Variable>(), role);
+                    projectedPotential.values[0] = 1.0 / conditionedVariable.getNumStates();
+                    return projectedPotential;
+                }
+                return createUniformTablePotential(evidenceCase, variables);
             }
         }
-        return newProjectedPotentials;
+        throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
     }
     
     @Override

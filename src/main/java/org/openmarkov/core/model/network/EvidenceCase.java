@@ -15,12 +15,8 @@ import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.type.MIDType;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This class stores an {@code ArrayList} of {@code Findings} and can
@@ -60,7 +56,11 @@ public class EvidenceCase implements ClassLocalizable {
     public EvidenceCase(List<Finding> findings) {
         this.findings = new HashMap<>();
         for (Finding finding : findings) {
-            this.findings.put(finding.getVariable(), finding);
+            try {
+                this.addFinding(finding);
+            } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther ignored) {
+                //If finding is incompatible with other, don't add it.
+            }
         }
     }
     
@@ -74,11 +74,7 @@ public class EvidenceCase implements ClassLocalizable {
      * @param evidenceCase Evidence case
      */
     public EvidenceCase(EvidenceCase evidenceCase) {
-        if (evidenceCase == null) {
-            findings = new HashMap<>();
-        } else {
-            findings = new HashMap<>(evidenceCase.findings);
-        }
+        this.findings = evidenceCase == null ? new HashMap<>() : new HashMap<>(evidenceCase.findings);
     }
     
     // Methods
@@ -168,8 +164,7 @@ public class EvidenceCase implements ClassLocalizable {
     public void addFinding(ProbNet probNet, String variableName, double value)
             throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         Variable variable = probNet.getVariable(variableName);
-        Finding finding = new Finding(variable, value);
-        addFinding(finding);
+        addFinding(new Finding(variable, value));
     }
     
     /**
@@ -229,6 +224,15 @@ public class EvidenceCase implements ClassLocalizable {
      */
     public List<Finding> getFindings() {
         return new ArrayList<>(findings.values());
+    }
+    
+    /**
+     * @return findings: {@code ArrayList} of {@code Finding}s.
+     */
+    public Map<Variable, String> getFindingsMap() {
+        return this.findings.entrySet().stream().collect(
+                Collectors.toMap(Map.Entry::getKey,
+                                 entry -> entry.getValue().getState()));
     }
     
     /**
@@ -358,8 +362,8 @@ public class EvidenceCase implements ClassLocalizable {
     }
     
     public EvidenceCase shiftEvidenceBackwards(int timeDifference, ProbNet probNet) {
-        EvidenceCase shiftedEvidence = new EvidenceCase();
         try {
+            EvidenceCase shiftedEvidence = new EvidenceCase();
             for (Finding finding : findings.values()) {
                 Variable findingVariable = finding.getVariable();
                 // generate shifted finding
@@ -375,24 +379,21 @@ public class EvidenceCase implements ClassLocalizable {
                     shiftedEvidence.addFinding(finding);
                 }
             }
+            return shiftedEvidence;
         } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
             // Unreachable code
             throw new UnreacheableException("shifted finding: ", e);
         }
-        return shiftedEvidence;
     }
     
     /**
      * @return The number of findings in the evidence case
      */
     public int getNumberOfFindings() {
-        int num;
         if (findings == null) {
-            num = 0;
-        } else {
-            num = findings.size();
+            return 0;
         }
-        return num;
+        return findings.size();
     }
     
     /**
@@ -405,15 +406,16 @@ public class EvidenceCase implements ClassLocalizable {
      * @throws IncompatibleEvidenceException IncompatibleEvidenceException
      */
     public void fuse(EvidenceCase evidenceCaseToFuse, boolean overwrite) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
-        if (evidenceCaseToFuse != null) {
-            for (Finding finding : evidenceCaseToFuse.getFindings()) {
-                if (this.contains(finding.getVariable())) {
-                    if (overwrite) {
-                        changeFinding(finding);
-                    }
-                } else {
-                    this.addFinding(finding);
+        if (evidenceCaseToFuse == null) {
+            return;
+        }
+        for (Finding finding : evidenceCaseToFuse.getFindings()) {
+            if (this.contains(finding.getVariable())) {
+                if (overwrite) {
+                    changeFinding(finding);
                 }
+            } else {
+                this.addFinding(finding);
             }
         }
     }

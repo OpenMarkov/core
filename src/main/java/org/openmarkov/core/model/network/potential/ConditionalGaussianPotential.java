@@ -7,6 +7,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import cern.jet.random.engine.MersenneTwister;
+import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.InferenceOptions;
@@ -19,7 +20,6 @@ import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -94,9 +94,7 @@ import java.util.List;
     }
     
     @Override
-    public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException {
-        // returned value
-        
+    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException {
         List<Variable> unobservedVariables = new ArrayList<>(variables);
         if (evidenceCase != null) {
             unobservedVariables.removeAll(evidenceCase.getVariables());
@@ -109,10 +107,8 @@ import java.util.List;
             projectedPotential.values[0] = 1.0;
         } else {
             // Project mean and variance potentials
-            TablePotential projectedMeanPotential = mean
-                    .tableProject(evidenceCase, inferenceOptions, projectedPotentials).get(0);
-            TablePotential projectedVariancePotential = variance
-                    .tableProject(evidenceCase, inferenceOptions, projectedPotentials).get(0);
+            TablePotential projectedMeanPotential = mean.tableProject(evidenceCase, inferenceOptions, projectedPotentials);
+            TablePotential projectedVariancePotential = variance.tableProject(evidenceCase, inferenceOptions, projectedPotentials);
             
             int numConfigurations = projectedMeanPotential.tableSize;
             // Go trough this potential using accumulatedOffests
@@ -135,7 +131,7 @@ import java.util.List;
                 projectedPotential.values[configurationIndex + (numStates - 1)] = 1 - lastCdf;
             }
         }
-        return Arrays.asList(projectedPotential);
+        return projectedPotential;
     }
     
     @Override

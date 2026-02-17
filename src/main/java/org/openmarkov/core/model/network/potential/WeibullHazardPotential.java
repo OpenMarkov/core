@@ -7,8 +7,7 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import net.sourceforge.jeval.EvaluationException;
-import net.sourceforge.jeval.Evaluator;
+import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.expression.VariableExpression;
@@ -106,9 +105,9 @@ import java.util.*;
     }
     
     @Override
-    public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-                                             double[] coefficients, VariableExpression[] covariates, List<Variable> evidencelessVariables,
-                                             Map<Variable, String> variableValues) throws NonProjectablePotentialException.MissingEvidenceInVariable, NonProjectablePotentialException.CannotEvaluate {
+    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
+                                                double[] coefficients, VariableExpression[] covariates, List<Variable> evidencelessVariables,
+                                                Map<Variable, String> variableValues) throws NonProjectablePotentialException.MissingEvidenceInVariable, NonProjectablePotentialException.CannotEvaluate {
         Variable conditionedVariable = getConditionedVariable();
         // Fill arrays numericValues and evidencelessVariables
         
@@ -191,7 +190,7 @@ import java.util.*;
             }
         }
         
-        return Arrays.asList(projectedPotential);
+        return projectedPotential;
     }
     
     @Override public Potential copy() {

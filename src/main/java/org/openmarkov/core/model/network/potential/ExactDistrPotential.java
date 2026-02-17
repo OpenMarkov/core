@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.model.network.potential;
 
+import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -55,32 +56,32 @@ import java.util.List;
     
     // Methods
     @Override
-    public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions) throws NonProjectablePotentialException {
+    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions) throws NonProjectablePotentialException {
         // get the projected TablePotential, which will be returned inside a list
-        List<TablePotential> projectedPotentials = tablePotential.tableProject(evidenceCase, inferenceOptions);
-        projectedPotentials.get(0).setCriterion(getChildVariable().getDecisionCriterion());
-        projectedPotentials.get(0).setPotentialRole(PotentialRole.UNSPECIFIED);
-        return projectedPotentials;
+        TablePotential projectedPotential = tablePotential.tableProject(evidenceCase, inferenceOptions);
+        projectedPotential.setCriterion(getChildVariable().getDecisionCriterion());
+        projectedPotential.setPotentialRole(PotentialRole.UNSPECIFIED);
+        return projectedPotential;
     }
     
     @Override public ExactDistrPotential project(EvidenceCase evidenceCase) throws NonProjectablePotentialException {
-        List<TablePotential> projectedPotentials = tablePotential.tableProject(evidenceCase, null);
+        TablePotential projectedPotential = tablePotential.tableProject(evidenceCase, null);
         List<Variable> newVariables = new ArrayList<>();
         newVariables.add(variables.get(0));
-        newVariables.addAll(projectedPotentials.get(0).getVariables());
+        newVariables.addAll(projectedPotential.getVariables());
         ExactDistrPotential exactDistrPotential = new ExactDistrPotential(newVariables, PotentialRole.UNSPECIFIED);
-        exactDistrPotential.setTablePotential(projectedPotentials.get(0));
+        exactDistrPotential.setTablePotential(projectedPotential);
         return exactDistrPotential;
     }
     
     @Override
-    public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials) {
+    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
         // get the projected TablePotential, which will be returned inside a list
-        List<TablePotential> projectedPotentials = tablePotential
+        TablePotential projectedPotential = tablePotential
                 .tableProject(evidenceCase, inferenceOptions, alreadyProjectedPotentials);
-        projectedPotentials.get(0).setCriterion(getChildVariable().getDecisionCriterion());
-        projectedPotentials.get(0).setPotentialRole(PotentialRole.UNSPECIFIED);
-        return projectedPotentials;
+        projectedPotential.setCriterion(getChildVariable().getDecisionCriterion());
+        projectedPotential.setPotentialRole(PotentialRole.UNSPECIFIED);
+        return projectedPotential;
     }
     
     @Override public Potential sample() {
@@ -195,11 +196,13 @@ import java.util.List;
      * @return True if it is valid
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-        List<Variable> parents = variables.subList(1, variables.size());
-        boolean isValid = node.getNodeType() != NodeType.CHANCE || node.getVariable()
-                                                                       .getVariableType() == VariableType.NUMERIC || parents.stream()
-                                                                                                                            .anyMatch(parent -> parent.getVariableType() == VariableType.NUMERIC);
-        return isValid;
+        if (node.getNodeType() != NodeType.CHANCE) {
+            return true;
+        }
+        if (node.getVariable().getVariableType() == VariableType.NUMERIC) {
+            return true;
+        }
+        return variables.stream().skip(1).anyMatch(parent -> parent.getVariableType() == VariableType.NUMERIC);
     }
     
     

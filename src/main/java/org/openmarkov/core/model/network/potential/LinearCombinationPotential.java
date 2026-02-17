@@ -6,8 +6,6 @@
  */
 package org.openmarkov.core.model.network.potential;
 
-import net.sourceforge.jeval.EvaluationException;
-import net.sourceforge.jeval.Evaluator;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.expression.VariableExpression;
@@ -66,9 +64,9 @@ public class LinearCombinationPotential extends GLMPotential {
         throw new NotSupportedOperationException();
     }
     
-    @Override protected List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-                                                          double[] coefficients, VariableExpression[] covariates, List<Variable> evidencelessVariables,
-                                                          Map<Variable, String> variableValues) throws NonProjectablePotentialException.CannotEvaluate {
+    @Override protected TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
+                                                    double[] coefficients, VariableExpression[] covariates, List<Variable> evidencelessVariables,
+                                                    Map<Variable, String> variableValues) throws NonProjectablePotentialException.CannotEvaluate {
         Variable conditionedVariable = getConditionedVariable();
         int numStates = conditionedVariable.getNumStates();
         // Fill arrays numericValues and evidencelessVariables
@@ -112,7 +110,7 @@ public class LinearCombinationPotential extends GLMPotential {
                 }
             }
         }
-        return Arrays.asList(projectedPotential);
+        return projectedPotential;
     }
     
     @Override public Potential copy() {

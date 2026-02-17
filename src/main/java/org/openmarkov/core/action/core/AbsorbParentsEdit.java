@@ -33,7 +33,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
         ArrayList<TablePotential> parentsPotential = new ArrayList<>();
         for (Node node : parents) {
             try {
-                parentsPotential.add(node.getPotential().tableProject(null, null).get(0));
+                parentsPotential.add(node.getPotential().tableProject(null, null));
             } catch (NonProjectablePotentialException e) {
                 throw new UnreacheableException(e);
             }

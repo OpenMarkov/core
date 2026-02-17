@@ -80,15 +80,14 @@ public class ProbNetOperations {
             List<Potential> potentials = probNet.getPotentials(variable);
             for (Potential potential : potentials) {
                 probNet.removePotential(potential);
-                for (Potential newPotential : potential.tableProject(evidence, null)) {
-                    if (newPotential.getNumVariables() > 0) {
-                        boolean containVariables = true;
-                        for (Variable potentialVariable : newPotential.getVariables()) {
-                            containVariables &= (probNet.getNode(potentialVariable) != null);
-                        }
-                        if (containVariables) {
-                            probNet.addPotential(newPotential);
-                        }
+                Potential newPotential = potential.tableProject(evidence, null);
+                if (newPotential.getNumVariables() > 0) {
+                    boolean containVariables = true;
+                    for (Variable potentialVariable : newPotential.getVariables()) {
+                        containVariables &= (probNet.getNode(potentialVariable) != null);
+                    }
+                    if (containVariables) {
+                        probNet.addPotential(newPotential);
                     }
                 }
             }
@@ -487,7 +486,7 @@ public class ProbNetOperations {
                         
                         // Calculate scalar value projecting configuration
                         double scalarValue = Double.NEGATIVE_INFINITY;
-                        scalarValue = oldPotential.tableProject(configuration, inferenceOptions).get(0).values[0];
+                        scalarValue = oldPotential.tableProject(configuration, inferenceOptions).values[0];
                         scalarValue = oldVariable.round(scalarValue);
                         projectedValues[index++] = scalarValue;
                         if (!newStates.contains(scalarValue)) {

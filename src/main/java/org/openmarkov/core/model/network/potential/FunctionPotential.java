@@ -6,6 +6,7 @@
  */
 package org.openmarkov.core.model.network.potential;
 
+import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.expression.VariableExpression;
@@ -17,9 +18,6 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
-
-import net.sourceforge.jeval.EvaluationException;
-import net.sourceforge.jeval.Evaluator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -118,7 +116,7 @@ import java.util.Map;
      * @throws NonProjectablePotentialException NonProjectablePotentialException
      */
     @Override
-    public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
+    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
         throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
     }
     
@@ -132,9 +130,9 @@ import java.util.Map;
      *
      * @throws NonProjectablePotentialException NonProjectablePotentialException
      */
-    @Override protected List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-                                                          double[] coefficients, VariableExpression[] covariates, List<Variable> evidencelessVariables,
-                                                          Map<Variable, String> variableValues) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
+    @Override protected TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
+                                                    double[] coefficients, VariableExpression[] covariates, List<Variable> evidencelessVariables,
+                                                    Map<Variable, String> variableValues) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
         throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
         
     }

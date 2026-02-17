@@ -152,7 +152,7 @@ public abstract class Potential implements Localizable {
      */
     public TablePotential getCPT(EvidenceCase evidenceCase)
             throws NonProjectablePotentialException {
-        List<TablePotential> potentials = tableProject(evidenceCase, null);
+        List<TablePotential> potentials = Collections.singletonList(tableProject(evidenceCase, null));
         HashSet<Variable> variablesToEliminate = new HashSet<>();
         // Fill it with variables appearing in all potentials except this
         for (TablePotential tablePotential : potentials) {
@@ -249,8 +249,8 @@ public abstract class Potential implements Localizable {
      *
      * @throws NonProjectablePotentialException NonProjectablePotentialException
      */
-    public abstract List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-                                                      List<TablePotential> alreadyProjectedPotentials)
+    public abstract @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
+                                                         List<TablePotential> alreadyProjectedPotentials)
             throws NonProjectablePotentialException;
     
     //    /** @return isUtility <code>boolean</code> */
@@ -259,7 +259,7 @@ public abstract class Potential implements Localizable {
     //        return role == PotentialRole.UTILITY;
     //    }
     
-    public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions)
+    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions)
             throws NonProjectablePotentialException {
         return tableProject(evidenceCase, inferenceOptions, new ArrayList<TablePotential>());
     }

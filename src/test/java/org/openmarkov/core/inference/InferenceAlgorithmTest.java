@@ -123,7 +123,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
     }
     
     protected TablePotential getTablePotential(Potential potential) throws NumberFormatException, NonProjectablePotentialException {
-        return potential.tableProject(null, null).get(0);
+        return potential.tableProject(null, null);
     }
     
     /**

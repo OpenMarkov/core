@@ -48,10 +48,7 @@ public class LinearRegressionPotentialTest {
     
     @Test public void testTableProject() throws NonProjectablePotentialException {
         EvidenceCase evidence = new EvidenceCase();
-        List<TablePotential> projectedPotentials = potential.tableProject(evidence, null);
-        Assertions.assertEquals(1, projectedPotentials.size());
-        
-        TablePotential projectedPotential = projectedPotentials.get(0);
+        TablePotential projectedPotential = potential.tableProject(evidence, null);
         double[] expectedValues = new double[]{0, 1, 1, 0};
         Assertions.assertArrayEquals(expectedValues, projectedPotential.values, 0.00001);
     }

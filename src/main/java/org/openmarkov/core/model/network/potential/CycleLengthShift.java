@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.model.network.potential;
 
+import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.InferenceOptions;
@@ -15,7 +16,6 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -64,20 +64,25 @@ public class CycleLengthShift extends Potential {
      * @return True if it is valid
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-        // 10/01/2023 Issue #483. Signature changed.
-        //public static boolean validate(List<Variable> variables, PotentialRole role) {
-        return role == PotentialRole.CONDITIONAL_PROBABILITY && variables.size() == 2
-                // child = variables.get (0)
-                // parent = variables.get (1)
-                && variables.get(0).isTemporal() && variables.get(1).isTemporal() && variables.get(0).getBaseName()
-                                                                                              .equals(variables.get(1)
-                                                                                                               .getBaseName())
-                && variables.get(0).getTimeSlice() == variables.get(1).getTimeSlice() + 1;
+        // 10/01/2023 Issue #483. Signature changed. It used to be:
+        // public static boolean validate(List<Variable> variables, PotentialRole role) {
+        if (!(role == PotentialRole.CONDITIONAL_PROBABILITY && variables.size() == 2)) {
+            return false;
+        }
+        // child = variables.get (0)
+        // parent = variables.get (1)
+        Variable child = variables.get(0);
+        Variable parent = variables.get(1);
+        if (!child.isTemporal() || !parent.isTemporal()) {
+            return false;
+        }
+        return child.getBaseName().equals(parent.getBaseName())
+                && child.getTimeSlice() == parent.getTimeSlice() + 1;
     }
     
     // Methods
     @Override
-    public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException.MissingVariableInEvidence {
+    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException.MissingVariableInEvidence {
         Variable conditionedVariable = getConditionedVariable();
         Variable conditioningVariable = variables.get((conditionedVariable == variables.get(0)) ? 1 : 0);
         TablePotential projectedPotential;
@@ -90,7 +95,7 @@ public class CycleLengthShift extends Potential {
             projectedPotential = new TablePotential(new ArrayList<Variable>(), role);
             projectedPotential.values[0] = evidenceCase.getNumericalValue(conditioningVariable) + cycleLength
                     .getValue();
-            return Collections.singletonList(projectedPotential);
+            return projectedPotential;
         }
         // Build projected potential based on parent's potential
         TablePotential projectedParentPotential = findPotentialByVariable(conditioningVariable,
@@ -115,7 +120,7 @@ public class CycleLengthShift extends Potential {
             }
             configurationIndex++;
         }
-        return Collections.singletonList(projectedPotential);
+        return projectedPotential;
     }
     
     @Override

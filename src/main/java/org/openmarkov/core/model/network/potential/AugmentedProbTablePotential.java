@@ -7,22 +7,24 @@
 
 package org.openmarkov.core.model.network.potential;
 
+import org.jetbrains.annotations.NotNull;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
+import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.inference.InferenceOptions;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @PotentialType(names = "AugmentedProbTable")
 public class AugmentedProbTablePotential extends Potential {
-
-    protected AugmentedProbTable AugmentedProbTable;
+    
+    protected AugmentedProbTable augmentedProbTable;
     private List<Variable> finiteStatesVariables;
     private List<Variable> parameterVariables;
     
@@ -48,7 +50,7 @@ public class AugmentedProbTablePotential extends Potential {
     public AugmentedProbTablePotential(AugmentedProbTablePotential AugmentedProbTablePotential) {
         this(AugmentedProbTablePotential.variables, AugmentedProbTablePotential.getPotentialRole());
         //UNCLEAR Should I copy Functions?
-        this.AugmentedProbTable = new AugmentedProbTable(AugmentedProbTablePotential.getAugmentedProbTable());
+        this.augmentedProbTable = new AugmentedProbTable(AugmentedProbTablePotential.getAugmentedProbTable());
     }
     
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
@@ -57,11 +59,11 @@ public class AugmentedProbTablePotential extends Potential {
     }
     
     public AugmentedProbTable getAugmentedProbTable() {
-        return AugmentedProbTable;
+        return augmentedProbTable;
     }
     
     public void setAugmentedProbTable(AugmentedProbTable AugmentedProbTable) {
-        this.AugmentedProbTable = AugmentedProbTable;
+        this.augmentedProbTable = AugmentedProbTable;
     }
     
     /**
@@ -87,9 +89,15 @@ public class AugmentedProbTablePotential extends Potential {
     }
     
     @Override
-    public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials) {
-        // TODO Auto-generated method stub
-        return null;
+    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable, NonProjectablePotentialException.CannotEvaluate {
+        Map<Variable, String> findingsMap = evidenceCase.getFindingsMap();
+        VariableExpression[] expressions = this.augmentedProbTable.getFunctionValues();
+        var resolvedTablePotential = new TablePotential(this.variables, role);
+        for (int valueIndex = 0; valueIndex < resolvedTablePotential.values.length; valueIndex++) {
+            String evaluation = expressions[valueIndex].evaluateWith(findingsMap);
+            resolvedTablePotential.values[valueIndex] = Double.parseDouble(evaluation);
+        }
+        throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
     }
     
     @Override
@@ -98,8 +106,7 @@ public class AugmentedProbTablePotential extends Potential {
     }
     
     @Override public Potential copy() {
-        // TODO Auto-generated method stub
-        return null;
+        return new AugmentedProbTablePotential(this);
     }
     
     @Override public boolean isUncertain() {
@@ -117,8 +124,7 @@ public class AugmentedProbTablePotential extends Potential {
         int size = newOrderOfVariables.size();
         //orderVariables has the order of the parents of the AugmentedProbTable, so parameterVariables should be added
         newOrderOfVariables.addAll(getParameterVariables());
-        AugmentedProbTablePotential newPotential = new AugmentedProbTablePotential(newOrderOfVariables,
-                                                                           getPotentialRole());
+        AugmentedProbTablePotential newPotential = new AugmentedProbTablePotential(newOrderOfVariables, getPotentialRole());
         AugmentedProbTable newDistributionTable = (AugmentedProbTable) getAugmentedProbTable().reorder(newOrderOfVariables.subList(0, size));
         newPotential.setAugmentedProbTable(newDistributionTable);
         return newPotential;

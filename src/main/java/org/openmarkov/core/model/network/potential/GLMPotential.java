@@ -6,6 +6,7 @@
  */
 package org.openmarkov.core.model.network.potential;
 
+import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.inference.InferenceOptions;
@@ -191,7 +192,7 @@ public abstract class GLMPotential extends Potential {
     }
     
     @Override
-    public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException {
+    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException {
         double[] coefficients = (sampledCoefficients == null) ? this.coefficients : this.sampledCoefficients;
         List<Variable> evidencelessVariables = new ArrayList<>();
         Map<Variable, String> variableValues = new HashMap<>();
@@ -225,9 +226,9 @@ public abstract class GLMPotential extends Potential {
         return tableProject(evidenceCase, inferenceOptions, coefficients, covariates, evidencelessVariables, variableValues);
     }
     
-    protected abstract List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-                                                         double[] coefficients, VariableExpression[] covariates, List<Variable> evidencelessVariables,
-                                                         Map<Variable, String> variableValues) throws NonProjectablePotentialException;
+    protected abstract TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
+                                                   double[] coefficients, VariableExpression[] covariates, List<Variable> evidencelessVariables,
+                                                   Map<Variable, String> variableValues) throws NonProjectablePotentialException;
     
     @Override public Potential sample() {
         if (choleskyDecomposition != null) {

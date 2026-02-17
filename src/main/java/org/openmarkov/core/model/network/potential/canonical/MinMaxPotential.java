@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.potential.canonical;
 
+import org.jetbrains.annotations.NotNull;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.ProbNet;
@@ -103,15 +105,13 @@ public abstract class MinMaxPotential extends ICIPotential {
      * all of them projected onto the evidence
      */
     @Override
-    public List<TablePotential> tableProject(EvidenceCase evidence, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) {
+    public @NotNull TablePotential tableProject(EvidenceCase evidence, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
         List<TablePotential> potentials = new ArrayList<>();
         List<TablePotential> subPotentials = buildSubpotentialList();
         for (TablePotential subPotential : subPotentials) {
-            potentials.addAll(subPotential.tableProject(evidence, null, projectedPotentials));
+            potentials.add(subPotential.tableProject(evidence, null, projectedPotentials));
         }
-        List<TablePotential> singleElementPotentialList = new ArrayList<>();
-        singleElementPotentialList.add(DiscretePotentialOperations.multiplyAndMarginalize(potentials, variables));
-        return singleElementPotentialList;
+        return DiscretePotentialOperations.multiplyAndMarginalize(potentials, variables);
     }
     
     /**
@@ -161,10 +161,7 @@ public abstract class MinMaxPotential extends ICIPotential {
     
     @Override public Potential deepCopy(ProbNet copyNet) {
         MinMaxPotential potential = (MinMaxPotential) super.deepCopy(copyNet);
-        if (this.pseudoVariable != null) {
-            potential.pseudoVariable = copyNet.getVariable(this.pseudoVariable.getName());
-        }
-        
+        potential.pseudoVariable = this.pseudoVariable;
         return potential;
     }
     

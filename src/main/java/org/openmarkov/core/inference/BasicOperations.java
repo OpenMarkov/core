@@ -183,7 +183,7 @@ public class BasicOperations {
         ArrayList<TablePotential> parentsPotential = new ArrayList<>();
         for (Node n : parents) {
             try {
-                parentsPotential.add(n.getPotential().tableProject(null, null).get(0));
+                parentsPotential.add(n.getPotential().tableProject(null, null));
             } catch (NonProjectablePotentialException e) {
                 throw new UnreacheableException(e);
             }

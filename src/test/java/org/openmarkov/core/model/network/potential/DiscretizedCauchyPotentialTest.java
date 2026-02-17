@@ -56,7 +56,7 @@ public class DiscretizedCauchyPotentialTest {
     @Disabled
     @Test public void testTableProject() throws NonProjectablePotentialException {
         
-        TablePotential projectedPotential = discretizedPotential.tableProject(new EvidenceCase(), null).get(0);
+        TablePotential projectedPotential = discretizedPotential.tableProject(new EvidenceCase(), null);
         
         Assertions.assertEquals(288, projectedPotential.tableSize);
         Assertions.assertEquals(0.6914, projectedPotential.values[0], 10E-4);
@@ -81,7 +81,7 @@ public class DiscretizedCauchyPotentialTest {
         evidence.addFinding(new Finding(predictedAudiometry, 2)); // on
         evidence.addFinding(new Finding(micAge, 2)); // >90 and <= 365
         
-        TablePotential projectedPotential = discretizedPotential.tableProject(evidence, null).get(0);
+        TablePotential projectedPotential = discretizedPotential.tableProject(evidence, null);
         
         Assertions.assertEquals(24, projectedPotential.tableSize);
         Assertions.assertEquals(0.2160, projectedPotential.values[0], 10E-4);
@@ -106,7 +106,7 @@ public class DiscretizedCauchyPotentialTest {
         evidence.addFinding(new Finding(electrodeChanged, 1)); // 1
         evidence.addFinding(new Finding(micAge, 2)); // >90 and <= 365
         
-        TablePotential projectedPotential = discretizedPotential.tableProject(evidence, null).get(0);
+        TablePotential projectedPotential = discretizedPotential.tableProject(evidence, null);
         
         Assertions.assertEquals(3, projectedPotential.tableSize);
         Assertions.assertEquals(0.2917990024368812, projectedPotential.values[0], 10E-4);

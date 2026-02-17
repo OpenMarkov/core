@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.model.network.potential;
 
+import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -19,7 +20,6 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -82,15 +82,14 @@ import java.util.List;
     }
     
     @Override
-    public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) {
+    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) {
         List<Variable> parentVariables = new ArrayList<>(variables);
         parentVariables.remove(getConditionedVariable());
         List<TablePotential> parentPotentials = new ArrayList<>();
         for (Variable parentVariable : parentVariables) {
             parentPotentials.add(findPotentialByVariable(parentVariable, projectedPotentials));
         }
-        TablePotential sumPotential = DiscretePotentialOperations.sum(parentPotentials);
-        return Arrays.asList(sumPotential);
+        return DiscretePotentialOperations.sum(parentPotentials);
     }
     
     @Override

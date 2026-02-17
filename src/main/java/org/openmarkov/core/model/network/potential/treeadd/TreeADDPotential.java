@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.model.network.potential.treeadd;
 
+import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.InferenceOptions;
@@ -30,7 +31,6 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -226,25 +226,19 @@ public class TreeADDPotential extends Potential {
      * @return True if it is valid
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-        boolean validate = false;
         // node must have at least one parent node
         // @12/11/2014
         // Fixing issue #216
         // https://bitbucket.org/cisiad/org.openmarkov.issues/issue/216/treeadd-as-possible-type-of-potential-for
         // [...] and the node cannot be a super value node
-        if (role == PotentialRole.UNSPECIFIED) {
-            if (!node.isSuperValueNode()) {
-                // in variables there is not utility variable
-                if (!variables.isEmpty()) {
-                    validate = true;
-                }
-            }
-        } else if (role == PotentialRole.CONDITIONAL_PROBABILITY || node.hasPolicy()) {
-            if (variables.size() >= 2) {
-                validate = true;
-            }
+        if (role == PotentialRole.UNSPECIFIED && !node.isSuperValueNode() && !variables.isEmpty()) {
+            // in variables there is not utility variable
+            return true;
         }
-        return validate;
+        if ((role == PotentialRole.CONDITIONAL_PROBABILITY || node.hasPolicy()) && variables.size() >= 2) {
+            return true;
+        }
+        return false;
     }
     
     /**
@@ -339,67 +333,43 @@ public class TreeADDPotential extends Potential {
      */
     
     @Override
-    public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException {
+    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException {
         TablePotential projected;
         if (topVariable.getVariableType() != VariableType.NUMERIC) {
             Map<TreeADDBranch, TablePotential> potentialsToBlend = new HashMap<>();
             List<TreeADDBranch> branches = this.getBranches();
             for (TreeADDBranch branch : branches) {
-                Potential branchPotential = branch.getPotential();
-                List<TablePotential> tablePotentials = branchPotential
-                        .tableProject(evidenceCase, inferenceOptions, projectedPotentials);
-                potentialsToBlend.put(branch, tablePotentials.get(0));
+                potentialsToBlend.put(branch, branch.getPotential()
+                                                    .tableProject(evidenceCase, inferenceOptions, projectedPotentials));
             }
-            projected = blendPotentials(topVariable, potentialsToBlend, evidenceCase);
-        } else {
-            // if there is no evidence for the numerical topVariable it is not
-            // possible to project the tree
-            if (evidenceCase == null || evidenceCase.getFinding(topVariable) == null) {
-                throw new NonProjectablePotentialException.MissingEvidenceInVariable(this, topVariable);
-            }
-            double topVariableValue = evidenceCase.getFinding(topVariable).getNumericalValue();
-            List<TreeADDBranch> numericalBranches = getBranches();
-            Potential potential = null;
-            for (TreeADDBranch numericalBranch : numericalBranches) {
-                double minLimit = numericalBranch.getLowerBound().getLimit();
-                double maxlimit = numericalBranch.getUpperBound().getLimit();
-                if (minLimit <= topVariableValue && topVariableValue <= maxlimit) {
-                    if (minLimit == topVariableValue) {
-                        if (!numericalBranch.getLowerBound().belongsToLeft()) {
-                            potential = numericalBranch.getPotential();
-                            break;
-                        }
-                    } else if (maxlimit == topVariableValue) {
-                        if (numericalBranch.getUpperBound().belongsToLeft()) {
-                            potential = numericalBranch.getPotential();
-                            break;
-                        }
-                    } else { // minLimit < topVariableValue < maxLimit
-                        potential = numericalBranch.getPotential();
-                        break;
+            return blendPotentials(topVariable, potentialsToBlend, evidenceCase);
+        }
+        // if there is no evidence for the numerical topVariable it is not
+        // possible to project the tree
+        if (evidenceCase == null || evidenceCase.getFinding(topVariable) == null) {
+            throw new NonProjectablePotentialException.MissingEvidenceInVariable(this, topVariable);
+        }
+        double topVariableValue = evidenceCase.getFinding(topVariable).getNumericalValue();
+        List<TreeADDBranch> numericalBranches = getBranches();
+        for (TreeADDBranch numericalBranch : numericalBranches) {
+            double minLimit = numericalBranch.getLowerBound().getLimit();
+            double maxlimit = numericalBranch.getUpperBound().getLimit();
+            if (minLimit <= topVariableValue && topVariableValue <= maxlimit) {
+                if (minLimit == topVariableValue) {
+                    if (!numericalBranch.getLowerBound().belongsToLeft()) {
+                        return numericalBranch.getPotential().tableProject(evidenceCase, inferenceOptions);
                     }
+                } else if (maxlimit == topVariableValue) {
+                    if (numericalBranch.getUpperBound().belongsToLeft()) {
+                        return numericalBranch.getPotential().tableProject(evidenceCase, inferenceOptions);
+                    }
+                } else { // minLimit < topVariableValue < maxLimit
+                    return numericalBranch.getPotential().tableProject(evidenceCase, inferenceOptions);
                 }
             }
-            // if potential still null that means finding was not within the
-            // numerical variable domain so
-            if (potential == null) {
-                throw new NonProjectablePotentialException.TopVariableNotInDomain(this, numericalBranches);
-            }
-            projected = potential.tableProject(evidenceCase, inferenceOptions).get(0);
         }
-        // Make sure variables are in the correct order after applying the mask
-        // there will be variables that disappear from the potential because of
-        // evidence propagation
-        /*
-         * if (role == PotentialRole.CONDITIONAL_PROBABILITY || role ==
-         * PotentialRole.UTILITY) { for (int i = 0; i < correctOrder.size ();
-         * i++) { if (!projected.contains (correctOrder.get (i))) {
-         * correctOrder.remove (i); } } if (role == PotentialRole.UTILITY) {
-         * projected = DiscretePotentialOperations.reorder (projected,
-         * correctOrder); } else { projected.setVariables (correctOrder); } }
-         */
-        
-        return Arrays.asList(projected);
+        // if it reached this point. That means finding was not within the numerical variable domain.
+        throw new NonProjectablePotentialException.TopVariableNotInDomain(this, numericalBranches);
     }
     
     @Override

@@ -6,6 +6,7 @@
  */
 package org.openmarkov.core.model.network.potential;
 
+import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.InferenceOptions;
@@ -94,9 +95,7 @@ import java.util.List;
     }
     
     @Override
-    public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException {
-        // returned value
-        
+    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException {
         List<Variable> unobservedVariables = new ArrayList<>(variables);
         if (evidenceCase != null) {
             unobservedVariables.removeAll(evidenceCase.getVariables());
@@ -110,9 +109,9 @@ import java.util.List;
         } else {
             // Project median and scale potentials
             TablePotential projectedMedianPotential = median
-                    .tableProject(evidenceCase, inferenceOptions, projectedPotentials).get(0);
+                    .tableProject(evidenceCase, inferenceOptions, projectedPotentials);
             TablePotential projectedScalePotential = scale
-                    .tableProject(evidenceCase, inferenceOptions, projectedPotentials).get(0);
+                    .tableProject(evidenceCase, inferenceOptions, projectedPotentials);
             
             int numConfigurations = projectedMedianPotential.tableSize;
             // Go trough this potential using accumulatedOffests
@@ -136,7 +135,7 @@ import java.util.List;
                 projectedPotential.values[configurationIndex + (numStates - 1)] = 1 - lastCdf;
             }
         }
-        return Arrays.asList(projectedPotential);
+        return projectedPotential;
     }
     
     @Override

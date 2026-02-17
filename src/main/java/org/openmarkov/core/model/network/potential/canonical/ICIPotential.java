@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.model.network.potential.canonical;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.InvalidArgumentException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
@@ -161,13 +162,13 @@ public abstract class ICIPotential extends Potential {
             throws NonProjectablePotentialException {
         List<TablePotential> projectedPotentials = new ArrayList<>();
         for (TablePotential subPotential : getSubpotentials()) {
-            projectedPotentials.add(subPotential.tableProject(evidenceCase, null).get(0));
+            projectedPotentials.add(subPotential.tableProject(evidenceCase, null));
         }
         return projectedPotentials;
     }
     
     @Override
-    public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException {
+    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException {
         List<TablePotential> potentials = internalTableProject(evidenceCase, inferenceOptions);
         HashSet<Variable> variablesToEliminate = new HashSet<>();
         // Fill it with variables appearing in all potentials except this
@@ -175,7 +176,6 @@ public abstract class ICIPotential extends Potential {
             variablesToEliminate.addAll(tablePotential.getVariables());
         }
         variables.forEach(variablesToEliminate::remove);
-        List<TablePotential> singleElementPotentialList = new ArrayList<>();
         
         List<Variable> allVariables = new ArrayList<>(variables);
         allVariables.addAll(variablesToEliminate);
@@ -196,8 +196,7 @@ public abstract class ICIPotential extends Potential {
             //add resulting potential
             potentials.add(0, DiscretePotentialOperations.multiplyAndMarginalize(relatedPotentials, allVariables));
         }
-        singleElementPotentialList.add(DiscretePotentialOperations.multiplyAndMarginalize(potentials, variables));
-        return singleElementPotentialList;
+        return DiscretePotentialOperations.multiplyAndMarginalize(potentials, variables);
     }
     
     public double[] getNoisyParameters(Variable variable) {
@@ -456,25 +455,15 @@ public abstract class ICIPotential extends Potential {
     
     @Override public Potential deepCopy(ProbNet copyNet) {
         ICIPotential potential = (ICIPotential) super.deepCopy(copyNet);
-        potential.expandedPotential = (TablePotential) this.expandedPotential.deepCopy(copyNet);
+        potential.expandedPotential = this.expandedPotential == null ? null : (TablePotential) this.expandedPotential.deepCopy(copyNet);
         potential.family = this.family;
         potential.modelType = this.modelType;
         potential.leakyParameters = this.leakyParameters.clone();
-        
         if (this.leakyVariable != null) {
             potential.leakyVariable = copyNet.getVariable(this.leakyVariable.getName());
         }
-        
         potential.noisyParameters = this.noisyParameters.clone();
-        
-        HashMap<Variable, Variable> newZVariables = new HashMap<>();
-        for (Variable keyVariable : this.zVariables.keySet()) {
-            Variable newKeyVariable = copyNet.getVariable(keyVariable.getName());
-            Variable newValueVariable = copyNet.getVariable(this.zVariables.get(keyVariable).getName());
-            newZVariables.put(newKeyVariable, newValueVariable);
-        }
-        potential.zVariables = newZVariables;
-        
+        potential.zVariables = new HashMap<>(this.zVariables);
         return potential;
     }
     

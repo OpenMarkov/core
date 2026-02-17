@@ -1927,7 +1927,7 @@ public final class DiscretePotentialOperations {
     public static TablePotential projectOutVariable(Variable variable, TablePotential inputPotential) throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         EvidenceCase evi = new EvidenceCase();
         evi.addFinding(new Finding(variable, variable.getStates()[0]));
-        return inputPotential.tableProject(evi, null).get(0);
+        return inputPotential.tableProject(evi, null);
     }
     
     /**

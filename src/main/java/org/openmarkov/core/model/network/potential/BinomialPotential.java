@@ -6,6 +6,7 @@
  */
 package org.openmarkov.core.model.network.potential;
 
+import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.InferenceOptions;
@@ -72,10 +73,11 @@ public class BinomialPotential extends Potential {
      * variables and the potential role.
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-        return role == PotentialRole.CONDITIONAL_PROBABILITY && (!variables.isEmpty()
-                && variables.get(0).getVariableType()
-                == VariableType.NUMERIC
-        );
+        if (variables.isEmpty()) {
+            return false;
+        }
+        return role == PotentialRole.CONDITIONAL_PROBABILITY
+                && variables.getFirst().getVariableType() == VariableType.NUMERIC;
     }
     
     public int getN() {
@@ -95,7 +97,7 @@ public class BinomialPotential extends Potential {
     }
     
     @Override
-    public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials)
+    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials)
             throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
         throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
     }

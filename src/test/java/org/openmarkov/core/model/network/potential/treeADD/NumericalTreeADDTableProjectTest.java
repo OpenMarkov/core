@@ -116,7 +116,7 @@ public class NumericalTreeADDTableProjectTest {
         findings.add(value);
         EvidenceCase evidenceCase = new EvidenceCase(findings);
         
-        TablePotential tablePotential = tree.tableProject(evidenceCase, null).get(0);
+        TablePotential tablePotential = tree.tableProject(evidenceCase, null);
         List<Variable> variables = tablePotential.getVariables();
         assertEquals(2, variables.size());
         assertEquals(4, tablePotential.values.length);
@@ -142,8 +142,7 @@ public class NumericalTreeADDTableProjectTest {
         TablePotential tablePotential1 = probNet.getNode("State [1]")
                                                 .getPotentials()
                                                 .get(0)
-                                                .tableProject(evidence, null)
-                                                .get(0);
+                                                .tableProject(evidence, null);
         List<Variable> variables = tablePotential1.getVariables();
         assertEquals(2, variables.size());
         assertEquals(4, tablePotential1.values.length);
@@ -161,8 +160,7 @@ public class NumericalTreeADDTableProjectTest {
         TablePotential tablePotential2 = probNet.getNode("State [1]")
                                                 .getPotentials()
                                                 .get(0)
-                                                .tableProject(evidence2, null)
-                                                .get(0);
+                                                .tableProject(evidence2, null);
         List<Variable> variables2 = tablePotential2.getVariables();
         assertEquals(2, variables2.size());
         assertEquals(4, tablePotential2.values.length);
@@ -180,8 +178,7 @@ public class NumericalTreeADDTableProjectTest {
         TablePotential tablePotential3 = probNet.getNode("State [1]")
                                                 .getPotentials()
                                                 .get(0)
-                                                .tableProject(evidence3, null)
-                                                .get(0);
+                                                .tableProject(evidence3, null);
         List<Variable> variables3 = tablePotential3.getVariables();
         assertEquals(2, variables3.size());
         assertEquals(4, tablePotential3.values.length);

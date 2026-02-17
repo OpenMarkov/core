@@ -54,7 +54,7 @@ import java.util.List;
 
 		Potential potential = getPotential();
         
-        TablePotential auxProjected = potential.tableProject(configuration, null).get(0);
+        TablePotential auxProjected = potential.tableProject(configuration, null);
 
 		UncertainValue[] auxUncertainTable = auxProjected.getUncertainValues();
 

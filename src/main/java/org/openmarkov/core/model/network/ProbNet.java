@@ -624,12 +624,9 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     public List<TablePotential> tableProjectPotentials(EvidenceCase evidenceCase) throws NonProjectablePotentialException {
         List<Potential> originalPotentials = getSortedPotentials();
         List<TablePotential> projectedPotentials = new ArrayList<>();
-        // each original potential may yield several projected potentials;
-        List<TablePotential> potentials;
         for (Potential potential : originalPotentials) {
             InferenceOptions inferenceOptions = new InferenceOptions(this, null);
-            potentials = potential.tableProject(evidenceCase, inferenceOptions, projectedPotentials);
-            projectedPotentials.addAll(potentials);
+            projectedPotentials.add(potential.tableProject(evidenceCase, inferenceOptions, projectedPotentials));
         }
         return projectedPotentials;
     }

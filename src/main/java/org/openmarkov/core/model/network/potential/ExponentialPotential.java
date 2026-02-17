@@ -6,8 +6,6 @@
  */
 package org.openmarkov.core.model.network.potential;
 
-import net.sourceforge.jeval.EvaluationException;
-import net.sourceforge.jeval.Evaluator;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.expression.VariableExpression;
@@ -65,9 +63,9 @@ import java.util.Map;
         throw new NotSupportedOperationException();
     }
     
-    @Override protected List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-                                                          double[] coefficients, VariableExpression[] covariates, List<Variable> evidencelessVariables,
-                                                          Map<Variable, String> variableValues) throws NonProjectablePotentialException.CannotEvaluate {
+    @Override protected TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
+                                                    double[] coefficients, VariableExpression[] covariates, List<Variable> evidencelessVariables,
+                                                    Map<Variable, String> variableValues) throws NonProjectablePotentialException.CannotEvaluate {
         // Fill arrays numericValues and evidencelessVariables
         int constantIndex = getConstantIndex(covariates);
         
@@ -102,7 +100,7 @@ import java.util.Map;
             }
             projectedPotential.values[i] = Math.exp(regression);
         }
-        return Arrays.asList(projectedPotential);
+        return projectedPotential;
     }
     
     @Override public Potential copy() {

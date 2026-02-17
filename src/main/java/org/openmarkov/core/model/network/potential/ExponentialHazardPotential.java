@@ -6,6 +6,7 @@
  */
 package org.openmarkov.core.model.network.potential;
 
+import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.inference.InferenceOptions;
@@ -76,10 +77,10 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
     public static VariableExpression[] getMandatoryCovariates() {
         return new VariableExpression[]{CONSTANT};
 	}
-
-	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-                                                       double[] coefficients, VariableExpression[] covariates, List<Variable> evidencelessVariables,
-                                                       Map<Variable, String> variableValues) throws NonProjectablePotentialException.MissingEvidenceInVariable, NonProjectablePotentialException.CannotEvaluate {
+    
+    @Override public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
+                                                          double[] coefficients, VariableExpression[] covariates, List<Variable> evidencelessVariables,
+                                                          Map<Variable, String> variableValues) throws NonProjectablePotentialException.MissingEvidenceInVariable, NonProjectablePotentialException.CannotEvaluate {
 		double[] weibullCoeficients = new double[coefficients.length + 1];
         VariableExpression[] weibullCovariates = new VariableExpression[covariates.length + 1];
 		// The exponential is a special case of Weibull where k=1 (gamma= ln(k));

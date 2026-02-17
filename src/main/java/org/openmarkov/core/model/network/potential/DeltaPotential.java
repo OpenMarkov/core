@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.potential;
 
+import org.jetbrains.annotations.NotNull;
+import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -80,11 +82,13 @@ import java.util.List;
      *
      * @return True if it is valid
      */
+    @ToCheck(reasonKind = ToCheck.ReasonKind.PROBABLE_BUG,
+            reasonDescription = "The boolean expression might be wrong, as there are no parentheses used.")
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-        return variables.size() <= 1
-                || role == PotentialRole.POLICY
-                || role == PotentialRole.CONDITIONAL_PROBABILITY
-                && node.getVariable().getVariableType() == VariableType.NUMERIC;
+        return (variables.size() <= 1) //This means it has no parents
+                || (role == PotentialRole.POLICY)
+                || ((role == PotentialRole.CONDITIONAL_PROBABILITY)
+                && (node.getVariable().getVariableType() == VariableType.NUMERIC));
     }
     
     private void initFiniteStates(Variable conditionedVariable, State state) {
@@ -101,28 +105,25 @@ import java.util.List;
     }
     
     @Override
-    public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) {
-        TablePotential projectedPotential;
-        if (state != null) {
-            // finite states variable
-            Variable conditionedVariable = getConditionedVariable();
-            if (evidenceCase.contains(conditionedVariable)) {
-                projectedPotential = new TablePotential(new ArrayList<Variable>(),
-                                                        PotentialRole.CONDITIONAL_PROBABILITY);
-                projectedPotential.values[0] = 1;
-            } else {
-                projectedPotential = new TablePotential(Arrays.asList(conditionedVariable),
-                                                        PotentialRole.CONDITIONAL_PROBABILITY);
-                for (int i = 0; i < projectedPotential.values.length; ++i) {
-                    projectedPotential.values[i] = (i == stateIndex) ? 1 : 0;
-                }
-            }
-        } else {
-            // numeric variable
-            projectedPotential = new TablePotential(new ArrayList<Variable>(), PotentialRole.CONDITIONAL_PROBABILITY);
+    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) {
+        // numeric variable
+        if (state == null) {
+            TablePotential projectedPotential = new TablePotential(new ArrayList<>(), PotentialRole.CONDITIONAL_PROBABILITY);
             projectedPotential.values[0] = numericValue;
+            return projectedPotential;
         }
-        return Arrays.asList(projectedPotential);
+        // finite states variable
+        Variable conditionedVariable = getConditionedVariable();
+        if (evidenceCase.contains(conditionedVariable)) {
+            TablePotential projectedPotential = new TablePotential(new ArrayList<>(), PotentialRole.CONDITIONAL_PROBABILITY);
+            projectedPotential.values[0] = 1;
+            return projectedPotential;
+        }
+        TablePotential projectedPotential = new TablePotential(Arrays.asList(conditionedVariable), PotentialRole.CONDITIONAL_PROBABILITY);
+        for (int i = 0; i < projectedPotential.values.length; ++i) {
+            projectedPotential.values[i] = (i == stateIndex) ? 1 : 0;
+        }
+        return projectedPotential;
     }
     
     @Override

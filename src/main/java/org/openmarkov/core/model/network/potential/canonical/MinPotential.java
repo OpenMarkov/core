@@ -51,17 +51,14 @@ import java.util.List;
 	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-		boolean valid = ICIPotential.validate(node, variables, role) && (
-				(role == PotentialRole.CONDITIONAL_PROBABILITY) || (role == PotentialRole.POLICY)
-		);
-		int i = 0;
-
-		while (valid && i < variables.size()) {
-			valid &= variables.get(i).getVariableType() == VariableType.FINITE_STATES
-					|| variables.get(i).getVariableType() == VariableType.DISCRETIZED;
-			++i;
+        if (role != PotentialRole.CONDITIONAL_PROBABILITY && role != PotentialRole.POLICY) {
+            return false;
 		}
-		return valid;
+        if (!ICIPotential.validate(node, variables, role)) {
+            return false;
+        }
+        return variables.stream().allMatch(variable -> variable.getVariableType() == VariableType.FINITE_STATES
+                || variable.getVariableType() == VariableType.DISCRETIZED);
 	}
     
     @Override

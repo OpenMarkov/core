@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.model.network.potential;
 
+import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.UnreacheableException;
@@ -175,13 +176,9 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
      * @return True   if an instance of a certain Potential type makes sense given the variables and the potential role.
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-        for (Variable variable : variables) {
-            VariableType type = variable.getVariableType();
-            if (type != VariableType.FINITE_STATES && type != VariableType.DISCRETIZED) {
-                return false;
-            }
-        }
-        return true;
+        return variables.stream()
+                        .map(Variable::getVariableType)
+                        .noneMatch(type -> type != VariableType.FINITE_STATES && type != VariableType.DISCRETIZED);
     }
     
     /**
@@ -432,7 +429,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
             EvidenceCase evidenceCase = new EvidenceCase();
             try {
                 evidenceCase.addFinding(finding);
-                newPotential = tableProject(evidenceCase, null).get(0);
+                newPotential = tableProject(evidenceCase, null);
             } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
                      NonProjectablePotentialException e) {
                 throw new UnreacheableException(e);
@@ -459,81 +456,77 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
      * only one element, which is a {@code ProjectedPotential}
      */
     @Override
-    public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) {
+    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
         // returned value
         boolean hasUncertainTable = (uncertainValues != null);
-        List<TablePotential> newProjectedPotentials = new ArrayList<>(1);
         List<Variable> unobservedVariables = new ArrayList<>(variables);
         if (evidenceCase != null) {
             unobservedVariables.removeAll(evidenceCase.getVariables());
         }
         int numUnobservedVariables = unobservedVariables.size();
-        TablePotential projectedPotential;
         int numVariables = (variables != null) ? variables.size() : 0;
         if (numVariables == numUnobservedVariables) { // No projection.
-            projectedPotential = this;
-        } else {// Common part in constant potential and not constant potentials
-            projectedPotential = new TablePotential(unobservedVariables, role);
-            int length = projectedPotential.values.length;
-            if (hasUncertainTable) {
-                projectedPotential.setUncertainValues(new UncertainValue[length]);
-            }
-            // position (in this potential) of the first value
-            // of the projected potential
-            int firstPosition = 0;
-            // auxiliary for the for loop
-            int state;
-            // iterate over the variables of this potential
-            for (int i = 0; i < variables.size(); i++) {
-                Variable variable = variables.get(i);
-                if ((evidenceCase != null) && evidenceCase.contains(variable)) {
-                    state = evidenceCase.getState(variable);
-                    int offset = state * offsets[i];
-                    firstPosition += offset;
-                }
-            }
-            if (numUnobservedVariables == 0) {// Projection = constant potential
-                projectedPotential.copyValuesInterventionsAndUncertainValues(0, this, firstPosition, hasUncertainTable);
-            } else { // Create projected potential
-                // Go trough this potential using accumulatedOffests
-                int[] accumulatedOffsets = projectedPotential.getAccumulatedOffsets(variables);
-                int numVariablesProjected = projectedPotential.getNumVariables();
-                int[] projectedCoordinate = new int[numVariablesProjected];
-                int[] projectedDimensions = new int[numVariablesProjected];
-                for (int i = 0; i < numVariablesProjected; i++) {
-                    projectedDimensions[i] = unobservedVariables.get(i).getNumStates();
-                }
-                // Copy configurations using the accumulated offsets algorithm
-                for (int projectedPosition = 0; projectedPosition < length - 1; projectedPosition++) {
-                    projectedPotential.copyValuesInterventionsAndUncertainValues(projectedPosition, this, firstPosition,
-                                                                                 hasUncertainTable);
-                    // find the next configuration and the index of the
-                    // increased variable
-                    int increasedVariable = 0;
-                    for (int j = 0; j < projectedCoordinate.length; j++) {
-                        projectedCoordinate[j]++;
-                        if (projectedCoordinate[j] < projectedDimensions[j]) {
-                            increasedVariable = j;
-                            break;
-                        }
-                        projectedCoordinate[j] = 0;
-                    }
-                    // update the positions of the potentials we are multiplying
-                    firstPosition += accumulatedOffsets[increasedVariable];
-                }
-                int lastPositionProjected = length - 1;
-                projectedPotential.copyValuesInterventionsAndUncertainValues(lastPositionProjected, this, firstPosition,
-                                                                             hasUncertainTable);
-            }
-            // Common final part for constant and not constant potentials
-            projectedPotential.setUncertainTableToNullIfNullValues();
+            return this;
+        }// Common part in constant potential and not constant potentials
+        TablePotential projectedPotential = new TablePotential(unobservedVariables, role);
+        int length = projectedPotential.values.length;
+        if (hasUncertainTable) {
+            projectedPotential.setUncertainValues(new UncertainValue[length]);
         }
-        newProjectedPotentials.add(projectedPotential);
-        return newProjectedPotentials;
+        // position (in this potential) of the first value
+        // of the projected potential
+        int firstPosition = 0;
+        // auxiliary for the for loop
+        int state;
+        // iterate over the variables of this potential
+        for (int i = 0; i < variables.size(); i++) {
+            Variable variable = variables.get(i);
+            if ((evidenceCase != null) && evidenceCase.contains(variable)) {
+                state = evidenceCase.getState(variable);
+                int offset = state * offsets[i];
+                firstPosition += offset;
+            }
+        }
+        if (numUnobservedVariables == 0) {// Projection = constant potential
+            projectedPotential.copyValuesInterventionsAndUncertainValues(0, this, firstPosition, hasUncertainTable);
+        } else { // Create projected potential
+            // Go trough this potential using accumulatedOffests
+            int[] accumulatedOffsets = projectedPotential.getAccumulatedOffsets(variables);
+            int numVariablesProjected = projectedPotential.getNumVariables();
+            int[] projectedCoordinate = new int[numVariablesProjected];
+            int[] projectedDimensions = new int[numVariablesProjected];
+            for (int i = 0; i < numVariablesProjected; i++) {
+                projectedDimensions[i] = unobservedVariables.get(i).getNumStates();
+            }
+            // Copy configurations using the accumulated offsets algorithm
+            for (int projectedPosition = 0; projectedPosition < length - 1; projectedPosition++) {
+                projectedPotential.copyValuesInterventionsAndUncertainValues(projectedPosition, this, firstPosition,
+                                                                             hasUncertainTable);
+                // find the next configuration and the index of the
+                // increased variable
+                int increasedVariable = 0;
+                for (int j = 0; j < projectedCoordinate.length; j++) {
+                    projectedCoordinate[j]++;
+                    if (projectedCoordinate[j] < projectedDimensions[j]) {
+                        increasedVariable = j;
+                        break;
+                    }
+                    projectedCoordinate[j] = 0;
+                }
+                // update the positions of the potentials we are multiplying
+                firstPosition += accumulatedOffsets[increasedVariable];
+            }
+            int lastPositionProjected = length - 1;
+            projectedPotential.copyValuesInterventionsAndUncertainValues(lastPositionProjected, this, firstPosition,
+                                                                         hasUncertainTable);
+        }
+        // Common final part for constant and not constant potentials
+        projectedPotential.setUncertainTableToNullIfNullValues();
+        return projectedPotential;
     }
     
     @Override public TablePotential project(EvidenceCase evidenceCase) throws NonProjectablePotentialException {
-        return tableProject(evidenceCase, null).get(0);
+        return tableProject(evidenceCase, null);
     }
     
     private void setUncertainTableToNullIfNullValues() {
@@ -1021,7 +1014,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
         // Checks if the projected potentials are deterministic
         TablePotential projectedPotential = null;
         try {
-            projectedPotential = tableProject(evidenceCase, null).get(0);
+            projectedPotential = tableProject(evidenceCase, null);
         } catch (NonProjectablePotentialException e) {
             throw new UnreacheableException(e);
         }

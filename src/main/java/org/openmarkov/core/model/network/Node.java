@@ -557,8 +557,8 @@ public class Node implements Cloneable, ClassLocalizable {
         }
         Potential firstPotential = potentials.getFirst();
         if (!this.isSuperValueNode()) {
-            List<TablePotential> tableProject = firstPotential.tableProject(null, null);
-            double[] values = !tableProject.isEmpty() ? tableProject.getFirst().values : new double[1];
+            TablePotential tableProject = firstPotential.tableProject(null, null);
+            double[] values = tableProject != null ? tableProject.values : new double[1];
             return computeMax ? Tools.max(values) : Tools.min(values);
         }
         List<Node> parents = this.getParents();
@@ -618,7 +618,7 @@ public class Node implements Cloneable, ClassLocalizable {
         }
         ;
         if (!this.isSuperValueNode()) {
-            return firstPotential.tableProject(null, null).get(0);
+            return firstPotential.tableProject(null, null);
         }
         List<TablePotential> utilityFunctionsParents = new ArrayList<>();
         for (Node node : this.getParents()) {

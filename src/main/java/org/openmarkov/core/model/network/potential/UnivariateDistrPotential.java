@@ -7,7 +7,9 @@
 
 package org.openmarkov.core.model.network.potential;
 
+import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.InvalidArgumentException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -329,8 +331,9 @@ import java.util.List;
         p.verifyParameters(values);
     }
     
-    @Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions) {
-        return null;
+    @Override
+    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
+        throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
     }
     
     @Override public UnivariateDistrPotential project(EvidenceCase evidenceCase) {
@@ -338,8 +341,8 @@ import java.util.List;
     }
     
     @Override
-    public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials) {
-        return null;
+    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
+        throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
     }
     
     @Override public Potential copy() {

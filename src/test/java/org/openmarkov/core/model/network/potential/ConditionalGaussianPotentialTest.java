@@ -57,7 +57,7 @@ public class ConditionalGaussianPotentialTest {
     
     @Test public void testTableProject() throws NumberFormatException, NonProjectablePotentialException {
         
-        TablePotential projectedPotential = gaussianPotential.tableProject(new EvidenceCase(), null).get(0);
+        TablePotential projectedPotential = gaussianPotential.tableProject(new EvidenceCase(), null);
         
         Assertions.assertEquals(288, projectedPotential.tableSize);
         Assertions.assertEquals(0.6914, projectedPotential.values[0], 10E-4);
@@ -81,7 +81,7 @@ public class ConditionalGaussianPotentialTest {
         evidence.addFinding(new Finding(predictedAudiometry, 2)); // on
         evidence.addFinding(new Finding(micAge, 2)); // >90 and <= 365
         
-        TablePotential projectedPotential = gaussianPotential.tableProject(evidence, null).get(0);
+        TablePotential projectedPotential = gaussianPotential.tableProject(evidence, null);
         
         Assertions.assertEquals(24, projectedPotential.tableSize);
         Assertions.assertEquals(0.2160, projectedPotential.values[0], 10E-4);

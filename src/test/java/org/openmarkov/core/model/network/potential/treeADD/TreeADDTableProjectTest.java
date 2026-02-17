@@ -110,7 +110,7 @@ public class TreeADDTableProjectTest {
     }
     
     @Test public void testTableProject() throws NumberFormatException, NonProjectablePotentialException {
-        TablePotential tablePotential = treeADD.tableProject(null, null).get(0);
+        TablePotential tablePotential = treeADD.tableProject(null, null);
         List<Variable> variables = tablePotential.getVariables();
         Assertions.assertEquals(3, variables.size());
         Assertions.assertEquals(16, tablePotential.values.length);

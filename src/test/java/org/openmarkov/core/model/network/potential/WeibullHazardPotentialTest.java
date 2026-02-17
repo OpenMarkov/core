@@ -53,9 +53,7 @@ public class WeibullHazardPotentialTest {
     public void testTableProject() throws NumberFormatException, NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         EvidenceCase evidence = new EvidenceCase();
         evidence.addFinding(new Finding(ageVar, 65.0));
-        List<TablePotential> projectedPotentials = potential.tableProject(evidence, null);
-        Assertions.assertEquals(1, projectedPotentials.size());
-        TablePotential projectedPotential = projectedPotentials.get(0);
+        TablePotential projectedPotential = potential.tableProject(evidence, null);
         double[] expectedValues = new double[]{0.99891, 0.00109, 0.99765, 0.00235, 0.99972, 2.84367E-4, 0.99939,
                 6.13169E-4};
         Assertions.assertArrayEquals(expectedValues, projectedPotential.values, 0.00001);

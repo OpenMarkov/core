@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.potential;
 
+import org.jetbrains.annotations.NotNull;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -115,18 +117,13 @@ public class AugmentedProbTable extends TablePotential {
      * @return True if an instance of a certain Potential type makes sense given the variables and the potential role.
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-        boolean suitable = false;
         VariableType variableType = node.getVariable().getVariableType();
-        if (variableType == VariableType.FINITE_STATES || variableType == VariableType.DISCRETIZED) {
-            for (Variable variable : variables.subList(1, variables.size())) {
-                if (variable.getVariableType() == VariableType.NUMERIC) {
-                    suitable = true;
-                    break;
-                }
-                
-            }
+        if (!(variableType == VariableType.FINITE_STATES || variableType == VariableType.DISCRETIZED)) {
+            return false;
         }
-        return suitable;
+        return variables.stream()
+                        .skip(1)
+                        .anyMatch(variable -> variable.getVariableType() == VariableType.NUMERIC);
     }
     
     /*******
@@ -204,8 +201,8 @@ public class AugmentedProbTable extends TablePotential {
     }
     
     @Override
-    public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials) {
-        return null;
+    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
+        throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
     }
     
     @Override public Potential copy() {

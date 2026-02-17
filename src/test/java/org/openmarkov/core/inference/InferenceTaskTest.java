@@ -103,7 +103,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
     
     @Override
     protected TablePotential getTablePotential(Potential potential) throws NumberFormatException, NonProjectablePotentialException {
-        return potential.tableProject(null, null).get(0);
+        return potential.tableProject(null, null);
     }
     
     /**

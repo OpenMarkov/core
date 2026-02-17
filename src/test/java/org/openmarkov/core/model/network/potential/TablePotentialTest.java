@@ -239,10 +239,10 @@ public class TablePotentialTest {
         finding1 = new Finding(fsVariableD, 1);
         evidenceCase.addFinding(finding1);
         
-        List<TablePotential> projected = tablePotential3.tableProject(evidenceCase, null);
-        TablePotential tp3Projected = projected.get(0);
+        TablePotential projected = tablePotential3.tableProject(evidenceCase, null);
+        TablePotential tp3Projected = projected;
         projected = tablePotential4.tableProject(evidenceCase, null);
-        TablePotential tp4Projected = (TablePotential) projected.get(0);
+        TablePotential tp4Projected = projected;
         
         accOffsets = tp3Projected.getAccumulatedOffsets(tp4Projected.getVariables());
         
@@ -257,9 +257,9 @@ public class TablePotentialTest {
         evidenceCase.addFinding(finding2);
         
         projected = tp3Projected.tableProject(evidenceCase, null);
-        tp3Projected = (TablePotential) projected.get(0);
+        tp3Projected = (TablePotential) projected;
         projected = tp4Projected.tableProject(evidenceCase, null);
-        tp4Projected = (TablePotential) projected.get(0);
+        tp4Projected = (TablePotential) projected;
         
         accOffsets = tp3Projected.getAccumulatedOffsets(tp4Projected.getVariables());
         
@@ -277,14 +277,7 @@ public class TablePotentialTest {
     @Disabled
     @Test
     public void testProject1() throws NonProjectablePotentialException {
-        // Projection
-        List<TablePotential> projectedPotentials = tablePotential5.tableProject(evidenceCase, null); // fsVariable2
-        // =
-        // 1;
-        
-        // Test number of projected potentials
-        assertEquals(1, projectedPotentials.size());
-        TablePotential projected = (TablePotential) projectedPotentials.get(0);
+        TablePotential projected = tablePotential5.tableProject(evidenceCase, null);
         
         // Test projected variables
         assertEquals(1, projected.getVariables().size());
@@ -313,14 +306,8 @@ public class TablePotentialTest {
      *  with 2 states.<p>
      *  evidenceCase: fsVariable2 = 1, fsVariable4 = 0. */ public void testProject2()
             throws NonProjectablePotentialException {
-        // Projection
-        List<TablePotential> projectedPotentials = tablePotential5.tableProject(evidenceCase, null); // fsVariable2
-        // =
-        // 1;
         
-        // Test number of projected potentials
-        assertEquals(1, projectedPotentials.size());
-        TablePotential projected = (TablePotential) projectedPotentials.get(0);
+        TablePotential projected = tablePotential5.tableProject(evidenceCase, null);
         
         // Test projected variables
         assertEquals(1, projected.getVariables().size());
@@ -440,9 +427,10 @@ public class TablePotentialTest {
         findingsA1.put(A, findingA1);
         EvidenceCase evidenceCaseA1 = new EvidenceCase(findingsA1);
         
-        List<TablePotential> projectedPotentials = tpAB.tableProject(evidenceCaseA1, null);
-        TablePotential projectedPotentialB = (TablePotential) projectedPotentials.get(0);
-        projectedPotentials = tpCBA.tableProject(evidenceCaseA1, null);
+        TablePotential projectedPotential = tpAB.tableProject(evidenceCaseA1, null);
+        TablePotential projectedPotentialB = (TablePotential) projectedPotential;
+        
+        List<TablePotential> projectedPotentials = new ArrayList<>(Arrays.asList(tpCBA.tableProject(evidenceCaseA1, null)));
         
         // Test multiply projected potentials
         projectedPotentials.add(projectedPotentialB);

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -182,10 +183,10 @@ public class GraphTest {
     }
     
     @Test public void testExistsPath() {
-        assertTrue(graph.existsPath(nodeC, nodeA, false));
-        assertFalse(graph.existsPath(nodeC, nodeA, true));
-        assertFalse(graph.existsPath(nodeA, nodeD, true));
-        assertTrue(graph.existsPath(nodeD, nodeA, false));
+        assertTrue(graph.existsPath(nodeC, nodeA, false, Collections.emptyList()));
+        assertFalse(graph.existsPath(nodeC, nodeA, true, Collections.emptyList()));
+        assertFalse(graph.existsPath(nodeA, nodeD, true, Collections.emptyList()));
+        assertTrue(graph.existsPath(nodeD, nodeA, false, Collections.emptyList()));
     }
     
     @Test public void testMarry() {

@@ -18,6 +18,7 @@ import org.openmarkov.core.model.network.constraint.*;
 import org.openmarkov.core.model.network.potential.Potential;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -71,9 +72,7 @@ import java.util.List;
         if (probNet.getConstraintOfClass(NoCycle.class) instanceof NoCycle constraint) {
             Node node1 = probNet.getNode(this.getVariableFrom());
             Node node2 = probNet.getNode(this.getVariableTo());
-            probNet.removeLink(node1, node2, true);
-            boolean existsPath = probNet.existsPath(node1, node2, true);
-            probNet.addLink(node1, node2, true);
+            boolean existsPath = probNet.existsPath(node1, node2, true, Collections.singletonList(probNet.getLink(parent, child, true)));
             if (existsPath) {
                 constraintChecker.addException(new ConstraintViolatedException.ThereIsACycle(constraint, node2, node1));
             }

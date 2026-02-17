@@ -1016,7 +1016,7 @@ public class ProbNetOperations {
         
         List<Node> predecessorDecisions = new ArrayList<>();
         for (Node candidateDecisionNode : network.getNodes(NodeType.DECISION)) {
-            if (network.existsPath(candidateDecisionNode, decisionNode, true)) {
+            if (network.existsPath(candidateDecisionNode, decisionNode, true, Collections.emptyList())) {
                 predecessorDecisions.add(candidateDecisionNode);
             }
         }

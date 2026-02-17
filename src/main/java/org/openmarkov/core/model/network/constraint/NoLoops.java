@@ -13,6 +13,7 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
+import java.util.Collections;
 import java.util.List;
 
 @Constraint(name = "NoLoops", defaultBehavior = ConstraintBehavior.OPTIONAL) public class NoLoops extends PNConstraint {
@@ -33,7 +34,7 @@ import java.util.List;
 				} else {
 					continue;
 				}
-				if (probNet.existsPath(node1, node2, false)) {
+				if (probNet.existsPath(node1, node2, false, Collections.emptyList())) {
 					probNetOK = false;
 				}
 				probNet.addLink(node1, node2, directed);

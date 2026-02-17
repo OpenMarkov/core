@@ -14,6 +14,7 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
+import java.util.Collections;
 import java.util.List;
 
 @Constraint(name = "NoAlwaysObservedDescendantOfDecision", defaultBehavior = ConstraintBehavior.YES)
@@ -46,7 +47,7 @@ public class NoAlwaysObservedDescendantOfDecision
     }
     
     private static boolean isReachable(ProbNet network, Node node1, Node node2) {
-        return network.existsPath(node1, node2, true);
+        return network.existsPath(node1, node2, true, Collections.emptyList());
     }
     
 }

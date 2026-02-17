@@ -13,6 +13,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -45,7 +46,7 @@ public class PartialOrderDAN {
 					Variable variableJ = nodeJ.getVariable();
 					Node probNetnodeI = probNet.getNode(variableI);
 					Node probNetNodeJ = probNet.getNode(variableJ);
-					if (probNet.existsPath(probNetnodeI, probNetNodeJ, true)) {
+					if (probNet.existsPath(probNetnodeI, probNetNodeJ, true, Collections.emptyList())) {
 						order.addLink(order.getNode(variableI), order.getNode(variableJ), true);
 					}
 				}
@@ -61,7 +62,7 @@ public class PartialOrderDAN {
 				for (int j = 0; j < decLinks.size(); j++) {
 					Link<Node> linkJ = decLinks.get(j);
                     Node nodeJ = linkJ.getTo();
-					if ((nodeI != nodeJ) && order.existsPath(nodeI, nodeJ, true)) {
+					if ((nodeI != nodeJ) && order.existsPath(nodeI, nodeJ, true, Collections.emptyList())) {
 						linksToRemove.add(linkJ);
 
 					}

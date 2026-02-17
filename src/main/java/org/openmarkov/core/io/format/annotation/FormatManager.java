@@ -31,9 +31,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -374,12 +372,12 @@ public class FormatManager {
      *
      * @return a HashMap with a pair (extension, description) for each writer
      */
-    public HashMap<String, String> getWriters() {
-        HashMap<String, String> writers = new HashMap<>();
+    public List<AbstractMap.SimpleEntry<String, String>> getWriters() {
+        ArrayList<AbstractMap.SimpleEntry<String, String>> writers = new ArrayList<>(writerClasses.size());
         for (String extension : writerClasses.keySet()) {
             for (String version : writerClasses.get(extension).keySet()) {
                 FormatType lAnnotation = writerClasses.get(extension).get(version).getAnnotation(FormatType.class);
-                writers.put(lAnnotation.description(), lAnnotation.extension());
+                writers.add(new AbstractMap.SimpleEntry<>(lAnnotation.description(), lAnnotation.extension()));
             }
         }
         
@@ -411,8 +409,8 @@ public class FormatManager {
      * @return a Map with all the extensions found
      */
     
-    public HashMap<String, String> getReaders() {
-        HashMap<String, String> readers = new HashMap<>();
+    public List<AbstractMap.SimpleEntry<String, String>> getReaders() {
+        ArrayList<AbstractMap.SimpleEntry<String, String>> readers = new ArrayList<>(readerClasses.size());
         for (String extension : readerClasses.keySet()) {
             for (String version : readerClasses.get(extension).keySet()) {
                 FormatType lAnnotation = readerClasses.get(extension).get(version).getAnnotation(FormatType.class);
@@ -421,7 +419,7 @@ public class FormatManager {
                 if (indexDot > -1) {
                     description = description.substring(0, indexDot);
                 }
-                readers.put(description, lAnnotation.extension());
+                readers.add(new AbstractMap.SimpleEntry<>(description, lAnnotation.extension()));
                 break;
             }
         }

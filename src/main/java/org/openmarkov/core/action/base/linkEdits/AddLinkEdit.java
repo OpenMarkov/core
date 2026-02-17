@@ -19,8 +19,8 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.SumPotential;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Creates a directed or undirected link between two nodes associated to two
@@ -92,14 +92,14 @@ public final class AddLinkEdit extends BaseLinkEdit {
         if (probNet.getConstraintOfClass(NoCycle.class) instanceof NoCycle constraint) {
             Node node1 = probNet.getNode(this.getVariableFrom());
             Node node2 = probNet.getNode(this.getVariableTo());
-            if (probNet.existsPath(node2, node1, true)) {
+            if (probNet.existsPath(node2, node1, true, Collections.emptyList())) {
                 constraintChecker.addException(new ConstraintViolatedException.ThereIsACycle(constraint, node1, node2));
             }
         }
         if (probNet.getConstraintOfClass(NoLoops.class) instanceof NoLoops constraint) {
             Node node1 = probNet.getNode(this.getVariableFrom());
             Node node2 = probNet.getNode(this.getVariableTo());
-            if (probNet.existsPath(node2, node1, false)) {
+            if (probNet.existsPath(node2, node1, false, Collections.emptyList())) {
                 constraintChecker.addException(new ConstraintViolatedException.ThereIsALoop(constraint, node1, node2));
             }
         }

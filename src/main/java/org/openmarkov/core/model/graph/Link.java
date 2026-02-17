@@ -382,4 +382,13 @@ public class Link<T> implements ClassLocalizable {
 		this.revealingIntervals.remove(interval);
 	}
 
+	public void linkRestrictionPotentialValue(Integer newValue, int row, int col){
+		int numStates2 = ((Node) to).getVariable().getNumStates();
+		int stateIndex1 = col - 1;
+		int stateIndex2 = numStates2 - row;
+		State state1 = ((Node) from).getVariable().getStates()[stateIndex1];
+		State state2 = ((Node) to).getVariable().getStates()[stateIndex2];
+		setCompatibilityValue(state1, state2, newValue);
+	}
+
 }

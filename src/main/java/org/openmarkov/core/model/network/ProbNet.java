@@ -1498,4 +1498,16 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     public void setOtherProperties(LinkedHashMap<String, String> additionalProperties) {
         this.additionalProperties = additionalProperties;
     }
+
+    public void moveNode(List<String> namesNode,List<Point2D.Double> newPositions) {
+        Node node;
+        int i = 0;
+        for (String name : namesNode) {
+            node = getNode(name);
+            node.setCoordinateX(newPositions.get(i).getX());
+            node.setCoordinateY(newPositions.get(i).getY());
+            i++;
+        }
+    }
+
 }

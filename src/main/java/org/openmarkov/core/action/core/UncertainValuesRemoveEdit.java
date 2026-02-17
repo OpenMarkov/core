@@ -114,7 +114,7 @@ import java.util.List;
 
 		//Remove the column of uncertain values
 		if (!wasNullOldUncertainColumn) {
-			UncertainValuesEdit.placeUncertainColumn(tablePotential, null, getVariable(), basePosition);
+			tablePotential.placeUncertainColumn(null,getVariable(), basePosition);
 		}
 		//If all the elements are null then the uncertain value object is set to null
 		if (!hasUncertainValues(tablePotential.getUncertainValues())) {
@@ -137,7 +137,7 @@ import java.util.List;
 		if (table == null) {
         }
 		//Restore the elements of the uncertain column
-		UncertainValuesEdit.placeUncertainColumn(potential, oldUncertainColumn, getVariable(), basePosition);
+		potential.placeUncertainColumn(oldUncertainColumn,getVariable(),basePosition);
 	}
     
     private static boolean hasUncertainValues(UncertainValue[] auxUncertainTable) {

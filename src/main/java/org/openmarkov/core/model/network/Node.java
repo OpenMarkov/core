@@ -27,6 +27,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import static org.openmarkov.core.model.network.VariableType.*;
+
 /**
  * A probabilistic node has a set of conditional probabilities, one variable,
  * etc. The structural aspect of the underlying  graph is in the node
@@ -108,7 +110,7 @@ public class Node implements Cloneable, ClassLocalizable {
         this.probNet = probNet;
         this.variable = variable;
         if (nodeType == NodeType.UTILITY) {
-            this.variable.setVariableType(VariableType.NUMERIC);
+            this.variable.setVariableType(NUMERIC);
         }
         this.nodeType = nodeType;
         potentials = new ArrayList<>();
@@ -678,10 +680,10 @@ public class Node implements Cloneable, ClassLocalizable {
         List<Node> finiteStatesOrDiscretizedParents = new ArrayList<>();
         
         for (Node parent : getParents()) {
-            if (parent.getVariable().getVariableType() == VariableType.NUMERIC) {
+            if (parent.getVariable().getVariableType() == NUMERIC) {
                 numericalParents.add(parent);
-            } else if (parent.getVariable().getVariableType() == VariableType.FINITE_STATES
-                    || parent.getVariable().getVariableType() == VariableType.DISCRETIZED) {
+            } else if (parent.getVariable().getVariableType() == FINITE_STATES
+                    || parent.getVariable().getVariableType() == DISCRETIZED) {
                 finiteStatesOrDiscretizedParents.add(parent);
             }
         }
@@ -863,6 +865,174 @@ public class Node implements Cloneable, ClassLocalizable {
             // Parents of decision node don't turn into parents of utility node
         }
         child.setPotentials(newPotentials);
+    }
+
+    public void setVariableTypeConsistently(VariableType newType){
+        VariableType currentType = getVariable().variableType;
+
+        // Set the new variable type
+        getVariable().setVariableType(newType);
+
+
+        boolean needsUniformPotential = false;
+
+        switch (currentType) {
+            case FINITE_STATES:
+            case DISCRETIZED:
+                if (newType == NUMERIC) {
+                    setPotentialsNodeAndChildren();
+                }
+                break;
+
+            case NUMERIC:
+                setPotentialsNodeAndChildren();
+
+                if (newType == DISCRETIZED
+                        && getVariable().getPartitionedInterval().getNumSubintervals() == 1) {
+
+                    // If there is only one interval, set default partitioned interval
+                    PartitionedInterval interval = new PartitionedInterval(
+                            getVariable().getDefaultInterval(getVariable().getNumStates()),
+                            Variable.getDefaultBelongs(getVariable().getNumStates())
+                    );
+                    getVariable().setPartitionedInterval(interval);
+                }
+
+                // Mark to set uniform potential later
+                needsUniformPotential = true;
+                break;
+
+            default:
+                break;
+        }
+
+        if (needsUniformPotential) {
+            // Build the list of variables (node and its parents)
+            List<Variable> variables = new ArrayList<>();
+            if (getNodeType() != NodeType.UTILITY) {
+                variables.add(getVariable());
+            }
+            for (Node parent : probNet.getParents(this)) {
+                variables.add(parent.getVariable());
+            }
+
+            // Create and assign uniform potential
+            UniformPotential uniformPotential = new UniformPotential(
+                    variables,
+                    getPotentials().get(0).getPotentialRole()
+            );
+
+            List<Potential> potentials = new ArrayList<>(1);
+            potentials.add(uniformPotential);
+            setPotentials(potentials);
+            setUniformPotential();
+        }
+    }
+
+    public void resetLink() {
+
+        List<Node> children = probNet.getChildren(this);
+        for (Node child : children) {
+            Link<Node> link = probNet.getLink(this, child, true);
+            if (link.hasRevealingConditions()) {
+                link.setRevealingIntervals(new ArrayList<PartitionedInterval>());
+                link.setRevealingStates(new ArrayList<State>());
+            }
+        }
+
+        for (Link<Node> link : probNet.getLinks(this)) {
+            if (link.hasRestrictions()) {
+                link.setRestrictionsPotential(null);
+            }
+
+        }
+    }
+
+    private void setPotentialsNodeAndChildren() {
+        // from numeric to finite states or discretized or vice versa
+        // if child is utility to potential to be set depends on the
+        // type of the other parents
+        // it is not always uniform
+        setUniformPotential2Node(this);
+        for (Node child : probNet.getChildren(this)) {
+            if (child.getNodeType() == NodeType.UTILITY) {
+                List<Potential> newPotentials = new ArrayList<>();
+                if (child.onlyNumericalParents()) {// utility and
+                    // numerical parents
+                    // sum
+                    for (Potential oldPotential : child.getPotentials()) {
+                        // Update potential
+                        Potential newPotential = new SumPotential(oldPotential.getVariables(),
+                                oldPotential.getPotentialRole());
+                        newPotentials.add(newPotential);
+                    }
+                } else if (!child.onlyNumericalParents()) {// mixture of
+                    // finite
+                    // states
+                    // and
+                    // numerical
+                    // Uniform
+                    for (Potential oldPotential : child.getPotentials()) {
+                        // Update potential
+                        Potential newPotential = new UniformPotential(oldPotential.getVariables(),
+                                oldPotential.getPotentialRole());
+                        newPotentials.add(newPotential);
+                    }
+                }
+                child.setPotentials(newPotentials);
+            } else {
+                // if child is not utility always change potential to Uniform
+                // 25/11/2014
+                // If there are any potentials in the child
+                // Example. In the "ID-decide-test" network, if you change the Domain of Result of test variable,
+                // no potential should be set to Therapy
+                if (child.getPotentials() != null) {
+                    if (!child.getPotentials().isEmpty()) {
+                        setUniformPotential2Node(child);
+                    }
+                }
+            }
+        }
+    }
+
+    public void setUniformPotential2Node(Node node) {
+
+        List<Potential> newListPotentials = new ArrayList<>();
+        List<Variable> variables = new ArrayList<>();
+        List<Potential> potentials = node.getPotentials();
+        PotentialRole role = potentials.get(0).getPotentialRole();
+        // first, this variable. The potentials is not null
+        Variable thisVariable = potentials.get(0).getVariable(0);
+        variables.add(thisVariable);
+
+        int numOfCellsInTable = thisVariable.getNumStates();
+        double initialValue = Util.round(1 / ((double) numOfCellsInTable), "0.01");
+        // add now all the parents
+
+        for (Node parent : node.getParents()) {
+            // TODO Revisar, ¿Solo se agrega/elimina un padre a la vez?
+            // mpalacios
+            // the set of variables could be changed, so , have to be updated.
+            variables.add(parent.getVariable());
+            numOfCellsInTable *= parent.getVariable().getNumStates();
+        }
+
+        //TODO: This array is never used. Why is it created then?
+        // sets a new table with new columns and with all the same values
+        double[] table = new double[numOfCellsInTable];
+        for (int i = 0; i < numOfCellsInTable; i++) {
+            table[i] = initialValue;
+        }
+
+        // and finally, create the potential and the list of potentials
+
+        // TODO Comprobar que efectivamente es un CONDITIONAL_PROBABILITY
+        UniformPotential uniformPotential = new UniformPotential(variables, role);
+
+        newListPotentials.add(uniformPotential);
+
+        node.setPotentials(newListPotentials);
+
     }
 
 }

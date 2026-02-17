@@ -75,13 +75,7 @@ import java.util.List;
      * @param variable Variable
 	 * @param basePosition Base position
 	 */
-    static void placeUncertainColumn(TablePotential potential, List<UncertainValue> column, Variable variable,
-			int basePosition) {
-		UncertainValue[] table = (potential.getUncertainValues());
-        for (int i = 0; i < variable.getNumStates(); i++) {
-			table[i + basePosition] = (column != null) ? column.get(i) : null;
-		}
-	}
+
 
 	public int getBasePosition() {
 		return basePosition;
@@ -131,45 +125,20 @@ import java.util.List;
 	
 	@Override protected void doEdit() {
 		TablePotential potential = getPotential();
-		if (wasNullOldUncertainValues) {
-			potential.setUncertainValues(new UncertainValue[potential.getTableSize()]);
-		}
-		placeNewUncertainColumn(potential);
-		placeNewValuesColumn(potential);
-	}
-    
-    private void placeNewValuesColumn(TablePotential potential) {
-		placeValuesColumn(potential, newValuesColumn);
+		potential.setUncertainValuesConsistently(newUncertainColumn, newValuesColumn, basePosition);
 	}
 
-	private void placeOldValuesColumn(TablePotential potential) {
-		placeValuesColumn(potential, oldValuesColumn);
-	}
 
-	private void placeOldUncertainColumn(TablePotential potential) {
-		placeUncertainColumn(potential, oldUncertainColumn, getVariable(), basePosition);
-	}
-
-	private void placeNewUncertainColumn(TablePotential potential) {
-		placeUncertainColumn(potential, newUncertainColumn, getVariable(), basePosition);
-	}
-
-	private void placeValuesColumn(TablePotential potential, List<Double> column) {
-		double[] table = potential.getValues();
-        Variable variable = getVariable();
-        for (int i = 0; i < variable.getNumStates(); i++) {
-			table[i + basePosition] = column.get(i);
-		}
-	}
 
 	@Override public void undo() {
 		super.undo();
 		TablePotential potential = getPotential();
 		if (wasNullOldUncertainValues) {
 			potential.setUncertainValues(null);
+			potential.setValues(oldValuesColumn.stream().mapToDouble(Double::doubleValue).toArray());
 		} else {
-			placeOldUncertainColumn(potential);
+			potential.setUncertainValuesConsistently(oldUncertainColumn, oldValuesColumn, basePosition);
 		}
-		placeOldValuesColumn(potential);
 	}
+
 }

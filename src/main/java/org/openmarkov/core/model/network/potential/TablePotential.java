@@ -925,6 +925,26 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
     public void setUncertainValues(UncertainValue[] uncertainValues) {
         this.uncertainValues = uncertainValues;
     }
+
+    public void setUncertainValuesConsistently(List<UncertainValue> uncertainValues,List<Double> newValuesColumn ,int basePosition){
+        this.uncertainValues = new UncertainValue[uncertainValues.size()];
+        placeUncertainColumn(uncertainValues, getVariable(0), basePosition);
+        placeValuesColumn(newValuesColumn,basePosition);
+    }
+    public void placeUncertainColumn(List<UncertainValue> column, Variable variable,
+                                     int basePosition) {
+        UncertainValue[] table = (getUncertainValues());
+        for (int i = 0; i < variable.getNumStates(); i++) {
+            table[i + basePosition] = (column != null) ? column.get(i) : null;
+        }
+    }
+    private void placeValuesColumn(List<Double> column, int basePosition) {
+        double[] table = getValues();
+        Variable variable = getVariable(0);
+        for (int i = 0; i < variable.getNumStates(); i++) {
+            table[i + basePosition] = column.get(i);
+        }
+    }
     
     /**
      * @return dimensions of the variables in an array of {@code int[]}.

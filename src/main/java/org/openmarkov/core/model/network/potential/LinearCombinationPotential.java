@@ -66,7 +66,7 @@ public class LinearCombinationPotential extends GLMPotential {
     
     @Override protected TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
                                                     double[] coefficients, VariableExpression[] covariates, List<Variable> evidencelessVariables,
-                                                    Map<Variable, String> variableValues) throws NonProjectablePotentialException.CannotEvaluate {
+                                                    Map<Variable, String> variableValues) throws NonProjectablePotentialException.CannotEvaluate, NonProjectablePotentialException.CannotResolveVariable {
         Variable conditionedVariable = getConditionedVariable();
         int numStates = conditionedVariable.getNumStates();
         // Fill arrays numericValues and evidencelessVariables

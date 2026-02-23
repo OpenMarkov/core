@@ -13,6 +13,8 @@ import org.openmarkov.core.action.base.PNESupport;
 import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceOptions;
+import org.openmarkov.core.io.ProbNetReader;
+import org.openmarkov.core.io.ProbNetWriter;
 import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.graph.Graph;
 import org.openmarkov.core.model.graph.Link;
@@ -138,6 +140,32 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     private InferenceOptions inferenceOptions;
     
     private final Set<TablePotential> constantPotentials;
+    
+    /**
+     * Reader used to read this network.
+     */
+    private ProbNetReader reader;
+
+    /**
+     * Writter used to save this network
+     */
+    private ProbNetWriter writer;
+    
+    public ProbNetReader getReader() {
+        return this.reader;
+    }
+    
+    public void setReader(@Nullable ProbNetReader reader) {
+        this.reader = reader;
+    }
+    
+    public ProbNetWriter getWriter() {
+        return this.writer;
+    }
+    
+    public void setWriter(@Nullable ProbNetWriter writer) {
+        this.writer = writer;
+    }
     
     // Constructors
     public ProbNet(NetworkType networkType) {

@@ -237,6 +237,8 @@
     <Localization class="org.openmarkov.core.exception.NetworkHasNoNodesException" value="{probNet} has no nodes."/>
     <Localization class="org.openmarkov.core.exception.NonProjectablePotentialException$CannotEvaluate"
                   value="Cannot evaluate '{elementToEvaluate}' due to {evaluationException.getMessage}"/>
+    <Localization class="org.openmarkov.core.exception.NonProjectablePotentialException$CannotResolveVariable"
+                  value="An expression cannot be resolved as there is no value resolved for variable {reference}"/>
     <Localization class="org.openmarkov.core.exception.NonProjectablePotentialException$MissingEvidenceInVariable"
                   value="There is required evidence to be present in variable {timeVariable}, but there is no evidence"/>
     <Localization class="org.openmarkov.core.exception.NonProjectablePotentialException$MissingVariableInEvidence"

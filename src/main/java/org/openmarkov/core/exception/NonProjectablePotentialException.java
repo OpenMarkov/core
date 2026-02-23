@@ -100,4 +100,12 @@ public abstract sealed class NonProjectablePotentialException extends Exception 
         public final String elementToEvaluate;
         public final EvaluationException evaluationException;
     }
+    
+    public static final class CannotResolveVariable extends NonProjectablePotentialException {
+        public CannotResolveVariable(String reference) {
+            this.reference = reference;
+        }
+        
+        public final String reference;
+    }
 }

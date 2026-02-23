@@ -8,6 +8,7 @@
 package org.openmarkov.core.inference;
 
 import org.jetbrains.annotations.NotNull;
+import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.graph.Link;
@@ -36,13 +37,14 @@ public class BasicOperations {
      *
      * @param evidence Evidence
      * @param node     Node
+     *
      * @return potential
      */
-
+    
     public static Potential absorbParentPotentials(Variable variable,
-                                                             Potential nodePotential,
-                                                        ArrayList<TablePotential> parentsPotentials,
-                                                        EvidenceCase evidence) {
+                                                   Potential nodePotential,
+                                                   ArrayList<TablePotential> parentsPotentials,
+                                                   EvidenceCase evidence) {
         // create a TablePotential that will be the table of the new ExactDistrPotential
         TablePotential newTable;
         if (nodePotential instanceof SumPotential) {
@@ -51,9 +53,12 @@ public class BasicOperations {
             newTable = DiscretePotentialOperations.multiply(parentsPotentials);
         } else {   // FunctionPotential
             try {
+                @ToCheck(reasonKind = ToCheck.ReasonKind.PROBABLE_BUG, reasonDescription = "Are these two exceptions really unreachable?")
+                var a = true;
                 newTable = DiscretePotentialOperations.evaluateFunctionPotential(
                         (FunctionPotential) nodePotential, parentsPotentials, parentsPotentials.get(0).getVariables());
-            } catch (NonProjectablePotentialException.CannotEvaluate e) {
+            } catch (NonProjectablePotentialException.CannotEvaluate |
+                     NonProjectablePotentialException.CannotResolveVariable e) {
                 throw new UnreacheableException(e);
             }
         }
@@ -67,7 +72,7 @@ public class BasicOperations {
         exactDistrPotential.setTablePotential(newTable);
         return exactDistrPotential;
     }
-
+    
     private static ExactDistrPotential buildExactDistrPotentialUtility(Variable variable, TablePotential pot) {
         List<Variable> variables = new ArrayList<>();
         variables.add(variable);
@@ -84,6 +89,7 @@ public class BasicOperations {
     
     /**
      * @param network Network from which we extract terminal utility variables
+     *
      * @return A list of utility nodes that have no children
      */
     public static List<Variable> getTerminalUtilityVariables(ProbNet network) {
@@ -104,6 +110,7 @@ public class BasicOperations {
     
     /**
      * @param network Network from which we extract terminal numeric variables
+     *
      * @return A list of utility nodes that have no children
      */
     public static List<Variable> getNumericVariablesWithoutNumericChildren(ProbNet network) {
@@ -169,6 +176,7 @@ public class BasicOperations {
     
     /**
      * @param node Node
+     *
      * @return true iff the node has parents and are all observable
      */
     public static boolean haveParentsAndAreAllAbsorbable(Node node) {
@@ -188,8 +196,8 @@ public class BasicOperations {
                 throw new UnreacheableException(e);
             }
         }
-
-        Potential potential = absorbParentPotentials(nodeVariable, node.getPotential(),parentsPotential,null);
+        
+        Potential potential = absorbParentPotentials(nodeVariable, node.getPotential(), parentsPotential, null);
         
         for (Node parent : parents) {
             network.removeLink(parent.getVariable(), nodeVariable, true);
@@ -212,6 +220,7 @@ public class BasicOperations {
      * path between two utility nodes.
      *
      * @param sourceProbNet Network from which we extract the utility nodes
+     *
      * @return A list of utility nodes that must be kept when we want to have a set
      * of utility nodes with an implicit sum
      */
@@ -226,6 +235,7 @@ public class BasicOperations {
     /**
      * @param sourceProbNet Network in which we test if there are sum nodes
      * @param nodesToKeep   List of variables (of the nodes to keep)
+     *
      * @return true if there are some sum node in the list 'nodesToKeep'
      */
     private static boolean thereAreSumNodesInTheList(ProbNet sourceProbNet, List<Variable> nodesToKeep) {
@@ -257,6 +267,7 @@ public class BasicOperations {
     
     /**
      * @param node the node to test
+     *
      * @return true if all the parents of a node can be absorbed. It must be fulfill
      * three conditions: 1) It is a numeric node 2) Its parents are all
      * numeric 3) Its grandparents are all discrete
@@ -311,6 +322,7 @@ public class BasicOperations {
     
     /**
      * @param probNet Network
+     *
      * @return {@code List} of {@code List} of {@code Variable}s
      */
     public static List<List<Variable>> getOrder(ProbNet probNet) {
@@ -324,6 +336,7 @@ public class BasicOperations {
     /**
      * @param probNet A probabilistic network of which the partial order will be
      *                calculated
+     *
      * @return {@code ArrayList} of {@code ArrayList} of
      * {@code Variables} with the partial order of the received probNet
      */
@@ -388,6 +401,7 @@ public class BasicOperations {
     /**
      * @param variable Variable
      * @param probNet  Network
+     *
      * @return The list of variables revealed by a variable in a DAN or by a chance
      * variable revealed by that variable, and so on...
      */
@@ -455,6 +469,7 @@ public class BasicOperations {
      * @param evidenceVariables     List of variables
      * @param conditioningVariables List of variables
      * @param variablesToEliminate  List of variables
+     *
      * @return An order that has been pruned by eliminating the variables that are
      * in queryVariables or in evidenceVariables or in conditioningVariables
      * or not in variablesToEliminate
@@ -488,6 +503,7 @@ public class BasicOperations {
     
     /**
      * @param probNet Network
+     *
      * @return A {@code String} with an array of arrays.
      */
     public static String toStringPartialOrder(ProbNet probNet) {
@@ -539,6 +555,7 @@ public class BasicOperations {
      * @param conditioningVariables {@code List&#60;Variable&#62;}
      * @param variablesToEliminate  {@code List&#60;Variable&#62;}
      * @param queryVariables        {@code List&#60;Variable&#62;}
+     *
      * @return An order that has been pruned by eliminating the variables that are
      * in queryVariables or in evidenceVariables or in conditioningVariables
      * or not in variablesToEliminate
@@ -573,6 +590,7 @@ public class BasicOperations {
     /**
      * @param probNet A probabilistic network of which the partial order will be
      *                calculated
+     *
      * @return {@code ArrayList} of {@code ArrayList} of
      * {@code Variables} with the partial order of the received probNet
      */
@@ -678,6 +696,7 @@ public class BasicOperations {
      * @param keepComponents        keep (or not) components
      * @param leaveImplicitSum      leave (or not) the implicit sum
      * @param utilityVariableToKeep utility variable to keep
+     *
      * @return A copy of the probNet by removing super-value nodes. When
      * keepComponents is false the output network is equivalent to
      * 'sourceProbNet'. However, when keepComponents is true the output

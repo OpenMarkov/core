@@ -13,12 +13,10 @@ import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.model.network.potential.operation.AugmentedProbTableInference;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @PotentialType(names = "AugmentedProbTable")
@@ -89,15 +87,21 @@ public class AugmentedProbTablePotential extends Potential {
     }
     
     @Override
-    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable, NonProjectablePotentialException.CannotEvaluate {
+    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable, NonProjectablePotentialException.CannotEvaluate, NonProjectablePotentialException.CannotResolveVariable {
         Map<Variable, String> findingsMap = evidenceCase.getFindingsMap();
         VariableExpression[] expressions = this.augmentedProbTable.getFunctionValues();
-        var resolvedTablePotential = new TablePotential(this.variables, role);
-        for (int valueIndex = 0; valueIndex < resolvedTablePotential.values.length; valueIndex++) {
-            String evaluation = expressions[valueIndex].evaluateWith(findingsMap);
-            resolvedTablePotential.values[valueIndex] = Double.parseDouble(evaluation);
+        var resolvedTablePotential = new TablePotential(this.finiteStatesVariables, role);
+        var variableOfPotential = variables.getFirst();
+        int numStates = variableOfPotential.getNumStates();
+        int divisions = resolvedTablePotential.values.length / numStates;
+        for (int columnIndex = 0; columnIndex < divisions; columnIndex++){
+            var unresolvedValues = Arrays.copyOfRange(expressions, columnIndex*numStates, (1+columnIndex)*numStates);
+            var resolvedValues = AugmentedProbTableInference.resolveColumn(unresolvedValues, findingsMap, AugmentedProbTableInference.Operation.values());
+            for(int rowIndex = 0; rowIndex < numStates; rowIndex++){
+                resolvedTablePotential.values[columnIndex*numStates + rowIndex] = resolvedValues[rowIndex];
+            }
         }
-        throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
+        return resolvedTablePotential;
     }
     
     @Override

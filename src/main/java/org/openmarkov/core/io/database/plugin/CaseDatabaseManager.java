@@ -17,6 +17,7 @@ import org.openmarkov.plugin.PluginSearch;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.stream.Stream;
 
 /**
@@ -35,6 +36,18 @@ public class CaseDatabaseManager {
      * The list of case database writer plugins detected in the project
      */
     private HashMap<String, Class<? extends CaseDatabaseWriter>> writerPlugins;
+    
+    public static CaseDatabaseFormat info(Class<?> readerPlugin){
+        return readerPlugin.getAnnotation(CaseDatabaseFormat.class);
+    }
+    
+    private static CaseDatabaseFormat info(CaseDatabaseWriter readerPlugin){
+        return CaseDatabaseManager.info(readerPlugin.getClass());
+    }
+    
+    private static CaseDatabaseFormat info(CaseDatabaseReader writerPlugin){
+        return CaseDatabaseManager.info(writerPlugin.getClass());
+    }
     
     /**
      * Gets a FormatManager instance
@@ -102,21 +115,17 @@ public class CaseDatabaseManager {
         }
     }
     
-    /**
-     * Returns a HashMap whose keys are extensions accepted by the readers and
-     * whose values are descriptions of the file format read by the reader
-     *
-     * @return a HashMap whose keys are extensions accepted by the readers and
-     * whose values are descriptions of the file format read by the reader
-     */
     public HashMap<String, String> getAllReaders() {
         HashMap<String, String> readersInfo = new HashMap<>();
         for (String extension : readerPlugins.keySet()) {
             String description = readerPlugins.get(extension).getAnnotation(CaseDatabaseFormat.class).name();
             readersInfo.put(extension, description);
         }
-        
         return readersInfo;
+    }
+    
+    public static List<Class<? extends CaseDatabaseReader>> listReaders() {
+        return CaseDatabaseManager.findAllReaderPlugins().toList();
     }
     
     /**
@@ -132,9 +141,11 @@ public class CaseDatabaseManager {
             String description = writerPlugins.get(extension).getAnnotation(CaseDatabaseFormat.class).name();
             writersInfo.put(extension, description);
         }
-        
         return writersInfo;
-        
+    }
+    
+    public static List<Class<? extends CaseDatabaseWriter>> listWriters() {
+        return CaseDatabaseManager.findAllWriterPlugins().toList();
     }
     
 }

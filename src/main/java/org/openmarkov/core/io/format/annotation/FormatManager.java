@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.io.format.annotation;
 
+import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.io.ProbNetReader;
@@ -43,95 +44,50 @@ import java.util.stream.Stream;
  * @see FormatType
  */
 public class FormatManager {
+    
     private static final FormatManager INSTANCE = new FormatManager();
     
-    /**
-     * The Reader role
-     */
-    private String roleReader = "Reader";
+    private final List<? extends ProbNetReader> readerInstances;
+    private final List<? extends ProbNetWriter> writerInstances;
     
-    /**
-     * The writer role
-     */
-    private String roleWriter = "Writer";
-    
-    /**
-     * Reader classes
-     * It is a Map&lt;extension, &lt;version, readerClass&gt;&gt;
-     */
-    private Map<String, Map<String, Class<?>>> readerClasses;
-    
-    /**
-     * Writer classes
-     * It is a Map&lt;extension, &lt;version, writerClass&gt;&gt;
-     */
-    private Map<String, Map<String, Class<?>>> writerClasses;
-    
-    /**
-     * Reader instances
-     * It is a Map&lt;extension, &lt;version, readerInstance&gt;&gt;
-     */
-    private Map<String, Map<String, ProbNetReader>> readerInstances;
-    
-    /**
-     * Writer instances
-     * It is a Map&lt;extension, &lt;version, writerInstance&gt;&gt;
-     */
-    private Map<String, Map<String, ProbNetWriter>> writerInstances;
+    private final List<Class<? extends ProbNetReader>> readerClassesList;
+    private final List<Class<? extends ProbNetWriter>> writerClassesList;
     
     /**
      * Gets a FormatManager instance
      */
     private FormatManager() {
         super();
-        
-        this.readerClasses = new LinkedHashMap<>();
-        this.writerClasses = new LinkedHashMap<>();
-        this.readerInstances = new LinkedHashMap<>();
-        this.writerInstances = new LinkedHashMap<>();
-        
-        findAllFormatPlugins().forEach(plugin -> {
-            FormatType lAnnotation = plugin.getAnnotation(FormatType.class);
-            
-            if (lAnnotation.role().equals(roleReader)) {
-            	/*
-            	readerClasses.put (lAnnotation.extension (), plugin);
-            	*/
-                String extension = lAnnotation.extension();
-                String version = "";
-                if (!extension.equals("elv")) {
-                    version = lAnnotation.version();
-                }
-                Map<String, Class<?>> readerForExtension = readerClasses.get(extension);
-                if (readerForExtension != null) {
-                    readerForExtension.put(version, plugin);
-                } else {
-                    Map<String, Class<?>> versionsHash = new LinkedHashMap<>();
-                    versionsHash.put(version, plugin);
-                    readerClasses.put(extension, versionsHash);
-                }
+        this.readerClassesList = FormatManager.findAllProbNetReaderPlugins().toList();
+        this.writerClassesList = FormatManager.findAllProbNetWriterPlugins().toList();
+        this.writerInstances = this.writerClassesList.stream().map(writerClass->{
+            try {
+                return writerClass.getDeclaredConstructor().newInstance();
+            } catch (InstantiationException | NoSuchMethodException | IllegalAccessException |
+                     InvocationTargetException e) {
+                return null;
             }
-            if (lAnnotation.role().equals(roleWriter)) {
-            	/*
-            	writerClasses.put (lAnnotation.extension (), plugin);
-            	*/
-                
-                String extension = lAnnotation.extension();
-                String version = "";
-                if (!extension.equals("elv")) {
-                    version = lAnnotation.version();
-                }
-                Map<String, Class<?>> writerForExtension = writerClasses.get(extension);
-                if (writerForExtension != null) {
-                    writerForExtension.put(version, plugin);
-                } else {
-                    Map<String, Class<?>> versionsHash = new LinkedHashMap<>();
-                    versionsHash.put(version, plugin);
-                    writerClasses.put(extension, versionsHash);
-                }
-                
+        }).toList();
+        this.readerInstances = this.readerClassesList.stream().map(readerClass->{
+            try {
+                return readerClass.getDeclaredConstructor().newInstance();
+            } catch (InstantiationException | NoSuchMethodException | IllegalAccessException |
+                     InvocationTargetException e) {
+                return null;
             }
-        });
+        }).toList();
+    }
+    
+    public static FormatType info(Class<?> plugin) {
+        return plugin.getAnnotation(FormatType.class);
+    }
+    
+    public static FormatType info(ProbNetReader reader) {
+        return info(reader.getClass());
+    }
+    
+    public static FormatType info(ProbNetWriter writer) {
+        return info(writer.getClass());
     }
     
     /**
@@ -143,130 +99,12 @@ public class FormatManager {
         return INSTANCE;
     }
     
-    /**
-     * This method gets all the plugins with FormatTypeProbModelXML annotations
-     *
-     * @return a list with the plugins detected with FormatTypeProbModelXML annotations.
-     */
-    private static Stream<Class<? extends Object>> findAllFormatPlugins() {
-        return PluginSearch.init().annotatedWith(FormatType.class).stream();
-    }
-    //	/**
-    //	 * Gets the plugin with the "Writer" role and the extension
-    //	 * @param extension the extension required
-    //	 * @return a probNetWriter object
-    //	 */
-    //	public ProbNetWriter getProbNetWriter (String extension)
-    //	{
-    //	    ProbNetWriter instance = null;
-    //	    if(writerInstances.containsKey (extension))
-    //	    {
-    //	        instance = writerInstances.get(extension);
-    //	    }else
-    //	    {
-    //	        if(writerClasses.containsKey (extension))
-    //	        {
-    //        		try
-    //        		{
-    //        		    instance = (ProbNetWriter) writerClasses.get (extension).newInstance ();
-    //        		}
-    //        		catch (Exception e) {}
-    //	        }
-    //	    }
-    //		return instance;
-    //	}
-    
-    /**
-     * Gets the plugin with the "Writer" role, the extension and the version of the network.
-     * If the extension is "elv" corresponding to Elvira enconding, fileFormat is the empty string
-     *
-     * @param extension  - the extension corresponding to the enconding of the file (elv, pgmx)
-     * @param fileFormat - format and version of the file
-     *
-     * @return the ProbNetWriter corresponding to the selected extension and format of the file
-     *
-     * @throws InstantiationException InstantiationException
-     * @throws IllegalAccessException IllegalAccessException
-     */
-    public ProbNetWriter getProbNetWriter(String extension, String fileFormat) {
-        ProbNetWriter instance = null;
-        String version = "";
-        if (!(fileFormat.equals("Elvira"))) {
-            version = fileFormat.substring(fileFormat.indexOf('.') + 1);
-        }
-        
-        if ((writerInstances.containsKey(extension)) && (writerInstances.get(extension).containsKey(version))) {
-            Map<String, ProbNetWriter> versionsHash = writerInstances.get(extension);
-            instance = versionsHash.get(version);
-        } else {
-            if ((writerClasses.containsKey(extension)) && (writerClasses.get(extension).containsKey(version))) {
-                Map<String, Class<?>> versionsHash = writerClasses.get(extension);
-                try {
-                    instance = (ProbNetWriter) versionsHash.get(version).getDeclaredConstructor().newInstance();
-                } catch (InstantiationException | NoSuchMethodException | IllegalAccessException |
-                         InvocationTargetException e) {
-                    throw new UnreacheableException(e);
-                }
-            }
-        }
-        return instance;
-        
+    private static Stream<Class<? extends ProbNetReader>> findAllProbNetReaderPlugins() {
+        return PluginSearch.init().annotatedWith(FormatType.class).extending(ProbNetReader.class).stream();
     }
     
-    
-    //	/**
-    //	 * Gets the plugin with the "Reader" role and the extension
-    //	 * @param extension the extension required
-    //	 * @return a probNetReader object
-    //	 */
-    //	public ProbNetReader getProbNetReader (String extension)
-    //	{
-    //	    ProbNetReader instance = null;
-    //        if(readerInstances.containsKey (extension))
-    //        {
-    //            instance = readerInstances.get(extension);
-    //        }else
-    //        {
-    //            if(readerClasses.containsKey (extension))
-    //            {
-    //                try
-    //                {
-    //                    instance = (ProbNetReader) readerClasses.get (extension).newInstance ();
-    //                }
-    //                catch (Exception e) {}
-    //            }
-    //        }
-    //        return instance;
-    //	}
-    
-    /**
-     * Gets the plugin corresponding to the "Reader" role, the extension and the version
-     *
-     * @param fileName File name
-     *
-     * @return a ProbNetReader object
-     *
-     * @throws Exception when an exception is raised is thrown to be caught by the gui
-     */
-    public ProbNetReader getProbNetReader(String fileName) throws SAXException, IOException, IllegalArgumentException, SecurityException, NoReaderForFileException, ParserException.BadlyStructuredFile {
-        return getProbNetReader(new File(fileName).toURI().toURL());
-        /*
-        String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
-        String fileVersion = "";
-        
-        if (!fileExtension.equals("elv")) {
-            checkVersion(fileName);
-            checkStructure(fileName);
-            DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
-            Document doc = docBuilder.parse(new File(fileName));
-            fileVersion = doc.getDocumentElement().getAttribute("formatVersion");
-            //Removing the last index of the version
-            fileVersion = fileVersion.substring(0, fileVersion.lastIndexOf('.'));
-        }
-        ProbNetReader reader = getProbNetReader(fileExtension, fileVersion);
-        return reader;
-         */
+    private static Stream<Class<? extends ProbNetWriter>> findAllProbNetWriterPlugins() {
+        return PluginSearch.init().annotatedWith(FormatType.class).extending(ProbNetWriter.class).stream();
     }
     
     /**
@@ -283,8 +121,19 @@ public class FormatManager {
         checkStructure(url);
         String fileName = url.getFile();
         String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
-        String fileVersion = "";
-        if (!fileExtension.equals("elv")) {
+        String fileVersion = getFileVersion(url, fileExtension);
+        ProbNetReader reader = getProbNetReaderInstanceFor(fileExtension, fileVersion);
+        if (reader == null) {
+            throw new NoReaderForFileException(fileExtension, fileVersion, url);
+        }
+        return reader;
+    }
+    
+    private static @NotNull String getFileVersion(URL url, String fileExtension) throws SAXException, IOException {
+        String fileVersion;
+        if(fileExtension.equals("elv")){
+            fileVersion = "";
+        }else {
             DocumentBuilder docBuilder;
             try {
                 docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -296,27 +145,7 @@ public class FormatManager {
             //Removing the last index of the version
             fileVersion = fileVersion.substring(0, fileVersion.lastIndexOf('.'));
         }
-        ProbNetReader reader = getProbNetReader(fileExtension, fileVersion);
-        if (reader == null) {
-            throw new NoReaderForFileException(fileExtension, fileVersion, url);
-        }
-        return reader;
-    }
-    
-    public void checkVersion(URL url) throws SAXException, IOException {
-        InputStream xsd = getClass().getClassLoader().getResourceAsStream("version.xsd");
-        SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Source schemaFile = new StreamSource(xsd);
-        Schema schema = factory.newSchema(schemaFile);
-        Validator validator = schema.newValidator();
-        DocumentBuilder db;
-        try {
-            db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        } catch (ParserConfigurationException e) {
-            throw new UnreacheableException(e);
-        }
-        Document document = db.parse(url.openStream());
-        validator.validate(new DOMSource(document));
+        return fileVersion;
     }
     
     /**
@@ -329,102 +158,28 @@ public class FormatManager {
      *
      * @throws Exception when an exception is raised is thrown to be caught by the gui
      */
-    public ProbNetReader getProbNetReader(String extension, String version) {
-        ProbNetReader instance = null;
-        if ((readerInstances.containsKey(extension)) && (readerInstances.get(extension).containsKey(version))) {
-            Map<String, ProbNetReader> versionsHash = readerInstances.get(extension);
-            instance = versionsHash.get(version);
-        } else {
-            if ((readerClasses.containsKey(extension)) && (readerClasses.get(extension).containsKey(version))) {
-                Map<String, Class<?>> versionsHash = readerClasses.get(extension);
-                try {
-                    instance = (ProbNetReader) versionsHash.get(version).getDeclaredConstructor().newInstance();
-                } catch (InstantiationException | NoSuchMethodException | IllegalAccessException |
-                         InvocationTargetException e) {
-                    throw new UnreacheableException(e);
-                }
-            }
-        }
-        return instance;
+    public ProbNetReader getProbNetReaderInstanceFor(String extension, String version) {
+        return this.readerInstances
+                .stream()
+                .filter(plugin -> FormatManager.info(plugin).extension().equals(extension) && FormatManager.info(plugin).version().startsWith(version))
+                .findFirst().get();
     }
     
-    //	/**
-    //	 * Gets the extension of the file given by fileName
-    //	 * @param fileName
-    //	 * 			- the name of the file
-    //	 * @return the extension of fileName
-    //	 */
-    //	private static String getFileExtension(String fileName) {
-    //
-    //		String fileExtension = null;
-    //		int i = fileName.lastIndexOf('.');
-    //		if ((i > 0) && (i < (fileName.length() - 1))) {
-    //			fileExtension = fileName.substring(i + 1).toLowerCase();
-    //		}
-    //
-    //		return fileExtension;
-    //
-    //	}
     
-    
-    /**
-     * Gets the extension, description of all the writers
-     *
-     * @return a HashMap with a pair (extension, description) for each writer
-     */
-    public List<AbstractMap.SimpleEntry<String, String>> getWriters() {
-        ArrayList<AbstractMap.SimpleEntry<String, String>> writers = new ArrayList<>(writerClasses.size());
-        for (String extension : writerClasses.keySet()) {
-            for (String version : writerClasses.get(extension).keySet()) {
-                FormatType lAnnotation = writerClasses.get(extension).get(version).getAnnotation(FormatType.class);
-                writers.add(new AbstractMap.SimpleEntry<>(lAnnotation.description(), lAnnotation.extension()));
-            }
-        }
-        
-        return writers;
+    public static Stream<Class<? extends ProbNetReader>> readersClasses() {
+        return FormatManager.INSTANCE.readerClassesList.stream();
     }
-    //	/**
-    //     * Gets the all the reader plugins
-    //     * @return all the reader plugins found
-    //     */
-    //
-    //    public HashMap<String, String> getReaders()
-    //    {
-    //        HashMap<String, String> writers = new HashMap<>();
-    //        for (String extension : readerClasses.keySet ()) {
-    //            FormatType lAnnotation = readerClasses.get (extension).getAnnotation (FormatType.class);
-    //            writers.put (lAnnotation.description(), lAnnotation.extension());
-    //        }
-    //
-    //        return writers;
-    //    }
-    //	/**
-    //     * Gets the all the reader plugins
-    //     * @return a HashMap with the <description, extension> of every extension found
-    //     */
     
-    /**
-     * Gets the (extension, description) of the readers
-     *
-     * @return a Map with all the extensions found
-     */
+    public static Stream<Class<? extends ProbNetWriter>> writersClasses() {
+        return FormatManager.INSTANCE.writerClassesList.stream();
+    }
     
-    public List<AbstractMap.SimpleEntry<String, String>> getReaders() {
-        ArrayList<AbstractMap.SimpleEntry<String, String>> readers = new ArrayList<>(readerClasses.size());
-        for (String extension : readerClasses.keySet()) {
-            for (String version : readerClasses.get(extension).keySet()) {
-                FormatType lAnnotation = readerClasses.get(extension).get(version).getAnnotation(FormatType.class);
-                String description = lAnnotation.description();
-                int indexDot = description.indexOf('.');
-                if (indexDot > -1) {
-                    description = description.substring(0, indexDot);
-                }
-                readers.add(new AbstractMap.SimpleEntry<>(description, lAnnotation.extension()));
-                break;
-            }
-        }
-        
-        return readers;
+    public static Stream<? extends ProbNetReader> readersInstances() {
+        return FormatManager.INSTANCE.readerInstances.stream();
+    }
+    
+    public static Stream<? extends ProbNetWriter> writersInstances() {
+        return FormatManager.INSTANCE.writerInstances.stream();
     }
     
     public void checkVersion(String name) throws SAXException, IOException, ParserConfigurationException {
@@ -440,6 +195,22 @@ public class FormatManager {
         Schema schema = factory.newSchema(schemaFile);
         
         Validator validator = schema.newValidator();
+        validator.validate(new DOMSource(document));
+    }
+    
+    public void checkVersion(URL url) throws SAXException, IOException {
+        InputStream xsd = getClass().getClassLoader().getResourceAsStream("version.xsd");
+        SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        Source schemaFile = new StreamSource(xsd);
+        Schema schema = factory.newSchema(schemaFile);
+        Validator validator = schema.newValidator();
+        DocumentBuilder db;
+        try {
+            db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        } catch (ParserConfigurationException e) {
+            throw new UnreacheableException(e);
+        }
+        Document document = db.parse(url.openStream());
         validator.validate(new DOMSource(document));
     }
     
@@ -469,6 +240,11 @@ public class FormatManager {
         }
     }
     
+    public static boolean formatEquals(FormatType format1, FormatType format2) {
+        return format1.extension().equals(format2.extension())
+                && format1.description().equals(format2.description())
+                && format1.version().equals(format2.version());
+    }
 }
 
 

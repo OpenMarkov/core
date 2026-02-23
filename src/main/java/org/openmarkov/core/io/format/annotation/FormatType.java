@@ -50,10 +50,5 @@ import java.lang.annotation.Target;
 	 * @return The format description
 	 */
 	String description();
-
-	/**
-	 * Gets the role of the class.
-	 * @return the role of the class. "Writer" if implements the ProbNetWriter interface, "Reader" if implements the ProbNetReader interface.
-	 */
-	String role();
+	
 }

@@ -25,8 +25,8 @@ public class AugmentedProbTable extends TablePotential {
     /**
      * The default function
      */
-    private static final VariableExpression DEFAULT_FUNCTION = new VariableExpression(Collections.emptyList(), "1");
-    private static final VariableExpression COMPLEMENT_FUNCTION = new VariableExpression(Collections.emptyList(), "Complement");
+    public static final VariableExpression DEFAULT_FUNCTION = new VariableExpression(Collections.emptyList(), "1");
+    public static final VariableExpression COMPLEMENT_FUNCTION = new VariableExpression(Collections.emptyList(), "Complement");
     
     private VariableExpression[] functionValues;
     

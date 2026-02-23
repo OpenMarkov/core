@@ -107,7 +107,7 @@ import java.util.*;
     @Override
     public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
                                                 double[] coefficients, VariableExpression[] covariates, List<Variable> evidencelessVariables,
-                                                Map<Variable, String> variableValues) throws NonProjectablePotentialException.MissingEvidenceInVariable, NonProjectablePotentialException.CannotEvaluate {
+                                                Map<Variable, String> variableValues) throws NonProjectablePotentialException.MissingEvidenceInVariable, NonProjectablePotentialException.CannotEvaluate, NonProjectablePotentialException.CannotResolveVariable {
         Variable conditionedVariable = getConditionedVariable();
         // Fill arrays numericValues and evidencelessVariables
         

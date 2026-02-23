@@ -52,12 +52,13 @@ public class ReferencedExpression<T> {
             }).collect(Collectors.joining());
     }
     
-    public final String processedExpression(Map<T, String> variablesValues) {
-        
+    public final String processedExpression(Map<T, String> variablesValues) throws NonProjectablePotentialException.CannotResolveVariable {
         var variableResolver = new VariableResolver<T>(this, variablesValues);
-        return contents.stream()
-                       .map(expressionContent -> expressionContent.resolve(variableResolver))
-                       .collect(Collectors.joining());
+        StringBuilder resolved = new StringBuilder();
+        for (ExpressionContent<T> expressionContent : this.contents) {
+            resolved.append(expressionContent.resolve(variableResolver));
+        }
+        return resolved.toString();
     }
     
     public List<T> references() {
@@ -71,7 +72,7 @@ public class ReferencedExpression<T> {
     
     sealed interface ExpressionContent<T> {
         record VariableReference<T>(T reference) implements ExpressionContent<T> {
-            @Override public String resolve(VariableResolver<T> variableResolver) {
+            @Override public String resolve(VariableResolver<T> variableResolver) throws NonProjectablePotentialException.CannotResolveVariable {
                 if (variableResolver.constantsFromValue.containsKey(reference)) {
                     return variableResolver.constantsFromValue.get(reference);
                 }
@@ -83,7 +84,7 @@ public class ReferencedExpression<T> {
                 if (inlineResolve != null) {
                     return inlineResolve;
                 }
-                return "{" + variableName + "}";
+                throw new NonProjectablePotentialException.CannotResolveVariable(variableName);
             }
         }
         
@@ -93,7 +94,7 @@ public class ReferencedExpression<T> {
             }
         }
         
-        String resolve(VariableResolver<T> variableResolver);
+        String resolve(VariableResolver<T> variableResolver) throws NonProjectablePotentialException.CannotResolveVariable;
         
     }
     
@@ -101,7 +102,7 @@ public class ReferencedExpression<T> {
         return this.asStringExpression();
     }
     
-    public String evaluateWith(Map<T, String> variablesValues) throws NonProjectablePotentialException.CannotEvaluate {
+    public String evaluateWith(Map<T, String> variablesValues) throws NonProjectablePotentialException.CannotEvaluate, NonProjectablePotentialException.CannotResolveVariable {
         String processedExpression = this.processedExpression(variablesValues);
         try {
             return new net.sourceforge.jeval.Evaluator().evaluate(processedExpression);

@@ -2373,7 +2373,7 @@ public final class DiscretePotentialOperations {
     
     public static TablePotential evaluateFunctionPotential(FunctionPotential utilityPotential,
                                                            List<TablePotential> potentials, List<Variable> utilityVariables)
-            throws org.openmarkov.core.exception.NonProjectablePotentialException.CannotEvaluate {
+            throws org.openmarkov.core.exception.NonProjectablePotentialException.CannotEvaluate, NonProjectablePotentialException.CannotResolveVariable {
         int numPotentials = potentials.size();
         
         Criterion criterion = findFirstNonNullCriterion(potentials);

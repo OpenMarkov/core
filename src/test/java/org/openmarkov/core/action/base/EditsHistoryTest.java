@@ -5,7 +5,7 @@ import org.openmarkov.core.model.network.ProbNet;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class UndoManagerTest {
+class EditsHistoryTest {
     
     @Test
     public void test() {
@@ -19,7 +19,7 @@ class UndoManagerTest {
         var editE = new NamedEdit(probNet, "E");
         
         
-        var manager = new UndoManager();
+        var manager = new EditsHistory();
         //Done edits: {}
         //Undone edits: {}
         assertFalse(manager.canRedo());

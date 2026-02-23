@@ -7,9 +7,9 @@
 
 package org.openmarkov.core.inference.heuristic;
 
+import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.action.base.PNEdit;
-import org.openmarkov.core.action.base.PNUndoableEditEvent;
-import org.openmarkov.core.action.base.PNUndoableEditListener;
+import org.openmarkov.core.action.base.PNEditListener;
 import org.openmarkov.core.action.base.UsesVariable;
 import org.openmarkov.core.developmentStaticAnalysis.requirements.ImplementationRequirements;
 import org.openmarkov.core.developmentStaticAnalysis.requirements.RequiredConstructor;
@@ -31,7 +31,7 @@ import java.util.List;
  * @since OpenMarkov 1.0
  */
 @ImplementationRequirements(requiresOneOfTheseConstructors = @RequiredConstructor({ProbNet.class, List.class}))
-public abstract class EliminationHeuristic implements PNUndoableEditListener {
+public abstract class EliminationHeuristic implements PNEditListener {
 
 	// Attributes
 	/**
@@ -107,8 +107,8 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 	 */
 	public abstract Variable getVariableToDelete();
     
-    @Override public void afterEditHappens(PNUndoableEditEvent event) {
-		Variable removedVariable = getEventVariable(event);
+    @Override public void afterEditExecutes(PNEdit edit) {
+        Variable removedVariable = getEventVariable(edit);
 		if (removedVariable != null) {
 			int listOfListsIndex = variablesToEliminate.size() - 1;
 			if (listOfListsIndex >= 0) {
@@ -137,14 +137,11 @@ public abstract class EliminationHeuristic implements PNUndoableEditListener {
 	 * @return node ({@code Node}) in the heuristic
 	 * {@code ProbNet} that will be removed
 	 */
-    protected static Variable getEventVariable(PNUndoableEditEvent event) {
-		Variable variable = null;
-        PNEdit pNEdit = event.getEdit();
-
-		if (pNEdit instanceof UsesVariable) {
-			variable = ((UsesVariable) pNEdit).getVariable();
+    protected static @Nullable Variable getEventVariable(PNEdit edit) {
+        if (edit instanceof UsesVariable usesVariableEdit) {
+            return usesVariableEdit.getVariable();
 		}
-		return variable;
+        return null;
 	}
 
 	/**

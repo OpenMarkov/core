@@ -10,56 +10,44 @@ package org.openmarkov.core.action.base;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 
-public interface PNUndoableEditListener {
+public interface PNEditListener {
     
     /**
      * Triggered before an edit is about to happen happened.
      */
-    default void beforeEditHappens(PNUndoableEditEvent event) {
+    default void beforeEditExecutes(PNEdit edit) {
     }
     
     /**
      * Triggered after an edit has happened.
      */
-    default void afterEditHappens(PNUndoableEditEvent e) {
+    default void afterEditExecutes(PNEdit edit) {
     }
     
     /**
      * Triggered after an edit has failed.
      * <p>
-     * The method {@link PNUndoableEditListener#beforeEditHappens(PNUndoableEditEvent)} must have happened.
+     * The method {@link PNEditListener#beforeEditExecutes(PNEdit)} must have happened.
      */
-    default void onEditFailed(PNUndoableEditEvent event, DoEditException exception) {
+    default void onEditFailed(PNEdit edit, DoEditException exception) {
     }
     
     /**
      * Triggered before doing the edit and only if at least one of the constraints is violated.
      */
-    default void onEditViolatesConstraints(PNUndoableEditEvent pnUndoableEditEvent, ConstraintViolatedException ex) {
-    }
-    
-    /**
-     * Triggered before undoing an edit.
-     */
-    default void beforeUndoingEditHappens(PNUndoableEditEvent event) {
+    default void onEditViolatesConstraints(PNEdit edit, ConstraintViolatedException ex) {
     }
     
     /**
      * Triggered after undoing an edit.
      */
-    default void afterUndoingEdit(PNUndoableEditEvent event) {
-    }
-    
-    /**
-     * Triggered before redoing an edit.
-     */
-    default void beforeRedoingEditHappens(PNUndoableEditEvent event) {
+    default void afterUndoingEdit(PNEdit edit) {
     }
     
     /**
      * Triggered after redoing an edit.
      */
-    default void afterRedoingEdit(PNUndoableEditEvent event) {
+    default void afterRedoingEdit(PNEdit edit) {
     }
     
     

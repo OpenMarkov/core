@@ -13,13 +13,10 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 
 /**
- * This class is based on undoManager copy from Sun by Ray Ryan.
- *
- * @author Miguel Palacios
+ * @author jrico
  */
 
-public class UndoManager {
-    
+public class EditsHistory {
     private final ArrayDeque<PNEdit> doneEdits = new ArrayDeque<>();
     private final ArrayDeque<PNEdit> undoneEdits = new ArrayDeque<>();
     

@@ -7,8 +7,6 @@
 
 package org.openmarkov.core.action.base;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.UnreacheableException;
@@ -20,7 +18,6 @@ import org.openmarkov.core.model.network.ProbNet;
  * and operations of editions.
  */
 @SuppressWarnings("serial") public abstract class PNEdit implements ClassLocalizable {
-    
     //Start interface
     
     /**
@@ -61,32 +58,28 @@ import org.openmarkov.core.model.network.ProbNet;
             this.checkConstraintsWillBeMet(constraintChecker);
             constraintChecker.buildAndThrow();
         } catch (ConstraintViolatedException ex) {
-            for (PNUndoableEditListener listener : pneSupport.getListeners()) {
-                listener.onEditViolatesConstraints(new PNUndoableEditEvent(this), ex);
+            for (PNEditListener listener : pneSupport.getListeners()) {
+                listener.onEditViolatesConstraints(this, ex);
             }
             throw ex;
         }
         PNUndoableEditEvent event = new PNUndoableEditEvent(this);
-        for (PNUndoableEditListener listener : pneSupport.getListeners()) {
-            listener.beforeEditHappens(event);
+        for (PNEditListener listener : pneSupport.getListeners()) {
+            listener.beforeEditExecutes(this);
         }
         try {
             this.doEdit();
         } catch (DoEditException e) {
-            for (PNUndoableEditListener listener : pneSupport.getListeners()) {
-                listener.onEditFailed(event, e);
+            for (PNEditListener listener : pneSupport.getListeners()) {
+                listener.onEditFailed(this, e);
             }
             throw e;
         }
         if (pneSupport.isWithUndo() && !belongsToACompoundEdit) {
-            pneSupport.getUndoManager().addEdit(this);
+            pneSupport.getCurrentEditHistory().addEdit(this);
         }
-        Class<? extends PNEdit> editClass = getClass();
-        boolean isParenthesis = editClass == OpenParenthesisEdit.class || editClass == CloseParenthesisEdit.class;
-        if (!isParenthesis) {
-            for (PNUndoableEditListener listener : pneSupport.getListeners()) {
-                listener.afterEditHappens(event);
-            }
+        for (PNEditListener listener : pneSupport.getListeners()) {
+            listener.afterEditExecutes(this);
         }
     }
     

@@ -9,9 +9,7 @@ package org.openmarkov.core.model.network.constraint;
 
 import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.action.base.ConstraintChecker;
-import org.openmarkov.core.action.base.PNUndoableEditListener;
-import org.openmarkov.core.developmentStaticAnalysis.mutability.ExteriorImmutable;
-import org.openmarkov.core.developmentStaticAnalysis.mutability.InteriorImmutable;
+import org.openmarkov.core.action.base.PNEditListener;
 import org.openmarkov.core.developmentStaticAnalysis.requirements.ImplementationRequirements;
 import org.openmarkov.core.developmentStaticAnalysis.requirements.RequiredConstructor;
 import org.openmarkov.core.exception.ConstraintViolatedException;
@@ -22,13 +20,13 @@ import org.openmarkov.core.developmentStaticAnalysis.mutability.Immutable;
 
 /**
  * A constraint is a condition that a model must fulfill.<p>
- * This class implements {@code PNUndoableEditListener} because like
+ * This class implements {@code PNEditListener} because like
  * that all the classes that implement this interface will be able to receive
  * the same messages than {@code UndoableEditListener} and they will be
  * able to be referenced with same identifier.
  */
 @ImplementationRequirements(requiresOneOfTheseConstructors = @RequiredConstructor({}))
-public abstract class PNConstraint implements PNUndoableEditListener, ClassLocalizable, Comparable<PNConstraint>, Immutable {
+public abstract class PNConstraint implements PNEditListener, ClassLocalizable, Comparable<PNConstraint>, Immutable {
     
     /**
      * @param probNet {@code ProbNet}

@@ -78,13 +78,13 @@ import java.util.ArrayList;
     }
     
     @Override public void redo() {
-        this.edits.forEach(PNEdit::redo);
+        this.getEdits().forEach(PNEdit::redo);
         this.setTypicalRedo(false);
         super.redo();
     }
     
     @Override public void undo() {
-        this.edits.reversed().forEach(PNEdit::undo);
+        this.getEdits().reversed().forEach(PNEdit::undo);
         super.undo();
     }
     

@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ClassLocalizations>
-    <Localization class="org.openmarkov.core.action.base.CloseParenthesisEdit"
-                  value="Close parenthesis"/>
-    <Localization class="org.openmarkov.core.action.base.OpenParenthesisEdit"
-                  value="Open parenthesis"/>
     <Localization class="org.openmarkov.core.action.base.linkEdits.AddLinkEdit"
                   value="Add link from {nodeFrom} to {nodeTo}. Is directed? {isDirected}"/>
     <Localization class="org.openmarkov.core.action.base.linkEdits.InvertLinkAndUpdatePotentialsEdit"
@@ -50,6 +46,8 @@
                   value="Change node name of {node} from {previousName} to {newName}"/>
     <Localization class="org.openmarkov.core.action.core.NodeReplaceStatesEdit"
                   value="Replace states of {node} from {lastStates} to {newStates}"/>
+    <Localization class="org.openmarkov.core.action.base.ListPNEdit"
+                  value="{edits}"/>
     <Localization class="org.openmarkov.core.action.core.NodeStateEdit"
                   value="Edit state for {node} with action {stateAction}"/>
     <Localization class="org.openmarkov.core.action.core.PotentialChangeEdit"

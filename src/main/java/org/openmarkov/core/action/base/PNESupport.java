@@ -7,9 +7,8 @@
 
 package org.openmarkov.core.action.base;
 
+import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.UnreacheableException;
 import org.openmarkov.core.model.network.ProbNet;
 
 import java.util.*;
@@ -28,7 +27,7 @@ import java.util.*;
 public class PNESupport /*extends UndoableEditSupport*/ {
     /**
      * If {@code true} stores editions in
-     * {@code openmarkov.undo#UndoManager} for undo/redo.
+     * {@code openmarkov.undo#EditsHistory} for undo/redo.
      */
     private boolean withUndo;
     
@@ -37,7 +36,7 @@ public class PNESupport /*extends UndoableEditSupport*/ {
      *
      * @see javax.swing.undo.UndoManager
      */
-    public final UndoManager undoManager;
+    public final EditsHistoryStacker editsHistoryStacker;
 
     /*
     private boolean              significantEdits = true;
@@ -45,10 +44,7 @@ public class PNESupport /*extends UndoableEditSupport*/ {
     private boolean              editsExecuted    = false;
     private int                  editCount;
     */
-    /**
-     * Stack of open parenthesis, used to get the trace of nested parenthesis
-     */
-    private final Stack<OpenParenthesisEdit> openParenthesisStack;
+
     
     // Constructor
     
@@ -59,76 +55,18 @@ public class PNESupport /*extends UndoableEditSupport*/ {
         super();
         this.probNet = probNet;
         this.withUndo = false;
-        this.undoManager = new UndoManager();
-        this.openParenthesisStack = new Stack<>();
+        this.editsHistoryStacker = new EditsHistoryStacker();
     }
     
-    public HashSet<PNUndoableEditListener> getListeners() {
+    public HashSet<PNEditListener> getListeners() {
         return listeners;
     }
     
-    private HashSet<PNUndoableEditListener> listeners = new HashSet<>();
+    private HashSet<PNEditListener> listeners = new HashSet<>();
     
     // Methods
-    public void setListeners(Collection<? extends PNUndoableEditListener> listeners) {
+    public void setListeners(Collection<? extends PNEditListener> listeners) {
         this.listeners = new HashSet<>(listeners);
-    }
-    
-    @ToCheck(reasonDescription = "This does not produce the expected events in PNEditEventListener", reasonKind = ToCheck.ReasonKind.PROBABLE_BUG)
-    /**
-     * @see javax.swing.undo.UndoManager#canUndo()
-     * @see javax.swing.undo.UndoManager#undo()
-     */
-    public ArrayList<PNEdit> undo() {
-        ArrayList<PNEdit> undoneEdits = new ArrayList<>();
-        if (!(withUndo && undoManager.canUndo() && undoManager.canUndo())) {
-            return undoneEdits;
-        }
-        // Same as the undo method but counting the number of edits between parenthesis
-        PNEdit undoneEdit = undoManager.undo();
-        undoneEdits.add(undoneEdit);
-        if (!(undoneEdit instanceof CloseParenthesisEdit closeParenthesisEdit)) {
-            for (PNUndoableEditListener listener : listeners) {
-                listener.afterUndoingEdit(new PNUndoableEditEvent(undoneEdit));
-            }
-            return undoneEdits;
-        }
-        while (true) {
-            undoneEdit = undoManager.undo();
-            undoneEdits.add(undoneEdit);
-            if (undoneEdit instanceof OpenParenthesisEdit openParenthesisEdit
-                    && openParenthesisEdit == closeParenthesisEdit.getOpenParenthesisEdit()) {
-                for (PNUndoableEditListener listener : listeners) {
-                    listener.afterUndoingEdit(new PNUndoableEditEvent(undoneEdit));
-                }
-                return undoneEdits;
-            }
-            for (PNUndoableEditListener listener : listeners) {
-                listener.afterUndoingEdit(new PNUndoableEditEvent(undoneEdit));
-            }
-        }
-    }
-    
-    public ArrayList<PNEdit> removeLastEdit() {
-        ArrayList<PNEdit> undoneEdits = new ArrayList<>();
-        if (!(undoManager.canUndo() && undoManager.canUndo())) {
-            return undoneEdits;
-        }
-        // Same as the undo method but counting the number of edits between parenthesis
-        PNEdit undoneEdit = undoManager.removeLastDone();
-        undoneEdits.add(undoneEdit);
-        if (!(undoneEdit instanceof CloseParenthesisEdit closeParenthesisEdit)) {
-            return undoneEdits;
-        }
-        while (true) {
-            undoneEdit = undoManager.removeLastDone();
-            undoneEdits.add(undoneEdit);
-            if (undoneEdit instanceof OpenParenthesisEdit openParenthesisEdit
-                    && openParenthesisEdit == closeParenthesisEdit.getOpenParenthesisEdit()) {
-                
-                return undoneEdits;
-            }
-        }
     }
     
     @ToCheck(reasonDescription = "This does not produce the expected events in PNEditEventListener", reasonKind = ToCheck.ReasonKind.PROBABLE_BUG)
@@ -137,73 +75,88 @@ public class PNESupport /*extends UndoableEditSupport*/ {
      * @see javax.swing.undo.UndoManager#redo()
      */
     public ArrayList<PNEdit> redo() {
-        ArrayList<PNEdit> redoneEdits = new ArrayList<>();
-        if (!(withUndo && undoManager.canRedo())) {
-            return redoneEdits;
-        }
-        PNEdit redoneEdit = undoManager.redo();
-        redoneEdits.add(redoneEdit);
-        for (PNUndoableEditListener listener : listeners) {
-            listener.afterEditHappens(new PNUndoableEditEvent(redoneEdit));
-        }
-        if (!(redoneEdit instanceof OpenParenthesisEdit openParenthesisEdit)) {
-            return redoneEdits;
-        }
-        while (true) {
-            redoneEdit = undoManager.redo();
-            redoneEdits.add(redoneEdit);
-            for (PNUndoableEditListener listener : listeners) {
-                listener.afterEditHappens(new PNUndoableEditEvent(redoneEdit));
-            }
-            if (redoneEdit instanceof CloseParenthesisEdit closeParenthesisEdit && openParenthesisEdit == closeParenthesisEdit.getOpenParenthesisEdit()) {
-                return redoneEdits;
+        var redoneEdit = editsHistoryStacker.getCurrentUndoManager().redo();
+        ArrayList<PNEdit> redoneEdits = flattenEdit(redoneEdit);
+        for (PNEdit subRedoneEdit : redoneEdits) {
+            for (PNEditListener listener : listeners) {
+                listener.afterEditExecutes(subRedoneEdit);
             }
         }
+        return redoneEdits;
     }
     
-    public UndoManager getUndoManager() {
-        return undoManager;
+    private ArrayList<PNEdit> flattenEdit(@Nullable PNEdit redoneEdit) {
+        if (redoneEdit == null) {
+            return new ArrayList<>();
+        }
+        var editsToVisit = new ArrayDeque<PNEdit>();
+        editsToVisit.addFirst(redoneEdit);
+        var flattenedEdits = new ArrayList<PNEdit>();
+        while (!editsToVisit.isEmpty()) {
+            var edit = editsToVisit.removeFirst();
+            flattenedEdits.add(edit);
+            if (edit instanceof CompoundPNEdit compoundEdit) {
+                compoundEdit.getEdits().forEach(editsToVisit::addLast);
+            }
+        }
+        return flattenedEdits;
+    }
+    
+    @ToCheck(reasonDescription = "This does not produce the expected events in PNEditEventListener", reasonKind = ToCheck.ReasonKind.PROBABLE_BUG)
+    /**
+     * @see javax.swing.undo.UndoManager#canUndo()
+     * @see javax.swing.undo.UndoManager#undo()
+     */
+    public ArrayList<PNEdit> undo() {
+        var undoneEdit = editsHistoryStacker.getCurrentUndoManager().undo();
+        ArrayList<PNEdit> undoneEdits = flattenEdit(undoneEdit);
+        for (PNEdit subUndoneEdit : undoneEdits) {
+            for (PNEditListener listener : listeners) {
+                listener.afterEditExecutes(subUndoneEdit);
+            }
+        }
+        return undoneEdits;
+        
+    }
+    
+    public void removeUndoneEdits() {
+        editsHistoryStacker.getCurrentUndoManager().removeUndoneEdits();
+    }
+    
+    public EditsHistory getCurrentEditHistory() {
+        return editsHistoryStacker.getCurrentUndoManager();
     }
     
     public boolean getCanUndo() {
-        return undoManager.canUndo();
+        return editsHistoryStacker.getCurrentUndoManager().canUndo();
     }
     
     public boolean getCanRedo() {
-        return undoManager.canRedo();
+        return editsHistoryStacker.getCurrentUndoManager().canRedo();
     }
     
     /**
      * Add a {@code OpenParenthesisEdit} edit instance to
-     * {@code undoManager} and increases the parenthesis deph.
+     * {@code basicUndoManager} and increases the parenthesis deph.
      */
-    public void openParenthesis() {
+    public void openNewSubEditHistory() {
         if (withUndo) {
-            OpenParenthesisEdit openParenthesisEdit = new OpenParenthesisEdit(this.probNet);
-            try {
-                openParenthesisEdit.executeEdit();
-                openParenthesisStack.push(openParenthesisEdit);
-            } catch (DoEditException e) {
-                throw new UnreacheableException(e);
-            }
+            editsHistoryStacker.openNewSubEditHistory();
         }
     }
     
     /**
      * Add a {@code CloseParenthesisEdit} edit instance to
-     * {@code undoManager} and decreases the parenthesis deph.
+     * {@code basicUndoManager} and decreases the parenthesis deph.
      */
-    public void closeParenthesis() {
+    public void closeSubEditHistory(CloseEditStackOptions... closeOperations) {
         if (withUndo) {
-            OpenParenthesisEdit openParenthesisEdit = openParenthesisStack.pop();
-            // Associate the openParenthesis to the close parenthesis
-            CloseParenthesisEdit closeParenthesisEdit = new CloseParenthesisEdit(this.probNet, openParenthesisEdit);
-            try {
-                closeParenthesisEdit.executeEdit();
-            } catch (DoEditException e) {
-                throw new UnreacheableException(e);
-            }
+            editsHistoryStacker.closeSubEditHistory(List.of(closeOperations));
         }
+    }
+    
+    public void cancelLastSubEditHistory() {
+        closeSubEditHistory(CloseEditStackOptions.FORGET, CloseEditStackOptions.UNDO);
     }
     
     /**
@@ -241,54 +194,13 @@ public class PNESupport /*extends UndoableEditSupport*/ {
         return out;
     }
     
-    @ToCheck(reasonDescription = "This does not produce the expected events in PNEditEventListener", reasonKind = ToCheck.ReasonKind.PROBABLE_BUG)
-    /**
-     * This method do the same task as undo method, but removing the edits from the list
-     */
-    public ArrayList<PNEdit> undoAndDelete() {
-        ArrayList<PNEdit> undoneEdits = new ArrayList<>();
-        if (!(withUndo && undoManager.canUndo() && undoManager.canUndo())) {
-            return undoneEdits;
-        }
-        // Same as the undo method but counting the number of edits between parenthesis
-        PNEdit undoneEdit = undoManager.undo();
-        if (!(undoneEdit instanceof CloseParenthesisEdit closeParenthesisEdit)) {
-            undoneEdits.add(undoneEdit);
-            undoManager.removeUndoneEdits();
-            for (PNUndoableEditListener listener : listeners) {
-                listener.afterUndoingEdit(new PNUndoableEditEvent(undoneEdit));
-            }
-            return undoneEdits;
-        }
-        while (true) {
-            undoneEdit = undoManager.undo();
-            if (undoneEdit instanceof OpenParenthesisEdit openParenthesisEdit
-                    && openParenthesisEdit == closeParenthesisEdit.getOpenParenthesisEdit()) {
-                undoManager.removeUndoneEdits();
-                for (PNUndoableEditListener listener : listeners) {
-                    listener.afterUndoingEdit(new PNUndoableEditEvent(undoneEdit));
-                }
-                undoneEdits.add(undoneEdit);
-                return undoneEdits;
-            }
-            for (PNUndoableEditListener listener : listeners) {
-                listener.afterUndoingEdit(new PNUndoableEditEvent(undoneEdit));
-            }
-            undoneEdits.add(undoneEdit);
-        }
-    }
-    
-    public Stack<OpenParenthesisEdit> getOpenParenthesisStack() {
-        return openParenthesisStack;
-    }
-    
     private final ProbNet probNet;
     
-    public void addListener(PNUndoableEditListener listener) {
+    public void addListener(PNEditListener listener) {
         this.listeners.add(listener);
     }
     
-    public void removeListener(PNUndoableEditListener listener) {
+    public void removeListener(PNEditListener listener) {
         this.listeners.remove(listener);
     }
 }

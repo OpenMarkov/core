@@ -62,12 +62,13 @@ public class ReferencedExpression<T> {
     }
     
     public List<T> references() {
-        return contents.stream().filter(expressionContent -> switch (expressionContent) {
-                           case ExpressionContent.VariableReference<T>(T reference) -> true;
-                           default -> false;
-                       })
-                       .map(expressionContent -> ((ExpressionContent.VariableReference<T>) expressionContent).reference)
-                       .toList();
+        List<T> refs = new ArrayList<>();
+        for (ExpressionContent<T> content : contents) {
+            if (content instanceof ExpressionContent.VariableReference<T> vr) {
+                refs.add(vr.reference());
+            }
+        }
+        return refs;
     }
     
     sealed interface ExpressionContent<T> {

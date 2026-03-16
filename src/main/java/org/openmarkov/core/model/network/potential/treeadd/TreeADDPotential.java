@@ -563,7 +563,8 @@ public class TreeADDPotential extends Potential {
             }
             potentials.add(branchPotentials.get(branch));
             for (State branchState : branch.getBranchStates()) {
-                branchStateIndex[topVariable.getStateIndex(branchState)] = potentials.size() - 1;
+                int stateIndex = topVariable.getStateIndex(branchState);
+                branchStateIndex[stateIndex] = potentials.size() - 1;
             }
         }
         

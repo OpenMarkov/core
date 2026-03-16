@@ -19,6 +19,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 import org.openmarkov.java.cloneUtils.CloneUtils;
+import org.openmarkov.java.nullUtils.NullUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -360,7 +361,7 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
      */
     public int getStateIndex(State state) {
         for (int i = 0; i < states.length; i++) {
-            if (states[i].equals(state)) {
+            if (NullUtils.equals(states[i], state)) {
                 return i;
             }
         }
@@ -468,13 +469,13 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
         
         this.states = states;
     }
-
-    public void replaceStates(Node node, State[] newStates){
+    
+    public void replaceStates(Node node, State[] newStates) {
         State[] lastStates = node.getVariable().getStates();
-        List<Potential>  lastPotential = node.getPotentials();
+        List<Potential> lastPotential = node.getPotentials();
         ProbNet probNet = node.getProbNet();
         List<Potential> childrenLastPotential = new ArrayList<>();
-
+        
         if (newStates != null) {
             List<Node> nodes;
             node.getVariable().setStates(newStates);
@@ -482,23 +483,23 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
             // set uniform potential for the edited node and children if the
             // new number of states is different that the last states
             if (newStates.length != lastStates.length) {
-
+                
                 if (!lastPotential.isEmpty()) {//decision nodes without imposed policy has no potential
                     UniformPotential newPotential = new UniformPotential(lastPotential.get(0).getVariables(),
-                            lastPotential.get(0).getPotentialRole());
+                                                                         lastPotential.get(0).getPotentialRole());
                     newPotentials.add(newPotential);
                     node.setPotentials(newPotentials);
                 }
-
+                
                 UniformPotential childLastPotential;
                 nodes = probNet.getChildren(node);
-
+                
                 for (Node child : nodes) {
                     if (!child.getPotentials().isEmpty()) {
                         List<Potential> container = new ArrayList<>();
                         childrenLastPotential.add(child.getPotentials().get(0));
                         childLastPotential = new UniformPotential(child.getPotentials().get(0).getVariables(),
-                                child.getPotentials().get(0).getPotentialRole());
+                                                                  child.getPotentials().get(0).getPotentialRole());
                         // child.setUniformPotential();
                         container.add(childLastPotential);
                         child.setPotentials(container);
@@ -506,32 +507,32 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
                 }
                 resetLink(node);
             }
-
+            
             if (node.getVariable().getVariableType() == VariableType.DISCRETIZED) {
-
+                
                 node.getVariable().setPartitionedInterval(new PartitionedInterval(
                         node.getVariable().getDefaultInterval(node.getVariable().getNumStates()),
                         Variable.getDefaultBelongs(node.getVariable().getNumStates())));
-
+                
             }
         }
     }
-
+    
     public void modifyState(Node node, StateAction stateAction, int stateIndex, String newName) {
         State[] newStates;
-
+        
         // When adding a new state selectedStateIndex is not used
         int selectedStateIndex = 0;
         if (stateAction != StateAction.ADD) {
             selectedStateIndex = getNumStates() - (stateIndex + 1);
         }
-
+        
         State[] oldStates = getStates();
         State selectedState = oldStates[selectedStateIndex];
         State newState = (stateAction != StateAction.RENAME) ? new State(newName) : selectedState;
-
+        
         PartitionedInterval currentPartitionedInterval = getPartitionedInterval();
-
+        
         switch (stateAction) {
             case ADD:
                 // assume that the new state is added in last position
@@ -542,21 +543,21 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
                 newStates = newStatesWithNewVar.toArray(new State[newStatesWithNewVar.size()]);
                 setStates(newStates);
                 setUniformPotential(node);
-
+                
                 if (getVariableType() == VariableType.DISCRETIZED) {
                     PartitionedInterval newPartitionedInterval =
                             getNewPartitionedInterval(node, currentPartitionedInterval);
                     setPartitionedInterval(newPartitionedInterval);
                 }
-
+                
                 resetLink(node);
                 break;
-
+            
             case REMOVE:
                 newStates = new State[getNumStates() - 1];
                 int i1 = 0;
                 boolean found = false;
-
+                
                 for (State vState : oldStates) {
                     if (i1 != selectedStateIndex || found) {
                         newStates[i1] = vState;
@@ -565,49 +566,49 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
                         found = true;
                     }
                 }
-
+                
                 setStates(newStates);
                 setUniformPotential(node);
-
+                
                 if (getVariableType() == VariableType.NUMERIC
                         || getVariableType() == VariableType.DISCRETIZED) {
-
+                    
                     double[] oldLimits = currentPartitionedInterval.getLimits();
                     boolean[] oldBelongs = currentPartitionedInterval.getBelongsToLeftSide();
-
+                    
                     int pos = selectedStateIndex;
-
+                    
                     List<Double> newLimits = new ArrayList<>(oldLimits.length - 1);
                     List<Boolean> newBelongs = new ArrayList<>(oldBelongs.length - 1);
-
+                    
                     for (int j = 0; j < oldLimits.length; j++) {
                         if (j != pos) {
                             newLimits.add(oldLimits[j]);
                             newBelongs.add(oldBelongs[j]);
                         }
                     }
-
+                    
                     double[] limits = new double[newLimits.size()];
                     boolean[] belongs = new boolean[newBelongs.size()];
-
+                    
                     for (int j = 0; j < newLimits.size(); j++) {
                         limits[j] = newLimits.get(j);
                         belongs[j] = newBelongs.get(j);
                     }
-
+                    
                     setPartitionedInterval(new PartitionedInterval(limits, belongs));
                 }
-
+                
                 resetLink(node);
                 break;
-
+            
             case DOWN:
                 if (selectedStateIndex > 0) {
                     newStates = new State[oldStates.length];
-
+                    
                     State s1 = oldStates[selectedStateIndex - 1];
                     State s2 = oldStates[selectedStateIndex];
-
+                    
                     for (int i = 0; i < oldStates.length; i++) {
                         if (i == selectedStateIndex - 1) {
                             newStates[i] = s2;
@@ -617,19 +618,19 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
                             newStates[i] = oldStates[i];
                         }
                     }
-
+                    
                     setPotentialAfterReorderingFirstPotentialInNodeAndItsChildrenSetStatesAndResetLink(
                             node, this, newStates);
                 }
                 break;
-
+            
             case UP:
                 if (selectedStateIndex < getNumStates() - 1) {
                     newStates = new State[oldStates.length];
-
+                    
                     State s1 = oldStates[selectedStateIndex];
                     State s2 = oldStates[selectedStateIndex + 1];
-
+                    
                     for (int i = 0; i < oldStates.length; i++) {
                         if (i == selectedStateIndex) {
                             newStates[i] = s2;
@@ -639,12 +640,12 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
                             newStates[i] = oldStates[i];
                         }
                     }
-
+                    
                     setPotentialAfterReorderingFirstPotentialInNodeAndItsChildrenSetStatesAndResetLink(
                             node, this, newStates);
                 }
                 break;
-
+            
             case RENAME:
                 if (selectedStateIndex >= 0 && selectedStateIndex < getNumStates()) {
                     newState.setName(newName);
@@ -652,8 +653,8 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
                 break;
         }
     }
-
-    private void setPotentialAfterReorderingFirstPotentialInNodeAndItsChildrenSetStatesAndResetLink(Node node,Variable variable, State[] newStates) {
+    
+    private void setPotentialAfterReorderingFirstPotentialInNodeAndItsChildrenSetStatesAndResetLink(Node node, Variable variable, State[] newStates) {
         setPotentialAfterReorderingFirstPotential(node, variable, newStates);
         for (Node child : node.getChildren()) {
             setPotentialAfterReorderingFirstPotential(child, variable, newStates);
@@ -661,7 +662,7 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
         variable.setStates(newStates);
         resetLink(node);
     }
-
+    
     private static void setPotentialAfterReorderingFirstPotential(Node auxNode, Variable variable, State[] newStates) {
         if (auxNode.getNodeType() == NodeType.CHANCE || auxNode.getNodeType() == NodeType.UTILITY) {
             Potential oldPotential = auxNode.getPotentials().get(0);
@@ -671,7 +672,7 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
             }
         }
     }
-
+    
     /**
      * Set uniform potential for the edited node and its children (except for
      * Decision nodes)
@@ -680,34 +681,34 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
         Potential uniformPotential;
         List<Potential> potentials;
         ProbNet probNet = node.getProbNet();
-
+        
         if (node.getNodeType() != NodeType.DECISION) {
             uniformPotential = PotentialOperations.getUniformPotential(probNet, node.getVariable(), node.getNodeType());
             potentials = new ArrayList<>();
             potentials.add(uniformPotential);
             node.setPotentials(potentials);
-
+            
         }
         for (Node child : node.getChildren()) {
             if (child.getNodeType() != NodeType.DECISION) {
                 potentials = new ArrayList<>();
                 uniformPotential = PotentialOperations.getUniformPotential(probNet, child.getVariable(),
-                        child.getNodeType());
+                                                                           child.getNodeType());
                 potentials.add(uniformPotential);
                 child.setPotentials(potentials);
             }
         }
-
+        
     }
-
+    
     /**
      * This method add a new default subInterval, in the current PartitionedInterval
      * object
      *
      * @return The PartitionedInterval object with a new default subInterval
      */
-
-    private PartitionedInterval getNewPartitionedInterval(Node node,PartitionedInterval currentPartitionedInterval) {
+    
+    private PartitionedInterval getNewPartitionedInterval(Node node, PartitionedInterval currentPartitionedInterval) {
         double[] limits = currentPartitionedInterval.getLimits();
         double[] newLimits = new double[limits.length + 1];
         boolean[] belongsToLeftSide = currentPartitionedInterval.getBelongsToLeftSide();
@@ -716,7 +717,7 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
             newLimits[i] = limits[i];
             newBelongsToLeftSide[i] = belongsToLeftSide[i];
         }
-
+        
         if (currentPartitionedInterval.getMax() == Double.POSITIVE_INFINITY) {
             newLimits[limits.length - 1] = newLimits[limits.length - 2] + node.getVariable().getPrecision();
             newLimits[limits.length] = Double.POSITIVE_INFINITY;
@@ -726,7 +727,7 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
         newBelongsToLeftSide[limits.length] = false;
         return new PartitionedInterval(newLimits, newBelongsToLeftSide);
     }
-
+    
     /****
      * This method resets the link restrictions and revelation conditions of the
      * links of the node
@@ -734,11 +735,11 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
      * @param node Node
      */
     private void resetLink(Node node) {
-        Map<Link<Node>, double[]>  linkRestrictionMap = new HashMap<>();
+        Map<Link<Node>, double[]> linkRestrictionMap = new HashMap<>();
         Map<Link<Node>, List> revelationConditionMap = new HashMap<>();
         ProbNet probNet = node.getProbNet();
-
-
+        
+        
         for (Link<Node> link : probNet.getLinks(node)) {
             if (link.hasRestrictions()) {
                 double[] lastPotential = (

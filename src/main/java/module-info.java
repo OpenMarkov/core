@@ -52,6 +52,7 @@ open module org.openmarkov.core {
     exports org.openmarkov.java.enumUtils;
     exports org.openmarkov.java.exceptionUtils;
     exports org.openmarkov.java.cloneUtils;
+    exports org.openmarkov.java.nullUtils;
     exports org.openmarkov.core.io.exception;
     exports org.openmarkov.core.action.base;
     exports org.openmarkov.core.action.base.linkEdits;
@@ -59,4 +60,6 @@ open module org.openmarkov.core {
     exports org.openmarkov.java.classUtils;
     exports org.openmarkov.core.developmentStaticAnalysis.mutability;
     exports org.openmarkov.core.expression;
+    exports org.openmarkov.java.initialization;
+    exports org.openmarkov.java.function;
 }

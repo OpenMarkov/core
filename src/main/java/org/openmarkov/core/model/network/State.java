@@ -38,8 +38,11 @@ public class State implements Cloneable, ClassLocalizable {
         this.name = newName;
     }
     
-    public boolean equals(State state) {
-        return (this.name.equals(state.name));
+    public boolean equals(Object other) {
+        if (!(other instanceof State state)) {
+            return false;
+        }
+        return this.name.equals(state.name);
     }
     
     @Override public String toString() {

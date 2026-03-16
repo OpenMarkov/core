@@ -219,7 +219,7 @@
     <Localization class="org.openmarkov.core.exception.DoEditException$NodeIsNull"
                   value="No node is selected, try selecting a node from the {probNet}"/>
     <Localization class="org.openmarkov.core.exception.EmptyDatabaseException"
-                  value="Database from {source} is empty."/>
+                  value="Dataset from {source} is empty."/>
     <Localization class="org.openmarkov.core.exception.IncompatibleEvidenceException$EvidenceIsIncompatibleWithOther"
                   value="The new evidence {newFinding} is not compatible with an old evidente: {oldFinding}"/>
     <Localization class="org.openmarkov.core.exception.IncompatibleEvidenceException$FindingVariableIsMissingAState"

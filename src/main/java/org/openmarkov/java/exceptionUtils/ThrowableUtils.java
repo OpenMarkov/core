@@ -1,6 +1,6 @@
 package org.openmarkov.java.exceptionUtils;
 
-import org.openmarkov.java.arrayUtils.Slice;
+import org.openmarkov.java.collectionsUtils.arrayUtils.Slice;
 
 import java.util.List;
 

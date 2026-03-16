@@ -1,4 +1,4 @@
-package org.openmarkov.java.arrayUtils;
+package org.openmarkov.java.collectionsUtils.arrayUtils;
 
 import org.jetbrains.annotations.Nullable;
 

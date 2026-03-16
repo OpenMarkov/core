@@ -1,7 +1,7 @@
 package org.openmarkov.java;
 
 import org.junit.jupiter.api.Test;
-import org.openmarkov.java.arrayUtils.Slice;
+import org.openmarkov.java.collectionsUtils.arrayUtils.Slice;
 
 import java.util.List;
 

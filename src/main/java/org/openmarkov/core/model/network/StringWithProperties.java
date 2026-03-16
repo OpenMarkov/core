@@ -33,16 +33,7 @@ public class StringWithProperties implements Cloneable, ClassLocalizable {
     }
     
     // Methods
-    
-    /**
-     * @param key Key
-     *
-     * @return The object stored with {@code key} or {@code null} if
-     * it does not exists. {@code Object}
-     */
-    public Object get(String key) {
-        return properties.get(string);
-    }
+
     
     /**
      * @param key   {@code String}

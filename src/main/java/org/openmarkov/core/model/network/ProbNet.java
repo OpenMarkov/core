@@ -10,6 +10,7 @@ package org.openmarkov.core.model.network;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.action.base.PNESupport;
+import org.openmarkov.core.action.base.StateAction;
 import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceOptions;
@@ -1532,6 +1533,50 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
             node.setCoordinateX(newPositions.get(i).getX());
             node.setCoordinateY(newPositions.get(i).getY());
             i++;
+        }
+    }
+    public void modifyAgent(StateAction stateAction,String agentName,Object[][] dataTable){
+        List<StringWithProperties> agents = getAgents();
+        StringWithProperties agent = null;
+        switch (stateAction) {
+            case ADD:
+                if (agents == null) {
+                    agents = new ArrayList<>();
+                }
+                agent = new StringWithProperties(agentName);
+                agents.add(agent);
+                setAgents(agents);
+                break;
+            case REMOVE:
+                for (StringWithProperties agente : agents) {
+                    if (agente.getString().equals(agentName)) {
+                        agent = agente;
+                    }
+                }
+                agents.remove(agent);
+                //it is also necessary to delete this agent from the node it was assigned to
+                if (agent != null) {
+                    for (Node node : getNodes()) {
+                        StringWithProperties nodeAgent = node.getVariable().getAgent();
+                        if (nodeAgent!=null && nodeAgent.getString().equals(agentName)) {
+                            node.getVariable().setAgent(null);
+                        }
+                    }
+                }
+
+                if (agents.isEmpty()) {
+                    agents = null;
+                }
+                setAgents(agents);
+                break;
+            case DOWN, RENAME, UP:
+                ArrayList<StringWithProperties> modifiedAgent = new ArrayList<>();
+                for (int i = 0; i < dataTable.length; i++) {
+                    modifiedAgent.add(new StringWithProperties((String) dataTable[i][0]));
+                }
+                setAgents(modifiedAgent);
+                break;
+
         }
     }
 

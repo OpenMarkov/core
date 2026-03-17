@@ -79,7 +79,7 @@ public class PNESupport /*extends UndoableEditSupport*/ {
         ArrayList<PNEdit> redoneEdits = flattenEdit(redoneEdit);
         for (PNEdit subRedoneEdit : redoneEdits) {
             for (PNEditListener listener : listeners) {
-                listener.afterEditExecutes(subRedoneEdit);
+                listener.afterRedoingEdit(subRedoneEdit);
             }
         }
         return redoneEdits;
@@ -112,11 +112,10 @@ public class PNESupport /*extends UndoableEditSupport*/ {
         ArrayList<PNEdit> undoneEdits = flattenEdit(undoneEdit);
         for (PNEdit subUndoneEdit : undoneEdits) {
             for (PNEditListener listener : listeners) {
-                listener.afterEditExecutes(subUndoneEdit);
+                listener.afterUndoingEdit(subUndoneEdit);
             }
         }
         return undoneEdits;
-        
     }
     
     public void removeUndoneEdits() {

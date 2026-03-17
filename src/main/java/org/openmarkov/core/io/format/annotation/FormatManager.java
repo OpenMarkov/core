@@ -118,9 +118,11 @@ public class FormatManager {
      */
     public ProbNetReader getProbNetReader(URL url) throws SAXException, IOException, NoReaderForFileException, ParserException.BadlyStructuredFile {
         //checkVersion(url);
-        checkStructure(url);
         String fileName = url.getFile();
         String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
+        if (!fileExtension.equals("elv")) {
+            checkStructure(url);
+        }
         String fileVersion = getFileVersion(url, fileExtension);
         ProbNetReader reader = getProbNetReaderInstanceFor(fileExtension, fileVersion);
         if (reader == null) {

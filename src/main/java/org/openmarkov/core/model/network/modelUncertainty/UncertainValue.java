@@ -7,8 +7,6 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
-import org.openmarkov.core.exception.InvalidArgumentException;
-
 import java.util.Random;
 
 /**

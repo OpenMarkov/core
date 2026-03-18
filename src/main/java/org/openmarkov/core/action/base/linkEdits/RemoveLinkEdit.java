@@ -7,12 +7,9 @@
 
 package org.openmarkov.core.action.base.linkEdits;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -29,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@SuppressWarnings("serial") public final class RemoveLinkEdit extends BaseLinkEdit {
+public final class RemoveLinkEdit extends BaseLinkEdit {
     
     /**
      * Resulting link of addition or removal.

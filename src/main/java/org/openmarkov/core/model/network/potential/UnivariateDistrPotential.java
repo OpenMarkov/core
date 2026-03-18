@@ -8,7 +8,6 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.jetbrains.annotations.NotNull;
-import org.openmarkov.core.exception.InvalidArgumentException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.inference.InferenceOptions;
@@ -32,7 +31,7 @@ import java.util.List;
 @PotentialType(names = "UnivariateDistr") public class UnivariateDistrPotential extends Potential {
     
     public static final String PSEUDO_VARIABLE = "pseudoVariableDistributionName";
-    private static VariableExpression INITIALIZATION_VALUE = new VariableExpression(Collections.emptyList(), "1");
+    private static final VariableExpression INITIALIZATION_VALUE = new VariableExpression(Collections.emptyList(), "1");
     protected AugmentedProbTable distributionTable;
     /**
      * finiteStateVariables contains the node variable (Numeric) and the finite-states parents

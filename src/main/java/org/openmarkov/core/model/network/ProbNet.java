@@ -1571,8 +1571,8 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
                 break;
             case DOWN, RENAME, UP:
                 ArrayList<StringWithProperties> modifiedAgent = new ArrayList<>();
-                for (int i = 0; i < dataTable.length; i++) {
-                    modifiedAgent.add(new StringWithProperties((String) dataTable[i][0]));
+                for (Object[] objects : dataTable) {
+                    modifiedAgent.add(new StringWithProperties((String) objects[0]));
                 }
                 setAgents(modifiedAgent);
                 break;

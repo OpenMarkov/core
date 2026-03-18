@@ -50,7 +50,7 @@ public class PotentialOperations {
      * @throws PotentialOperationException PotentialOperationException
      */
     public static Potential marginalize(Potential potential, List<Variable> variablesOfInterest)
-            throws NotSupportedOperationException {
+            {
         
         // Obtain parameters to invoke multiplyAndMarginalize
         // Union of the variables of the potential list
@@ -92,7 +92,7 @@ public class PotentialOperations {
      *                                     Condition: variablesToKeep
      */
     public static Potential marginalize(Potential potential, List<Variable> variablesToKeep,
-                                        List<Variable> variablesToEliminate) throws NotSupportedOperationException {
+                                        List<Variable> variablesToEliminate) {
         
         // params correct type verification before calling right method
         if (!(potential instanceof TablePotential)) {
@@ -115,7 +115,7 @@ public class PotentialOperations {
      * @throws PotentialOperationException PotentialOperationException
      */
     public static Potential multiplyAndEliminate(List<TablePotential> potentials, List<Variable> variablesToEliminate)
-            throws NotSupportedOperationException {
+            {
         if (!hasFiniteStates(variablesToEliminate)) {
             throw new NotSupportedOperationException("can only manage variables of type FSVariable");
         }
@@ -135,7 +135,7 @@ public class PotentialOperations {
      * @throws PotentialOperationException PotentialOperationException
      */
     public static Potential multiplyAndEliminate(List<TablePotential> potentials, Variable variableToEliminate)
-            throws NotSupportedOperationException {
+            {
         return multiplyAndEliminate(potentials, Arrays.asList(variableToEliminate));
     }
     
@@ -145,7 +145,7 @@ public class PotentialOperations {
      * @throws PotentialOperationException PotentialOperationException
      */
     @SuppressWarnings("unchecked") public static Potential multiply(List<? extends Potential> potentials)
-            throws NotSupportedOperationException {
+            {
         // correct type verification of parameters before calling method.
         if (!AuxiliaryOperations.checkObjectsCollectionType(potentials, TablePotential.class)) {
             throw new NotSupportedOperationException("can only manage variables of type TablePotential");
@@ -162,7 +162,7 @@ public class PotentialOperations {
      * @throws PotentialOperationException PotentialOperationException
      */
     public static Potential multiplyAndMarginalize(List<TablePotential> potentials, List<Variable> variablesOfInterest)
-            throws NotSupportedOperationException {
+            {
         // Obtain parameters to invoke multiplyAndMarginalize
         // Union of the variables of the potential list
         List<Variable> unionVariables = AuxiliaryOperations.getUnionVariables(potentials);
@@ -201,7 +201,7 @@ public class PotentialOperations {
      * @throws PotentialOperationException PotentialOperationException
      */
     public static Object[] multiplyAndMaximize(List<Potential> potentials, List<Variable> variablesOfInterest)
-            throws NotSupportedOperationException {
+            {
         
         // Obtain parameters to invoke multiplyAndMarginalize
         // Union of the variables of the potential list
@@ -243,7 +243,7 @@ public class PotentialOperations {
      *                                     the union of the variables of the potentials
      */
     public static Potential multiplyAndMarginalize(List<TablePotential> potentials, List<Variable> variablesToKeep,
-                                                   List<Variable> variablesToEliminate) throws NotSupportedOperationException {
+                                                   List<Variable> variablesToEliminate) {
         // For test purposes only:
         /* Pruebas.numPotentialOperations++; */
         

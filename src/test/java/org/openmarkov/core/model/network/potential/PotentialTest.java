@@ -171,7 +171,7 @@ public class PotentialTest {
         assertEquals(0, variables.size());
     }
     
-    @Test public void scalePotentialTest() throws NotSupportedOperationException {
+    @Test public void scalePotentialTest() {
         ProbNet probNet = getProbNet4ScaleTest();
         List<Node> utilityNodes = probNet.getNodes(NodeType.UTILITY);
         for (Node node : utilityNodes) {

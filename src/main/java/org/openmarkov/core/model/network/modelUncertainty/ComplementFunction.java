@@ -32,7 +32,7 @@ public class ComplementFunction extends ProbDensFunction {
 		return nu;
 	}
     
-    @Override public void verifyParametersDomain(boolean isChanceVariable) throws InvalidArgumentException {
+    @Override public void verifyParametersDomain(boolean isChanceVariable) {
         if (nu <= 0) {
             throw new InvalidArgumentException(nu, "nu", "should be a number bigger than 0");
         }

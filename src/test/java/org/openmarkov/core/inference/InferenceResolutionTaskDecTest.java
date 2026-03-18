@@ -20,7 +20,7 @@ public abstract class InferenceResolutionTaskDecTest extends InferenceTaskTest {
     // Builds an InferenceAlgorithm object with 'probNet'.
     // This method must be implemented by each inference test class.
     public abstract Evaluation buildInferenceTask(ProbNet probNet)
-            throws NotEvaluableNetworkException, IncompatibleEvidenceException, UnexpectedInferenceException;
+            throws NotEvaluableNetworkException, IncompatibleEvidenceException;
     
     // Checks if the values of the potential 'x' are equal to 'v' and if the number
     // of values in 'x' is 1.

@@ -25,7 +25,7 @@ public abstract class InferenceEvaluationTaskIDTest extends InferenceResolutionT
         
     }
     
-    protected void testMEU(ProbNet net, double expectedMEU, StrategyTree expectedStrategy) throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException {
+    protected void testMEU(ProbNet net, double expectedMEU, StrategyTree expectedStrategy) throws IncompatibleEvidenceException, NotEvaluableNetworkException {
         Evaluation algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(net);
         Double meuEvaluation = algorithm.getUtility().values[0];
         assertEquals(expectedMEU, meuEvaluation, maxError);
@@ -89,7 +89,7 @@ public abstract class InferenceEvaluationTaskIDTest extends InferenceResolutionT
     }
     
     //@Test
-    public void testEvaluationSimpleIDWithoutDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException {
+    public void testEvaluationSimpleIDWithoutDecisions() throws IncompatibleEvidenceException, NotEvaluableNetworkException {
         
         testMEU(IDFactory.createSimpleIDWithoutDecisions(), 83.7);
     }
@@ -124,7 +124,7 @@ public abstract class InferenceEvaluationTaskIDTest extends InferenceResolutionT
         
     }
     
-    protected void testMEU(ProbNet diagram, double expectedMeu) throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException {
+    protected void testMEU(ProbNet diagram, double expectedMeu) throws IncompatibleEvidenceException, NotEvaluableNetworkException {
         
         Evaluation algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram);
         
@@ -137,32 +137,32 @@ public abstract class InferenceEvaluationTaskIDTest extends InferenceResolutionT
     }
     
     @Disabled("Old tests with an AssertionError") @Test
-    public void testIDOneDecision() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException {
+    public void testIDOneDecision() throws IncompatibleEvidenceException, NotEvaluableNetworkException {
         testMEU(IDFactory.buildIDOneDecision(), 87.4, null);
     }
     
     @Disabled("Old tests with an AssertionError") @Test
-    public void testIDPerfectKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException {
+    public void testIDPerfectKnowledge() throws IncompatibleEvidenceException, NotEvaluableNetworkException {
         testMEU(IDFactory.buildIDPerfectKnowledge(), 9.72, null);
     }
     
     @Disabled("Old tests with an AssertionError") @Test
-    public void testIDPerfectKnowledgeCostTherapy() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException {
+    public void testIDPerfectKnowledgeCostTherapy() throws IncompatibleEvidenceException, NotEvaluableNetworkException {
         testMEU(IDFactory.buildIDPerfectKnowledgeCostTherapy(), 9.685, null);
     }
     
     @Disabled("Old tests with an AssertionError") @Test
-    public void testIDNoKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException {
+    public void testIDNoKnowledge() throws IncompatibleEvidenceException, NotEvaluableNetworkException {
         testMEU(IDFactory.buildIDNoKnowledge(), 9.02, null);
     }
     
     @Disabled("Old tests with an AssertionError") @Test
-    public void testIDTestAlways() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException {
+    public void testIDTestAlways() throws IncompatibleEvidenceException, NotEvaluableNetworkException {
         testMEU(IDFactory.buildIDTestAlways(), 9.3929, null);
     }
     
     @Disabled("Old tests with an AssertionError") @Test
-    public void testIDDecideTest() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException {
+    public void testIDDecideTest() throws IncompatibleEvidenceException, NotEvaluableNetworkException {
         testMEU(getIDDecideTest(), 9.3929, null);
     }
     
@@ -171,67 +171,67 @@ public abstract class InferenceEvaluationTaskIDTest extends InferenceResolutionT
     }
     
     @Disabled("Old tests with an AssertionError") @Test
-    public void testIDDecideTestSymptom() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException {
+    public void testIDDecideTestSymptom() throws IncompatibleEvidenceException, NotEvaluableNetworkException {
         testMEU(IDFactory.buildIDDecideTestSymptom(), 9.9143, null);
     }
     
     @Disabled("Old tests with an AssertionError") @Test
-    public void testIDQaleMediastinet() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException {
+    public void testIDQaleMediastinet() throws IncompatibleEvidenceException, NotEvaluableNetworkException {
         testMEU(IDFactory.buildIDQaleMediastinet(), 2.1154194051058286, null);
     }
     
     @Disabled("Old tests with an AssertionError") @Test
-    public void testIDMediastinetWithoutSV() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException {
+    public void testIDMediastinetWithoutSV() throws IncompatibleEvidenceException, NotEvaluableNetworkException {
         testMEU(IDFactory.buildIDMediastinetWithoutSV(), 1.4709741803092176, null);
     }
     
     @Disabled("Old tests with an AssertionError") @Test
-    public void testIDMediastinetWithoutMediastinoscopy() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException {
+    public void testIDMediastinetWithoutMediastinoscopy() throws IncompatibleEvidenceException, NotEvaluableNetworkException {
         testMEU(IDFactory.buildIDMediastinetWithoutMediastinoscopy(), 1.5209741803092172, null);
     }
     
     @Disabled("Old tests with an AssertionError") @Test
-    public void testIDMediastinet() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException {
+    public void testIDMediastinet() throws IncompatibleEvidenceException, NotEvaluableNetworkException {
         testMEU(IDFactory.buildIDMediastinet(), 1.4709741803092176, null);
     }
     
     @Disabled("Old tests with an AssertionError") @Test
-    public void testIDArthronet() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException {
+    public void testIDArthronet() throws IncompatibleEvidenceException, NotEvaluableNetworkException {
         testMEU(IDFactory.buildIDArthronet(), 0.4960714549037456, null);
     }
     
     @Disabled("Old tests with an AssertionError") @Test
-    public void testIDRedundantChance() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException {
+    public void testIDRedundantChance() throws IncompatibleEvidenceException, NotEvaluableNetworkException {
         testMEU(IDFactory.buildIDRedundantChance(), 175.0, null);
     }
     
     @Disabled("Old tests with an AssertionError") @Test
-    public void testIDTwoIndependentDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException {
+    public void testIDTwoIndependentDecisions() throws IncompatibleEvidenceException, NotEvaluableNetworkException {
         testMEU(IDFactory.buildIDTwoIndependentDecisions(), 4.0, null);
     }
     
     @Disabled("Old tests with an AssertionError") @Test
-    public void testIDConcatenateOrderTwoDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException {
+    public void testIDConcatenateOrderTwoDecisions() throws IncompatibleEvidenceException, NotEvaluableNetworkException {
         testMEU(IDFactory.buildIDConcatenateOrderTwoDecisions(), 8.15, null);
     }
     
     @Disabled("Old tests with an AssertionError") @Test
-    public void testIDThreeIndependentDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException {
+    public void testIDThreeIndependentDecisions() throws IncompatibleEvidenceException, NotEvaluableNetworkException {
         testMEU(IDFactory.buildIDThreeIndependentDecisions(), 37.63, null);
     }
     
     @Disabled("Old tests with an AssertionError") @Test
-    public void testIDStatesTies() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException {
+    public void testIDStatesTies() throws IncompatibleEvidenceException, NotEvaluableNetworkException {
         testMEU(IDFactory.buildIDStatesTies(), 13.7, null);
     }
     
     @Disabled("Old tests with an AssertionError") @Test
-    public void testIDStatesTiesPerfectKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException {
+    public void testIDStatesTiesPerfectKnowledge() throws IncompatibleEvidenceException, NotEvaluableNetworkException {
         testMEU(IDFactory.buildIDStatesTiesPerfectKnowledge(), 1.5, null);
     }
     
     @Disabled("Old tests with an AssertionError") @Test
-    public void testIDConsecutiveDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException, NotEvaluableNetworkException {
+    public void testIDConsecutiveDecisions() throws IncompatibleEvidenceException, NotEvaluableNetworkException {
         testMEU(IDFactory.buildIDConsecutiveDecisions(), 4.57501894, null);
     }
     
@@ -327,7 +327,7 @@ public abstract class InferenceEvaluationTaskIDTest extends InferenceResolutionT
     // @return An InferenceAlgorithm for 'network'. If the network is not evaluable
     // with the algorithm then the test calling this method is skipped.
     protected Evaluation buildInferenceTaskAndSkipTestIfNotEvaluable(
-            ProbNet network) throws IncompatibleEvidenceException, UnexpectedInferenceException {
+            ProbNet network) throws IncompatibleEvidenceException {
         
         //If the network is not evaluable then the test is skipped
         boolean isEvaluable = true;

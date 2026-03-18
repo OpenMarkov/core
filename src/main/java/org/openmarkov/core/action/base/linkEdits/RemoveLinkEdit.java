@@ -123,12 +123,8 @@ import java.util.List;
 					 */
                     
                     // Temporal patch to be removed when the above TO-DO is implemented
-                    try {
-                        if (Arrays.stream(newPotential.getCPT().values).sum() == 0) {
-                            newPotential = new UniformPotential(newPotential.getVariables(), newPotential.getPotentialRole());
-                        }
-                    } catch (NonProjectablePotentialException e) {
-                        throw new DoEditException.CannotDoEditException(e);
+                    if (Arrays.stream(newPotential.getCPT().values).sum() == 0) {
+                        newPotential = new UniformPotential(newPotential.getVariables(), newPotential.getPotentialRole());
                     }
                     
                     newPotentials.add(newPotential);

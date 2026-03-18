@@ -135,7 +135,7 @@ public class DiscretePotentialOperationsTest {
     }
     
     @SuppressWarnings("unchecked") @Test
-    public void testNewMultiply() throws NotSupportedOperationException {
+    public void testNewMultiply() {
         // Test constant multiplication
         List<TablePotential> potentials = allPotentials;
         
@@ -396,7 +396,7 @@ public class DiscretePotentialOperationsTest {
     @Test public void testGetAccumulatedOffsets() {
     }
     
-    @Test public void testNormalize() throws CannotNormalizePotentialException {
+    @Test public void testNormalize() {
         TablePotential multiplication = DiscretePotentialOperations.multiply(commonVariables.potentials);
         //			TablePotential normalized;
         //				normalized = (TablePotential)

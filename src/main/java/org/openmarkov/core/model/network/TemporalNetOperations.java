@@ -444,7 +444,7 @@ public class TemporalNetOperations {
      *
      * @throws UnsupportedOperationException - when probNet is not an MID, the network cannot be expanded.
      */
-    public static ProbNet expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence, String networkName) throws NotSupportedOperationException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
+    public static ProbNet expandNetwork(ProbNet probNet, EvidenceCase preResolutionEvidence, String networkName) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         //FIXME hardcoded
         if (!(probNet.getNetworkType() instanceof MIDType)) {
             throw new NotSupportedOperationException("Network has to be an MID");

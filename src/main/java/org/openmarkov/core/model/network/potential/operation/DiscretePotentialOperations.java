@@ -1116,9 +1116,9 @@ public final class DiscretePotentialOperations {
      *
      * @return The {@code potential} normalized
      *
-     * @throws CannotNormalizePotentialException NormalizeNullVectorException
+     * @
      */
-    public static TablePotential normalize(TablePotential potential) throws CannotNormalizePotentialException {
+    public static TablePotential normalize(TablePotential potential) {
         TablePotential tablePotential = potential;
         // Check for null vectors
         if (Arrays.stream(tablePotential.values).allMatch(value -> value == 0.0)) {
@@ -1291,13 +1291,9 @@ public final class DiscretePotentialOperations {
      * @param denominator <tt>Potential</tt>
      *
      * @return The quotient
-     *
-     * @throws IllegalArgumentTypeException <tt>IllegalArgumentTypeException</tt> if
-     *                                      numerator of denominator are not
-     *                                      <tt>TablePotential</tt>
      */
     public static Potential dividePotentials(Potential numerator, Potential denominator)
-            throws NotSupportedOperationException {
+            {
         // parameter correct type verification before calling right method
         if (!(numerator instanceof TablePotential) || !(denominator instanceof TablePotential)) {
             String errMsg = "";

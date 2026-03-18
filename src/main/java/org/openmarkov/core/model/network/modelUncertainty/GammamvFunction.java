@@ -41,7 +41,7 @@ import org.openmarkov.core.exception.InvalidArgumentException;
 		this.thetaAbstract = Math.pow(sigma, 2) / mu;
 	}
     
-    @Override public void verifyParametersDomain(boolean isChanceVariable) throws InvalidArgumentException {
+    @Override public void verifyParametersDomain(boolean isChanceVariable) {
         if (sigma <= 0) {
             throw new InvalidArgumentException(sigma, "sigma", "should be a number bigger than 0");
         }

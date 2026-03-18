@@ -17,12 +17,8 @@ import java.util.List;
 //TODO: Exceptions of this class are caught for just shown a message from the StringDatabase like
 // 'Network is not evaluable', hindering the real reason behind the exception.
 // This might be turned into a RuntimeException.
-public abstract sealed class NotEvaluableNetworkException extends Exception implements IBundledOpenMarkovException {
-    
-    @Override public String toString() {
-        return IBundledOpenMarkovException.toString(this);
-    }
-    
+public abstract sealed class NotEvaluableNetworkException extends RuntimeException {
+
     public static final class NotApplicableNetwork extends NotEvaluableNetworkException {
 		public NotApplicableNetwork(ProbNet probNet, List<NetworkType> possibleNetworkTypes) {
             this.probNet = probNet;

@@ -326,7 +326,7 @@ import java.util.List;
         Arrays.fill(functionValues, INITIALIZATION_VALUE);
     }
     
-    public void checkDistributionValues(double[] values) throws InvalidArgumentException {
+    public void checkDistributionValues(double[] values) {
         ProbDensFunction p = getProbDensFunctionManager().newInstance(probDensFunctionName, values);
         p.verifyParameters(values);
     }

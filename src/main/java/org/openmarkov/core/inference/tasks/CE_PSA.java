@@ -19,7 +19,7 @@ import java.util.Collection;
 public interface CE_PSA extends Task {
 
 	Collection<GTablePotential> getCEPPotentials()
-            throws NonProjectablePotentialException, NotEvaluableNetworkException, IncompatibleEvidenceException, NotSupportedOperationException, ConstraintViolatedException;
+            throws NonProjectablePotentialException, NotEvaluableNetworkException, IncompatibleEvidenceException, ConstraintViolatedException;
 
 	void setDecisionVariable(Variable decisionSelected);
 }

@@ -35,7 +35,7 @@ public class DirichletFunction extends ProbDensFunction {
         }
     }
     
-    @Override public void verifyParametersDomain(boolean isChanceVariable) throws InvalidArgumentException {
+    @Override public void verifyParametersDomain(boolean isChanceVariable) {
         if (alpha <= 0) {
             throw new InvalidArgumentException(alpha, "alpha", "should be a number bigger than 0");
         }

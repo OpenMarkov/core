@@ -50,7 +50,7 @@ public class ErlangFunction extends ProbDensFunction {
 		exponentialFunction = new ExponentialFunction(lambda);
 	}
     
-    @Override public void verifyParametersDomain(boolean isChanceVariable) throws InvalidArgumentException {
+    @Override public void verifyParametersDomain(boolean isChanceVariable) {
         if (lambda <= 0) {
             throw new InvalidArgumentException(lambda, "lambda", "should be a number bigger than 0");
         }

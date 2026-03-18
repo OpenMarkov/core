@@ -127,7 +127,7 @@ import java.util.List;
     }
     
     @Override
-    public Potential project(EvidenceCase evidenceCase) throws NotSupportedOperationException {
+    public Potential project(EvidenceCase evidenceCase) {
         throw new NotSupportedOperationException();
     }
     

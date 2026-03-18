@@ -373,7 +373,7 @@ public class TreeADDPotential extends Potential {
     }
     
     @Override
-    public Potential project(EvidenceCase evidenceCase) throws NotSupportedOperationException {
+    public Potential project(EvidenceCase evidenceCase) {
         throw new NotSupportedOperationException();
     }
     
@@ -450,7 +450,7 @@ public class TreeADDPotential extends Potential {
         return new TreeADDPotential(this);
     }
     
-    @Override public boolean isUncertain() throws NotSupportedOperationException {
+    @Override public boolean isUncertain() {
         // If at least one of the leaf potentials has uncertainty then returns
         // true
         boolean hasUncertainty = false;
@@ -466,7 +466,7 @@ public class TreeADDPotential extends Potential {
     /**
      * Generates a sampled potential
      */
-    @Override public Potential sample() throws NotSupportedOperationException {
+    @Override public Potential sample() {
         TreeADDPotential sampledTree = (TreeADDPotential) this.copy();
         for (TreeADDBranch branch : sampledTree.getBranches()) {
             branch.setPotential(branch.getPotential().sample());
@@ -741,7 +741,7 @@ public class TreeADDPotential extends Potential {
         }
     }
     
-    @Override public void scalePotential(double scale) throws NotSupportedOperationException {
+    @Override public void scalePotential(double scale) {
         // Scale all the potentials of the branches
         for (TreeADDBranch branch : branches) {
             branch.getPotential().scalePotential(scale);

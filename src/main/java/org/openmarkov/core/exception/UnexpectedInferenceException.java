@@ -10,7 +10,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 
 //TODO: Catches of this exceptions are always wrapped with UnrecheableException, perhaps this is a
 // RuntimeException.
-public abstract sealed class UnexpectedInferenceException extends Exception implements IBundledOpenMarkovException {
+public abstract sealed class UnexpectedInferenceException extends RuntimeException {
 	
 	public static final class ThereIsMoreThanOneConditioningVariable extends UnexpectedInferenceException {
 		public ThereIsMoreThanOneConditioningVariable(TablePotential tablePotential) {
@@ -20,8 +20,6 @@ public abstract sealed class UnexpectedInferenceException extends Exception impl
         public final TablePotential tablePotential;
     }
     
-    @Override public String toString() {
-        return IBundledOpenMarkovException.toString(this);
-    }
+
     
 }

@@ -20,11 +20,11 @@ public abstract class ProbDensFunction {
 	public abstract void setParameters(double[] args);
 
 	//For Univariate
-	public void verifyParameters(double[] parameters) throws InvalidArgumentException {
+	public void verifyParameters(double[] parameters) {
 		throw new InvalidArgumentException(parameters, "parameters", "verifyParameters is not implemented in " + this.getClass().getName());
 	}
     
-    public abstract void verifyParametersDomain(boolean isChanceVariable) throws InvalidArgumentException;
+    public abstract void verifyParametersDomain(boolean isChanceVariable);
 
 	public abstract double getMean();
 

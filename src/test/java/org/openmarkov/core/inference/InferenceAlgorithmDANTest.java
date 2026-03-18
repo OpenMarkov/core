@@ -41,93 +41,93 @@ public abstract class InferenceAlgorithmDANTest extends InferenceAlgorithmDecTes
     }
     
     @Test
-    public void testDANUnorderedTwoDecsNoChance() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException {
+    public void testDANUnorderedTwoDecsNoChance() throws IncompatibleEvidenceException, NodeNotFoundException {
         testMEUAndStrategy(DANFactory.buildDANUnorderedTwoDecsNoChance(), 4.0, null);
     }
     
     @Test
-    public void testDANUnorderedTwoDecs() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException {
+    public void testDANUnorderedTwoDecs() throws IncompatibleEvidenceException, NodeNotFoundException {
         testMEUAndStrategy(DANFactory.buildDANUnorderedTwoDecs(), 9.0, null);
     }
     
     @Test
-    public void testDANTestAlways() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException {
+    public void testDANTestAlways() throws IncompatibleEvidenceException, NodeNotFoundException {
         testMEUAndStrategy(DANFactory.buildDANTestAlways(), 9.3929, null);
     }
     
     
     @Test
-    public void testDANOneChance() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException {
+    public void testDANOneChance() throws IncompatibleEvidenceException, NodeNotFoundException {
         testMEU(DANFactory.buildOneChanceDAN(), 90.2);
     }
     
     @Test
-    public void testDANNoKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException {
+    public void testDANNoKnowledge() throws IncompatibleEvidenceException, NodeNotFoundException {
         testMEUAndStrategy(DANFactory.buildDANNoKnowledge(), 9.02, null);
     }
     
     @Test
-    public void testDANPerfectKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException {
+    public void testDANPerfectKnowledge() throws IncompatibleEvidenceException, NodeNotFoundException {
         testMEUAndStrategy(DANFactory.buildDANPerfectKnowledge(), 9.72, null);
     }
     
     @Test
-    public void testDANDecideTest() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException {
+    public void testDANDecideTest() throws IncompatibleEvidenceException, NodeNotFoundException {
         testMEUAndStrategy(DANFactory.buildDecideTestDAN(), 9.3929, null);
     }
     
     @Test
-    public void testDANTwoTest() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException {
+    public void testDANTwoTest() throws IncompatibleEvidenceException, NodeNotFoundException {
         testMEUAndStrategy(DANFactory.buildTwoTestDAN(), 9.3324, null);
     }
     
     @Test
-    public void testDANDiabetes() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException {
+    public void testDANDiabetes() throws IncompatibleEvidenceException, NodeNotFoundException {
         testMEUAndStrategy(DANFactory.buildDiabetesDAN(), 9.8261, null);
     }
     
     @Test
-    public void testDANDecideTreatmentRestricted() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException {
+    public void testDANDecideTreatmentRestricted() throws IncompatibleEvidenceException, NodeNotFoundException {
         testMEUAndStrategy(DANFactory.buildDecideTreatmentRestrictedDAN(), 88.6, null);
     }
     
     @Test
-    public void testDANReactor() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException {
+    public void testDANReactor() throws IncompatibleEvidenceException, NodeNotFoundException {
         testMEUAndStrategy(DANFactory.buildReactorDAN(), 10.0627, null);
     }
     
     @Test
-    public void testDANDatingBranchAcceptSimplified() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException {
+    public void testDANDatingBranchAcceptSimplified() throws IncompatibleEvidenceException, NodeNotFoundException {
         testMEUAndStrategy(DANFactory.buildDatingBranchAcceptSimplifiedDAN(), 9.88, null);
     }
     
     @Test
-    public void testDANDatingAcceptNo() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException {
+    public void testDANDatingAcceptNo() throws IncompatibleEvidenceException, NodeNotFoundException {
         testMEUAndStrategy(DANFactory.buildDatingAcceptNoDAN(), 9.4076, null);
     }
     
     @Test
-    public void testDANDating() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException {
+    public void testDANDating() throws IncompatibleEvidenceException, NodeNotFoundException {
         testMEUAndStrategy(DANFactory.buildDatingDAN(), 9.4076, null);
     }
     
     @Test
-    public void testDANWooer() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException {
+    public void testDANWooer() throws IncompatibleEvidenceException, NodeNotFoundException {
         testMEUAndStrategy(DANFactory.buildWooerDAN(), 7.73, null);
     }
     
     @Test
-    public void testDANUserCarBuyer() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException {
+    public void testDANUserCarBuyer() throws IncompatibleEvidenceException, NodeNotFoundException {
         testMEUAndStrategy(DANFactory.buildUsedCarBuyer(), 32.96, null);
     }
     
     @Test
-    public void testDANNTest3Tests() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException {
+    public void testDANNTest3Tests() throws IncompatibleEvidenceException, NodeNotFoundException {
         testMEUAndStrategy(DANFactory.buildNTestsDAN(3), 9.80657, null);
     }
     
     @Test
-    public void testDANMediastinet() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException {
+    public void testDANMediastinet() throws IncompatibleEvidenceException, NodeNotFoundException {
         testMEUAndStrategy(DANFactory.buildMediastinetDAN(), 1.4709741803076086, null);
     }
      */

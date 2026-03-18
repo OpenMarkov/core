@@ -92,7 +92,7 @@ import java.util.*;
     }
     
     @Override
-    public Potential project(EvidenceCase evidenceCase) throws NotSupportedOperationException {
+    public Potential project(EvidenceCase evidenceCase) {
         throw new NotSupportedOperationException();
     }
     
@@ -243,7 +243,7 @@ import java.util.*;
         this.log = log;
     }
     
-    @Override public void scalePotential(double scale) throws NotSupportedOperationException {
+    @Override public void scalePotential(double scale) {
         throw new NotSupportedOperationException();
     }
     

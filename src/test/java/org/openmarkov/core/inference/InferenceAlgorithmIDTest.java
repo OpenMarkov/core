@@ -27,32 +27,32 @@ public abstract class InferenceAlgorithmIDTest extends InferenceAlgorithmDecTest
     }
     
     @Test
-    public void testIDOneDecision() throws IncompatibleEvidenceException, UnexpectedInferenceException {
+    public void testIDOneDecision() throws IncompatibleEvidenceException {
         testMEUAndStrategy(IDFactory.buildIDOneDecision(), 87.4, null);
     }
     
     @Test
-    public void testIDPerfectKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException {
+    public void testIDPerfectKnowledge() throws IncompatibleEvidenceException {
         testMEUAndStrategy(IDFactory.buildIDPerfectKnowledge(), 9.72, null);
     }
     
     @Test
-    public void testIDPerfectKnowledgeCostTherapy() throws IncompatibleEvidenceException, UnexpectedInferenceException {
+    public void testIDPerfectKnowledgeCostTherapy() throws IncompatibleEvidenceException {
         testMEUAndStrategy(IDFactory.buildIDPerfectKnowledgeCostTherapy(), 9.685, null);
     }
     
     @Test
-    public void testIDNoKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException {
+    public void testIDNoKnowledge() throws IncompatibleEvidenceException {
         testMEUAndStrategy(IDFactory.buildIDNoKnowledge(), 9.02, null);
     }
     
     @Test
-    public void testIDTestAlways() throws IncompatibleEvidenceException, UnexpectedInferenceException {
+    public void testIDTestAlways() throws IncompatibleEvidenceException {
         testMEUAndStrategy(IDFactory.buildIDTestAlways(), 9.3929, null);
     }
     
     @Test
-    public void testIDDecideTest() throws IncompatibleEvidenceException, UnexpectedInferenceException {
+    public void testIDDecideTest() throws IncompatibleEvidenceException {
         testMEUAndStrategy(getIDDecideTest(), 9.3929, null);
     }
     
@@ -61,71 +61,71 @@ public abstract class InferenceAlgorithmIDTest extends InferenceAlgorithmDecTest
     }
     
     @Test
-    public void testIDDecideTestSymptom() throws IncompatibleEvidenceException, UnexpectedInferenceException {
+    public void testIDDecideTestSymptom() throws IncompatibleEvidenceException {
         testMEUAndStrategy(IDFactory.buildIDDecideTestSymptom(), 9.9143, null);
     }
     
     @Test
-    public void testIDQaleMediastinet() throws IncompatibleEvidenceException, UnexpectedInferenceException {
+    public void testIDQaleMediastinet() throws IncompatibleEvidenceException {
         testMEUAndStrategy(IDFactory.buildIDQaleMediastinet(), 2.1154194051058286, null);
     }
     
     
     @Test
-    public void testIDMediastinetWithoutSV() throws IncompatibleEvidenceException, UnexpectedInferenceException {
+    public void testIDMediastinetWithoutSV() throws IncompatibleEvidenceException {
         testMEUAndStrategy(IDFactory.buildIDMediastinetWithoutSV(), 1.4709741803092176, null);
     }
     
     @Test
-    public void testIDMediastinetWithoutMediastinoscopy() throws IncompatibleEvidenceException, UnexpectedInferenceException {
+    public void testIDMediastinetWithoutMediastinoscopy() throws IncompatibleEvidenceException {
         testMEUAndStrategy(IDFactory.buildIDMediastinetWithoutMediastinoscopy(), 1.5209741803092172, null);
     }
     
     
     @Test
-    public void testIDMediastinet() throws IncompatibleEvidenceException, UnexpectedInferenceException {
+    public void testIDMediastinet() throws IncompatibleEvidenceException {
         testMEUAndStrategy(IDFactory.buildIDMediastinet(), 1.4709741803092176, null);
     }
     
     @Test
-    public void testIDArthronet() throws IncompatibleEvidenceException, UnexpectedInferenceException {
+    public void testIDArthronet() throws IncompatibleEvidenceException {
         testMEUAndStrategy(IDFactory.buildIDArthronet(), 0.4960714549037456, null);
     }
     
     @Test
-    public void testIDRedundantChance() throws IncompatibleEvidenceException, UnexpectedInferenceException {
+    public void testIDRedundantChance() throws IncompatibleEvidenceException {
         testMEUAndStrategy(IDFactory.buildIDRedundantChance(), 175.0, null);
     }
     
     
     @Test
-    public void testIDTwoIndependentDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException {
+    public void testIDTwoIndependentDecisions() throws IncompatibleEvidenceException {
         testMEUAndStrategy(IDFactory.buildIDTwoIndependentDecisions(), 4.0, null);
     }
     
     @Test
-    public void testIDConcatenateOrderTwoDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException {
+    public void testIDConcatenateOrderTwoDecisions() throws IncompatibleEvidenceException {
         testMEUAndStrategy(IDFactory.buildIDConcatenateOrderTwoDecisions(), 8.15, null);
     }
     
     @Test
-    public void testIDThreeIndependentDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException {
+    public void testIDThreeIndependentDecisions() throws IncompatibleEvidenceException {
         testMEUAndStrategy(IDFactory.buildIDThreeIndependentDecisions(), 37.63, null);
     }
     
     @Test
-    public void testIDStatesTies() throws IncompatibleEvidenceException, UnexpectedInferenceException {
+    public void testIDStatesTies() throws IncompatibleEvidenceException {
         testMEUAndStrategy(IDFactory.buildIDStatesTies(), 13.7, null);
     }
     
     @Test
-    public void testIDStatesTiesPerfectKnowledge() throws IncompatibleEvidenceException, UnexpectedInferenceException {
+    public void testIDStatesTiesPerfectKnowledge() throws IncompatibleEvidenceException {
         testMEUAndStrategy(IDFactory.buildIDStatesTiesPerfectKnowledge(), 1.5, null);
     }
     
     
     @Test
-    public void testIDConsecutiveDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException {
+    public void testIDConsecutiveDecisions() throws IncompatibleEvidenceException {
         testMEUAndStrategy(IDFactory.buildIDConsecutiveDecisions(), 4.57501894, null);
     }
     

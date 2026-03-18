@@ -37,7 +37,7 @@ import org.openmarkov.core.exception.InvalidArgumentException;
      * @param parameters - parameters[1]= mu and parameters[0] = standard deviation
      * @throws IllegalArgumentException - thrown if standard&#60;0
      */
-    @Override public void verifyParameters(double[] parameters) throws InvalidArgumentException {
+    @Override public void verifyParameters(double[] parameters) {
         if (!(parameters[0] > 0)) {
             throw new InvalidArgumentException(parameters[0], "N", "N must be greater than 0");
         }

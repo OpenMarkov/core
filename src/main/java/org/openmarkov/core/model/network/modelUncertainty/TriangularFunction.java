@@ -41,7 +41,7 @@ import org.openmarkov.core.exception.InvalidArgumentException;
         this.mode = triangularFunction.mode;
     }
     
-    @Override public void verifyParametersDomain(boolean isChanceVariable) throws InvalidArgumentException {
+    @Override public void verifyParametersDomain(boolean isChanceVariable) {
         if (mode <= minimum) {
             throw new InvalidArgumentException(mode, "mode", "is lower or equal to minimum (" + minimum + ")");
         }

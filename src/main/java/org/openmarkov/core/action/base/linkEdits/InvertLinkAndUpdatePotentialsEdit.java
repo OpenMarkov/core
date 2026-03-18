@@ -139,21 +139,12 @@ public final class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 
 		// pot(x) are added to xyPotentials
 		for (Potential parentsOldPotential : parentsOldPotentials) {
-
-			try {
-				xyPotentials.add(parentsOldPotential.getCPT());
-			} catch (NonProjectablePotentialException e) {
-                throw new DoEditException.CannotDoEditException(e);
-			}
+			xyPotentials.add(parentsOldPotential.getCPT());
 		}
 
 		// pot(y) are added to xyPotentials
 		for (Potential childOldPotential : childsOldPotentials) {
-			try {
-				xyPotentials.add(childOldPotential.getCPT());
-			} catch (NonProjectablePotentialException e) {
-                throw new DoEditException.CannotDoEditException(e);
-			}
+			xyPotentials.add(childOldPotential.getCPT());
 		}
 
 		// Correct order of variables

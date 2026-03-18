@@ -264,7 +264,7 @@ public abstract class Potential implements Localizable {
         return tableProject(evidenceCase, inferenceOptions, new ArrayList<TablePotential>());
     }
     
-    public abstract Potential project(EvidenceCase evidenceCase) throws NonProjectablePotentialException, NotSupportedOperationException;
+    public abstract Potential project(EvidenceCase evidenceCase) throws NonProjectablePotentialException;
     
     /**
      * @return isAdditive {@code boolean}
@@ -459,7 +459,7 @@ public abstract class Potential implements Localizable {
      * @return A sampled potential. By default, itself, i.e., not sampled.
      * TODO This method must be commented further
      */
-    public Potential sample() throws NotSupportedOperationException {
+    public Potential sample() {
         return this; // By default
     }
     
@@ -500,7 +500,7 @@ public abstract class Potential implements Localizable {
      *
      * @return whether the potential has uncertainty or not
      */
-    public abstract boolean isUncertain() throws NotSupportedOperationException;
+    public abstract boolean isUncertain();
     
     /**
      * Adds variable to a potential implemented in each child class
@@ -569,7 +569,7 @@ public abstract class Potential implements Localizable {
      *
      * @param scale Scale
      */
-    public abstract void scalePotential(double scale) throws NotSupportedOperationException;
+    public abstract void scalePotential(double scale);
     
     /**
      * Copy this potential attributes to the newPotential potential of the copyNet

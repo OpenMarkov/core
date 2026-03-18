@@ -9,6 +9,6 @@ public interface GenerateDecisionTree extends Task {
 	 * @return the decision tree
 	 * @throws NotEvaluableNetworkException NotEvaluableNetworkException
 	 */
-    DecisionTreeNode getDecisionTree() throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates, NotSupportedOperationException;
+    DecisionTreeNode getDecisionTree() throws NotEvaluableNetworkException, IncompatibleEvidenceException, NonProjectablePotentialException, PotentialOperationException.DifferentSizesInPotentialsAndStates;
 
 }

@@ -7,11 +7,9 @@ import org.openmarkov.core.model.network.type.NetworkType;
 import java.util.Collection;
 import java.util.List;
 
-public abstract sealed class InvalidNetworkTypeException extends Exception implements IBundledOpenMarkovException {
+public abstract sealed class InvalidNetworkTypeException extends RuntimeException {
     
-    @Override public String toString() {
-        return IBundledOpenMarkovException.toString(this);
-    }
+
     
     //TODO: It is always wrapped in UnreachableException or another exception, this might be turned into a
     // RuntimeException.

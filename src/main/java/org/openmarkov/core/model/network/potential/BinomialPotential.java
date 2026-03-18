@@ -103,7 +103,7 @@ public class BinomialPotential extends Potential {
     }
     
     @Override
-    public Potential project(EvidenceCase evidenceCase) throws NotSupportedOperationException {
+    public Potential project(EvidenceCase evidenceCase) {
         throw new NotSupportedOperationException();
     }
     
@@ -123,7 +123,7 @@ public class BinomialPotential extends Potential {
     
     //TODO: UNCLEAR: What is this?
     @Override
-    public void scalePotential(double scale) throws NotSupportedOperationException {
+    public void scalePotential(double scale) {
         throw new NotSupportedOperationException();
     }
     

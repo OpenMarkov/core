@@ -60,7 +60,7 @@ public class LinearCombinationPotential extends GLMPotential {
     }
     
     @Override
-    public Potential project(EvidenceCase evidenceCase) throws NotSupportedOperationException {
+    public Potential project(EvidenceCase evidenceCase) {
         throw new NotSupportedOperationException();
     }
     

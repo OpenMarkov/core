@@ -63,7 +63,7 @@ import java.util.List;
     }
     
     @Override
-    public Potential project(EvidenceCase evidenceCase) throws NotSupportedOperationException {
+    public Potential project(EvidenceCase evidenceCase) {
         throw new NotSupportedOperationException();
     }
     
@@ -238,7 +238,7 @@ import java.util.List;
         return tablePotential;
     }
     
-    @Override public void scalePotential(double scale) throws NotSupportedOperationException {
+    @Override public void scalePotential(double scale) {
         throw new NotSupportedOperationException();
     }
     

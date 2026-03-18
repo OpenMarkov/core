@@ -42,13 +42,13 @@ import java.util.List;
 	/**
 	 *
 	 */
-	@Override public void verifyParameters(double[] parameters) throws InvalidArgumentException {
+	@Override public void verifyParameters(double[] parameters) {
 		if (!((parameters[0] > 0) && (parameters[1] > 0))) {
 			throw new InvalidArgumentException(List.of(parameters[0], parameters[1]), "N", "Parameters should be positive");
 		}
 	}
     
-    @Override public void verifyParametersDomain(boolean isChanceVariable) throws InvalidArgumentException {
+    @Override public void verifyParametersDomain(boolean isChanceVariable) {
         if (theta <= 0) {
             throw new InvalidArgumentException(theta, "theta", "should be a number bigger than 0");
         }

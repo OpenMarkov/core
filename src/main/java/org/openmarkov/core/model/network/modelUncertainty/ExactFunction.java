@@ -38,7 +38,7 @@ public class ExactFunction extends ProbDensFunction {
 	}
 
 	//CMF
-    @Override public void verifyParametersDomain(boolean isChanceVariable) throws InvalidArgumentException {
+    @Override public void verifyParametersDomain(boolean isChanceVariable) {
         if (!((!isChanceVariable) || ((0 <= nu) && (nu <= 1)))) {
             throw new InvalidArgumentException("ExactFunction can only work with chance variables when nu is in range (0..1) (It currently is " + nu + ")");
         }

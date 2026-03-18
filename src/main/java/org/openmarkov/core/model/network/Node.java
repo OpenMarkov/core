@@ -535,7 +535,7 @@ public class Node implements Cloneable, ClassLocalizable {
         return nodeType == NodeType.DECISION && !potentials.isEmpty();
     }
     
-    public void samplePotentials() throws NotSupportedOperationException {
+    public void samplePotentials() {
         for (int i = 0; i < potentials.size(); i++) {
             Potential originalPotential = potentials.get(i);
             potentials.set(i, originalPotential.sample());
@@ -800,12 +800,8 @@ public class Node implements Cloneable, ClassLocalizable {
 
                 // Potentials to multiply
                 List<TablePotential> utilityAndChance = new ArrayList<>();
-                try {
-                    utilityAndChance.add(potential.getCPT()); //Utility
-                    utilityAndChance.add(absorbedNode.getPotentials().get(0).getCPT()); //Chance
-                } catch (NonProjectablePotentialException e) {
-                    throw new DoEditException.CannotDoEditException(e);
-                }
+                utilityAndChance.add(potential.getCPT()); //Utility
+                utilityAndChance.add(absorbedNode.getPotentials().get(0).getCPT()); //Chance
 
                 /* Obtain parameters to invoke multiplyAndMarginalize */
                 // All variables from chance parent and utility child potentials
@@ -843,11 +839,7 @@ public class Node implements Cloneable, ClassLocalizable {
             for (Potential potential : oldUtilityPotentials) {
                 TablePotential utilityPotential;
 
-                try {
-                    utilityPotential = potential.getCPT();
-                } catch (NonProjectablePotentialException e) {
-                    throw new DoEditException.CannotDoEditException(e);
-                }
+                utilityPotential = potential.getCPT();
 
                 // Discrete operation is valid because all parents are discrete
                 TablePotential maximizedPotential = (TablePotential) DiscretePotentialOperations.

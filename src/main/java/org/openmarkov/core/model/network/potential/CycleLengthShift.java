@@ -124,7 +124,7 @@ public class CycleLengthShift extends Potential {
     }
     
     @Override
-    public Potential project(EvidenceCase evidenceCase) throws NotSupportedOperationException {
+    public Potential project(EvidenceCase evidenceCase) {
         throw new NotSupportedOperationException();
     }
     
@@ -159,7 +159,7 @@ public class CycleLengthShift extends Potential {
         return super.toString() + " = CycleLengthShift";
     }
     
-    @Override public void scalePotential(double scale) throws NotSupportedOperationException {
+    @Override public void scalePotential(double scale) {
         throw new NotSupportedOperationException();
     }
     

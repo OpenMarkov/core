@@ -31,20 +31,20 @@ import java.io.IOException;
  * -> Z
  * @throws NodeNotFoundException
  * Tests the a priori probabilities obtained in the network bN_ABC
- * @throws UnexpectedInferenceException
+ * @
  * @throws IncompatibleEvidenceException
  * @throws NodeNotFoundException
  * Tests the a priori probabilities obtained in the network bN_ABC
- * @throws UnexpectedInferenceException
+ * @
  * @throws IncompatibleEvidenceException
  * @param namesVariables
  * @param expectedProbs
  * Performs a complete propagation and checks the probabilities obtained
- * @throws UnexpectedInferenceException
+ * @
  * @throws IncompatibleEvidenceException
  * @throws NodeNotFoundException
  * Tests the a priori probabilities obtained in the network bN_ABC
- * @throws UnexpectedInferenceException
+ * @
  * @throws IncompatibleEvidenceException
  * @param network
  * @param variableName
@@ -53,21 +53,21 @@ import java.io.IOException;
  * @throws IncompatibleEvidenceException
  * Tests if the inference on a network with a deterministic variable throws IncompatibleEvidenceException
  * if there is evidence on the state whose probability is 0.
- * @throws UnexpectedInferenceException
+ * @
  * @throws IncompatibleEvidenceException
  * Tests if the inference on the network XY with the probability of Y=absent equal to 0.0
  * for any state in X, throws IncompatibleEvidenceException if the evidence is Y=absent.
  * @throws IncompatibleEvidenceException
  * Tests if the inference on the network Asia throws IncompatibleEvidenceException
  * if the evidence is (T=absent,L=absent,TOrC=yes).
- * @throws UnexpectedInferenceException
+ * @
  * @throws Exception
  * Tests the a priori probabilities in the network 'bN_XY'
  * @throws Exception
  * Tests the a priori joint probability in the network 'bN_XY'
  * @throws NodeNotFoundException
  * Tests the a priori joint probabilities obtained in the network Asia
- * @throws UnexpectedInferenceException
+ * @
  * @throws IncompatibleEvidenceException
  * @throws Exception
  * Tests the a priori joint probability in the network 'bN_ABC'
@@ -247,7 +247,7 @@ public abstract class InferenceResolutionTaskBNTest extends InferenceTaskTest {
     // Tests if the inference on a network with a deterministic variable throws IncompatibleEvidenceException
     //if there is evidence on the state whose probability is 0.
     @Test//(expected = IncompatibleEvidenceException.class)
-    public void testIncompatibleEvidenceBN_X() throws IncompatibleEvidenceException, UnexpectedInferenceException, NodeNotFoundException, InvalidStateException {
+    public void testIncompatibleEvidenceBN_X() throws IncompatibleEvidenceException, NodeNotFoundException, InvalidStateException {
         
         ProbNet network = bN_X;
         

@@ -145,16 +145,12 @@ import java.util.*;
 
         // Get the potential table of every component child
         List<TablePotential> utilityChildrenPotentials = new ArrayList<>();
-        try {
-            for (Node child : oldUtilityChildren) {
-                // Change the variable of the component potentials to the merged variable
-                TablePotential componentPotential = child.getPotentials().get(0).getCPT();
-                componentPotential.replaceVariable(componentPotential.getVariable(0), mergedVariable);
-                // Add the potential to the list to be summed
-                utilityChildrenPotentials.add(componentPotential);
-            }
-        } catch (NonProjectablePotentialException e) {
-            throw new DoEditException.CannotDoEditException(e);
+        for (Node child : oldUtilityChildren) {
+            // Change the variable of the component potentials to the merged variable
+            TablePotential componentPotential = child.getPotentials().get(0).getCPT();
+            componentPotential.replaceVariable(componentPotential.getVariable(0), mergedVariable);
+            // Add the potential to the list to be summed
+            utilityChildrenPotentials.add(componentPotential);
         }
         
         // Sum the component potentials

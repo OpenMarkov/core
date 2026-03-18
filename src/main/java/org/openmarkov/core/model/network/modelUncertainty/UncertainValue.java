@@ -69,7 +69,7 @@ public class UncertainValue {
 		return probDensFunction;
 	}
     
-    public void verifyParametersDomain(boolean isChanceVariable) throws InvalidArgumentException {
+    public void verifyParametersDomain(boolean isChanceVariable) {
         probDensFunction.verifyParametersDomain(isChanceVariable);
 	}
 

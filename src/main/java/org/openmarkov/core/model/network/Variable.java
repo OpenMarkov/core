@@ -314,15 +314,7 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
         return propertyValue;
     }
     
-    /**
-     * Changes the name of one state.
-     *
-     * @param oldName . {@code String}.
-     * @param newName . {@code String}.
-     *
-     * @throws Exception Exception
-     */
-    public void renameState(State state, String newName) throws InvalidArgumentException {
+    public void renameState(State state, String newName) {
         for (int i = 0; i < states.length; i++) {
             if (states[i].getName().contentEquals(newName)) {
                 throw new InvalidArgumentException(newName, "new name", "that name already belongs to another state");

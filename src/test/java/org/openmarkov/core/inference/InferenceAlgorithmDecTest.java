@@ -24,7 +24,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
     /*
     
     
-    protected void testMEUAndStrategy(ProbNet net, double expectedMEU, StrategyTree expectedStrategy) throws IncompatibleEvidenceException, UnexpectedInferenceException {
+    protected void testMEUAndStrategy(ProbNet net, double expectedMEU, StrategyTree expectedStrategy) throws IncompatibleEvidenceException {
         InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(net);
         Double meuEvaluation = algorithm.getGlobalUtility().values[0];
         assertEquals(expectedMEU, meuEvaluation, maxError);
@@ -35,7 +35,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
      // and that it is consistent with the Cooper policy network (CPN) built using the policies obtained
      // from the method getOptimizedPolicies
     private void testScenariosIntervention(ProbNet net,
-                                           InferenceAlgorithm algorithm) throws IncompatibleEvidenceException, UnexpectedInferenceException, InvalidStateException {
+                                           InferenceAlgorithm algorithm) throws IncompatibleEvidenceException, InvalidStateException {
         StrategyTree interv = algorithm.getOptimalStrategy();
         assertNotNull(interv);
         testIntervention(algorithm, interv, new EvidenceCase());
@@ -49,7 +49,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
     // - Correctness: Every scenario in the intervention has non-zero probability in the CPN
     // - Completeness: The Intervention covers all the non-zero probability states of the CPN
     private void testIntervention(InferenceAlgorithm algorithm, StrategyTree interv, EvidenceCase parentEvi)
-            throws IncompatibleEvidenceException, UnexpectedInferenceException, InvalidStateException {
+            throws IncompatibleEvidenceException, InvalidStateException {
         
         if (interv != null) {
             interv.getRootVariable();
@@ -185,7 +185,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
         checkUtilityPotential(aPrioriProbabilities, variableU2, -2.0);
     }
     
-    protected void testMEU(ProbNet diagram, double expectedMeu) throws IncompatibleEvidenceException, UnexpectedInferenceException {
+    protected void testMEU(ProbNet diagram, double expectedMeu) throws IncompatibleEvidenceException {
         InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(diagram);
         // test max expected utility
         Double meuEvaluation = algorithm.getGlobalUtility().values[0];
@@ -193,11 +193,11 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
     }
     
     @Test
-    public void testEvaluationSimpleIDWithoutDecisions() throws IncompatibleEvidenceException, UnexpectedInferenceException {
+    public void testEvaluationSimpleIDWithoutDecisions() throws IncompatibleEvidenceException {
         testMEU(IDFactory.createSimpleIDWithoutDecisions(), 83.7);
     }
     
-    private StrategyTree getOptimalStrategy(ProbNet id) throws IncompatibleEvidenceException, UnexpectedInferenceException {
+    private StrategyTree getOptimalStrategy(ProbNet id) throws IncompatibleEvidenceException {
         InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(id);
         StrategyTree strategy = algorithm.getOptimalStrategy();
         return strategy;

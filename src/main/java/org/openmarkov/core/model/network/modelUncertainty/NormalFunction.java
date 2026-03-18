@@ -40,7 +40,7 @@ import java.util.Random;
 	 * @param parameters - parameters[1]= mu and parameters[0] = sigma^2
 	 * @throws IllegalArgumentException - thrown if sigma&#60;0
 	 */
-	@Override public void verifyParameters(double[] parameters) throws InvalidArgumentException {
+	@Override public void verifyParameters(double[] parameters) {
 		if (!(parameters[0] > 0)) {
 			throw new InvalidArgumentException(parameters[0], "N", "N should be greater than 0");
 		}
@@ -49,7 +49,7 @@ import java.util.Random;
 	//CMI
 	//For Univariate
     
-    @Override public void verifyParametersDomain(boolean isChanceVariable) throws InvalidArgumentException {
+    @Override public void verifyParametersDomain(boolean isChanceVariable) {
         if (sigma <= 0) {
             throw new InvalidArgumentException(sigma, "sigma", "should be a number bigger than 0");
         }

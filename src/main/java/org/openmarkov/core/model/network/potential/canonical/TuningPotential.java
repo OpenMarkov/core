@@ -72,7 +72,7 @@ public class TuningPotential extends ICIPotential {
     }
     
     @Override
-    public Potential project(EvidenceCase evidenceCase) throws NotSupportedOperationException {
+    public Potential project(EvidenceCase evidenceCase) {
         throw new NotSupportedOperationException();
     }
     
@@ -209,7 +209,7 @@ public class TuningPotential extends ICIPotential {
         return false;
     }
     
-    @Override public void scalePotential(double scale) throws NotSupportedOperationException {
+    @Override public void scalePotential(double scale) {
         throw new NotSupportedOperationException();
     }
     

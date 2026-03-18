@@ -49,14 +49,14 @@ import java.util.Random;
      *
      * @throws IllegalArgumentException - thrown if the alpha or beta &#60;0
      */
-    @Override public void verifyParameters(double[] parameters) throws InvalidArgumentException {
+    @Override public void verifyParameters(double[] parameters) {
         if (!((parameters[0] > 0) && (parameters[1] > 0))) {
             throw new InvalidArgumentException(List.of(parameters[0], parameters[1]), "N", "both should be greater than 0");
         }
     }
     //CMF
     
-    @Override public void verifyParametersDomain(boolean isChanceVariable) throws InvalidArgumentException {
+    @Override public void verifyParametersDomain(boolean isChanceVariable) {
         if (alpha <= 0) {
             throw new InvalidArgumentException(alpha, "alpha", "should be a number bigger than 0");
         }

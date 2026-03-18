@@ -343,14 +343,6 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * Sets Network type
      *
      * @param newNetworkType {@code NetworkType}
-     *
-     * @throws InvalidNetworkTypeException.UnmetConstraints UnmetConstraints
-     */
-    /**
-     * Sets Network type
-     *
-     * @param newNetworkType {@code NetworkType}
-     *
      */
     public void setNetworkType(NetworkType newNetworkType) throws ConstraintViolatedException {
         NetworkType oldNetworkType = this.networkType;

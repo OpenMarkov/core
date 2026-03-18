@@ -75,7 +75,7 @@ import java.util.List;
     }
     
     @Override
-    public Potential project(EvidenceCase evidenceCase) throws NotSupportedOperationException {
+    public Potential project(EvidenceCase evidenceCase) {
         throw new NotSupportedOperationException();
     }
     
@@ -83,7 +83,7 @@ import java.util.List;
         return getOriginalPotential(probNet, getConditionedVariable());
     }
     
-    @Override public Potential sample() throws NotSupportedOperationException {
+    @Override public Potential sample() {
         throw new NotSupportedOperationException("SameAsPrevious potentials cannot be sampled.");
     }
     
@@ -119,7 +119,7 @@ import java.util.List;
         super.replaceNumericVariable(convertedParentVariable);
     }
     
-    @Override public boolean isUncertain() throws NotSupportedOperationException {
+    @Override public boolean isUncertain() {
         throw new NotSupportedOperationException("There is no way to know whether SameAsPrevious potentials are uncertain");
     }
     

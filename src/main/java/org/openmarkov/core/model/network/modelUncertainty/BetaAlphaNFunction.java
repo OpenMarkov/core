@@ -37,7 +37,7 @@ import java.util.List;
 	/**
 	 *
 	 */
-	@Override public void verifyParameters(double[] parameters) throws InvalidArgumentException {
+	@Override public void verifyParameters(double[] parameters) {
 		if ((parameters[0] > 0) && (parameters[1] > 0) && (parameters[1] > parameters[0])) {
 			throw new InvalidArgumentException(List.of(parameters[0], parameters[1]), "N", "N should be greater than alpha " + this.getClass().getName());
 		}

@@ -33,7 +33,7 @@ import org.openmarkov.core.exception.InvalidArgumentException;
         this.upperBound = rangeFunction.upperBound;
     }
     
-    @Override public void verifyParametersDomain(boolean isChanceVariable) throws InvalidArgumentException {
+    @Override public void verifyParametersDomain(boolean isChanceVariable) {
         if (!(lowerBound < upperBound)) {
             throw new InvalidArgumentException("Lower bound (" + lowerBound + ") should be less than the upper bound (" + upperBound + ")");
         }

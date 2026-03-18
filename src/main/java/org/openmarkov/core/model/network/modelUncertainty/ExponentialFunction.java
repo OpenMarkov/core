@@ -49,7 +49,7 @@ public class ExponentialFunction extends ProbDensFunctionWithKnownInverseCDF {
 		lambda = params[0];
 	}
     
-    @Override public void verifyParametersDomain(boolean isChanceVariable) throws InvalidArgumentException {
+    @Override public void verifyParametersDomain(boolean isChanceVariable) {
         if (lambda <= 0) {
             throw new InvalidArgumentException(lambda, "lambda", "should be a number bigger than 0");
         }

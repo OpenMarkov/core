@@ -303,9 +303,7 @@
                   value="Can not create file {filename}."/>
     <Localization class="org.openmarkov.core.exception.WriterException$ICIModelNotSupportedByElvira"
                   value="ICI Model {modelType} is not supported by Elvira."/>
-    <Localization class="org.openmarkov.core.exception.WriterException$NonProjectablePotentialException"
-                  value="{originException}"/>
-    <Localization class="org.openmarkov.core.exception.WriterException$TryingToWriteANullProbNet"
+<Localization class="org.openmarkov.core.exception.WriterException$TryingToWriteANullProbNet"
                   value="Tried to write a null Probabilistic Network"/>
     <Localization class="org.openmarkov.core.exception.WriterException$TryingToWriteAProbNetWithoutName"
                   value="There is no name for {probNet}."/>

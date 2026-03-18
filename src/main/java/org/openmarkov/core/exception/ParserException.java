@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.xml.sax.SAXParseException;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,13 +21,19 @@ import java.util.HashMap;
 @SuppressWarnings("NonFinalFieldOfException")
 //TODO: Not all, but many of the uses of this exceptions just show a dialog and then ignore the exception.
 public abstract class ParserException extends Exception implements IBundledOpenMarkovException {
-    
+
+    protected ParserException() {}
+
+    protected ParserException(Throwable cause) {
+        super(cause);
+    }
+
     @Override public String toString() {
         return IBundledOpenMarkovException.toString(this);
     }
     
     private @Nullable String filename;
-    private @Nullable int lineNumber;
+    private int lineNumber;
     
     public @Nullable String getFilename() {
         return filename;
@@ -172,13 +179,20 @@ public abstract class ParserException extends Exception implements IBundledOpenM
     }
     
     public static final class BadlyStructuredFile extends ParserException {
-        
+
         public BadlyStructuredFile(URL url, SAXParseException saxParseException) {
+            super(saxParseException);
             this.url = url;
             this.saxParseException = saxParseException;
         }
-        
+
+        public BadlyStructuredFile(URL url, IOException ioException) {
+            super(ioException);
+            this.url = url;
+            this.saxParseException = null;
+        }
+
         public final URL url;
-        public final SAXParseException saxParseException;
+        public final @Nullable SAXParseException saxParseException;
     }
 }

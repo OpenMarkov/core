@@ -38,14 +38,6 @@ public abstract sealed class WriterException extends Exception implements IBundl
         public final List<Class<? extends NetworkType>> allowedTypes;
     }
     
-    public static final class NonProjectablePotentialException extends WriterException {
-        public NonProjectablePotentialException(org.openmarkov.core.exception.NonProjectablePotentialException originException) {
-            this.originException = originException;
-        }
-        
-        public final org.openmarkov.core.exception.NonProjectablePotentialException originException;
-    }
-    
     public static final class ICIModelNotSupportedByElvira extends WriterException {
         public ICIModelNotSupportedByElvira(ICIModelType modelType) {
             this.modelType = modelType;

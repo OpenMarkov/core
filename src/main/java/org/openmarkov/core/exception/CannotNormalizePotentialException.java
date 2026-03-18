@@ -7,13 +7,9 @@
 
 package org.openmarkov.core.exception;
 
-import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.TablePotential;
 
-import java.util.List;
-
-public class CannotNormalizePotentialException extends RuntimeException {
+public class CannotNormalizePotentialException extends OpenMarkovRuntimeException {
     
     private final Potential potential;
     

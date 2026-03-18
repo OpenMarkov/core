@@ -116,7 +116,7 @@ public class FormatManager {
      *
      * @throws Exception when an exception is raised is thrown to be caught by the gui
      */
-    public ProbNetReader getProbNetReader(URL url) throws SAXException, IOException, NoReaderForFileException, ParserException.BadlyStructuredFile {
+    public ProbNetReader getProbNetReader(URL url) throws NoReaderForFileException, ParserException.BadlyStructuredFile {
         //checkVersion(url);
         String fileName = url.getFile();
         String fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
@@ -130,8 +130,8 @@ public class FormatManager {
         }
         return reader;
     }
-    
-    private static @NotNull String getFileVersion(URL url, String fileExtension) throws SAXException, IOException {
+
+    private static @NotNull String getFileVersion(URL url, String fileExtension) throws ParserException.BadlyStructuredFile {
         String fileVersion;
         if(fileExtension.equals("elv")){
             fileVersion = "";
@@ -142,7 +142,16 @@ public class FormatManager {
             } catch (ParserConfigurationException e) {
                 throw new UnreachableException(e);
             }
-            Document doc = docBuilder.parse(url.openStream());
+            Document doc;
+            try {
+                doc = docBuilder.parse(url.openStream());
+            } catch (SAXParseException e) {
+                throw new ParserException.BadlyStructuredFile(url, e);
+            } catch (SAXException e) {
+                throw new UnreachableException("Unexpected SAX error reading " + url, e);
+            } catch (IOException e) {
+                throw new ParserException.BadlyStructuredFile(url, e);
+            }
             fileVersion = doc.getDocumentElement().getAttribute("formatVersion");
             //Removing the last index of the version
             fileVersion = fileVersion.substring(0, fileVersion.lastIndexOf('.'));
@@ -231,13 +240,22 @@ public class FormatManager {
         }
     }
     
-    public void checkStructure(URL url) throws SAXException, IOException, ParserException.BadlyStructuredFile {
+    public void checkStructure(URL url) throws ParserException.BadlyStructuredFile {
         InputStream xsd = getClass().getClassLoader().getResourceAsStream("val_v4.xsd");
         SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Schema schema = factory.newSchema(new StreamSource(xsd));
+        Schema schema;
+        try {
+            schema = factory.newSchema(new StreamSource(xsd));
+        } catch (SAXException e) {
+            throw new UnreachableException("Cannot load XML schema val_v4.xsd", e);
+        }
         try {
             schema.newValidator().validate(new StreamSource(url.openStream()));
         } catch (SAXParseException e) {
+            throw new ParserException.BadlyStructuredFile(url, e);
+        } catch (SAXException e) {
+            throw new UnreachableException("Unexpected SAX error validating " + url, e);
+        } catch (IOException e) {
             throw new ParserException.BadlyStructuredFile(url, e);
         }
     }

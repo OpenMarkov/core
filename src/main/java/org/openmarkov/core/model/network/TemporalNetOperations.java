@@ -344,7 +344,7 @@ public class TemporalNetOperations {
             try {
                 potential.scalePotential(0);
             } catch (NotSupportedOperationException e) {
-                throw new UnreacheableException(e);
+                throw new UnreachableException(e);
             }
             nodeToRemove.setPotential(potential);
             //			network.removeNode(nodeToRemove);
@@ -379,7 +379,7 @@ public class TemporalNetOperations {
                 try {
                     potential.scalePotential(discountRate);
                 } catch (NotSupportedOperationException e) {
-                    throw new UnreacheableException(e);
+                    throw new UnreachableException(e);
                 }
                 utilityNode.setPotential(potential);
             }
@@ -502,7 +502,7 @@ public class TemporalNetOperations {
         try {
             expandedNetwork.setNetworkType(InfluenceDiagramType.getUniqueInstance());
         } catch (ConstraintViolatedException e) {
-            throw new UnreacheableException(e);
+            throw new UnreachableException(e);
         }
     }
     

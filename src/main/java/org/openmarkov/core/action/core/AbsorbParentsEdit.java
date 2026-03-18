@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.inference.BasicOperations;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -35,7 +35,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
             try {
                 parentsPotential.add(node.getPotential().tableProject(null, null));
             } catch (NonProjectablePotentialException e) {
-                throw new UnreacheableException(e);
+                throw new UnreachableException(e);
             }
         }
 

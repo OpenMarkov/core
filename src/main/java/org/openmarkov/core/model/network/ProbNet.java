@@ -184,7 +184,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
             this.setNetworkType(networkType);
         } catch (ConstraintViolatedException e) {
             // This cannot happen
-            throw new UnreacheableException(e);
+            throw new UnreachableException(e);
         }
     }
     
@@ -361,11 +361,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         for (PNConstraint newConstraint : newConstraints) {
             var checker = new ConstraintChecker(this);
             newConstraint.checkProbNet(this, checker);
-            try {
-                checker.buildAndThrow();
-            } catch (ConstraintViolatedException e) {
-                throw e;
-            }
+            checker.buildAndThrow();
         }
         for (PNConstraint newConstraint : newConstraints) {
             addConstraint(newConstraint);

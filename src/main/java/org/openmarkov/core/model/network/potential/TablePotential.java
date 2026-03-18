@@ -10,7 +10,7 @@ package org.openmarkov.core.model.network.potential;
 import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
@@ -432,7 +432,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
                 newPotential = tableProject(evidenceCase, null);
             } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther |
                      NonProjectablePotentialException e) {
-                throw new UnreacheableException(e);
+                throw new UnreachableException(e);
             }
         }
         return newPotential;
@@ -1016,7 +1016,7 @@ public class TablePotential extends Potential implements Comparable<TablePotenti
         try {
             projectedPotential = tableProject(evidenceCase, null);
         } catch (NonProjectablePotentialException e) {
-            throw new UnreacheableException(e);
+            throw new UnreachableException(e);
         }
         if (projectedPotential.getNumVariables() == 1) {
             double[] table = projectedPotential.values;

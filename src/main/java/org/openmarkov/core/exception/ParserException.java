@@ -85,8 +85,8 @@ public abstract class ParserException extends Exception implements IBundledOpenM
         public final int actualLength;
     }
     
-    public static final class MissingPropertiesOfContiousVariable extends ParserException {
-        public MissingPropertiesOfContiousVariable(String variableName, ArrayList<String> missingProperties) {
+    public static final class MissingPropertiesOfContinuousVariable extends ParserException {
+        public MissingPropertiesOfContinuousVariable(String variableName, ArrayList<String> missingProperties) {
             this.variableName = variableName;
             this.missingProperties = missingProperties;
         }

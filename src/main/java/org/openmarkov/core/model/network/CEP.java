@@ -8,7 +8,7 @@
 package org.openmarkov.core.model.network;
 
 import org.openmarkov.core.exception.CostEffectivenessException;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.model.network.potential.StrategyTree;
 
 import java.text.DecimalFormat;
@@ -62,7 +62,7 @@ public class CEP implements Cloneable {
                 );
             } catch (CostEffectivenessException.WrongNumberOfThresholds |
                      CostEffectivenessException.WrongNumberOfCostsEffectivitiesAndInterventions e) {
-                throw new UnreacheableException(e);
+                throw new UnreachableException(e);
             }
         }
     }

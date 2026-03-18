@@ -10,7 +10,7 @@ package org.openmarkov.core.inference;
 import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -32,15 +32,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class BasicOperations {
-    /**
-     * The source probNet
-     *
-     * @param evidence Evidence
-     * @param node     Node
-     *
-     * @return potential
-     */
-    
+
     public static Potential absorbParentPotentials(Variable variable,
                                                    Potential nodePotential,
                                                    ArrayList<TablePotential> parentsPotentials,
@@ -59,7 +51,7 @@ public class BasicOperations {
                         (FunctionPotential) nodePotential, parentsPotentials, parentsPotentials.get(0).getVariables());
             } catch (NonProjectablePotentialException.CannotEvaluate |
                      NonProjectablePotentialException.CannotResolveVariable e) {
-                throw new UnreacheableException(e);
+                throw new UnreachableException(e);
             }
         }
         // }
@@ -193,7 +185,7 @@ public class BasicOperations {
             try {
                 parentsPotential.add(n.getPotential().tableProject(null, null));
             } catch (NonProjectablePotentialException e) {
-                throw new UnreacheableException(e);
+                throw new UnreachableException(e);
             }
         }
         

@@ -11,7 +11,7 @@ public class UnrecoverableException extends RuntimeException {
     }
     
     private static Throwable extractUnderlyingCause(Throwable cause) {
-        while (cause instanceof UnreacheableException) {
+        while (cause instanceof UnreachableException) {
             cause = cause.getCause();
         }
         return cause;

@@ -13,7 +13,7 @@ public abstract sealed class InvalidNetworkTypeException extends Exception imple
         return IBundledOpenMarkovException.toString(this);
     }
     
-    //TODO: It is always wrapped in UnreacheableException or another exception, this might be turned into a
+    //TODO: It is always wrapped in UnreachableException or another exception, this might be turned into a
     // RuntimeException.
     public static final class UnmetConstraints extends InvalidNetworkTypeException {
         public final ProbNet probNet;

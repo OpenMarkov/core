@@ -24,9 +24,10 @@ public abstract class DoEditException extends Exception implements IBundledOpenM
     // could be turned into RuntimeExceptions.
     public static final class CannotDoEditException extends DoEditException {
         public CannotDoEditException(IOpenMarkovException originException) {
+            initCause((Exception) originException);
             this.originException = originException;
         }
-        
+
         public final IOpenMarkovException originException;
     }
     

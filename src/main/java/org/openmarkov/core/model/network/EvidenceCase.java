@@ -9,7 +9,7 @@ package org.openmarkov.core.model.network;
 
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -172,7 +172,6 @@ public class EvidenceCase implements ClassLocalizable {
      *
      * @return Finding
      *
-     * @throws NoFindingException NoFindingException
      */
     public @Nullable Finding removeFinding(Variable variable) {
         Finding finding = getFinding(variable);
@@ -382,7 +381,7 @@ public class EvidenceCase implements ClassLocalizable {
             return shiftedEvidence;
         } catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
             // Unreachable code
-            throw new UnreacheableException("shifted finding: ", e);
+            throw new UnreachableException("shifted finding: ", e);
         }
     }
     

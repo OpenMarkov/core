@@ -14,7 +14,7 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.output.Format;
 import org.jdom2.output.XMLOutputter;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 
 import java.io.File;
 import java.io.FileReader;
@@ -131,7 +131,7 @@ import java.util.Properties;
 		try {
 			store(out, header);
         } catch (IOException e) {
-            throw new UnreacheableException(e);
+            throw new UnreachableException(e);
 		}
 	}
 

@@ -9,7 +9,7 @@ package org.openmarkov.core.io.format.annotation;
 
 import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.ParserException;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.io.ProbNetReader;
 import org.openmarkov.core.io.ProbNetWriter;
 import org.openmarkov.plugin.PluginSearch;
@@ -65,7 +65,7 @@ public class FormatManager {
                 return writerClass.getDeclaredConstructor().newInstance();
             } catch (InstantiationException | NoSuchMethodException | IllegalAccessException |
                      InvocationTargetException e) {
-                return null;
+                throw new UnreachableException("Cannot instantiate writer plugin: " + writerClass.getName(), e);
             }
         }).toList();
         this.readerInstances = this.readerClassesList.stream().map(readerClass->{
@@ -73,7 +73,7 @@ public class FormatManager {
                 return readerClass.getDeclaredConstructor().newInstance();
             } catch (InstantiationException | NoSuchMethodException | IllegalAccessException |
                      InvocationTargetException e) {
-                return null;
+                throw new UnreachableException("Cannot instantiate reader plugin: " + readerClass.getName(), e);
             }
         }).toList();
     }
@@ -140,7 +140,7 @@ public class FormatManager {
             try {
                 docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             } catch (ParserConfigurationException e) {
-                throw new UnreacheableException(e);
+                throw new UnreachableException(e);
             }
             Document doc = docBuilder.parse(url.openStream());
             fileVersion = doc.getDocumentElement().getAttribute("formatVersion");
@@ -210,7 +210,7 @@ public class FormatManager {
         try {
             db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         } catch (ParserConfigurationException e) {
-            throw new UnreacheableException(e);
+            throw new UnreachableException(e);
         }
         Document document = db.parse(url.openStream());
         validator.validate(new DOMSource(document));

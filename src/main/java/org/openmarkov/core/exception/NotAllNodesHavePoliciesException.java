@@ -13,7 +13,7 @@ import org.openmarkov.core.model.network.Node;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//TODO: It is caught and then thrown as UnreacheableException. This might be a RuntimeException.
+//TODO: It is caught and then thrown as UnreachableException. This might be a RuntimeException.
 public class NotAllNodesHavePoliciesException extends Exception implements IOpenMarkovException {
     
     private final Node conditioningDecision;

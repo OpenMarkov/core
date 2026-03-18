@@ -45,8 +45,8 @@ public abstract class IncompatibleEvidenceException extends Exception implements
         public final String state;
     }
     
-    public static final class SamplesWeigthIsZero extends IncompatibleEvidenceException {
-        public SamplesWeigthIsZero(double[][] samples) {
+    public static final class SamplesWeightIsZero extends IncompatibleEvidenceException {
+        public SamplesWeightIsZero(double[][] samples) {
             this.samples = samples;
         }
         

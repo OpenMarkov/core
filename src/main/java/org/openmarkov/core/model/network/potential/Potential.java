@@ -14,7 +14,7 @@ import org.openmarkov.core.developmentStaticAnalysis.requirements.RequiredMethod
 import org.openmarkov.core.developmentStaticAnalysis.requirements.SelfClass;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.localize.Localizable;
 import org.openmarkov.core.model.network.*;
@@ -585,7 +585,7 @@ public abstract class Potential implements Localizable {
             potential = this.getClass().getConstructor(this.getClass()).newInstance(this);
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException |
                  InvocationTargetException | NoSuchMethodException | SecurityException e) {
-            throw new UnreacheableException(e);
+            throw new UnreachableException(e);
         }
         
         List<Variable> newReferences = new ArrayList<>();

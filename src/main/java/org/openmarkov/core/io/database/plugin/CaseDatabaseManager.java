@@ -7,7 +7,7 @@
 package org.openmarkov.core.io.database.plugin;
 
 import org.jetbrains.annotations.NotNull;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.io.database.CaseDatabaseReader;
 import org.openmarkov.core.io.database.CaseDatabaseWriter;
 import org.openmarkov.core.io.exception.NoReaderForExtension;
@@ -93,7 +93,7 @@ public class CaseDatabaseManager {
             return writerClass.getDeclaredConstructor().newInstance();
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
                  InvocationTargetException e) {
-            throw new UnreacheableException(e);
+            throw new UnreachableException(e);
         }
     }
     
@@ -111,7 +111,7 @@ public class CaseDatabaseManager {
             return readerClass.getDeclaredConstructor().newInstance();
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
                  InvocationTargetException e) {
-            throw new UnreacheableException(e);
+            throw new UnreachableException(e);
         }
     }
     

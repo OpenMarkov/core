@@ -8,7 +8,7 @@
 package org.openmarkov.core.model.network.constraint;
 
 import org.jetbrains.annotations.NotNull;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 import org.openmarkov.core.model.network.type.NetworkType;
 import org.openmarkov.plugin.PluginSearch;
@@ -65,7 +65,7 @@ public class ConstraintManager {
                     constraints.add(constraintClass.getDeclaredConstructor().newInstance());
                 } catch (InstantiationException | NoSuchMethodException | IllegalAccessException |
                          InvocationTargetException e) {
-                    throw new UnreacheableException(e);
+                    throw new UnreachableException(e);
                 }
             }
         }
@@ -79,7 +79,7 @@ public class ConstraintManager {
                     constraints.add(constraintClass.getDeclaredConstructor().newInstance());
                 } catch (InstantiationException | NoSuchMethodException | IllegalAccessException |
                          InvocationTargetException e) {
-                    throw new UnreacheableException(e);
+                    throw new UnreachableException(e);
                 }
             } else if (overwrittenConstraints.get(constraintClass) == ConstraintBehavior.NO) {
                 for (int i = 0; i < constraints.size(); ++i) {

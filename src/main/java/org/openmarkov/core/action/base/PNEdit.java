@@ -9,7 +9,7 @@ package org.openmarkov.core.action.base;
 
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.network.ProbNet;
 
@@ -128,7 +128,7 @@ import org.openmarkov.core.model.network.ProbNet;
             try {
                 doEdit();
             } catch (DoEditException e) {
-                throw new UnreacheableException(e);
+                throw new UnreachableException(e);
             }
         } else {
             typicalRedo = true;

@@ -1,6 +1,6 @@
 package org.openmarkov.core.model.network;
 
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.localize.ClassLocalizable;
 
 import java.io.Serial;

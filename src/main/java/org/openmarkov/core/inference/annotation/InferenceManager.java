@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 import org.openmarkov.core.exception.NotEvaluableNetworkException;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.inference.InferenceAlgorithm;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
@@ -107,7 +107,7 @@ public class InferenceManager {
                 }
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException |
                      InstantiationException e) {
-                throw new UnreacheableException(e);
+                throw new UnreachableException(e);
             }
         }
         return inferenceAlgorithms;
@@ -139,10 +139,10 @@ public class InferenceManager {
                 //noinspection ThrowInsideCatchBlockWhichIgnoresCaughtException
                 throw notEvaluableNetworkException;
             }
-            throw new UnreacheableException(e);
+            throw new UnreachableException(e);
         } catch (InstantiationException | IllegalAccessException | IllegalArgumentException |
                  SecurityException e) {
-            throw new UnreacheableException(e);
+            throw new UnreachableException(e);
         }
     }
     
@@ -173,7 +173,7 @@ public class InferenceManager {
                 }
             }
         } catch (SecurityException | NoSuchMethodException e) {
-            throw new UnreacheableException(e);
+            throw new UnreachableException(e);
         }
         return defaultAlgorithm;
     }
@@ -195,7 +195,7 @@ public class InferenceManager {
         } catch (SecurityException | NoSuchMethodException e) {
             // This should not be the case as we are hard coding to an algorithm
             // that should have a public constructor
-            throw new UnreacheableException(e);
+            throw new UnreachableException(e);
         }
         return defaultAlgorithm;
     }

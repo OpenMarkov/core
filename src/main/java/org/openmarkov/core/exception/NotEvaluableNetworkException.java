@@ -33,8 +33,8 @@ public abstract sealed class NotEvaluableNetworkException extends Exception impl
         public final List<NetworkType> possibleNetworkTypes;
     }
 	
-	public static final class UnsatisfiedContraints extends NotEvaluableNetworkException {
-		public UnsatisfiedContraints(ProbNet probNet, List<PNConstraint> unsatisfiedConstraints) {
+	public static final class UnsatisfiedConstraints extends NotEvaluableNetworkException {
+		public UnsatisfiedConstraints(ProbNet probNet, List<PNConstraint> unsatisfiedConstraints) {
             this.probNet = probNet;
             this.unsatisfiedConstraints = unsatisfiedConstraints;
         }

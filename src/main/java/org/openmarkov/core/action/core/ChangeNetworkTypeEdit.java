@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.StringWithProperties;
 import org.openmarkov.core.model.network.type.NetworkType;
@@ -70,7 +70,7 @@ import java.util.ArrayList;
                 probNet.setAgents(null);
             }
         } catch (ConstraintViolatedException e) {
-            throw new UnreacheableException(e);
+            throw new UnreachableException(e);
         }
     }
 }

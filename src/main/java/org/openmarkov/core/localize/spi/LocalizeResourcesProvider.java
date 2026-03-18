@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.developmentStaticAnalysis.requirements.ImplementationRequirements;
 import org.openmarkov.core.developmentStaticAnalysis.requirements.RequiredConstructor;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.localize.*;
 import org.openmarkov.core.logging.OpenMarkovLogger;
 import org.openmarkov.core.stringformat.LocalizationFormatter;
@@ -97,7 +97,7 @@ public interface LocalizeResourcesProvider extends ResourceBundleProvider {
         try {
             localizationFile = new File(bundleFile.toURI());
         } catch (URISyntaxException e) {
-            throw new UnreacheableException("Localization file " + bundleFile + " could not be located.", e);
+            throw new UnreachableException("Localization file " + bundleFile + " could not be located.", e);
         }
         if (localizationFile.isFile()) {
             addBundleSource.accept(new BundleSource.FileSource(localizationFile));
@@ -107,7 +107,7 @@ public interface LocalizeResourcesProvider extends ResourceBundleProvider {
                      .map(file -> (BundleSource) new BundleSource.FileSource(file.toFile()))
                      .forEach(addBundleSource);
             } catch (IOException ioException) {
-                throw new UnreacheableException("Localization file " + bundleFile + " could not be accesed, while it was previously used.", ioException);
+                throw new UnreachableException("Localization file " + bundleFile + " could not be accesed, while it was previously used.", ioException);
             }
         }
     }

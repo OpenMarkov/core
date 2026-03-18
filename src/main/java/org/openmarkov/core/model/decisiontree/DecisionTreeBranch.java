@@ -7,7 +7,7 @@
 package org.openmarkov.core.model.decisiontree;
 
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.ProbNet;
@@ -80,7 +80,7 @@ public class DecisionTreeBranch implements DecisionTreeElement {
 				try {
 					scenarioEvidence.addFinding(new Finding(branchVariable, branchState));
 				} catch (IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther e) {
-					throw new UnreacheableException(e);
+					throw new UnreachableException(e);
 				}
 			}
 		}

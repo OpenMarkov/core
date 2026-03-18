@@ -3,7 +3,7 @@ package org.openmarkov.java.cloneUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.IBundledOpenMarkovException;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -31,11 +31,11 @@ public class CloneUtils {
             cloneMethod.setAccessible(true);
             ToClone cloned = cloneableClass.cast(cloneMethod.invoke(toClone));
             if (cloned == toClone) {
-                throw new UnreacheableException(new CloneBadlyImplementedException(cloneableClass));
+                throw new UnreachableException(new CloneBadlyImplementedException(cloneableClass));
             }
             return cloned;
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | ClassCastException e) {
-            throw new UnreacheableException(e);
+            throw new UnreachableException(e);
         }
     }
     
@@ -58,7 +58,7 @@ public class CloneUtils {
                         newMap = map.getClass().getDeclaredConstructor().newInstance();
                     } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
                              InvocationTargetException e) {
-                        throw new UnreacheableException(e);
+                        throw new UnreachableException(e);
                     }
                     map.forEach((key, value) -> {
                         if (key instanceof Cloneable) {
@@ -87,7 +87,7 @@ public class CloneUtils {
                         newCollection = collection.getClass().getDeclaredConstructor().newInstance();
                     } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
                              InvocationTargetException e) {
-                        throw new UnreacheableException(e);
+                        throw new UnreachableException(e);
                     }
                     collection.forEach(value -> {
                         if (value instanceof Cloneable) {

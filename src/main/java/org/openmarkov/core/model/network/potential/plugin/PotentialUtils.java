@@ -7,7 +7,7 @@
 package org.openmarkov.core.model.network.potential.plugin;
 
 import org.jetbrains.annotations.NotNull;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
@@ -92,7 +92,7 @@ public class PotentialUtils {
             }
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException |
                  InvocationTargetException e) {
-            throw new UnreacheableException(e);
+            throw new UnreachableException(e);
         }
     }
     
@@ -116,7 +116,7 @@ public class PotentialUtils {
                     filteredPotentials.add(potentialClass);
                 }
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                throw new UnreacheableException(e);
+                throw new UnreachableException(e);
             }
         }
         return filteredPotentials;

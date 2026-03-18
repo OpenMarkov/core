@@ -10,7 +10,7 @@ package org.openmarkov.core.model.network;
 import org.openmarkov.core.exception.IntervalsAreNotEvenException;
 import org.openmarkov.core.exception.IntervalsAreNotMultipleOf3Exception;
 import org.openmarkov.core.exception.NotSupportedOperationException;
-import org.openmarkov.core.exception.UnreacheableException;
+import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.model.network.potential.Potential;
 
 import java.util.ArrayList;
@@ -42,7 +42,7 @@ public class UtilityOperations {
                         try {
                             scaledPotential.scalePotential(scale);
                         } catch (NotSupportedOperationException e) {
-                            throw new UnreacheableException(e);
+                            throw new UnreachableException(e);
                         }
                         scaledPotentials.add(scaledPotential);
 					}
@@ -75,7 +75,7 @@ public class UtilityOperations {
                     try {
                         potential.scalePotential(scale);
                     } catch (NotSupportedOperationException e) {
-                        throw new UnreacheableException(e);
+                        throw new UnreachableException(e);
                     }
                     utilityNode.setPotential(potential);
 				} else {

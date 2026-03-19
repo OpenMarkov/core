@@ -2,7 +2,7 @@ package org.openmarkov.core.exception;
 
 import org.jetbrains.annotations.Nullable;
 
-public class InvalidArgumentException extends IllegalArgumentException {
+public class InvalidArgumentException extends IllegalArgumentException implements IBundledOpenMarkovException {
 
     public final boolean valueIsSet;
     public final @Nullable Object value;
@@ -39,6 +39,10 @@ public class InvalidArgumentException extends IllegalArgumentException {
         this.value = null;
         this.argumentName = null;
         this.reason = reason;
+    }
+
+    @Override public @Nullable String getExceptionMessage() {
+        return getMessage();
     }
 
     private static String buildMessage(@Nullable Object value, @Nullable String argumentName, String reason) {

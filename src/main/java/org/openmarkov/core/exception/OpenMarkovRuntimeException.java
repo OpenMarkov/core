@@ -18,7 +18,7 @@ package org.openmarkov.core.exception;
  * do NOT extend this class — they represent programming errors or fatal system
  * conditions, not domain errors.
  */
-public abstract class OpenMarkovRuntimeException extends RuntimeException {
+public abstract class OpenMarkovRuntimeException extends RuntimeException implements IBundledOpenMarkovException {
 
     protected OpenMarkovRuntimeException() {
     }

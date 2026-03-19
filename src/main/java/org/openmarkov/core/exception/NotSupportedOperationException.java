@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author jrico
  */
-public final class NotSupportedOperationException extends UnsupportedOperationException {
+public final class NotSupportedOperationException extends UnsupportedOperationException implements IBundledOpenMarkovException {
 
     private final StackTraceElement operation;
     private final @Nullable String reason;
@@ -23,6 +23,10 @@ public final class NotSupportedOperationException extends UnsupportedOperationEx
         var trace = Thread.currentThread().getStackTrace();
         this.operation = trace[2];
         this.reason = null;
+    }
+
+    @Override public @Nullable String getExceptionMessage() {
+        return getMessage();
     }
 
     @Override public String getMessage() {

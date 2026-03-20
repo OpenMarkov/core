@@ -28,10 +28,15 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class BasicOperations {
+
+    private static final Logger logger = LogManager.getLogger(BasicOperations.class);
 
     public static Potential absorbParentPotentials(Variable variable,
                                                    Potential nodePotential,
@@ -631,7 +636,7 @@ public class BasicOperations {
             
             if (numberOfDecisions > 1) {
                 // throw new NotEvaluableNetworkException("There are more than one decision");
-                System.out.println("BAD NET");
+                logger.warn("BAD NET");
             }
             
             nodes.clear();

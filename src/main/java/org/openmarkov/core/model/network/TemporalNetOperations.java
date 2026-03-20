@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.TemporalOptions;
 import org.openmarkov.core.inference.tasks.TaskUtilities;
@@ -23,6 +25,8 @@ import java.util.Map;
 
 public class TemporalNetOperations {
     
+    private static final Logger logger = LogManager.getLogger(TemporalNetOperations.class);
+
     // Attributes
     /**
      * Vertical separation in pixels between slices.
@@ -203,7 +207,7 @@ public class TemporalNetOperations {
             
             // Use the blueprint to create the new links
             blueprint.createDirectedLinks(probNet);
-            System.out.println("End of decision links copied");
+            logger.debug("End of decision links copied");
         }
     }
     

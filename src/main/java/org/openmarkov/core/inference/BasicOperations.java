@@ -237,9 +237,9 @@ public class BasicOperations {
      */
     private static boolean thereAreSumNodesInTheList(ProbNet sourceProbNet, List<Variable> nodesToKeep) {
         boolean thereAre = false;
-        for (int i = 0; (i < nodesToKeep.size()) && !thereAre; i++) {
-            Variable auxVar = nodesToKeep.get(i);
-            thereAre = (isSumSuperValueNode(sourceProbNet, auxVar));
+        for (Variable auxVar : nodesToKeep) {
+            thereAre = isSumSuperValueNode(sourceProbNet, auxVar);
+            if (thereAre) break;
         }
         return thereAre;
     }
@@ -294,8 +294,9 @@ public class BasicOperations {
     private static boolean areAllVariablesOfType(List<Node> nodes, VariableType type) {
         boolean areAll = true;
         
-        for (int i = 0; i < nodes.size() && areAll; i++) {
-            areAll = getVariableType(nodes.get(i)) == type;
+        for (Node node : nodes) {
+            areAll = getVariableType(node) == type;
+            if (!areAll) break;
         }
         return areAll;
     }

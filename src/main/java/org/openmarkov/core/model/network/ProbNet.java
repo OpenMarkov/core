@@ -443,8 +443,8 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     
     public boolean thereAreTemporalNodes() {
         boolean thereAreTemporalNodes = false;
-        for (int i = 0; i < getNodes().size(); i++) {
-            if (getNodes().get(i).getVariable().isTemporal()) {
+        for (Node node : getNodes()) {
+            if (node.getVariable().isTemporal()) {
                 thereAreTemporalNodes = true;
                 break;
             }

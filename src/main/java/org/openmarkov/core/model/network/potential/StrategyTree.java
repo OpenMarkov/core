@@ -607,7 +607,7 @@ public class StrategyTree extends TreeADDPotential implements Cloneable {
         
         String content = "digraph G {\n";
         
-        Map<StrategyTree, Integer> idNode = new Hashtable<>();
+        Map<StrategyTree, Integer> idNode = new HashMap<>();
         
         Set<StrategyTree> nodes = this.getInterventions();
         Set<StrategyTree> leaves = this.getInterventionsLeaves();

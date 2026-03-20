@@ -10,31 +10,32 @@ package org.openmarkov.core.inference;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class StrategyUtilities {
 
-	Hashtable<Variable, TablePotential> utilities;
+	Map<Variable, TablePotential> utilities;
 
 	/**
 	 *
 	 */
 	public StrategyUtilities() {
 		super();
-		utilities = new Hashtable<>();
+		utilities = new HashMap<>();
 	}
 
 	/**
 	 * @return the utilities
 	 */
-	public Hashtable<Variable, TablePotential> getUtilities() {
+	public Map<Variable, TablePotential> getUtilities() {
 		return utilities;
 	}
 
 	/**
 	 * @param utilities the utilities to set
 	 */
-	public void setUtilities(Hashtable<Variable, TablePotential> utilities) {
+	public void setUtilities(Map<Variable, TablePotential> utilities) {
 		this.utilities = utilities;
 	}
 

@@ -12,13 +12,14 @@ import org.openmarkov.core.model.network.potential.GTablePotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class Strategy {
 
-	Hashtable<Variable, Policy> strategy;
+	Map<Variable, Policy> strategy;
 
 	/**
 	 * @param stratUtil constructs a strategy by maximizing over the utility tables
@@ -34,7 +35,7 @@ public class Strategy {
 	}
 
 	public Strategy() {
-		strategy = new Hashtable<>();
+		strategy = new HashMap<>();
 	}
 
 	public List<Variable> getDomainOfPolicy(Variable varDecision) {

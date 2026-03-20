@@ -18,9 +18,10 @@ import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
@@ -51,7 +52,7 @@ public class SystematicSampling extends Sampler {
 	private static Set<UncertainParameter> getUncertainParameters(Potential potential) {
 		Set<UncertainParameter> uncertainParams = new HashSet<>();
 
-		Hashtable<UncertainValue, SubPotentialAndPositionInTablePotential> uncertainValues = getUncertainValues(potential);
+		Map<UncertainValue, SubPotentialAndPositionInTablePotential> uncertainValues = getUncertainValues(potential);
 
 		for (UncertainValue auxUncertainValue : uncertainValues.keySet()) {
 			SubPotentialAndPositionInTablePotential subPotentialAndPosition = uncertainValues.get(auxUncertainValue);
@@ -66,8 +67,8 @@ public class SystematicSampling extends Sampler {
 	 * @param potential Potential
 	 * @return A hash table with the uncertain values appearing in potential, and for each one the hash value is the subpotential where appearing
 	 */
-	private static Hashtable<UncertainValue, SubPotentialAndPositionInTablePotential> getUncertainValues(Potential potential) {
-		Hashtable<UncertainValue, SubPotentialAndPositionInTablePotential> uncertainValuesHash = new Hashtable<>();
+	private static Map<UncertainValue, SubPotentialAndPositionInTablePotential> getUncertainValues(Potential potential) {
+		Map<UncertainValue, SubPotentialAndPositionInTablePotential> uncertainValuesHash = new HashMap<>();
 
 		boolean isExactDistrPotential = potential instanceof ExactDistrPotential;
 		if (potential instanceof TablePotential || isExactDistrPotential) {
@@ -89,7 +90,7 @@ public class SystematicSampling extends Sampler {
 					if (branch != null) {
 						Potential branchPotential = branch.getPotential();
 						if (branchPotential != null) {
-							Hashtable<UncertainValue, SubPotentialAndPositionInTablePotential> auxUncertainValues = getUncertainValues(
+							Map<UncertainValue, SubPotentialAndPositionInTablePotential> auxUncertainValues = getUncertainValues(
 									branchPotential);
 							for (UncertainValue auxUncertain : auxUncertainValues.keySet()) {
 								addIfNonExisting(uncertainValuesHash, auxUncertain,
@@ -110,7 +111,7 @@ public class SystematicSampling extends Sampler {
 	 * @param subPotentialAndPosition Subpotential and position of the auxiliary uncertain value
 	 *                                Adds the key, value pair (auxUncertain, tablePotential) to "uncertainValuesHash" if "auxUncertain" does not belong to the key set
 	 */
-	private static void addIfNonExisting(Hashtable<UncertainValue, SubPotentialAndPositionInTablePotential> uncertainValuesHash,
+	private static void addIfNonExisting(Map<UncertainValue, SubPotentialAndPositionInTablePotential> uncertainValuesHash,
 			UncertainValue auxUncertain, SubPotentialAndPositionInTablePotential subPotentialAndPosition) {
 		if (!uncertainValuesHash.containsKey(auxUncertain)) {
 			uncertainValuesHash.put(auxUncertain, subPotentialAndPosition);

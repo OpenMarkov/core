@@ -44,7 +44,7 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
     /**
      * Time slice value when the variable is not temporal.
      */
-    public final static int noTemporalTimeSlice = Integer.MIN_VALUE;
+    public static final int noTemporalTimeSlice = Integer.MIN_VALUE;
     
     // Attributes
     private static final String STATE_BASE_NAME = "state";

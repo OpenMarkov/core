@@ -49,9 +49,9 @@ import java.util.Set;
 public final class DiscretePotentialOperations {
     
     // Strings that represent possible causes of exception launch in merge operation
-    private final static String nullVariable = "decision variable = null";
-    private final static String nullPotentials = "potentials = null";
-    private final static String noPotentials = "zero potentials";
+    private static final String nullVariable = "decision variable = null";
+    private static final String nullPotentials = "potentials = null";
+    private static final String noPotentials = "zero potentials";
     /**
      * Round error used to compare two numbers. If they differ in less than
      * {@code maxRoundErrorAllowed} they will be considered equals.

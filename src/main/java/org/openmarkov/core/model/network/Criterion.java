@@ -22,11 +22,11 @@ public class Criterion implements Cloneable, ClassLocalizable {
 	/**
 	 * Constant with the default criterion of a ProbNet
 	 */
-	private final static String defaultCriterion = "---";
+	private static final String defaultCriterion = "---";
 	/**
 	 * Constant with the default unit of a criterion
 	 */
-	private final static String defaultUnit = "---";
+	private static final String defaultUnit = "---";
 	/**
 	 * Name of the criterion
 	 */

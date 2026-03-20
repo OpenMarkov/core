@@ -44,7 +44,7 @@ import static org.openmarkov.core.model.network.VariableType.*;
 public class Node implements Cloneable, ClassLocalizable {
     
     // Constants
-    public final static double DEFAULT_RELEVANCE = 5.0;
+    public static final double DEFAULT_RELEVANCE = 5.0;
     /**
      * This object contains all the information that the parser reads from
      * disk that does not have a direct connection with the attributes stored

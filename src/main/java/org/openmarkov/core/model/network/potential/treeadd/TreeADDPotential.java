@@ -35,7 +35,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * A TreeADDPotential is a potential defined by a top variable and its branches.
@@ -476,7 +477,7 @@ public class TreeADDPotential extends Potential {
     
     public Map<String, TreeADDBranch> getLabeledBranches() {
         Map<String, TreeADDBranch> labeledBranches = new HashMap<>();
-        Stack<TreeADDPotential> subtrees = new Stack<>();
+        Deque<TreeADDPotential> subtrees = new ArrayDeque<>();
         subtrees.push(this);
         while (!subtrees.isEmpty()) {
             TreeADDPotential treeADD = subtrees.pop();
@@ -498,7 +499,7 @@ public class TreeADDPotential extends Potential {
      * @param labeledBranches Labeled branches
      */
     public void updateReferences(Map<String, TreeADDBranch> labeledBranches) {
-        Stack<TreeADDPotential> subtrees = new Stack<>();
+        Deque<TreeADDPotential> subtrees = new ArrayDeque<>();
         if (!labeledBranches.isEmpty()) {
             subtrees.push(this);
             while (!subtrees.isEmpty()) {

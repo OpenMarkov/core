@@ -389,13 +389,13 @@ public class Graph<T> {
         
         int numNodes = nodes.size();
         boolean[] markedNodes = new boolean[numNodes];
-        Stack<T> nodesToExpand = new Stack<>();
-        
+        Deque<T> nodesToExpand = new ArrayDeque<>();
+
         // Mark node1 and put it in the list of nodes to be expanded
         nodesToExpand.push(node1);
         markedNodes[nodes.indexOf(node1)] = true;
-        
-        while (!nodesToExpand.empty()) {
+
+        while (!nodesToExpand.isEmpty()) {
             T expandingNode = nodesToExpand.pop(); // the top of the stack
             ArrayList<T> neighbors = new ArrayList<>((directed) ? getChildren(expandingNode) : getNeighbors(expandingNode));
             var nodeLinksToIgnore = parentsToIgnoredChildren.get(expandingNode);

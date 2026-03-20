@@ -29,7 +29,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
@@ -339,10 +340,10 @@ public class ProbNetOperations {
     private static Set<Node> getNodesAndAncestors(Collection<Node> nodes) {
         Set<Node> ancestors = new HashSet<>(nodes);
         
-        Stack<Node> noExploredNodes = new Stack<>();
+        Deque<Node> noExploredNodes = new ArrayDeque<>();
         noExploredNodes.addAll(nodes);
-        
-        while (!noExploredNodes.empty()) {
+
+        while (!noExploredNodes.isEmpty()) {
             Node node = noExploredNodes.pop();
             List<Node> parents = node.getParents();
             for (Node parent : parents) {
@@ -384,7 +385,7 @@ public class ProbNetOperations {
         ProbNet graph = probNet.copy();
         
         // Empty list that will contain the sorted elements
-        Stack<Node> stackOrderedNodes = new Stack<>();
+        Deque<Node> stackOrderedNodes = new ArrayDeque<>();
         // Set of all nodes with no incoming edges
         List<Node> noEdgesListOfNodes = new ArrayList<>();
         // Look for variables/nodes with no parents
@@ -744,7 +745,7 @@ public class ProbNetOperations {
                 parentlessDecisions.clear();
                 for (Node decisionNode : decisionNodes) {
                     boolean hasParentDecisions = false;
-                    Stack<Node> parentNodes = new Stack<>();
+                    Deque<Node> parentNodes = new ArrayDeque<>();
                     parentNodes.push(decisionNode);
                     while (!hasParentDecisions && !parentNodes.isEmpty()) {
                         Node node = parentNodes.pop();
@@ -853,7 +854,7 @@ public class ProbNetOperations {
         List<Node> parentlessDecisions = new ArrayList<>();
         for (Node parent : probNet.getNodes(NodeType.DECISION)) {
             boolean hasParentDecisions = false;
-            Stack<Node> parentNodes = new Stack<>();
+            Deque<Node> parentNodes = new ArrayDeque<>();
             parentNodes.push(parent);
             while (!hasParentDecisions && !parentNodes.isEmpty()) {
                 Node node = parentNodes.pop();
@@ -898,7 +899,7 @@ public class ProbNetOperations {
      * @return True if the node has a predecessor decision
      */
     public static boolean hasPredecessorDecision(Node node, ProbNet probNet) {
-        Stack<Node> predecessors = new Stack<>();
+        Deque<Node> predecessors = new ArrayDeque<>();
         predecessors.add(node);
         boolean found = false;
         while (!found && !predecessors.isEmpty()) {
@@ -921,7 +922,7 @@ public class ProbNetOperations {
      */
     public static List<Node> getPredecessorDecisions(Node node, ProbNet probNet) {
         List<Node> predecessorDecisions = new ArrayList<>();
-        Stack<Node> predecessors = new Stack<>();
+        Deque<Node> predecessors = new ArrayDeque<>();
         // push first the parents of node
         for (Node parent : node.getParents()) {
             predecessors.push(parent);
@@ -1044,10 +1045,10 @@ public class ProbNetOperations {
     public static Set<Node> getNodeAncestors(Node node) {
         Set<Node> ancestors = new HashSet<>();
         
-        Stack<Node> noExploredNodes = new Stack<>();
+        Deque<Node> noExploredNodes = new ArrayDeque<>();
         noExploredNodes.add(node);
-        
-        while (!noExploredNodes.empty()) {
+
+        while (!noExploredNodes.isEmpty()) {
             Node noExploredNode = noExploredNodes.pop();
             List<Node> parents = noExploredNode.getParents();
             for (Node parent : parents) {

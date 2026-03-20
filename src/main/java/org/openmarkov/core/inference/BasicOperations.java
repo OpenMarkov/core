@@ -338,7 +338,7 @@ public class BasicOperations {
         /* A partial order is a list of lists of variables. */
         
         // Get decisions (only) in elimination order
-        Stack<Variable> decisions = getSequenceOfDecisions(idCopy);
+        Deque<Variable> decisions = getSequenceOfDecisions(idCopy);
         
         // Create elimination order adding chance nodes
         List<List<Variable>> partialOrder = new ArrayList<>();
@@ -415,15 +415,15 @@ public class BasicOperations {
         return revealed;
     }
     
-    public static Stack<Variable> getSequenceOfDecisions(ProbNet idCopy) {
+    public static Deque<Variable> getSequenceOfDecisions(ProbNet idCopy) {
         int numDecisions = idCopy.getNumNodes(NodeType.DECISION);
-        Stack<Variable> decisions = new Stack<>();
+        Deque<Variable> decisions = new ArrayDeque<>();
         do {
             List<Node> nodes = idCopy.getNodes();
             for (Node node : nodes) {
                 if (idCopy.getNumChildren(node) == 0) {
                     if (node.getNodeType() == NodeType.DECISION) {
-                        decisions.push(node.getVariable());
+                        decisions.addLast(node.getVariable());
                         numDecisions--;
                     }
                     idCopy.removeNode(node);

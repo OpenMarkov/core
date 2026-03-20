@@ -84,7 +84,6 @@ public class AugmentedProbTable extends TablePotential {
     private AugmentedProbTable(List<Variable> stateVariables, PotentialRole role, VariableExpression[] table, int initialPosition,
                            int[] offsets, int[] dimensions) {
         super(stateVariables, role);
-        // this.originalVariables = this.variables;
         this.setFunctionValues(table);
         this.initialPosition = initialPosition;
         this.offsets = offsets;

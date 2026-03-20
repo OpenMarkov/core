@@ -7,8 +7,6 @@
 
 package org.openmarkov.core.model.network.potential;
 
-//import java.lang.Thread.State;
-
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Variable;
 

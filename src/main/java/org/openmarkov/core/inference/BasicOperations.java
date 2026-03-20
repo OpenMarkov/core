@@ -543,7 +543,6 @@ public class BasicOperations {
         List<List<Variable>> variablesOrder = new ArrayList<>();
         variablesOrder.add(variables);
         List<List<Variable>> partialOrder = new ArrayList<>(variablesOrder);
-        // partialOrder.setOrder(variablesOrder);
         return partialOrder;
     }
     
@@ -636,7 +635,6 @@ public class BasicOperations {
             }
             
             if (numberOfDecisions > 1) {
-                // throw new NotEvaluableNetworkException("There are more than one decision");
                 logger.warn("BAD NET");
             }
             
@@ -718,7 +716,6 @@ public class BasicOperations {
             Variable utilityVariable = utilityNode.getVariable();
             if ((areAllItsParentsAbsorbable(utilityNode) && utilityVariableToKeep == null)
                     || utilityVariable == utilityVariableToKeep) {
-                //absorbIntermediateParentNode(network, utilityNode, evidence);
             }
         }
         if (!keepComponents) {

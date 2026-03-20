@@ -26,7 +26,6 @@ public class XMLResourceBundle extends ResourceBundle {
 
 	public XMLResourceBundle(InputStream stream) throws IOException {
 		props = new XMLProperties();
-		//props.loadFromXML(stream);
 		props.load(stream);
 	}
 

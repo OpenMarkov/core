@@ -46,9 +46,6 @@ public class LocaleChangeEvent extends EventObject {
 		} else if (language.equals("es")) {
 			locale = new Locale("es");
 		} else {
-			//System.out.println("LocaleChangeEvent failure for locale " 
-			//                   + locale.toString() + ": not defined");
-			//System.out.println("Setting english as default locale...");
 			locale = Locale.ENGLISH;
 		}
 	}
@@ -68,9 +65,6 @@ public class LocaleChangeEvent extends EventObject {
 		} else if (locale.toString().equals("es")) {
 			language = "es";
 		} else {
-			//System.out.println("LocaleChangeEvent failure for locale " 
-			//                   + locale.toString() + ": not defined");
-			//System.out.println("Setting english as default locale...");
 			language = "en";
 		}
 

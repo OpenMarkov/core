@@ -59,12 +59,6 @@ import java.util.List;
         }
     }
     
-    //    public DeltaPotential(Variable utilityVariable, List<Variable> variables)
-    //    {
-    //    	this(variables, PotentialRole.UTILITY);
-    //    	this.utilityVariable = utilityVariable;
-    //    }
-    
     public DeltaPotential(DeltaPotential potential) {
         super(potential);
         state = potential.state;

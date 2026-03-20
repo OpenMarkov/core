@@ -75,32 +75,14 @@ public class TaskUtilities {
 	}
 
 	public static ProbNet scaleUtilitiesUnicriterion(ProbNet probNet) {
-		// if
-		// (probNet.getInferenceOptions().getMultiCriteriaOptions().getMulticriteriaType().
-		// equals(MulticriteriaOptions.Type.UNICRITERION)) {
 		UtilityOperations.transformToUnicriterion(probNet);
-		// }
 		return probNet;
 	}
 
 	public static ProbNet scaleUtilitiesCostEffectiveness(ProbNet probNet) {
-		// if
-		// (probNet.getInferenceOptions().getMultiCriteriaOptions().getMulticriteriaType().
-		// equals(MulticriteriaOptions.Type.COST_EFFECTIVENESS)) {
 		UtilityOperations.applyCEUtilityScaling(probNet);
-		// }
 		return probNet;
 	}
-
-	// public static ProbNet unscaleUtilitiesUnicriterion(ProbNet probNet) {
-	// UtilityOperations.unicriterionUtilityUnscaling(probNet);
-	// return probNet;
-	// }
-	//
-	// public static ProbNet unscaleUtilitiesCostEffectiveness(ProbNet probNet) {
-	// UtilityOperations.ceUtilityUnscaling(probNet);
-	// return probNet;
-	// }
     
     public static ProbNet discretizeNonObservedNumericVariables(ProbNet probNet, EvidenceCase preResolutionEvidence) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
 		return ProbNetOperations.convertNumericalVariablesToFS(probNet, preResolutionEvidence);

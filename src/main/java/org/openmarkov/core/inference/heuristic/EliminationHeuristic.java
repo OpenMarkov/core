@@ -68,7 +68,6 @@ public abstract class EliminationHeuristic implements PNEditListener {
 		// TODO Revisar todas las heuristicas que suponian que trabajaban con una copia
 		this.probNet = probNet;
 
-		// this.variablesToEliminate = variablesToEliminate;
 		// Make a deep copy of variablesToEliminate
 		this.variablesToEliminate = new ArrayList<>(variablesToEliminate.size());
 		for (List<Variable> list : variablesToEliminate) {

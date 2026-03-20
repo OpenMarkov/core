@@ -51,19 +51,6 @@ import java.util.Random;
         }
     }
     
-    //    /**
-    //     * @param variables <code>ArrayList</code> of <code>Variable</code>
-    //     * @param utilityVariable <code>Variable</code>
-    //     */
-    //    public UniformPotential (Variable utilityVariable, List<Variable> variables)
-    //    {
-    //        super (utilityVariable, variables);
-    //        if (allVariablesAreDiscrete (variables))
-    //        {
-    //            discreteValue = calculateDiscreteValue (variables);
-    //        }
-    //    }
-    
     /**
      * @param role      {@code PotentialRole}
      * @param variables {@code Variable}

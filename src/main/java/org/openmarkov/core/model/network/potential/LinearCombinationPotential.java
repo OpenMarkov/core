@@ -30,11 +30,6 @@ public class LinearCombinationPotential extends GLMPotential {
         super(variables, role, getDefaultCovariates(variables, role), new double[variables.size()]);
     }
     
-    //    public LinearCombinationPotential(Variable utilityVariable, List<Variable> variables) {
-    //        super(variables, PotentialRole.UTILITY, getDefaultCovariates(variables, PotentialRole.UTILITY), new double[variables.size()+1]);
-    //        this.utilityVariable = utilityVariable;
-    //    }
-    
     public LinearCombinationPotential(List<Variable> variables, PotentialRole role, VariableExpression[] covariates,
                                       double[] coefficients) {
         super(variables, role, covariates, coefficients);
@@ -164,8 +159,6 @@ public class LinearCombinationPotential extends GLMPotential {
                 newCoefficientsArray[i] = newCoefficients.get(i);
             }
             
-            /// TODO: New potential should have the covariates.
-            //newPotential.setCovariates(newCovariatesArray);
             newPotential.setCoefficients(newCoefficientsArray);
         } else {
             newPotential = new LinearCombinationPotential(this);

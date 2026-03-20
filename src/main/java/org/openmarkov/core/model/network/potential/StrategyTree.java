@@ -590,12 +590,8 @@ public class StrategyTree extends TreeADDPotential implements Cloneable {
     
     public String toString() {
         StringBuilder strBuffer = new StringBuilder();
-        //		strBuffer.append(indent);
-        //		strBuffer.append(topVariable.getName());
         // Print variables
         if (branches != null && !branches.isEmpty()) {
-            //strBuffer.append("\n");
-            //strBuffer.append(" = ");
             for (TreeADDBranch branch : branches) {
                 strBuffer.append(branch);
             }

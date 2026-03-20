@@ -50,15 +50,6 @@ public class DiscreteMultiply implements Runnable {
         int initialPosition = sdm.resultPositionIntervals[logicalProcessor];
         int finalPosition = initialPosition + sdm.lengthResultIntervals[logicalProcessor];
 		
-		/*
-		System.out.println("Logical processor: " + logicalProcessor + 
-			", Initial position: " + initialPosition + ", Final position: " +
-			finalPosition + ". Total iterations: " 
-			+ (finalPosition - initialPosition) + "\n" 
-			+ "First resultCoordinate: " 
-			+ openmarkov.UtilTestMethods.printArrayOfIntegers(resultCoordinate));
-		*/
-        
         for (int resultPosition = initialPosition; resultPosition < finalPosition; resultPosition++) {
             mulResult = constantFactor;
 

@@ -7,13 +7,15 @@
 
 package org.openmarkov.core.exception;
 
+import org.openmarkov.core.exception.IBundledOpenMarkovException;
+
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 import java.util.Collection;
 
 //TODO: Catchs of this exception just show it and ignore it, leading to further bugs.
-public abstract sealed class PotentialOperationException extends Exception implements IBundledOpenMarkovException {
+public abstract sealed class PotentialOperationException extends OpenMarkovException {
     
     @Override public String toString() {
         return IBundledOpenMarkovException.toString(this);

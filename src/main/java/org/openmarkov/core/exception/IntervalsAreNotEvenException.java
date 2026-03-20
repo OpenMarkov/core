@@ -1,9 +1,11 @@
 package org.openmarkov.core.exception;
 
+import org.openmarkov.core.exception.IBundledOpenMarkovException;
+
 import java.util.Arrays;
 import java.util.List;
 
-public class IntervalsAreNotEvenException extends Exception implements IBundledOpenMarkovException {
+public class IntervalsAreNotEvenException extends OpenMarkovException {
     
     public final List<Double> values;
     public final int lenghtOfCycle;

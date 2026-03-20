@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 //TODO: It is caught and then thrown as UnreachableException. This might be a RuntimeException.
-public class NotAllNodesHavePoliciesException extends Exception implements IOpenMarkovException {
+public class NotAllNodesHavePoliciesException extends OpenMarkovException {
     
     private final Node conditioningDecision;
     private final List<Node> nodesWithoutPolicy;

@@ -1,8 +1,9 @@
 package org.openmarkov.core.io.exception;
 
 import org.openmarkov.core.exception.IBundledOpenMarkovException;
+import org.openmarkov.core.exception.UserInputException;
 
-public class NoReaderForExtension extends Exception implements IBundledOpenMarkovException {
+public class NoReaderForExtension extends UserInputException {
     public NoReaderForExtension(String extension) {
         this.extension = extension;
     }

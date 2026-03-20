@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.exception;
 
+import org.openmarkov.core.exception.IBundledOpenMarkovException;
+
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.potential.canonical.ICIModelType;
 import org.openmarkov.core.model.network.type.NetworkType;
@@ -14,7 +16,7 @@ import org.openmarkov.core.model.network.type.NetworkType;
 import java.util.List;
 
 //TODO
-public abstract sealed class WriterException extends Exception implements IBundledOpenMarkovException {
+public abstract sealed class WriterException extends UserInputException {
     
     @Override public String toString() {
         return IBundledOpenMarkovException.toString(this);

@@ -1,10 +1,11 @@
 package org.openmarkov.core.io.format.annotation;
 
 import org.openmarkov.core.exception.IBundledOpenMarkovException;
+import org.openmarkov.core.exception.UserInputException;
 
 import java.net.URL;
 
-public class NoReaderForFileException extends Exception implements IBundledOpenMarkovException {
+public class NoReaderForFileException extends UserInputException {
     
     public NoReaderForFileException(String fileExtension, String fileVersion, URL url) {
         this.fileExtension = fileExtension;

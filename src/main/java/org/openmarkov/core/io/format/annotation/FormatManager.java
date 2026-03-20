@@ -173,7 +173,7 @@ public class FormatManager {
         return this.readerInstances
                 .stream()
                 .filter(plugin -> FormatManager.info(plugin).extension().equals(extension) && FormatManager.info(plugin).version().startsWith(version))
-                .findFirst().get();
+                .findFirst().orElse(null);
     }
     
     

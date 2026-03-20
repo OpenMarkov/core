@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.exception;
 
+import org.openmarkov.core.exception.IBundledOpenMarkovException;
+
 import org.apache.commons.lang3.ArrayUtils;
 import org.openmarkov.core.model.network.CEP;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -15,7 +17,7 @@ import org.openmarkov.core.model.network.potential.StrategyTree;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract sealed class CostEffectivenessException extends Exception implements IBundledOpenMarkovException {
+public abstract sealed class CostEffectivenessException extends OpenMarkovException {
     
     @Override public String toString() {
         return IBundledOpenMarkovException.toString(this);

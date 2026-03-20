@@ -1,6 +1,8 @@
 package org.openmarkov.core.exception;
 
-public class EmptyDatabaseException extends Exception implements IBundledOpenMarkovException {
+import org.openmarkov.core.exception.IBundledOpenMarkovException;
+
+public class EmptyDatabaseException extends UserInputException {
     public final String source;
     
     public EmptyDatabaseException(String source) {

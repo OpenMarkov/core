@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.exception;
 
+import org.openmarkov.core.exception.IBundledOpenMarkovException;
+
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Variable;
 
@@ -14,7 +16,7 @@ import org.openmarkov.core.model.network.Variable;
  * @author marias
  * @version 1.0
  */
-public abstract class IncompatibleEvidenceException extends Exception implements IBundledOpenMarkovException {
+public abstract class IncompatibleEvidenceException extends UserInputException {
     
     @Override public String toString() {
         return IBundledOpenMarkovException.toString(this);

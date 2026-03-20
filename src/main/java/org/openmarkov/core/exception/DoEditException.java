@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.exception;
 
+import org.openmarkov.core.exception.IBundledOpenMarkovException;
+
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
@@ -14,7 +16,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 
 import java.util.List;
 
-public abstract class DoEditException extends Exception implements IBundledOpenMarkovException {
+public abstract class DoEditException extends OpenMarkovException {
     
     @Override public String toString() {
         return IBundledOpenMarkovException.toString(this);

@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.exception;
 
+import org.openmarkov.core.exception.IBundledOpenMarkovException;
+
 
 import org.jdom2.JDOMException;
 import org.jetbrains.annotations.Nullable;
@@ -20,7 +22,7 @@ import java.util.HashMap;
 
 @SuppressWarnings("NonFinalFieldOfException")
 //TODO: Not all, but many of the uses of this exceptions just show a dialog and then ignore the exception.
-public abstract class ParserException extends Exception implements IBundledOpenMarkovException {
+public abstract class ParserException extends UserInputException {
 
     protected ParserException() {}
 
@@ -52,7 +54,7 @@ public abstract class ParserException extends Exception implements IBundledOpenM
     }
     
     @Override @Nullable public String getExceptionMessage() {
-        String exceptionMessage = IBundledOpenMarkovException.super.getExceptionMessage();
+        String exceptionMessage = super.getExceptionMessage();
         if (filename != null) {
             exceptionMessage += " in file " + filename + " at line nº " + lineNumber;
         }

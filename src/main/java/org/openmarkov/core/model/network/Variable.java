@@ -55,19 +55,18 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
     /**
      * List of states that this variable can take on. Each state will be a
      * {@code String}.
-     *
      */
-    protected State[] states;
+    private State[] states;
     /**
      * Variable role: discrete, continuous, discretized, ...
      */
-    protected VariableType variableType;
+    private VariableType variableType;
     /**
      * Interval sets where this variable is defined in the case of continuous or
      * discretized variable type.
      */
     protected PartitionedInterval partitionedInterval;
-    protected HashMap<String, String> additionalProperties;
+    private Map<String, String> additionalProperties = new HashMap<>();
     protected HashMap<String, HashMap<String, String>> statesAdditionalProperties;
     /**
      * The time Slice of the node. The default value is no temporal.
@@ -165,7 +164,8 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
         this.states = variable.states.clone();
         this.variableType = variable.variableType;
         this.partitionedInterval = CloneUtils.safeClone(variable.partitionedInterval);
-        this.additionalProperties = CloneUtils.safeClone(variable.additionalProperties);
+        this.additionalProperties = variable.additionalProperties != null
+                ? new HashMap<>(variable.additionalProperties) : new HashMap<>();
         this.statesAdditionalProperties = CloneUtils.safeClone(variable.statesAdditionalProperties);
         this.baseName = variable.baseName;
         this.precision = variable.precision;
@@ -239,11 +239,24 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
     // Methods
     
     /**
-     * @param additionalProperties . {@code HashMap} with key = {@code String} and
-     *                             value = {@code String}
+     * Returns an unmodifiable view of the additional properties map.
+     *
+     * @return unmodifiable map; never {@code null}
      */
-    public void setAdditionalProperties(HashMap<String, String> additionalProperties) {
-        this.additionalProperties = additionalProperties;
+    public Map<String, String> getAdditionalProperties() {
+        return Collections.unmodifiableMap(additionalProperties);
+    }
+
+    /**
+     * Replaces all additional properties with the entries from the given map.
+     *
+     * @param additionalProperties new properties; {@code null} is treated as empty
+     */
+    public void setAdditionalProperties(Map<String, String> additionalProperties) {
+        this.additionalProperties.clear();
+        if (additionalProperties != null) {
+            this.additionalProperties.putAll(additionalProperties);
+        }
     }
     
     /**
@@ -265,9 +278,6 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
      * @param propertyName  Property name
      */
     public void setAdditionalProperty(String propertyName, String propertyValue) {
-        if (additionalProperties == null) {
-            additionalProperties = new HashMap<>();
-        }
         additionalProperties.put(propertyName, propertyValue);
     }
     
@@ -448,18 +458,22 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
     }
     
     /**
-     * @return states. {@code String[]}
+     * Returns a defensive copy of the states array so that callers cannot
+     * modify the internal state of this variable.
+     *
+     * @return copy of the states array; never {@code null}
      */
     public State[] getStates() {
-        return states;
+        return states.clone();
     }
-    
+
     /**
-     * @param states the states to set
+     * Replaces the states with a defensive copy of the given array.
+     *
+     * @param states new states; must not be {@code null}
      */
     public void setStates(State[] states) {
-        
-        this.states = states;
+        this.states = states.clone();
     }
     
     public void replaceStates(Node node, State[] newStates) {

@@ -30,6 +30,7 @@ import org.openmarkov.core.model.network.type.MarkovNetworkType;
 import org.openmarkov.core.model.network.type.NetworkType;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -88,11 +89,13 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     }
     
     /**
-     * This object contains all the information that the parser reads from disk
-     * that does not have a direct connection with the attributes stored in the
-     * {@code ProbNet} object.
+     * Additional properties read from disk that have no direct mapping to
+     * fields of this object (e.g. format-specific metadata).
+     * Exposed as an unmodifiable view via {@link #getAdditionalProperties()};
+     * mutated through {@link #setAdditionalProperties(Map)} and
+     * {@link #putAdditionalProperty(String, String)}.
      */
-    public LinkedHashMap<String, String> additionalProperties = new LinkedHashMap<>();
+    private final Map<String, String> additionalProperties = new LinkedHashMap<>();
     /**
      * Nodes are stored in several HashMaps to accelerate the access. The type
      * of node determines the {@code HashMap} in which the node is stored.
@@ -140,6 +143,12 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     
     private InferenceOptions inferenceOptions;
     
+    /**
+     * Potentials that have no associated variables (i.e. constant potentials).
+     * Uses a concurrent set so that {@code addPotential}, {@code removeNode},
+     * and the various {@code getPotentials*} getters can be called safely from
+     * different threads without {@link java.util.ConcurrentModificationException}.
+     */
     private final Set<TablePotential> constantPotentials;
     
     /**
@@ -169,6 +178,20 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     }
     
     // Constructors
+
+    /**
+     * Creates a probabilistic network of the given type.
+     *
+     * <p>The {@link ConstraintViolatedException} thrown by {@link #setNetworkType} is
+     * caught here because a freshly created, empty network always satisfies every
+     * constraint imposed by any built-in {@link NetworkType}. If it were ever
+     * thrown it would indicate a programming error, hence it is re-wrapped as
+     * {@link UnreachableException} — which preserves the original cause and
+     * stack trace — rather than propagating a checked exception that callers
+     * cannot meaningfully handle at construction time.
+     *
+     * @param networkType the type that defines which constraints apply to this network
+     */
     public ProbNet(NetworkType networkType) {
         this.pNESupport = new PNESupport(this);
         this.decisionCriteria = new ArrayList<>();
@@ -176,14 +199,13 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         this.constraints = new TreeSet<>();
         this.nodeDepot = new NodeTypeDepot();
         this.inferenceOptions = new InferenceOptions();
-        this.constantPotentials = new HashSet<>();
+        this.constantPotentials = ConcurrentHashMap.newKeySet();
         if (!this.hasConstraintOfClass(OnlyAtemporalVariables.class)) {
             this.cycleLength = new CycleLength();
         }
         try {
             this.setNetworkType(networkType);
         } catch (ConstraintViolatedException e) {
-            // This cannot happen
             throw new UnreachableException(e);
         }
     }
@@ -340,9 +362,18 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     }
     
     /**
-     * Sets Network type
+     * Changes the network type and updates the constraint set accordingly.
      *
-     * @param newNetworkType {@code NetworkType}
+     * <p>The method first verifies that the current network satisfies all
+     * constraints required by {@code newNetworkType}. Only if every check
+     * passes are constraints added/removed and the type committed. If any
+     * constraint is violated the network type is rolled back to its previous
+     * value and a {@link ConstraintViolatedException} is thrown, leaving the
+     * network in its original state.
+     *
+     * @param newNetworkType the network type to switch to; must not be {@code null}
+     * @throws ConstraintViolatedException if the current network structure violates
+     *                                     a constraint required by {@code newNetworkType}
      */
     public void setNetworkType(NetworkType newNetworkType) throws ConstraintViolatedException {
         NetworkType oldNetworkType = this.networkType;
@@ -350,10 +381,15 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         List<PNConstraint> newConstraints = ConstraintManager.getUniqueInstance().buildConstraintList(newNetworkType);
         // Add new constraints implied by the network type
         newConstraints.removeIf(newConstraint -> this.constraints.contains(newConstraint));
-        for (PNConstraint newConstraint : newConstraints) {
-            var checker = new ConstraintChecker(this);
-            newConstraint.checkProbNet(this, checker);
-            checker.buildAndThrow();
+        try {
+            for (PNConstraint newConstraint : newConstraints) {
+                var checker = new ConstraintChecker(this);
+                newConstraint.checkProbNet(this, checker);
+                checker.buildAndThrow();
+            }
+        } catch (ConstraintViolatedException e) {
+            this.networkType = oldNetworkType;
+            throw e;
         }
         for (PNConstraint newConstraint : newConstraints) {
             addConstraint(newConstraint);
@@ -513,7 +549,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
             newNode.setPurpose(node.getPurpose());
             newNode.setRelevance(node.getRelevance());
             newNode.setComment(node.getComment());
-            newNode.additionalProperties = additionalProperties;
+            newNode.setAdditionalProperties(node.getAdditionalProperties());
             newNode.setAlwaysObserved(node.isAlwaysObserved());
         }
         // Adds links
@@ -548,12 +584,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         // copy listeners
         copyNet.getPNESupport().setListeners(pNESupport.getListeners());
         // Copy additionalProperties
-        Set<String> keys = additionalProperties.keySet();
-        LinkedHashMap<String, String> copyProperties = new LinkedHashMap<>();
-        for (String key : keys) {
-            copyProperties.put(key, additionalProperties.get(key));
-        }
-        copyNet.additionalProperties = copyProperties;
+        copyNet.setAdditionalProperties(additionalProperties);
         // Copy decisionCriterion variable
         // copy decision criteria
         if (this.getDecisionCriteria() != null) {
@@ -870,7 +901,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
             for (Potential potential : potentialsNode) {
                 List<Variable> variables = potential.getVariables();
                 if (variables.contains(variable)
-                        && (potential.getCriterion() != null || (node.nodeType == NodeType.UTILITY
+                        && (potential.getCriterion() != null || (node.getNodeType() == NodeType.UTILITY
                         && node.getVariable().getDecisionCriterion() != null))) {
                     potentialsVariable.add(potential);
                 }
@@ -1193,7 +1224,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     public List<Variable> getChanceAndDecisionVariables() {
         return new ArrayList<>(getNodes()
                                        .stream()
-                                       .filter(node -> switch (node.nodeType) {
+                                       .filter(node -> switch (node.getNodeType()) {
                                            case CHANCE, SV_PRODUCT, SV_SUM, DECISION -> true;
                                            case UTILITY -> false;
                                        })
@@ -1311,7 +1342,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         newNode.setPurpose(oldNode.getPurpose());
         newNode.setRelevance(oldNode.getRelevance());
         newNode.setComment(oldNode.getComment());
-        newNode.additionalProperties = additionalProperties;
+        newNode.setAdditionalProperties(oldNode.getAdditionalProperties());
         return newNode;
     }
     
@@ -1479,38 +1510,54 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         // copy listeners
         copyNet.getPNESupport().setListeners(pNESupport.getListeners());
         // Copy additionalProperties
-        Set<String> keys = additionalProperties.keySet();
-        LinkedHashMap<String, String> copyProperties = new LinkedHashMap<>();
-        for (String key : keys) {
-            copyProperties.put(key, additionalProperties.get(key));
-        }
-        copyNet.additionalProperties = copyProperties;
+        copyNet.setAdditionalProperties(additionalProperties);
         
         return copyNet;
     }
     
+    /**
+     * Returns an unmodifiable view of the constant potentials (those with no
+     * associated variables). Use {@link #addPotential(Potential)} to add new
+     * constant potentials and {@link #removePotential(Potential)} to remove them.
+     *
+     * @return unmodifiable view of the constant {@link TablePotential}s
+     */
     public Set<TablePotential> getConstantPotentials() {
-        return constantPotentials;
+        return Collections.unmodifiableSet(constantPotentials);
     }
     
     
     /**
-     * Gets network's additional properties (other properties).
+     * Returns an unmodifiable view of the additional properties.
+     * Use {@link #setAdditionalProperties(Map)} to bulk-replace or
+     * {@link #putAdditionalProperty(String, String)} to add a single entry.
      *
-     * @return additionalProperties
+     * @return unmodifiable map; never {@code null}
      */
-    public LinkedHashMap<String, String> getOtherProperties() {
-        return additionalProperties;
+    public Map<String, String> getAdditionalProperties() {
+        return Collections.unmodifiableMap(additionalProperties);
     }
-    
-    
+
     /**
-     * Sets additional properties (other properties)
+     * Replaces all additional properties with the entries from the given map.
      *
-     * @param additionalProperties {@code LinkedHashMap<String, String>}
+     * @param additionalProperties new properties; {@code null} is treated as empty
      */
-    public void setOtherProperties(LinkedHashMap<String, String> additionalProperties) {
-        this.additionalProperties = additionalProperties;
+    public void setAdditionalProperties(Map<String, String> additionalProperties) {
+        this.additionalProperties.clear();
+        if (additionalProperties != null) {
+            this.additionalProperties.putAll(additionalProperties);
+        }
+    }
+
+    /**
+     * Adds or replaces a single additional property.
+     *
+     * @param key   property name; must not be {@code null}
+     * @param value property value
+     */
+    public void putAdditionalProperty(String key, String value) {
+        this.additionalProperties.put(key, value);
     }
 
     public void moveNode(List<String> namesNode,List<Point2D.Double> newPositions) {

@@ -24,8 +24,10 @@ import org.openmarkov.core.model.network.potential.operation.Util;
 import org.openmarkov.java.cloneUtils.CloneUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.openmarkov.core.model.network.VariableType.*;
 
@@ -46,18 +48,19 @@ public class Node implements Cloneable, ClassLocalizable {
     // Constants
     public static final double DEFAULT_RELEVANCE = 5.0;
     /**
-     * This object contains all the information that the parser reads from
-     * disk that does not have a direct connection with the attributes stored
-     * in the {@code Node} object.
+     * Additional properties read from disk that have no direct mapping to
+     * fields of this object (e.g. format-specific metadata).
+     * Exposed as an unmodifiable view via {@link #getAdditionalProperties()};
+     * mutated through {@link #setAdditionalProperties(Map)} and
+     * {@link #putAdditionalProperty(String, String)}.
      */
-    public LinkedHashMap<String, String> additionalProperties;    // changed by agoni
-    // public Map<String, String> additionalProperties;
+    private final Map<String, String> additionalProperties;
     
     // Attributes/
     /**
      * Node type
      */
-    protected NodeType nodeType;
+    private NodeType nodeType;
     
     /**
      * Network
@@ -65,7 +68,12 @@ public class Node implements Cloneable, ClassLocalizable {
     protected transient ProbNet probNet;
     
     /**
-     * Each {@code Node} has a list of potentials
+     * Potentials associated to this node (CPTs, utility functions, link restrictions).
+     * Wrapped in a synchronized list so that individual operations ({@link #addPotential},
+     * {@link #removePotential}, {@link #clearPotentials}) are thread-safe.
+     * Compound operations ({@link #setPotential}, {@link #setPotentials}) use an explicit
+     * {@code synchronized(potentials)} block to guarantee atomicity.
+     * {@link #getPotentials()} returns a defensive copy, so external iteration is safe.
      */
     @NotNull
     protected List<Potential> potentials;
@@ -113,8 +121,8 @@ public class Node implements Cloneable, ClassLocalizable {
             this.variable.setVariableType(NUMERIC);
         }
         this.nodeType = nodeType;
-        potentials = new ArrayList<>();
-        additionalProperties = new LinkedHashMap<>();
+        potentials = Collections.synchronizedList(new ArrayList<>());
+        additionalProperties = new LinkedHashMap<>();  // mutable backing map
         hashCode = 31 * variable.hashCode() + 17 * nodeType.hashCode();
     }
     
@@ -127,8 +135,8 @@ public class Node implements Cloneable, ClassLocalizable {
         this.probNet = node.getProbNet();
         this.variable = node.getVariable();
         this.nodeType = node.getNodeType();
-        potentials = new ArrayList<>(node.getPotentials());
-        additionalProperties = new LinkedHashMap<>(node.additionalProperties);
+        potentials = Collections.synchronizedList(new ArrayList<>(node.getPotentials()));
+        additionalProperties = new LinkedHashMap<>(node.getAdditionalProperties());
         alwaysObserved = node.isAlwaysObserved();
         hashCode = 31 * variable.hashCode() + 17 * nodeType.hashCode();
     }
@@ -155,12 +163,25 @@ public class Node implements Cloneable, ClassLocalizable {
     }
     
     /**
-     * Sets the additional properties
+     * Replaces all additional properties with the entries from the given map.
      *
-     * @param additionalProperties New additional properties
+     * @param additionalProperties new properties; {@code null} is treated as empty
      */
-    public void setOtherProperties(LinkedHashMap<String, String> additionalProperties) {
-        this.additionalProperties = additionalProperties;
+    public void setAdditionalProperties(Map<String, String> additionalProperties) {
+        this.additionalProperties.clear();
+        if (additionalProperties != null) {
+            this.additionalProperties.putAll(additionalProperties);
+        }
+    }
+
+    /**
+     * Adds or replaces a single additional property.
+     *
+     * @param key   property name; must not be {@code null}
+     * @param value property value
+     */
+    public void putAdditionalProperty(String key, String value) {
+        this.additionalProperties.put(key, value);
     }
     
     /**
@@ -175,11 +196,17 @@ public class Node implements Cloneable, ClassLocalizable {
     }
     
     /**
-     * @param potential {@code Potential}
+     * Replaces all potentials of this node with a single one.
+     * The clear and add are performed atomically to prevent other threads
+     * from observing an intermediate empty state.
+     *
+     * @param potential the new potential; must not be {@code null}
      */
     public void setPotential(Potential potential) {
-        this.potentials.clear();
-        addPotential(potential);
+        synchronized (potentials) {
+            this.potentials.clear();
+            addPotential(potential);
+        }
     }
 
     public void clearPotentials(){
@@ -194,12 +221,18 @@ public class Node implements Cloneable, ClassLocalizable {
     }
     
     /**
-     * @param potentials {@code Potential}
+     * Replaces all potentials of this node with the given list.
+     * The clear and addAll are performed atomically to prevent other threads
+     * from observing an intermediate empty state.
+     *
+     * @param potentials new list of potentials; {@code null} is treated as empty
      */
     public void setPotentials(List<Potential> potentials) {
-        this.potentials.clear();
-        if (potentials != null) {
-            this.potentials.addAll(potentials);
+        synchronized (this.potentials) {
+            this.potentials.clear();
+            if (potentials != null) {
+                this.potentials.addAll(potentials);
+            }
         }
     }
     
@@ -252,10 +285,14 @@ public class Node implements Cloneable, ClassLocalizable {
     }
     
     /**
-     * @return additionalProperties. {@code LinkedHashMap<String, String>}
+     * Returns an unmodifiable view of the additional properties.
+     * Use {@link #setAdditionalProperties(Map)} to bulk-replace or
+     * {@link #putAdditionalProperty(String, String)} to add a single entry.
+     *
+     * @return unmodifiable map; never {@code null}
      */
-    public LinkedHashMap<String, String> getOtherProperties() {
-        return additionalProperties;
+    public Map<String, String> getAdditionalProperties() {
+        return Collections.unmodifiableMap(additionalProperties);
     }
     
     /**
@@ -755,7 +792,7 @@ public class Node implements Cloneable, ClassLocalizable {
         newNode.setPurpose(this.getPurpose());
         newNode.setRelevance(this.getRelevance());
         newNode.setComment(this.getComment());
-        newNode.additionalProperties = CloneUtils.safeClone(this.additionalProperties);
+        newNode.setAdditionalProperties(this.additionalProperties);
         newNode.setAlwaysObserved(this.isAlwaysObserved());
         return newNode;
     }
@@ -860,7 +897,7 @@ public class Node implements Cloneable, ClassLocalizable {
     }
 
     public void setVariableTypeConsistently(VariableType newType){
-        VariableType currentType = getVariable().variableType;
+        VariableType currentType = getVariable().getVariableType();
 
         // Set the new variable type
         getVariable().setVariableType(newType);

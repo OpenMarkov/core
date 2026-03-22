@@ -226,19 +226,19 @@ public class ProbNetCopyTest {
 
     @Test
     public void copyHasIndependentAdditionalPropertiesMap() {
-        original.additionalProperties.put("key", "value");
+        original.putAdditionalProperty("key", "value");
         ProbNet copy = original.copy();
-        copy.additionalProperties.put("key", "changed");
+        copy.putAdditionalProperty("key", "changed");
 
-        assertEquals("value", original.additionalProperties.get("key"),
+        assertEquals("value", original.getAdditionalProperties().get("key"),
                 "Modifying copy's additionalProperties must not affect original");
     }
 
     @Test
     public void copyPreservesAdditionalPropertiesContent() {
-        original.additionalProperties.put("author", "test");
+        original.putAdditionalProperty("author", "test");
         ProbNet copy = original.copy();
-        assertEquals("test", copy.additionalProperties.get("author"));
+        assertEquals("test", copy.getAdditionalProperties().get("author"));
     }
 
     // -----------------------------------------------------------------------

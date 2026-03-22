@@ -171,7 +171,7 @@ public abstract class DecisionTreeNode<T> implements DecisionTreeElement {
 		utility = node.utility;
 		scenarioProbability = node.scenarioProbability;
 		variable = node.variable;
-		nodeType = node.nodeType;
+		nodeType = node.getNodeType();
 		children = node.children;
 		parent = node.parent;
 		network = node.network;

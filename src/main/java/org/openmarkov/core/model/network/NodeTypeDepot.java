@@ -8,7 +8,6 @@
 package org.openmarkov.core.model.network;
 
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialRole;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -69,20 +68,8 @@ public class NodeTypeDepot {
         return new ArrayList<>(nodesHashMaps.get(nodeType).values());
     }
     
-    public List<Potential> getPotentialsByRole(PotentialRole role) {
-        List<Potential> potentials = new ArrayList<>();
-        for (NodesHashMap nodesHashMap : nodesHashMaps.values()) {
-            for (Node auxNode : nodesHashMap.values()) {
-                for (Potential auxPot : auxNode.getPotentials()) {
-                    if (auxPot.getPotentialRole() == role) {
-                        potentials.add(auxPot);
-                    }
-                }
-            }
-        }
-        return potentials;
-    }
-    
+
+
     public Node getNode(NodeType nodeType, Variable variable) {
         return nodesHashMaps.get(nodeType).get(variable);
     }

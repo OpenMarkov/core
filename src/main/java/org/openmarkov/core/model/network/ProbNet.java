@@ -18,7 +18,6 @@ import org.openmarkov.core.io.ProbNetReader;
 import org.openmarkov.core.io.ProbNetWriter;
 import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.graph.Graph;
-import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Criterion.CECriterion;
 import org.openmarkov.core.model.network.constraint.*;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -31,6 +30,7 @@ import org.openmarkov.core.model.network.type.NetworkType;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -300,6 +300,11 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         }
     }
     
+    /** Wipes all constraints and their listeners. Used by {@link ProbNetCopier}. */
+    void clearConstraints() {
+        new ArrayList<>(constraints).forEach(this::removeConstraint);
+    }
+
     /**
      * Remove all the constraints in the network
      *
@@ -312,7 +317,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
                 constraintsToRemove.add(constraint);
             }
         }
-        constraints.removeAll(constraintsToRemove);
+        constraintsToRemove.forEach(constraints::remove);
     }
     
     /**
@@ -509,99 +514,16 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     }
     
     /**
-     * Creates a low deep copy of {@code this ProbNet}: copy the
-     * {@code graph} and the {@code nodes} but do not copy nor
-     * variables nor potentials.
+     * Creates a shallow structural copy of {@code this ProbNet}: copies the
+     * graph and the nodes but does not copy variables nor potentials.
      *
      * @return {@code this probNet} copied.
+     * @see ProbNetCopier#shallowCopy(ProbNet)
      */
     public ProbNet copy() {
-        return auxCopy(new ProbNet(this.networkType));
+        return ProbNetCopier.shallowCopy(this);
     }
-    
-    /**
-     * Auxiliary method for copy, which creates a low deep copy of {@code this ProbNet}: copy the
-     * {@code graph} and the {@code nodes} but do not copy nor
-     * variables nor potentials.
-     *
-     * @param copyNet Network
-     *
-     * @return {@code this probNet} copied.
-     */
-    protected ProbNet auxCopy(ProbNet copyNet) {
-        //ProbNet copyNet = new ProbNet(this.networkType);
-        copyNet.setName(name);
-        // copy constraints
-        for (PNConstraint constraint : constraints) {
-            copyNet.addConstraint(constraint);
-        }
-        List<Node> nodes = getNodes();
-        // Adds variables and create corresponding nodes. Also add potentials
-        for (Node node : nodes) {
-            // Add variables and create corresponding nodes
-            Variable variable = node.getVariable();
-            Node newNode = copyNet.addNode(variable, node.getNodeType());
-            newNode.setCoordinateX(node.getCoordinateX());
-            newNode.setCoordinateY(node.getCoordinateY());
-            newNode.setPotentials(node.getPotentials());
-            // TODO Hacer clon para node y quitar estas lineas
-            newNode.setPurpose(node.getPurpose());
-            newNode.setRelevance(node.getRelevance());
-            newNode.setComment(node.getComment());
-            newNode.setAdditionalProperties(node.getAdditionalProperties());
-            newNode.setAlwaysObserved(node.isAlwaysObserved());
-        }
-        // Adds links
-        // Copy explicit links' properties
-        if (hasExplicitLinks()) {
-            copyNet.makeLinksExplicit(false);
-            for (Link<Node> originalLink : getLinks()) {
-                Node copyNode1 = copyNet.getNode(originalLink.getFrom().getVariable());
-                Node copyNode2 = copyNet.getNode(originalLink.getTo().getVariable());
-                Link<Node> copyLink = copyNet.addLink(copyNode1, copyNode2, originalLink.isDirected());
-                copyLink.setRestrictionsPotential(originalLink.getRestrictionsPotential());
-                copyLink.setRevealingIntervals(originalLink.getRevealingIntervals());
-                copyLink.setRevealingStates(originalLink.getRevealingStates());
-            }
-        } else {
-            for (Node node : nodes) {
-                Node copyNode = copyNet.getNode(node.getVariable());
-                List<Node> siblings = getSiblings(node);
-                for (Node sibling : siblings) {
-                    Node copySibling = copyNet.getNode(sibling.getVariable());
-                    if (!copyNet.isSibling(copyNode, copySibling)) {
-                        copyNet.addLink(copyNode, copySibling, false);
-                    }
-                }
-                List<Node> children = getChildren(node);
-                for (Node child : children) {
-                    Node copyChild = copyNet.getNode(child.getVariable());
-                    copyNet.addLink(copyNode, copyChild, true);
-                }
-            }
-        }
-        // copy listeners
-        copyNet.getPNESupport().setListeners(pNESupport.getListeners());
-        // Copy additionalProperties
-        copyNet.setAdditionalProperties(additionalProperties);
-        // Copy decisionCriterion variable
-        // copy decision criteria
-        if (this.getDecisionCriteria() != null) {
-            //            copyNet.setDecisionCriteria(new ArrayList<>(this.getDecisionCriteria()));
-            copyNet.setDecisionCriteria(this.getDecisionCriteria());
-        }
-        
-        // Copy temporal units
-        if (this.getCycleLength() != null) {
-            copyNet.setCycleLength(this.getCycleLength());
-        }
-        
-        //Copy Inference Options
-        copyNet.getInferenceOptions().setMultiCriteriaOptions(this.getInferenceOptions().getMultiCriteriaOptions());
-        copyNet.getInferenceOptions().setTemporalOptions(this.getInferenceOptions().getTemporalOptions());
-        return copyNet;
-    }
-    
+
     /**
      * Inserts a link ({@code directed = true} or {@code false})
      * between the nodes associated to {@code variable1} and
@@ -679,28 +601,33 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     }
     
     /**
-     * Get all the potentials in the network (constant or nodes potentials)
+     * Returns all non-null potentials in this network (from every node and from
+     * the constant-potential set) that satisfy {@code predicate}.
      *
-     * @return All the potentials of this network. {@code List} of
-     * {@code Potential}s.
+     * @param predicate filter applied to each non-null potential
+     *
+     * @return mutable list of matching potentials
      */
-    public List<Potential> getPotentials() {
-        List<Node> nodes = getNodes();
+    public List<Potential> getPotentials(Predicate<Potential> predicate) {
         List<Potential> potentials = new ArrayList<>();
-        for (Node node : nodes) {
-            List<Potential> potentialsNode = node.getPotentials();
-            for (Potential potential : potentialsNode) {
-                if (null != potential) {
+        for (Node node : getNodes()) {
+            for (Potential potential : node.getPotentials()) {
+                if (potential != null && predicate.test(potential)) {
                     potentials.add(potential);
                 }
             }
         }
         for (Potential potential : constantPotentials) {
-            if (null != potential) {
+            if (potential != null && predicate.test(potential)) {
                 potentials.add(potential);
             }
         }
         return potentials;
+    }
+
+    /** Returns all non-null potentials in this network. */
+    public List<Potential> getPotentials() {
+        return getPotentials(p -> true);
     }
     
     /**
@@ -816,39 +743,20 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * @return All the potentials of a role.
      */
     public List<Potential> getPotentialsByRole(PotentialRole role) {
-        List<Potential> potentials = nodeDepot.getPotentialsByRole(role);
-        for (Potential potential : constantPotentials) {
-            if (potential.getPotentialRole() == role) {
-                potentials.add(potential);
-            }
-        }
-        return potentials;
+        return getPotentials(p -> p.getPotentialRole() == role);
     }
-    
+
     /**
      * Get all the additive potentials
      *
      * @return All additive potentials. {@code List} of {@code Potential}
      */
     public List<Potential> getAdditivePotentials() {
-        List<Node> nodes = getNodes();
-        List<Potential> potentials = new ArrayList<>();
-        for (Node node : nodes) {
-            List<Potential> potentialsNode = node.getPotentials();
-            for (Potential potential : potentialsNode) {
-                if (null != potential && potential.isAdditive()) {
-                    potentials.add(potential);
-                }
-            }
-        }
-        for (Potential potential : constantPotentials) {
-            if (null != potential && potential.isAdditive()) {
-                potentials.add(potential);
-            }
-        }
-        return potentials;
+        return getPotentials(Potential::isAdditive);
     }
-    
+
+
+
     /**
      * Gets all the probability potentials that contain the
      * {@code Variable} received. The potentials that can contain that
@@ -1414,109 +1322,15 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         this.cycleLength = temporalUnit;
     }
     
+    /**
+     * Creates a full deep copy of {@code this ProbNet}: all mutable objects
+     * (criteria, cycle length, inference options, nodes, potentials, link
+     * intervals) are cloned into independent instances.
+     *
+     * @see ProbNetCopier#deepCopy(ProbNet)
+     */
     public ProbNet deepCopy() {
-        ProbNet copyNet = new ProbNet(this.networkType);
-        copyNet.constraints = new TreeSet<>();
-        
-        // copy decision criteria
-        if (this.getDecisionCriteria() != null) {
-            List<Criterion> newDecisionCriteria = new ArrayList<>();
-            for (Criterion criterion : this.getDecisionCriteria()) {
-                Criterion newCriterion = new Criterion(criterion);
-                newDecisionCriteria.add(newCriterion);
-            }
-            copyNet.setDecisionCriteria(newDecisionCriteria);
-        }
-        
-        // copy net name
-        copyNet.setName(name);
-        
-        // Copy temporal units
-        if (this.getCycleLength() != null) {
-            copyNet.setCycleLength(new CycleLength(this.getCycleLength()));
-        }
-        
-        //Copy Inference Options
-        copyNet.setInferenceOptions(new InferenceOptions(this.getInferenceOptions()));
-        
-        // copy constraints
-        int numConstraints = constraints.size();
-        
-        constraints.stream().skip(1).limit(numConstraints - 1)
-                   .forEach(constraint -> copyNet.addConstraint(constraint));
-        
-        List<Node> nodes = getNodes();
-        // Adds variables and create corresponding nodes. Also add potentials
-        for (Node node : nodes) {
-            Node newNode = node.clone(copyNet);
-            copyNet.addNode(newNode);
-        }
-        
-        // Add new potentials and update list of neighbours
-        for (Node node : nodes) {
-            List<Node> neighbours = this.getNeighbors(node);
-            for (Node neighbour : neighbours) {
-                // TODO - Problem?
-                copyNet.getNode(neighbour.getName());
-            }
-            
-            ArrayList<Potential> newPotentials = new ArrayList<>();
-            for (Potential potential : node.getPotentials()) {
-                newPotentials.add(potential.deepCopy(copyNet));
-            }
-            
-            copyNet.getNode(node.getName()).setPotentials(newPotentials);
-        }
-        
-        // Adds links
-        // Copy explicit links' properties
-        // TODO - Check this code
-        if (hasExplicitLinks()) {
-            copyNet.makeLinksExplicit(false);
-            for (Link<Node> originalLink : getLinks()) {
-                
-                Node copyNode1 = copyNet.getNode(originalLink.getFrom().getVariable().getName());
-                Node copyNode2 = copyNet.getNode(originalLink.getTo().getVariable().getName());
-                
-                Link<Node> copyLink = copyNet.addLink(copyNode1, copyNode2, originalLink.isDirected());
-                if (originalLink.getRestrictionsPotential() != null) {
-                    copyLink.setRestrictionsPotential(originalLink.getRestrictionsPotential().deepCopy(copyNet));
-                }
-                
-                List<PartitionedInterval> newRevealingIntervals = new ArrayList<>();
-                for (PartitionedInterval interval : originalLink.getRevealingIntervals()) {
-                    PartitionedInterval newInterval = new PartitionedInterval(interval.limits.clone(),
-                                                                              interval.belongsToLeftSide.clone());
-                    newRevealingIntervals.add(newInterval);
-                }
-                
-                copyLink.setRevealingIntervals(newRevealingIntervals);
-                copyLink.setRevealingStates(new ArrayList<>(originalLink.getRevealingStates()));
-            }
-        } else {
-            for (Node node : nodes) {
-                Node copyNode = copyNet.getNode(node.getVariable().getName());
-                List<Node> siblings = getSiblings(node);
-                for (Node sibling : siblings) {
-                    Node copySibling = copyNet.getNode(sibling.getVariable().getName());
-                    if (!copyNet.isSibling(copyNode, copySibling)) {
-                        copyNet.addLink(copyNode, copySibling, false);
-                    }
-                }
-                List<Node> children = getChildren(node);
-                for (Node child : children) {
-                    Node copyChild = copyNet.getNode(child.getVariable().getName());
-                    copyNet.addLink(copyNode, copyChild, true);
-                }
-            }
-            
-        }
-        // copy listeners
-        copyNet.getPNESupport().setListeners(pNESupport.getListeners());
-        // Copy additionalProperties
-        copyNet.setAdditionalProperties(additionalProperties);
-        
-        return copyNet;
+        return ProbNetCopier.deepCopy(this);
     }
     
     /**

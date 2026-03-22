@@ -19,6 +19,7 @@ import org.openmarkov.core.model.network.potential.*;
 import org.openmarkov.core.model.network.potential.operation.AuxiliaryOperations;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
+import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 import org.openmarkov.core.model.network.potential.operation.Util;
 import org.openmarkov.java.cloneUtils.CloneUtils;
 
@@ -824,8 +825,8 @@ public class Node implements Cloneable, ClassLocalizable {
 
     public void absorbNodeConsistently(Variable absorbedVariable) throws DoEditException.CannotDoEditException {
         Node absorbedNode = probNet.getNode(absorbedVariable);
-        Node child = absorbedNode.getChildren().get(0);
-        List<Link<Node>> newParentLinks = new ArrayList<>();;
+        Node child = absorbedNode.getChildren().getFirst();
+        List<Link<Node>> newParentLinks = new ArrayList<>();
         List<Potential> oldUtilityPotentials = child.getPotentials();
         List<Potential> newPotentials = new ArrayList<>();
 
@@ -967,8 +968,8 @@ public class Node implements Cloneable, ClassLocalizable {
         for (Node child : children) {
             Link<Node> link = probNet.getLink(this, child, true);
             if (link.hasRevealingConditions()) {
-                link.setRevealingIntervals(new ArrayList<PartitionedInterval>());
-                link.setRevealingStates(new ArrayList<State>());
+                link.setRevealingIntervals(new ArrayList<>());
+                link.setRevealingStates(new ArrayList<>());
             }
         }
 
@@ -1028,43 +1029,9 @@ public class Node implements Cloneable, ClassLocalizable {
     }
 
     public void setUniformPotential2Node(Node node) {
-
-        List<Potential> newListPotentials = new ArrayList<>();
-        List<Variable> variables = new ArrayList<>();
-        List<Potential> potentials = node.getPotentials();
-        PotentialRole role = potentials.getFirst().getPotentialRole();
-        // first, this variable. The potentials is not null
-        Variable thisVariable = potentials.getFirst().getVariable(0);
-        variables.add(thisVariable);
-
-        int numOfCellsInTable = thisVariable.getNumStates();
-        double initialValue = Util.round(1 / ((double) numOfCellsInTable), "0.01");
-        // add now all the parents
-
-        for (Node parent : node.getParents()) {
-            // TODO Revisar, ¿Solo se agrega/elimina un padre a la vez?
-            // mpalacios
-            // the set of variables could be changed, so , have to be updated.
-            variables.add(parent.getVariable());
-            numOfCellsInTable *= parent.getVariable().getNumStates();
-        }
-
-        //TODO: This array is never used. Why is it created then?
-        // sets a new table with new columns and with all the same values
-        double[] table = new double[numOfCellsInTable];
-        for (int i = 0; i < numOfCellsInTable; i++) {
-            table[i] = initialValue;
-        }
-
-        // and finally, create the potential and the list of potentials
-
-        // TODO Comprobar que efectivamente es un CONDITIONAL_PROBABILITY
-        UniformPotential uniformPotential = new UniformPotential(variables, role);
-
-        newListPotentials.add(uniformPotential);
-
-        node.setPotentials(newListPotentials);
-
+        Potential uniformPotential = PotentialOperations.getUniformPotential(
+                node.getProbNet(), node.getVariable(), node.getNodeType());
+        node.setPotentials(new ArrayList<>(List.of(uniformPotential)));
     }
 
 }

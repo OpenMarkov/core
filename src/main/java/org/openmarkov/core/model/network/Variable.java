@@ -480,8 +480,7 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
         State[] lastStates = node.getVariable().getStates();
         List<Potential> lastPotential = node.getPotentials();
         ProbNet probNet = node.getProbNet();
-        List<Potential> childrenLastPotential = new ArrayList<>();
-        
+
         if (newStates != null) {
             List<Node> nodes;
             node.getVariable().setStates(newStates);
@@ -491,21 +490,22 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
             if (newStates.length != lastStates.length) {
                 
                 if (!lastPotential.isEmpty()) {//decision nodes without imposed policy has no potential
-                    UniformPotential newPotential = new UniformPotential(lastPotential.get(0).getVariables(),
-                                                                         lastPotential.get(0).getPotentialRole());
+                    UniformPotential newPotential = new UniformPotential(lastPotential.getFirst().getVariables(),
+                                                                         lastPotential.getFirst().getPotentialRole());
                     newPotentials.add(newPotential);
                     node.setPotentials(newPotentials);
                 }
                 
                 UniformPotential childLastPotential;
                 nodes = probNet.getChildren(node);
-                
+
+                List<Potential> childrenLastPotential = new ArrayList<>();
                 for (Node child : nodes) {
                     if (!child.getPotentials().isEmpty()) {
                         List<Potential> container = new ArrayList<>();
-                        childrenLastPotential.add(child.getPotentials().get(0));
-                        childLastPotential = new UniformPotential(child.getPotentials().get(0).getVariables(),
-                                                                  child.getPotentials().get(0).getPotentialRole());
+                        childrenLastPotential.add(child.getPotentials().getFirst());
+                        childLastPotential = new UniformPotential(child.getPotentials().getFirst().getVariables(),
+                                                                  child.getPotentials().getFirst().getPotentialRole());
                         // child.setUniformPotential();
                         container.add(childLastPotential);
                         child.setPotentials(container);
@@ -525,138 +525,99 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
     }
     
     public void modifyState(Node node, StateAction stateAction, int stateIndex, String newName) {
-        State[] newStates;
-        
-        // When adding a new state selectedStateIndex is not used
-        int selectedStateIndex = 0;
-        if (stateAction != StateAction.ADD) {
-            selectedStateIndex = getNumStates() - (stateIndex + 1);
-        }
-        
-        State[] oldStates = getStates();
-        State selectedState = oldStates[selectedStateIndex];
-        State newState = (stateAction != StateAction.RENAME) ? new State(newName) : selectedState;
-        
-        PartitionedInterval currentPartitionedInterval = getPartitionedInterval();
-        
+        // For ADD the stateIndex is the insertion position; for all other actions it is
+        // converted to a reverse index (states are stored in reverse display order).
+        int selectedStateIndex = stateAction != StateAction.ADD
+                ? getNumStates() - (stateIndex + 1) : 0;
         switch (stateAction) {
-            case ADD:
-                // assume that the new state is added in last position
-                oldStates = this.getStates();
-                ArrayList<State> newStatesWithNewVar = Arrays.stream(oldStates)
-                                                             .collect(Collectors.toCollection(ArrayList::new));
-                newStatesWithNewVar.add(stateIndex, newState);
-                newStates = newStatesWithNewVar.toArray(new State[newStatesWithNewVar.size()]);
-                setStates(newStates);
-                setUniformPotential(node);
-                
-                if (getVariableType() == VariableType.DISCRETIZED) {
-                    PartitionedInterval newPartitionedInterval =
-                            getNewPartitionedInterval(node, currentPartitionedInterval);
-                    setPartitionedInterval(newPartitionedInterval);
+            case ADD    -> addStateAt(node, stateIndex, newName);
+            case REMOVE -> removeStateAt(node, selectedStateIndex);
+            case DOWN   -> moveStateDown(node, selectedStateIndex);
+            case UP     -> moveStateUp(node, selectedStateIndex);
+            case RENAME -> renameState(selectedStateIndex, newName);
+        }
+    }
+
+    private void addStateAt(Node node, int stateIndex, String newName) {
+        State[] oldStates = getStates();
+        ArrayList<State> list = Arrays.stream(oldStates)
+                                      .collect(Collectors.toCollection(ArrayList::new));
+        list.add(stateIndex, new State(newName));
+        setStates(list.toArray(new State[0]));
+        setUniformPotential(node);
+        if (getVariableType() == VariableType.DISCRETIZED) {
+            setPartitionedInterval(getNewPartitionedInterval(node, getPartitionedInterval()));
+        }
+        resetLink(node);
+    }
+
+    private void removeStateAt(Node node, int selectedStateIndex) {
+        State[] oldStates = getStates();
+        State[] newStates = new State[getNumStates() - 1];
+        int dest = 0;
+        boolean skipped = false;
+        for (State vState : oldStates) {
+            if (dest != selectedStateIndex || skipped) {
+                newStates[dest++] = vState;
+            } else {
+                skipped = true;
+            }
+        }
+        setStates(newStates);
+        setUniformPotential(node);
+        if (getVariableType() == VariableType.NUMERIC
+                || getVariableType() == VariableType.DISCRETIZED) {
+            PartitionedInterval current = getPartitionedInterval();
+            double[]  oldLimits  = current.getLimits();
+            boolean[] oldBelongs = current.getBelongsToLeftSide();
+            List<Double>  newLimits  = new ArrayList<>(oldLimits.length - 1);
+            List<Boolean> newBelongs = new ArrayList<>(oldBelongs.length - 1);
+            for (int j = 0; j < oldLimits.length; j++) {
+                if (j != selectedStateIndex) {
+                    newLimits.add(oldLimits[j]);
+                    newBelongs.add(oldBelongs[j]);
                 }
-                
-                resetLink(node);
-                break;
-            
-            case REMOVE:
-                newStates = new State[getNumStates() - 1];
-                int i1 = 0;
-                boolean found = false;
-                
-                for (State vState : oldStates) {
-                    if (i1 != selectedStateIndex || found) {
-                        newStates[i1] = vState;
-                        i1++;
-                    } else {
-                        found = true;
-                    }
-                }
-                
-                setStates(newStates);
-                setUniformPotential(node);
-                
-                if (getVariableType() == VariableType.NUMERIC
-                        || getVariableType() == VariableType.DISCRETIZED) {
-                    
-                    double[] oldLimits = currentPartitionedInterval.getLimits();
-                    boolean[] oldBelongs = currentPartitionedInterval.getBelongsToLeftSide();
-                    
-                    int pos = selectedStateIndex;
-                    
-                    List<Double> newLimits = new ArrayList<>(oldLimits.length - 1);
-                    List<Boolean> newBelongs = new ArrayList<>(oldBelongs.length - 1);
-                    
-                    for (int j = 0; j < oldLimits.length; j++) {
-                        if (j != pos) {
-                            newLimits.add(oldLimits[j]);
-                            newBelongs.add(oldBelongs[j]);
-                        }
-                    }
-                    
-                    double[] limits = new double[newLimits.size()];
-                    boolean[] belongs = new boolean[newBelongs.size()];
-                    
-                    for (int j = 0; j < newLimits.size(); j++) {
-                        limits[j] = newLimits.get(j);
-                        belongs[j] = newBelongs.get(j);
-                    }
-                    
-                    setPartitionedInterval(new PartitionedInterval(limits, belongs));
-                }
-                
-                resetLink(node);
-                break;
-            
-            case DOWN:
-                if (selectedStateIndex > 0) {
-                    newStates = new State[oldStates.length];
-                    
-                    State s1 = oldStates[selectedStateIndex - 1];
-                    State s2 = oldStates[selectedStateIndex];
-                    
-                    for (int i = 0; i < oldStates.length; i++) {
-                        if (i == selectedStateIndex - 1) {
-                            newStates[i] = s2;
-                        } else if (i == selectedStateIndex) {
-                            newStates[i] = s1;
-                        } else {
-                            newStates[i] = oldStates[i];
-                        }
-                    }
-                    
-                    setPotentialAfterReorderingFirstPotentialInNodeAndItsChildrenSetStatesAndResetLink(
-                            node, this, newStates);
-                }
-                break;
-            
-            case UP:
-                if (selectedStateIndex < getNumStates() - 1) {
-                    newStates = new State[oldStates.length];
-                    
-                    State s1 = oldStates[selectedStateIndex];
-                    State s2 = oldStates[selectedStateIndex + 1];
-                    
-                    for (int i = 0; i < oldStates.length; i++) {
-                        if (i == selectedStateIndex) {
-                            newStates[i] = s2;
-                        } else if (i == selectedStateIndex + 1) {
-                            newStates[i] = s1;
-                        } else {
-                            newStates[i] = oldStates[i];
-                        }
-                    }
-                    
-                    setPotentialAfterReorderingFirstPotentialInNodeAndItsChildrenSetStatesAndResetLink(
-                            node, this, newStates);
-                }
-                break;
-            
-            case RENAME:
-                if (selectedStateIndex >= 0 && selectedStateIndex < getNumStates()) {
-                    newState.setName(newName);
-                }
-                break;
+            }
+            double[]  limits  = new double[newLimits.size()];
+            boolean[] belongs = new boolean[newBelongs.size()];
+            for (int j = 0; j < newLimits.size(); j++) {
+                limits[j]  = newLimits.get(j);
+                belongs[j] = newBelongs.get(j);
+            }
+            setPartitionedInterval(new PartitionedInterval(limits, belongs));
+        }
+        resetLink(node);
+    }
+
+    private void moveStateDown(Node node, int selectedStateIndex) {
+        if (selectedStateIndex <= 0) {
+            return;
+        }
+        State[] oldStates = getStates();
+        State[] newStates = oldStates.clone();
+        newStates[selectedStateIndex - 1] = oldStates[selectedStateIndex];
+        newStates[selectedStateIndex]     = oldStates[selectedStateIndex - 1];
+        setPotentialAfterReorderingFirstPotentialInNodeAndItsChildrenSetStatesAndResetLink(
+                node, this, newStates);
+    }
+
+    private void moveStateUp(Node node, int selectedStateIndex) {
+        if (selectedStateIndex >= getNumStates() - 1) {
+            return;
+        }
+        State[] oldStates = getStates();
+        State[] newStates = oldStates.clone();
+        newStates[selectedStateIndex]     = oldStates[selectedStateIndex + 1];
+        newStates[selectedStateIndex + 1] = oldStates[selectedStateIndex];
+        setPotentialAfterReorderingFirstPotentialInNodeAndItsChildrenSetStatesAndResetLink(
+                node, this, newStates);
+    }
+
+    private void renameState(int selectedStateIndex, String newName) {
+        if (selectedStateIndex >= 0 && selectedStateIndex < getNumStates()) {
+            // getStates() returns a clone of the array, but the State objects
+            // inside are shared references, so setName() modifies the actual state.
+            getStates()[selectedStateIndex].setName(newName);
         }
     }
     
@@ -671,7 +632,7 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
     
     private static void setPotentialAfterReorderingFirstPotential(Node auxNode, Variable variable, State[] newStates) {
         if (auxNode.getNodeType() == NodeType.CHANCE || auxNode.getNodeType() == NodeType.UTILITY) {
-            Potential oldPotential = auxNode.getPotentials().get(0);
+            Potential oldPotential = auxNode.getPotentials().getFirst();
             Potential newPotential = oldPotential.reorder(variable, newStates);
             if (newPotential != null) {
                 auxNode.setPotential(newPotential);
@@ -765,7 +726,7 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
                     link.setRevealingIntervals(new ArrayList<PartitionedInterval>());
                 } else {
                     revelationConditionMap.put(link, link.getRevealingStates());
-                    link.setRevealingStates(new ArrayList<State>());
+                    link.setRevealingStates(new ArrayList<>());
                 }
             }
         }
@@ -931,22 +892,22 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
     /**
      * @return the unit
      */
-    public StringWithProperties getUnit() {
+    public @Nullable StringWithProperties getUnit() {
         return unit;
     }
     
     /**
      * @param unit the unit to set
      */
-    public void setUnit(StringWithProperties unit) {
+    public void setUnit(@Nullable StringWithProperties unit) {
         this.unit = unit;
     }
     
-    public StringWithProperties getAgent() {
+    public @Nullable StringWithProperties getAgent() {
         return agent;
     }
     
-    public void setAgent(StringWithProperties agent) {
+    public void setAgent(@Nullable StringWithProperties agent) {
         this.agent = agent;
     }
     

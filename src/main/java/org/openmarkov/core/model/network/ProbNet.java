@@ -83,7 +83,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         }
         if (agents != null) {
             out.append("\n");
-            out.append("Agents:\n").append(agents.toString());
+            out.append("Agents:\n").append(agents);
         }
         return out.toString();
     }
@@ -233,7 +233,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
                 variables.add(node.getVariable());
             }
         }
-        return variables != null ? variables : new ArrayList<Variable>();
+        return variables != null ? variables : new ArrayList<>();
     }
     
     /**
@@ -413,7 +413,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     }
     
     public List<PNConstraint> getUnsatisfiedConstraints() {
-        List<PNConstraint> constraints = new ArrayList<PNConstraint>();
+        List<PNConstraint> constraints = new ArrayList<>();
         for (PNConstraint constraint : this.constraints) {
             if ((constraint != null) && (!constraint.isMetBy(this))) {
                 constraints.add(constraint);
@@ -456,7 +456,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * @return {@code int}
      */
     public int getNumCriteria() {
-        List<String> criterionNames = new ArrayList<String>(2);
+        List<String> criterionNames = new ArrayList<>(2);
         int numDistinctCriteria = 0;
         for (Potential potential : getPotentials()) {
             Criterion criterion = potential.getCriterion();
@@ -532,7 +532,6 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         //ProbNet copyNet = new ProbNet(this.networkType);
         copyNet.setName(name);
         // copy constraints
-        int numConstraints = constraints.size();
         for (PNConstraint constraint : constraints) {
             copyNet.addConstraint(constraint);
         }
@@ -781,7 +780,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         List<Potential> potentials = new ArrayList<>();
         
         // potentials in neighbors that contains variable
-        Set<Node> semiNeighbors = new LinkedHashSet<Node>(getNeighbors(node));
+        Set<Node> semiNeighbors = new LinkedHashSet<>(getNeighbors(node));
         semiNeighbors.add(node);
         List<Node> children = getChildren(node);
         for (Node child : children) {
@@ -1181,7 +1180,12 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         // add the potential
         if (variables.isEmpty()) {
             // TODO - Change constant potentials (Potential vs TablePotential)
-            this.constantPotentials.add((TablePotential) potential);
+            if (!(potential instanceof TablePotential tablePotential)) {
+                throw new IllegalArgumentException(
+                        "Constant potential must be a TablePotential, got: "
+                        + potential.getClass().getName());
+            }
+            this.constantPotentials.add(tablePotential);
         } else {
             nodes.getFirst().addPotential(potential);
         }
@@ -1560,11 +1564,15 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         this.additionalProperties.put(key, value);
     }
 
-    public void moveNode(List<String> namesNode,List<Point2D.Double> newPositions) {
-        Node node;
+    public void moveNode(List<String> namesNode, List<Point2D.Double> newPositions) {
+        if (namesNode.size() != newPositions.size()) {
+            throw new IllegalArgumentException(
+                    "namesNode and newPositions must have the same size: "
+                    + namesNode.size() + " vs " + newPositions.size());
+        }
         int i = 0;
         for (String name : namesNode) {
-            node = getNode(name);
+            Node node = getNode(name);
             node.setCoordinateX(newPositions.get(i).getX());
             node.setCoordinateY(newPositions.get(i).getY());
             i++;

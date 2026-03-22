@@ -48,7 +48,7 @@ public class AugmentedProbTable extends TablePotential {
             try {
                 functionValues = new VariableExpression[tableSize];
                 // Get  public int getPosition(int[] coordinates)
-                int increment = variables.get(0).getNumStates();
+                int increment = variables.getFirst().getNumStates();
                 for (int i = 0; i < tableSize; i++) {
                     functionValues[i] = COMPLEMENT_FUNCTION;
                 }
@@ -56,7 +56,7 @@ public class AugmentedProbTable extends TablePotential {
                     functionValues[i] = DEFAULT_FUNCTION;
                 }
             } catch (NegativeArraySizeException e) {
-                throw new OutOfMemoryError(e.getMessage());
+                throw new IllegalArgumentException("Negative table size: " + tableSize, e);
             }
         } else {// In this case the potential is a constant
             tableSize = 1;

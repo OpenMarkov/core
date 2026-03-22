@@ -11,7 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
 import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.graph.Link;
@@ -476,7 +475,7 @@ public class Node implements Cloneable, ClassLocalizable {
     public void setUniformPotential() {
         
         // first, this variable. The potentials is not null
-        Variable thisVariable = potentials.get(0).getVariable(0);
+        Variable thisVariable = potentials.getFirst().getVariable(0);
         List<Variable> variables = new ArrayList<>();
         variables.add(thisVariable);
         
@@ -653,7 +652,6 @@ public class Node implements Cloneable, ClassLocalizable {
             }
             default -> throw new NonProjectablePotentialException.SuperValueMustBeSumOrProduct(firstPotential);
         }
-        ;
         if (!this.isSuperValueNode()) {
             return firstPotential.tableProject(null, null);
         }
@@ -801,7 +799,7 @@ public class Node implements Cloneable, ClassLocalizable {
         if(potentials.isEmpty()){
             return null;
         }else{
-            return getPotentials().get(0);
+            return getPotentials().getFirst();
         }
     }
     //TODO: very possibly removal
@@ -838,7 +836,7 @@ public class Node implements Cloneable, ClassLocalizable {
                 // Potentials to multiply
                 List<TablePotential> utilityAndChance = new ArrayList<>();
                 utilityAndChance.add(potential.getCPT()); //Utility
-                utilityAndChance.add(absorbedNode.getPotentials().get(0).getCPT()); //Chance
+                utilityAndChance.add(absorbedNode.getPotentials().getFirst().getCPT()); //Chance
 
                 /* Obtain parameters to invoke multiplyAndMarginalize */
                 // All variables from chance parent and utility child potentials
@@ -879,8 +877,13 @@ public class Node implements Cloneable, ClassLocalizable {
                 utilityPotential = potential.getCPT();
 
                 // Discrete operation is valid because all parents are discrete
-                TablePotential maximizedPotential = (TablePotential) DiscretePotentialOperations.
-                        maximize(utilityPotential, absorbedVariable)[0];
+                // maximize()[0] is always a TablePotential per its contract
+                Object[] maximizeResult = DiscretePotentialOperations.maximize(utilityPotential, absorbedVariable);
+                if (!(maximizeResult[0] instanceof TablePotential maximizedPotential)) {
+                    throw new IllegalStateException(
+                            "maximize() expected to return a TablePotential at index 0, got: "
+                            + maximizeResult[0].getClass().getName());
+                }
                 List<Variable> newVariables = new ArrayList<>(potential.getVariables());
                 newVariables.remove(absorbedVariable);
 
@@ -948,7 +951,7 @@ public class Node implements Cloneable, ClassLocalizable {
             // Create and assign uniform potential
             UniformPotential uniformPotential = new UniformPotential(
                     variables,
-                    getPotentials().get(0).getPotentialRole()
+                    getPotentials().getFirst().getPotentialRole()
             );
 
             List<Potential> potentials = new ArrayList<>(1);
@@ -1029,9 +1032,9 @@ public class Node implements Cloneable, ClassLocalizable {
         List<Potential> newListPotentials = new ArrayList<>();
         List<Variable> variables = new ArrayList<>();
         List<Potential> potentials = node.getPotentials();
-        PotentialRole role = potentials.get(0).getPotentialRole();
+        PotentialRole role = potentials.getFirst().getPotentialRole();
         // first, this variable. The potentials is not null
-        Variable thisVariable = potentials.get(0).getVariable(0);
+        Variable thisVariable = potentials.getFirst().getVariable(0);
         variables.add(thisVariable);
 
         int numOfCellsInTable = thisVariable.getNumStates();

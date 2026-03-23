@@ -8,7 +8,6 @@
 package org.openmarkov.core.model.graph;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * This class implements the minimal set of methods for creating
@@ -36,13 +35,13 @@ public class Graph<T> {
     // Attributes
     private boolean explicitLinks = false;
     
-    private List<T> nodes;
+    private final List<T> nodes;
     
-    private Map<T, List<Link<T>>> nodeLinks;
+    private final Map<T, List<Link<T>>> nodeLinks;
     
-    private Map<T, List<T>> nodeChildren;
-    private Map<T, List<T>> nodeParents;
-    private Map<T, List<T>> nodeSiblings;
+    private final Map<T, List<T>> nodeChildren;
+    private final Map<T, List<T>> nodeParents;
+    private final Map<T, List<T>> nodeSiblings;
     
     // Constructor
     public Graph() {
@@ -380,7 +379,7 @@ public class Graph<T> {
             return true;
         }
         HashMap<T, Collection<T>> parentsToIgnoredChildren = new HashMap<>();
-        for(var linkToIgnore : linksToIgnore){
+        for(var linkToIgnore : linksToIgnore) {
             if(!parentsToIgnoredChildren.containsKey(linkToIgnore.getFrom())){
                 parentsToIgnoredChildren.put(linkToIgnore.getFrom(), new HashSet<>());
             }
@@ -519,7 +518,7 @@ public class Graph<T> {
     public String toString() {
         StringBuilder buffer = new StringBuilder("Nodes (" + nodes.size() + "): \n");
         for (T node : nodes) {
-            buffer.append(node.toString() + "\n");
+            buffer.append(node.toString()).append("\n");
         }
         buffer.append("Links: \n");
         if (explicitLinks) {
@@ -527,20 +526,20 @@ public class Graph<T> {
                 List<Link<T>> links = nodeLinks.get(node);
                 for (Link<T> link : links) {
                     if (node.equals(link.getFrom()))
-                        buffer.append(link.toString() + "\n");
+                        buffer.append(link).append("\n");
                 }
             }
         } else {
             for (T node : nodeChildren.keySet()) {
                 for (T child : nodeChildren.get(node)) {
-                    buffer.append(node.toString() + " --> " + child.toString() + "\n");
+                    buffer.append(node).append(" --> ").append(child).append("\n");
                 }
             }
             for (T node : nodeSiblings.keySet()) {
                 int indexNode = nodes.indexOf(node);
                 for (T sibling : nodeSiblings.get(node)) {
                     if (indexNode < nodes.indexOf(sibling))
-                        buffer.append(node.toString() + " --- " + sibling.toString() + "\n");
+                        buffer.append(node).append(" --- ").append(sibling).append("\n");
                 }
             }
         }

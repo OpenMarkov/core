@@ -317,6 +317,8 @@
                   value="There is no writer for file format {extension}"/>
     <Localization class="org.openmarkov.core.exception.ParserException$BadlyStructuredFile"
                   value="File {url} is not well-formed.\nAn error occurred at line {saxParseException.getLineNumber}, column {saxParseException.getColumnNumber}: {saxParseException.getMessage}."/>
+    <Localization class="org.openmarkov.core.exception.ParserException$CannotParseFile"
+                  value="Unexpected error when validating {url}\n{originException.getMessage}."/>
     <Localization class="org.openmarkov.core.model.network.EvidenceCase"
                   value="Evidence case with findings {findings}"
                   short="Evidence case with {findings.size} findings"/>

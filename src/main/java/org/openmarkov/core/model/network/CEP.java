@@ -229,6 +229,10 @@ public class CEP implements Cloneable {
         return strategyTrees.length;
     }
     
+    public boolean hasStrategyTrees(){
+        return strategyTrees != null && strategyTrees.length > 0;
+    }
+    
     /**
      * @param lambda {@code double}
      *

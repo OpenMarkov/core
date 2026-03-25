@@ -17,8 +17,8 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 import java.util.ArrayList;
 import java.util.List;
 
-@Constraint(name = "MaxNumParents", defaultBehavior = ConstraintBehavior.OPTIONAL) public class MaxNumParents
-		extends PNConstraint {
+@Constraint(name = "MaxNumParents", defaultBehavior = ConstraintBehavior.OPTIONAL)
+public class MaxNumParents extends PNConstraint {
     
     private final int maxNumParents;
     
@@ -31,12 +31,12 @@ import java.util.List;
     }
     
     @Override public void checkProbNet(ProbNet probNet, ConstraintChecker constraintChecker) {
-		for (Node child : probNet.getNodes()) {
-			int numParents = probNet.getNumParents(child);
-			if (numParents > maxNumParents) {
+        for (Node child : probNet.getNodes()) {
+            int numParents = probNet.getNumParents(child);
+            if (numParents > maxNumParents) {
                 constraintChecker.addException(new ConstraintViolatedException.NodeHasMoreParentsThanAllowed(this, child, numParents, maxNumParents));
-			}
-		}
+            }
+        }
     }
     
     @Override public int compareTo(@NotNull PNConstraint o) {

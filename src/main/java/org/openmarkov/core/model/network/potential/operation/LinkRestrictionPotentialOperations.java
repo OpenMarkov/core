@@ -66,12 +66,12 @@ public class LinkRestrictionPotentialOperations {
 
 	public static List<int[]> getStateCombinationsWithLinkRestriction(Node node) {
 		//CMI Issue #162
-		Potential p = node.getPotentials().get(0);
+		Potential p = node.getPotentials().getFirst();
 		TablePotential potential;
 		if (p instanceof ExactDistrPotential) {
             potential = ((ExactDistrPotential) p).getTablePotential();
 		} else {
-			potential = (TablePotential) node.getPotentials().get(0);
+			potential = (TablePotential) node.getPotentials().getFirst();
 		}
 		//TablePotential potential = (TablePotential) node.getPotentials ().get (0);
 		//CMF
@@ -223,7 +223,7 @@ public class LinkRestrictionPotentialOperations {
 		List<Variable> linkVariables = linkRestriction.getVariables();
 		Variable var1 = linkVariables.get(0);
 		Variable var2 = linkVariables.get(1);
-		Potential potential = node.getPotentials().get(0);
+		Potential potential = node.getPotentials().getFirst();
 
 		List<Variable> nodeVariables = potential.getVariables();
 		Map<Integer, Integer> independentVarMap = new HashMap<>();
@@ -263,7 +263,7 @@ public class LinkRestrictionPotentialOperations {
 	 *         link restrictions.
 	 */
 	public static Potential updatePotentialByLinkRestrictions(Node node) {
-		TablePotential potential = (TablePotential) (node.getPotentials().get(0));
+		TablePotential potential = (TablePotential) (node.getPotentials().getFirst());
 		List<Link<Node>> parentLinks = getParentLinksWithRestriction(node);
 
 		for (Link<Node> link : parentLinks) {
@@ -498,5 +498,26 @@ public class LinkRestrictionPotentialOperations {
 			combinationsList.add(newCombination);
 		}
 
+	}
+
+	/**
+	 * Sets a potential on a node and then applies link restrictions if applicable.
+	 * For non-decision nodes with a {@link TablePotential}, the potential is
+	 * updated to account for any link restrictions on the node's parent links.
+	 *
+	 * @param node         the node to update
+	 * @param newPotential the new potential to set
+	 */
+	public static void setPotentialWithRestrictions(Node node, Potential newPotential) {
+		List<Potential> potentials = new ArrayList<>();
+		potentials.add(newPotential);
+		node.setPotentials(potentials);
+		// update potential with link restriction
+		if (newPotential instanceof TablePotential && node.getNodeType() != NodeType.DECISION) {
+			Potential restricted = updatePotentialByLinkRestrictions(node);
+			potentials = new ArrayList<>();
+			potentials.add(restricted);
+			node.setPotentials(potentials);
+		}
 	}
 }

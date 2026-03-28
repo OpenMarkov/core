@@ -7,8 +7,9 @@
 package org.openmarkov.core.action.core;
 
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
 import org.openmarkov.core.action.base.PNEdit;
 
 
@@ -24,7 +25,7 @@ public class SetPotentialEdit extends PNEdit {
     public SetPotentialEdit(Node node) {
         super(node.getProbNet());
         this.node = node;
-        lastPotential = node.getPotentials().get(0);
+        lastPotential = node.getPotentials().getFirst();
         newPotential = null;
     }
     
@@ -34,7 +35,7 @@ public class SetPotentialEdit extends PNEdit {
         this.node = node;
         // If node is a decision node it may have no potential assigned yet.
         if (!node.getPotentials().isEmpty()) {
-            lastPotential = node.getPotentials().get(0);
+            lastPotential = node.getPotentials().getFirst();
         } else {
             lastPotential = null;
         }
@@ -57,18 +58,18 @@ public class SetPotentialEdit extends PNEdit {
     // funcion
     
     @Override protected void doEdit() {
-        node.setPotentialConsistently(newPotential);
+        LinkRestrictionPotentialOperations.setPotentialWithRestrictions(node,newPotential);
     }
     
     @Override public void undo() {
         super.undo();
-        node.setPotentialConsistently(lastPotential);
+        LinkRestrictionPotentialOperations.setPotentialWithRestrictions(node,lastPotential);
     }
     
     
     @Override public void redo() {
         super.redo();
-        node.setPotentialConsistently(newPotential);
+        LinkRestrictionPotentialOperations.setPotentialWithRestrictions(node,newPotential);
     }
     
 }

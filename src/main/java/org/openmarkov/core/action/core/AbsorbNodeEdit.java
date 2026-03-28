@@ -10,9 +10,9 @@ package org.openmarkov.core.action.core;
 import org.apache.logging.log4j.LogManager;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.NodeAbsorptionHandler;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
@@ -34,15 +34,15 @@ import java.util.*;
     
     
     // Both node and variable attributes are created for convenience but one could be extracted from the other
-    private Variable absorbedVariable;
+    private final Variable absorbedVariable;
 
-    private Node absorbedNode;
+    private final Node absorbedNode;
 
     /* Undo attributes */
     // Un-absorb node
     private List<Link<Node>> linksDeleted;
 
-    private List<Link<Node>> newParentLinks;
+    private final List<Link<Node>> newParentLinks;
 
     private List<Potential> oldUtilityPotentials;
 
@@ -86,13 +86,13 @@ import java.util.*;
             utilityNodesMerged = false;
         }
 
-        absorbedNode.absorbNodeConsistently(absorbedVariable);
+        NodeAbsorptionHandler.absorbNodeConsistently(absorbedNode, absorbedVariable);
         // Links saved for the undo()
         linksDeleted = getLinksWithNode(absorbedNode);
         probNet.removeNode(absorbedNode);
     }
     
-    private void mergeUtilityChildren() throws DoEditException.CannotDoEditException {
+    private void mergeUtilityChildren() {
 
         // Save the old children for undoing
         oldUtilityChildren = absorbedNode.getChildren();
@@ -147,7 +147,7 @@ import java.util.*;
         List<TablePotential> utilityChildrenPotentials = new ArrayList<>();
         for (Node child : oldUtilityChildren) {
             // Change the variable of the component potentials to the merged variable
-            TablePotential componentPotential = child.getPotentials().get(0).getCPT();
+            TablePotential componentPotential = child.getPotentials().getFirst().getCPT();
             componentPotential.replaceVariable(componentPotential.getVariable(0), mergedVariable);
             // Add the potential to the list to be summed
             utilityChildrenPotentials.add(componentPotential);
@@ -174,7 +174,7 @@ import java.util.*;
             }
         }
 
-        absorbedNode.getChildren().get(0).setPotentials(oldUtilityPotentials);
+        absorbedNode.getChildren().getFirst().setPotentials(oldUtilityPotentials);
         // Destroy created utility links
         if (!newParentLinks.isEmpty()) {
             for (Link<Node> link : newParentLinks) {
@@ -186,7 +186,7 @@ import java.util.*;
         // and not its component potentials, however, restoring the component nodes will restore their respective
         // potentials ignoring the merged one.
         if (utilityNodesMerged) {
-            probNet.removeNode(absorbedNode.getChildren().get(0));
+            probNet.removeNode(absorbedNode.getChildren().getFirst());
             // Restore merged nodes
             for (Node utilityChild : oldUtilityChildren) {
                 probNet.addNode(utilityChild);
@@ -222,7 +222,7 @@ import java.util.*;
                 probNet.addLink(link.getFrom(), link.getTo(), true);
             }
         }
-        absorbedNode.getChildren().get(0).setPotentials(newPotentials);
+        absorbedNode.getChildren().getFirst().setPotentials(newPotentials);
 
         probNet.removeNode(absorbedNode);
 

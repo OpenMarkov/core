@@ -9,27 +9,22 @@ package org.openmarkov.core.action.core;
 
 import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.exception.ConstraintViolatedException;
-import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.PartitionedInterval;
+import org.openmarkov.core.model.network.State;
+import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.VariableTypeConverter;
 import org.openmarkov.core.model.network.constraint.OnlyDiscreteVariables;
 import org.openmarkov.core.model.network.constraint.OnlyFiniteStatesVariables;
 import org.openmarkov.core.model.network.constraint.OnlyNumericVariables;
-import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.SumPotential;
-import org.openmarkov.core.model.network.potential.UniformPotential;
-import org.openmarkov.core.model.network.potential.operation.Util;
 import org.openmarkov.core.action.base.PNEdit;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @SuppressWarnings("serial")
 public class VariableTypeEdit extends PNEdit {
     // private ProbNet probNet;
-    private Node node;
-    private VariableType newType;
-    private VariableType currentType;
+    private final Node node;
+    private final VariableType newType;
+    private final VariableType currentType;
     private State[] currentStates;
     private PartitionedInterval currentPartitionedInterval;
 
@@ -79,10 +74,10 @@ public class VariableTypeEdit extends PNEdit {
                 : currentStates);
 
         if (currentType != newType) {
-            node.setVariableTypeConsistently(newType);
+            VariableTypeConverter.convertVariableType(node, newType);
         }
 
-        node.resetLink();
+        VariableTypeConverter.resetLinks(node);
 
     }
 

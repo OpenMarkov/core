@@ -18,6 +18,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
+import org.openmarkov.core.model.network.potential.UncertainTablePotential;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 
 import java.util.List;
@@ -384,8 +385,9 @@ public class TablePotentialRegressionTest {
 
     @Test
     public void isUncertainTrueWhenUncertainValuesAssigned() {
-        pAB.uncertainValues = new UncertainValue[pAB.values.length];
-        assertTrue(pAB.isUncertain());
+        UncertainTablePotential utp = new UncertainTablePotential(pAB.getVariables(), pAB.getPotentialRole());
+        utp.uncertainValues = new UncertainValue[utp.values.length];
+        assertTrue(utp.isUncertain());
     }
 
     // -----------------------------------------------------------------------

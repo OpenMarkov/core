@@ -15,6 +15,7 @@ import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.StrategicTablePotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 import java.util.ArrayList;
@@ -68,8 +69,8 @@ final class TablePotentialTransform {
                 }
             }
         }
-        if (potential.strategyTrees != null && potential.strategyTrees.length > 0) {
-            tablePotential.strategyTrees = potential.strategyTrees.clone();
+        if (potential instanceof StrategicTablePotential stp && stp.strategyTrees != null && stp.strategyTrees.length > 0) {
+            stp.strategyTrees = stp.strategyTrees.clone();
         }
         return tablePotential;
     }

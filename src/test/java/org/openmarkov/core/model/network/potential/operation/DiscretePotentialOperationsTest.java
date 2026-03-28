@@ -597,7 +597,7 @@ public class DiscretePotentialOperationsTest {
         // Asserts
         TablePotential utility = marginalization.getUtility();
         assertNotNull(utility);
-        assertNull(utility.strategyTrees);
+        assertFalse(utility instanceof StrategicTablePotential);
         List<Variable> utilityVariables = utility.getVariables();
         assertEquals(1, utilityVariables.size());
         assertTrue(utilityVariables.contains(therapy));
@@ -724,9 +724,11 @@ public class DiscretePotentialOperationsTest {
         assertEquals(7.75, utility.values[1], maxError);
         
         // Test utility interventions
-        assertNotNull(utility.strategyTrees);
-        assertEquals(2, utility.strategyTrees.length);
-        StrategyTree strategyTreeNo = utility.strategyTrees[0];
+        assertTrue(utility instanceof StrategicTablePotential);
+        StrategicTablePotential strategicUtility = (StrategicTablePotential) utility;
+        assertNotNull(strategicUtility.strategyTrees);
+        assertEquals(2, strategicUtility.strategyTrees.length);
+        StrategyTree strategyTreeNo = strategicUtility.strategyTrees[0];
         assertEquals(therapy, strategyTreeNo.getRootVariable());
         List<TreeADDBranch> branches = strategyTreeNo.getBranches();
         assertEquals(1, branches.size());

@@ -249,12 +249,8 @@ public class PotentialTest {
         
         compareBasicCopiedAttributesPotential(potential, potentialCopy);
         assertNotSame(potential.getValues(), potentialCopy.getValues());
-        
-        if (potential.strategyTrees != null) {
-            for (int i = 0; i < potential.strategyTrees.length; i++) {
-                assertNotSame(potential.strategyTrees[i], potentialCopy.strategyTrees[i]);
-            }
-        }
+        // Plain TablePotential never has strategyTrees; StrategicTablePotential carries them.
+        assertFalse(potential.hasInterventions());
     }
     
     @Test

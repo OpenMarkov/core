@@ -15,6 +15,7 @@ import org.openmarkov.core.model.network.potential.FunctionPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.StrategyTree;
+import org.openmarkov.core.model.network.potential.StrategicTablePotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 import java.util.ArrayList;
@@ -124,7 +125,7 @@ final class TablePotentialArithmetic {
         int tableSize = numVariables > 0 ? resultDimension[numVariables - 1] * offsets[numVariables - 1] : 1;
         double[] resultValues = new double[tableSize];
 
-        TablePotential potentialWithInterventions = findFirstPotentialWithInterventions(tablePotentials);
+        StrategicTablePotential potentialWithInterventions = findFirstPotentialWithInterventions(tablePotentials);
         boolean thereAreInterventions = (potentialWithInterventions != null);
         StrategyTree[] resultStrategyTrees = null;
         StrategyTree strategyTree = null;
@@ -186,19 +187,13 @@ final class TablePotentialArithmetic {
      *
      * @return First potential with interventions; if any, null
      */
-    private static TablePotential findFirstPotentialWithInterventions(List<TablePotential> tablePotentials) {
-        TablePotential potentialWithInterventions = null;
-
-        // Find the potential with interventions
-        boolean found = false;
-        for (int i = 0; i < tablePotentials.size() && !found; i++) {
-            TablePotential auxPotential = tablePotentials.get(i);
-            if (auxPotential.strategyTrees != null) {
-                potentialWithInterventions = auxPotential;
-                found = true;
+    private static StrategicTablePotential findFirstPotentialWithInterventions(List<TablePotential> tablePotentials) {
+        for (TablePotential auxPotential : tablePotentials) {
+            if (auxPotential instanceof StrategicTablePotential stp) {
+                return stp;
             }
         }
-        return potentialWithInterventions;
+        return null;
     }
 
     /**
@@ -232,7 +227,8 @@ final class TablePotentialArithmetic {
         int numConstantPotentials = constantPotentials.size();
         for (int i = 0; i < numConstantPotentials; i++) {
             sumConstantPotentials += constantPotentials.get(i).values[0];
-            StrategyTree[] iConstantPotentialStrategyTrees = constantPotentials.get(i).strategyTrees;
+            StrategyTree[] iConstantPotentialStrategyTrees = constantPotentials.get(i) instanceof StrategicTablePotential stp
+                    ? stp.strategyTrees : null;
             if (iConstantPotentialStrategyTrees != null) {
                 StrategyTree onlyStrategyTreeIConstantPotential = iConstantPotentialStrategyTrees[0];
                 constantPotentialsStrategyTree = (constantPotentialsStrategyTree == null)
@@ -320,8 +316,14 @@ final class TablePotentialArithmetic {
                 }
             }
         }
-        TablePotential result = new TablePotential(resultVariables, getRole(tablePotentials), resultValues);
-        result.strategyTrees = resultStrategyTrees;
+        TablePotential result;
+        if (resultStrategyTrees != null) {
+            StrategicTablePotential stp = new StrategicTablePotential(resultVariables, getRole(tablePotentials), resultValues);
+            stp.strategyTrees = resultStrategyTrees;
+            result = stp;
+        } else {
+            result = new TablePotential(resultVariables, getRole(tablePotentials), resultValues);
+        }
         if (!potentials.isEmpty()) {
             result.setCriterion(potentials.get(0).getCriterion());
         }
@@ -336,7 +338,8 @@ final class TablePotentialArithmetic {
         if (thereAreInterventions) {
             strategyTrees = new StrategyTree[numPotentials][];
             for (int i = 0; i < numPotentials; i++) {
-                strategyTrees[i] = potentials.get(i).strategyTrees;
+                strategyTrees[i] = potentials.get(i) instanceof StrategicTablePotential stp
+                        ? stp.strategyTrees : null;
             }
         }
         return strategyTrees;
@@ -600,7 +603,7 @@ final class TablePotentialArithmetic {
         int tableSize = thereAreVariables ? dimensions[numVariables - 1] * offsets[numVariables - 1] : 1;
         double[] resultValues = new double[tableSize];
 
-        TablePotential potentialWithInterventions = findFirstPotentialWithInterventions(potentials);
+        StrategicTablePotential potentialWithInterventions = findFirstPotentialWithInterventions(potentials);
         boolean thereAreInterventions = (potentialWithInterventions != null);
         StrategyTree[] resultStrategyTrees = null;
         StrategyTree strategyTree = null;
@@ -679,13 +682,15 @@ final class TablePotentialArithmetic {
     private static TablePotential buildResultPotential(Criterion criterion, PotentialRole role,
                                                        List<Variable> resultVariables, double[] resultValues, boolean thereAreInterventions,
                                                        StrategyTree[] resultStrategyTrees) {
-        TablePotential resultPotential = new TablePotential(resultVariables, role, resultValues);
-        if (criterion != null) {
-            resultPotential.setCriterion(criterion);
-        }
         if (thereAreInterventions) {
+            StrategicTablePotential resultPotential = new StrategicTablePotential(resultVariables, role, resultValues);
+            if (criterion != null) resultPotential.setCriterion(criterion);
             resultPotential.strategyTrees = resultStrategyTrees;
+            return resultPotential;
+        } else {
+            TablePotential resultPotential = new TablePotential(resultVariables, role, resultValues);
+            if (criterion != null) resultPotential.setCriterion(criterion);
+            return resultPotential;
         }
-        return resultPotential;
     }
 }

@@ -24,7 +24,9 @@ import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.StrategyTree;
+import org.openmarkov.core.model.network.potential.StrategicTablePotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.UncertainTablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.operation.AuxiliaryOperations;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -594,41 +596,51 @@ public class TreeADDPotential extends Potential {
             topVariableEvidenceStateIndex = evidence.getFinding(topVariable).getStateIndex();
         }
         
-        TablePotential resultPotential = new TablePotential(resultVariables, potentials.get(0).getPotentialRole());
-        resultPotential.setCriterion(criterion);
         // Number of variables
         int numVariables = resultVariables.size();
-        
-        // Gets the tables of each TablePotential
+
+        // Gets the tables of each TablePotential; also detect interventions/uncertainty
         double[][] tables = new double[numPotentials][];
         StrategyTree[][] interventionsTables = new StrategyTree[numPotentials][];
-        for (int i = 0; i < numPotentials; i++) {
-            tables[i] = potentials.get(i).values;
-            interventionsTables[i] = potentials.get(i).strategyTrees;
-        }
-        
-        // Gets the uncertain tables of each TablePotential
+        UncertainValue[][] uncertaintyTables = new UncertainValue[numPotentials][];
         boolean containsUncertainty = false;
         boolean containsInterventions = false;
-        UncertainValue[][] uncertaintyTables = new UncertainValue[numPotentials][];
         for (int i = 0; i < numPotentials; i++) {
-            uncertaintyTables[i] = potentials.get(i).uncertainValues;
+            TablePotential tp = potentials.get(i);
+            tables[i] = tp.values;
+            if (tp instanceof StrategicTablePotential stp) {
+                interventionsTables[i] = stp.strategyTrees;
+                containsInterventions = true;
+            }
+            uncertaintyTables[i] = tp.getUncertainValues();
             containsUncertainty |= uncertaintyTables[i] != null;
-            containsInterventions |= potentials.get(i).strategyTrees != null;
         }
-        if (containsUncertainty) {
-            resultPotential.uncertainValues = new UncertainValue[resultPotential.getTableSize()];
-        }
+
+        PotentialRole potentialRole = potentials.get(0).getPotentialRole();
+        TablePotential resultPotential;
+        StrategicTablePotential strategicResult = null;
+        UncertainTablePotential uncertainResult = null;
         if (containsInterventions) {
-            resultPotential.strategyTrees = new StrategyTree[resultPotential.getTableSize()];
+            strategicResult = new StrategicTablePotential(resultVariables, potentialRole);
+            strategicResult.strategyTrees = new StrategyTree[strategicResult.getTableSize()];
+            resultPotential = strategicResult;
+            // Note: if containsUncertainty is also true (rare mix of ID-solving + sensitivity),
+            // uncertain values are not propagated for now.
+        } else if (containsUncertainty) {
+            uncertainResult = new UncertainTablePotential(resultVariables, potentialRole);
+            uncertainResult.uncertainValues = new UncertainValue[uncertainResult.getTableSize()];
+            resultPotential = uncertainResult;
+        } else {
+            resultPotential = new TablePotential(resultVariables, potentialRole);
         }
-        
+        resultPotential.setCriterion(criterion);
+
         // Gets dimensions
         int[] resultDimensions = resultPotential.getDimensions();
-        
+
         // Gets accumulated offsets
         int[][] accumulatedOffsets = DiscretePotentialOperations.getAccumulatedOffsets(potentials, resultVariables);
-        
+
         // Gets coordinate
         int[] resultCoordinates;
         if (numVariables != 0) {
@@ -637,15 +649,15 @@ public class TreeADDPotential extends Potential {
             resultCoordinates = new int[1];
             resultCoordinates[0] = 0;
         }
-        
+
         // Position in each table potential
         int[] potentialPositions = new int[numPotentials];
-        
+
         int incrementedVariable = 0;
         int tableSize = resultPotential.getTableSize();
         double[] resultValues = resultPotential.values;
-        StrategyTree[] resultStrategyTrees = resultPotential.strategyTrees;
-        UncertainValue[] uncertainValues = resultPotential.uncertainValues;
+        StrategyTree[] resultStrategyTrees = containsInterventions ? strategicResult.strategyTrees : null;
+        UncertainValue[] uncertainValues = (uncertainResult != null) ? uncertainResult.uncertainValues : null;
         int topVariableStateIndex = (topVariableEvidenceStateIndex != -1) ?
                 topVariableEvidenceStateIndex :
                 resultCoordinates[topVariableIndex];

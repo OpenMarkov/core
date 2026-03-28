@@ -15,6 +15,7 @@ import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.UncertainTablePotential;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -36,7 +37,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 /**
  * This class performs prune on {@code ProbNet}
  *
- * @author marias
+ * @author Manuel Arias
  */
 public class ProbNetOperations {
     
@@ -612,10 +613,12 @@ public class ProbNetOperations {
             }
         }
         // Add uncertain values if projected potential has them
-        if (projectedPotential.isUncertain() && !potential.isUncertain()) {
-            potential.uncertainValues = new UncertainValue[potential.getTableSize()];
+        UncertainTablePotential uncertainPotential = (potential instanceof UncertainTablePotential utp) ? utp : null;
+        UncertainValue[] projUV = projectedPotential.getUncertainValues();
+        if (projUV != null && uncertainPotential != null && uncertainPotential.uncertainValues == null) {
+            uncertainPotential.uncertainValues = new UncertainValue[potential.getTableSize()];
         }
-        
+
         Variable conditionedVariable = potential.getConditionedVariable();
         // Index of the current configuration in the projected potential
         int projectedConfigIndex = 0;
@@ -627,9 +630,8 @@ public class ProbNetOperations {
             // TODO update potentialVariableIndices
             for (int i = 0; i < conditionedVariable.getNumStates(); ++i) {
                 potential.values[configIndex + i] = projectedPotential.values[projectedConfigIndex + i];
-                if (projectedPotential.isUncertain()) {
-                    potential.uncertainValues[configIndex + i] = projectedPotential.uncertainValues[projectedConfigIndex
-                            + i];
+                if (projUV != null && uncertainPotential != null && uncertainPotential.uncertainValues != null) {
+                    uncertainPotential.uncertainValues[configIndex + i] = projUV[projectedConfigIndex + i];
                 }
             }
             // TODO update projectedConfigIndex

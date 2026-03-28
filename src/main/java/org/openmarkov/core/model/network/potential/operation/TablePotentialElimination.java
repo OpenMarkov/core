@@ -11,6 +11,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.StrategyTree;
+import org.openmarkov.core.model.network.potential.StrategicTablePotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 import java.util.ArrayList;
@@ -160,10 +161,16 @@ final class TablePotentialElimination {
         List<Variable> variablesToKeep = new ArrayList<>(allVariables);
         variablesToKeep.remove(variableToEliminate);
 
-        TablePotential resultPotential = new TablePotential(variablesToKeep, PotentialRole.UNSPECIFIED);
-        boolean thereAreInterventions = (utilityPotential.strategyTrees != null);
+        boolean thereAreInterventions = utilityPotential instanceof StrategicTablePotential;
+        StrategicTablePotential strategicUtil    = thereAreInterventions ? (StrategicTablePotential) utilityPotential : null;
+        StrategicTablePotential strategicResult  = null;
+        TablePotential resultPotential;
         if (thereAreInterventions) {
-            resultPotential.strategyTrees = new StrategyTree[resultPotential.values.length];
+            strategicResult = new StrategicTablePotential(variablesToKeep, PotentialRole.UNSPECIFIED);
+            strategicResult.strategyTrees = new StrategyTree[strategicResult.values.length];
+            resultPotential = strategicResult;
+        } else {
+            resultPotential = new TablePotential(variablesToKeep, PotentialRole.UNSPECIFIED);
         }
 
         int[] coordinates = new int[allVariables.size()];
@@ -198,14 +205,14 @@ final class TablePotentialElimination {
                 probs[stateIndex] = probValues[currentPositionProb];
 
                 if (thereAreInterventions) {
-                    strategyTrees[stateIndex] = utilityPotential.strategyTrees[currentPositionUtil];
+                    strategyTrees[stateIndex] = strategicUtil.strategyTrees[currentPositionUtil];
                 }
             }
 
             resultPotential.values[outerIteration] = accumulator;
 
             if (thereAreInterventions) {
-                resultPotential.strategyTrees[outerIteration] = StrategyTree.averageOfInterventions(
+                strategicResult.strategyTrees[outerIteration] = StrategyTree.averageOfInterventions(
                         variableToEliminate, probs, strategyTrees);
             }
 

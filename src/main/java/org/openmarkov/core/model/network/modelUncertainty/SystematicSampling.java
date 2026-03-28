@@ -12,6 +12,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.UncertainTablePotential;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
@@ -25,6 +26,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
+/**
+ * @author Manuel Arias
+ */
 public class SystematicSampling extends Sampler {
 
 	ProbNet network;
@@ -128,24 +132,28 @@ public class SystematicSampling extends Sampler {
 		// creates the new potential
 		List<Variable> newVariables = new ArrayList<>(potential.getVariables());
 		newVariables.add(newVariable);
-		TablePotential newPotential = new TablePotential(newVariables, potential.getPotentialRole());
 		// assigns the values of the new potential
 		int newVariableNumStates = newVariable.getNumStates();
 		double[] values = potential.getValues();
 		UncertainValue[] uncertainValues = potential.getUncertainValues();
 		boolean hasUncertainty = (uncertainValues != null) && (uncertainValues.length > 0);
+		UncertainTablePotential uncertainNew = null;
+		TablePotential newPotential;
 		if (hasUncertainty) {
-			newPotential.uncertainValues = new UncertainValue[newPotential.getTableSize()];
+			uncertainNew = new UncertainTablePotential(newVariables, potential.getPotentialRole());
+			uncertainNew.uncertainValues = new UncertainValue[uncertainNew.getTableSize()];
+			newPotential = uncertainNew;
+		} else {
+			newPotential = new TablePotential(newVariables, potential.getPotentialRole());
 		}
 
 		for (int i = 0; i < newVariableNumStates; i++) {
-
 			int offset = i * values.length;
 			for (int j = 0; j < values.length; j++) {
 				int newPos = j + offset;
 				newPotential.values[newPos] = values[j];
 				if (hasUncertainty) {
-					newPotential.uncertainValues[newPos] = uncertainValues[j];
+					uncertainNew.uncertainValues[newPos] = uncertainValues[j];
 				}
 			}
 		}
@@ -198,7 +206,7 @@ public class SystematicSampling extends Sampler {
 				int numStates = numElementsInColumn(originalSubPotential);
 				int configurationBasePositionInitColumn = position - posUncertainInColumn;
 				List<UncertainValue> columnUncertainValues = getUncertainValuesChance(
-						originalSubPotentialTable.uncertainValues, configurationBasePositionInitColumn, numStates);
+						originalSubPotentialTable.getUncertainValues(), configurationBasePositionInitColumn, numStates);
 				Sampler sampler = new SystematicSampling();
 				double[] sampledConfigurationValues = sampler.generateSample(columnUncertainValues, numStates, functionTypes);
 				double[] auxSampledConfigurationValues = new double[numStates];
@@ -274,7 +282,7 @@ public class SystematicSampling extends Sampler {
 				int numStates = numElementsInColumn(originalSubPotential);
 				int configurationBasePositionInitColumn = position - posUncertainInColumn;
 				List<UncertainValue> columnUncertainValues = getUncertainValuesChance(
-						originalSubPotentialTable.uncertainValues, configurationBasePositionInitColumn, numStates);
+						originalSubPotentialTable.getUncertainValues(), configurationBasePositionInitColumn, numStates);
 				Sampler sampler = new SystematicSampling();
 				double[] sampledConfigurationValues = sampler.generateSample(columnUncertainValues, numStates, functionTypes);
 				double[] auxSampledConfigurationValues = new double[numStates];

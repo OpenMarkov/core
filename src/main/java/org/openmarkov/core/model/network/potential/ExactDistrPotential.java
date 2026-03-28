@@ -24,6 +24,8 @@ import java.util.List;
 
 /**
  * Wrapper for TablePotential
+ *
+ * @author Manuel Arias
  */
 @PotentialType(names = "Exact") public class ExactDistrPotential extends Potential {
     
@@ -37,7 +39,8 @@ import java.util.List;
         if (this.role == null) {
             this.role = PotentialRole.CONDITIONAL_PROBABILITY;
         }
-        tablePotential = new TablePotential(variables.subList(1, variables.size()), PotentialRole.UNSPECIFIED);
+        // Use UncertainTablePotential so that setUncertainValues() works on this potential
+        tablePotential = new UncertainTablePotential(variables.subList(1, variables.size()), PotentialRole.UNSPECIFIED);
     }
     
     public ExactDistrPotential(List<Variable> variables) {
@@ -51,7 +54,7 @@ import java.util.List;
     
     public ExactDistrPotential(ExactDistrPotential potential) {
         super(potential);
-        this.tablePotential = new TablePotential(potential.getTablePotential());
+        this.tablePotential = (TablePotential) potential.getTablePotential().copy();
     }
     
     // Methods

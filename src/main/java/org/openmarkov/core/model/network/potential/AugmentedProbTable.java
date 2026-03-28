@@ -19,8 +19,11 @@ import org.openmarkov.core.model.network.VariableType;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * @author Manuel Arias
+ */
 // TODO Add documentation
-public class AugmentedProbTable extends TablePotential {
+public class AugmentedProbTable extends UncertainTablePotential {
     
     /**
      * The default function
@@ -92,16 +95,13 @@ public class AugmentedProbTable extends TablePotential {
     }
     
     public AugmentedProbTable(AugmentedProbTable potential) {
-        super(potential);
+        super(potential);  // UncertainTablePotential(UncertainTablePotential)
         this.initialPosition = potential.getInitialPosition();
         this.offsets = potential.getOffsets();
         this.dimensions = potential.getDimensions();
         tableSize = potential.tableSize;
         //UNCLEAR Clones??
         setFunctionValues(potential.getFunctionValues().clone());
-        
-        //UNCLEAR???
-        strategyTrees = potential.strategyTrees;
     }
     
     /**

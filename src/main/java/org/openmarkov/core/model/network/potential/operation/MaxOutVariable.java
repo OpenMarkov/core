@@ -10,6 +10,7 @@ package org.openmarkov.core.model.network.potential.operation;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.StrategyTree;
+import org.openmarkov.core.model.network.potential.StrategicTablePotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 import java.util.ArrayList;
@@ -20,6 +21,8 @@ import java.util.List;
  * this class builds a new potential, first adding the additive potential into only one, then
  * by multiplying the probability and the additive potential and finally, maximizing
  * the resulting potential according to the variable.
+ *
+ * @author Manuel Arias
  */
 public class MaxOutVariable {
 
@@ -50,7 +53,7 @@ public class MaxOutVariable {
 		// initialize the output utility potential
 		List<Variable> outputVariables = additivePotentialToMaximize.getVariables();
 		outputVariables.remove(decisionVariable);
-		TablePotential outputUtility = new TablePotential(outputVariables, PotentialRole.UNSPECIFIED);
+		StrategicTablePotential outputUtility = new StrategicTablePotential(outputVariables, PotentialRole.UNSPECIFIED);
 		outputUtility.strategyTrees = new StrategyTree[outputUtility.values.length];
 		outputUtility.setCriterion(additivePotentialToMaximize.getCriterion());
 
@@ -100,8 +103,8 @@ public class MaxOutVariable {
 					optimalStatesIndexes.add(innerIteration);
 				}
 				utilities[innerIteration] = auxInputUtilityPotentialValue;
-				if (additivePotentialToMaximize.strategyTrees != null) {
-					strategyTrees[innerIteration] = additivePotentialToMaximize.strategyTrees[inputUtilityPotentialPosition];
+				if (additivePotentialToMaximize instanceof StrategicTablePotential stp && stp.strategyTrees != null) {
+					strategyTrees[innerIteration] = stp.strategyTrees[inputUtilityPotentialPosition];
 				}
 
 				// find the next configuration and the index of the increased variable
@@ -156,13 +159,12 @@ public class MaxOutVariable {
 	 * @return True if there are interventions in the output utility potential
 	 */
 	private static boolean thereAreInterventionsInOutputUtilityPotential(TablePotential outputUtilityPotential) {
-		boolean thereAreInterventions = false;
-		if (outputUtilityPotential.strategyTrees != null) {
-			for (int i = 0; i < outputUtilityPotential.strategyTrees.length && !thereAreInterventions; i++) {
-				thereAreInterventions = outputUtilityPotential.strategyTrees[i] != null;
+		if (outputUtilityPotential instanceof StrategicTablePotential stp && stp.strategyTrees != null) {
+			for (int i = 0; i < stp.strategyTrees.length; i++) {
+				if (stp.strategyTrees[i] != null) return true;
 			}
 		}
-		return thereAreInterventions;
+		return false;
 	}
 
 

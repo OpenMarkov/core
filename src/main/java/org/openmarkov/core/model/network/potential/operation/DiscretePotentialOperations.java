@@ -128,22 +128,21 @@ public final class DiscretePotentialOperations {
         
         // Gets dimension
         int[] resultDimension = TablePotential.calculateDimensions(resultVariables);
-        
+
         // Gets offset accumulate
         int[][] offsetAccumulate = DiscretePotentialOperations.getAccumulatedOffsets(potentials, resultVariables);
-        
+
         // Gets coordinate
         int[] resultCoordinate = initializeCoordinates(numVariables);
-        
+
         // Position in each table potential
         int[] potentialsPositions = initializeToZero(numPotentials);
-        
+
         // Multiply
         int incrementedVariable = 0;
-        
-        int[] dimensions = TablePotential.calculateDimensions(resultVariables);
-        int[] offsets = TablePotential.calculateOffsets(dimensions);
-        int tableSize = numVariables > 0 ? dimensions[numVariables - 1] * offsets[numVariables - 1] : 1;
+
+        int[] offsets = TablePotential.calculateOffsets(resultDimension);
+        int tableSize = numVariables > 0 ? resultDimension[numVariables - 1] * offsets[numVariables - 1] : 1;
         double[] resultValues = new double[tableSize];
         
         TablePotential potentialWithInterventions = findFirstPotentialWithInterventions(tablePotentials);
@@ -165,24 +164,8 @@ public final class DiscretePotentialOperations {
         for (int resultPosition = 0; resultPosition < tableSize; resultPosition++) {
             double mulResult = constantFactor;
             
-            // increment the result coordinate and find out which variable is to be
-            // incremented
-            for (int iVariable = 0; iVariable < resultCoordinate.length; iVariable++) {
-                // try by incrementing the current variable (given by iVariable)
-                resultCoordinate[iVariable]++;
-                if (resultCoordinate[iVariable] != resultDimension[iVariable]) {
-                    // we have incremented the right variable
-                    incrementedVariable = iVariable;
-                    // do not increment other variables;
-                    break;
-                }
-                /*
-                 * this variable could not be incremented; we set it to 0 in resultCoordinate
-                 * (the next iteration of the for-loop will increment the next variable)
-                 */
-                resultCoordinate[iVariable] = 0;
-            }
-            
+            incrementedVariable = findNextConfigurationAndIndexIncreasedVariable(resultDimension, resultCoordinate, incrementedVariable);
+
             // multiply
             for (int iPotential = 0; iPotential < numPotentials; iPotential++) {
                 // multiply the numbers
@@ -322,27 +305,8 @@ public final class DiscretePotentialOperations {
         if (!potentials.isEmpty()) {
             double sum;
             for (int resultPosition = 0; resultPosition < tableSize; resultPosition++) {
-                /*
-                 * increment the result coordinate and find out which variable is to be
-                 * incremented
-                 */
-                for (int iVariable = 0; iVariable < resultCoordinates.length; iVariable++) {
-                    // try by incrementing the current variable (given by
-                    // iVariable)
-                    resultCoordinates[iVariable]++;
-                    if (resultCoordinates[iVariable] != resultDimensions[iVariable]) {
-                        // we have incremented the right variable
-                        incrementedVariable = iVariable;
-                        // do not increment other variables;
-                        break;
-                    }
-                    /*
-                     * this variable could not be incremented; we set it to 0 in resultCoordinate
-                     * (the next iteration of the for-loop will increment the next variable)
-                     */
-                    resultCoordinates[iVariable] = 0;
-                }
-                
+                incrementedVariable = findNextConfigurationAndIndexIncreasedVariable(resultDimensions, resultCoordinates, incrementedVariable);
+
                 // sum
                 sum = 0;
                 StrategyTree resultStrategyTree = null;
@@ -1008,34 +972,15 @@ public final class DiscretePotentialOperations {
         
         // Divide
         int incrementedVariable = 0;
-        int[] dimension = quotient.getDimensions();
         int[] offset = quotient.getOffsets();
         int tamTable = 1; // If numVariables == 0 the potential is a constant
         if (numVariables > 0) {
-            tamTable = dimension[numVariables - 1] * offset[numVariables - 1];
+            tamTable = quotientDimension[numVariables - 1] * offset[numVariables - 1];
         }
         
         for (int quotientPosition = 0; quotientPosition < tamTable; quotientPosition++) {
-            /*
-             * increment the result coordinate and find out which variable is to be
-             * incremented
-             */
-            for (int iVariable = 0; iVariable < quotientCoordinate.length; iVariable++) {
-                // try by incrementing the current variable (given by iVariable)
-                quotientCoordinate[iVariable]++;
-                if (quotientCoordinate[iVariable] != quotientDimension[iVariable]) {
-                    // we have incremented the right variable
-                    incrementedVariable = iVariable;
-                    // do not increment other variables;
-                    break;
-                }
-                /*
-                 * this variable could not be incremented; we set it to 0 in resultCoordinate
-                 * (the next iteration of the for-loop will increment the next variable)
-                 */
-                quotientCoordinate[iVariable] = 0;
-            }
-            
+            incrementedVariable = findNextConfigurationAndIndexIncreasedVariable(quotientDimension, quotientCoordinate, incrementedVariable);
+
             // divide
             if (tDenominator.values[potentialsPositions[1]] == 0.0) {
                 quotient.values[quotientPosition] = 0.0;
@@ -1596,79 +1541,6 @@ public final class DiscretePotentialOperations {
         return result;
     }
     
-    /*
-     *//*
-     * This method is used to remove a decision variable from a probability
-     * potential that in fact does not depend on the decision variable
-     *
-     * @param variable <code>Variable</code>
-     *
-     * @param inputPotential <code>TablePotential</code>
-     *
-     * @return. A <code>TablePotential</code>
-     *//*
-     * public static TablePotential oldProjectOutVariable(Variable variable,
-     * TablePotential inputPotential) { List<Variable> inputPotentialVariables =
-     * inputPotential.getVariables(); int numInputVariables =
-     * inputPotentialVariables.size(); TablePotential projectedPotential;
-     *
-     * if (inputPotentialVariables.contains(variable)) {
-     *
-     * // initialize the output potential List<Variable> projectedPotentialVariables
-     * = inputPotentialVariables; projectedPotentialVariables.remove(variable);
-     * projectedPotential = new TablePotential(projectedPotentialVariables,
-     * PotentialRole.CONDITIONAL_PROBABILITY);
-     *
-     * // in allVariables, the first variable is variable List<Variable>
-     * allVariables = new ArrayList<>(); allVariables.add(variable);
-     * allVariables.addAll(projectedPotentialVariables);
-     *
-     * // constants for the iterations int variableSize = variable.getNumStates();
-     * int[] allVariablesDimensions =
-     * TablePotential.calculateDimensions(allVariables); int[]
-     * accOffsetsInputPotential = TablePotential.getAccumulatedOffsets(allVariables,
-     * inputPotentialVariables); int[] accOffsetsProjectedPotential =
-     * TablePotential.getAccumulatedOffsets(allVariables,
-     * projectedPotentialVariables);
-     *
-     * // auxiliary variables that may change in every iteration int[]
-     * allVariablesCoordinate = new int[numInputVariables]; int
-     * inputPotentialPosition = 0; int projectedPotentialPosition = 0; int
-     * increasedVariable = 0;
-     *
-     * // outer iterations correspond to the variables in the output // potential
-     * int numOuterIterations =
-     * TablePotential.computeTableSize(projectedPotentialVariables); for (int
-     * outerIteration = 0; outerIteration < numOuterIterations; outerIteration++) {
-     * // inner iterations correspond to the variable to eliminate for (int
-     * innerIteration = 0; innerIteration < variableSize; innerIteration++) {
-     * projectedPotential.values[projectedPotentialPosition] =
-     * inputPotential.values[inputPotentialPosition];
-     *
-     * if (!(outerIteration == numOuterIterations - 1 && innerIteration ==
-     * variableSize - 1)) { // find the next configuration and the index of the
-     * increased variable increasedVariable =
-     * findNextConfigurationAndIndexIncreasedVariable(allVariablesDimensions,
-     * allVariablesCoordinate, increasedVariable);
-     *
-     * // Update coordinates inputPotentialPosition +=
-     * accOffsetsInputPotential[increasedVariable]; projectedPotentialPosition +=
-     * accOffsetsProjectedPotential[increasedVariable]; } } } // end of the outer
-     * loop } else { projectedPotential = (TablePotential) inputPotential.copy(); }
-     * // TODO Manolo. Hacer que siempre devuelva un potencial, aunque sea la //
-     * unidad // TODO Este método está aún en pruebas tras la última
-     * refactorización. Ante cualquier duda, preguntar a Manolo.
-     *
-     * // Do not return the probability potential if it depends on no variables //
-     * and its value is 1
-     *
-     * if (projectedPotential.getNumVariables() == 0 &&
-     * almostEqual(projectedPotential.values[0], 1.0)) { projectedPotential =
-     * DiscretePotentialOperations.createUnityProbabilityPotential(); }
-     *
-     * return projectedPotential; }
-     */
-    
     /**
      * @param dimension         dimension
      * @param coordinate        coordinate
@@ -1959,23 +1831,7 @@ public final class DiscretePotentialOperations {
                 mergedElementsTable.set(mergedPosition, auxCEP);
             }
             
-            // increment the merged coordinate and find out which variable is to be
-            // incremented
-            for (int indexVariable = 0; indexVariable < mergedCoordinate.length; indexVariable++) {
-                // try by incrementing the current variable (given by iVariable)
-                mergedCoordinate[indexVariable]++;
-                if (mergedCoordinate[indexVariable] != mergedDimension[indexVariable]) {
-                    // we have incremented the right variable
-                    indexIncrementedVariable = indexVariable;
-                    // do not increment other variables;
-                    break;
-                }
-                /*
-                 * this variable could not be incremented; we set it to 0 in mergedCoordinate
-                 * (the next iteration of the for-loop will increment the next variable)
-                 */
-                mergedCoordinate[indexVariable] = 0;
-            }
+            indexIncrementedVariable = findNextConfigurationAndIndexIncreasedVariable(mergedDimension, mergedCoordinate, indexIncrementedVariable);
             
             // update the current position in each potential table
             for (int indexPotential = 0; indexPotential < numPotentials; indexPotential++) {
@@ -2209,18 +2065,8 @@ public final class DiscretePotentialOperations {
         // utilityPotential.
         
         for (int resultPosition = 0; resultPosition < tableSize; resultPosition++) {
-            // increment the result coordinate and find out which variable is to be
-            // incremented
-            for (int iVariable = 0; iVariable < resultCoordinate.length; iVariable++) {
-                // try by incrementing the current variable (given by iVariable)
-                resultCoordinate[iVariable]++;
-                if (resultDimension != null && resultCoordinate[iVariable] != resultDimension[iVariable]) {
-                    // we have incremented the right variable
-                    incrementedVariable = iVariable;
-                    // do not increment other variables;
-                    break;
-                }
-                resultCoordinate[iVariable] = 0;
+            if (thereAreVariables) {
+                incrementedVariable = findNextConfigurationAndIndexIncreasedVariable(resultDimension, resultCoordinate, incrementedVariable);
             }
             
             Map<Variable, String> assignment = new HashMap<>();

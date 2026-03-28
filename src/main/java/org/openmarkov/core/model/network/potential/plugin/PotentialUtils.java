@@ -22,6 +22,9 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Stream;
 
+/**
+ * @author Manuel Arias
+ */
 public class PotentialUtils {
     
     public static String getPotentialName(Class<?> clazz) {

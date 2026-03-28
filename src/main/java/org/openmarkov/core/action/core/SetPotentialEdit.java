@@ -13,6 +13,9 @@ import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPote
 import org.openmarkov.core.action.base.PNEdit;
 
 
+/**
+ * @author Manuel Arias
+ */
 public class SetPotentialEdit extends PNEdit {
     
     private final Potential lastPotential;

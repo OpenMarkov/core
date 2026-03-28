@@ -27,7 +27,7 @@ import static org.openmarkov.core.model.network.VariableType.*;
  * etc. The structural aspect of the underlying  graph is in the node
  * associated.
  *
- * @author marias
+ * @author Manuel Arias
  * @author fjdiez
  * @version 1.0
  * @see Node

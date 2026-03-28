@@ -23,6 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author Manuel Arias
+ */
 public class LinkRestrictionPotentialOperations {
 
 	/*****

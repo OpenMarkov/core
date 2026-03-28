@@ -19,6 +19,9 @@ import org.openmarkov.core.model.network.constraint.OnlyFiniteStatesVariables;
 import org.openmarkov.core.model.network.constraint.OnlyNumericVariables;
 import org.openmarkov.core.action.base.PNEdit;
 
+/**
+ * @author Manuel Arias
+ */
 @SuppressWarnings("serial")
 public class VariableTypeEdit extends PNEdit {
     // private ProbNet probNet;

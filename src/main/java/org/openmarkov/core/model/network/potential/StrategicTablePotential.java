@@ -1,0 +1,135 @@
+/*
+ * Copyright (c) CISIAD, UNED, Spain,  2019. Licensed under the GPLv3 licence
+ * Unless required by applicable law or agreed to in writing,
+ * this code is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OF ANY KIND.
+ */
+
+package org.openmarkov.core.model.network.potential;
+
+import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.Variable;
+
+import java.util.List;
+
+/**
+ * A {@link TablePotential} that carries an array of {@link StrategyTree}s —
+ * one per table position — used during influence diagram solving to record the
+ * optimal strategy at each configuration.
+ * <p>
+ * Separating this concern from {@link TablePotential} removes the nullable
+ * {@code strategyTrees} field from every ordinary potential, eliminating the
+ * null-checks scattered across the arithmetic operations and copy paths.
+ *
+ * @author Manuel Arias Calleja
+ * @since OpenMarkov 0.3
+ */
+public class StrategicTablePotential extends TablePotential {
+
+    /**
+     * One strategy tree per table position.  Created and owned by
+     * influence-diagram solving operations; {@code null} entries mean
+     * "no strategy recorded at this configuration".
+     */
+    public volatile StrategyTree[] strategyTrees;
+
+    // -------------------------------------------------------------------------
+    // Constructors
+    // -------------------------------------------------------------------------
+
+    public StrategicTablePotential(List<Variable> variables, PotentialRole role) {
+        super(variables, role);
+    }
+
+    public StrategicTablePotential(List<Variable> variables, PotentialRole role, double[] table) {
+        super(variables, role, table);
+    }
+
+    /**
+     * Copy constructor.  Performs a <em>shallow</em> copy of
+     * {@code strategyTrees}; call {@link #deepCopy(ProbNet)} to obtain a
+     * fully independent copy.
+     *
+     * @param source Source potential.
+     */
+    public StrategicTablePotential(StrategicTablePotential source) {
+        super(source);
+        this.strategyTrees = source.strategyTrees; // shallow; deepCopy does the real work
+    }
+
+    // -------------------------------------------------------------------------
+    // Overrides
+    // -------------------------------------------------------------------------
+
+    @Override
+    public boolean hasInterventions() {
+        return strategyTrees != null && strategyTrees.length > 0 && strategyTrees[0] != null;
+    }
+
+    @Override
+    public boolean hasInterventionForDecision(Variable decision) {
+        return hasInterventions() && strategyTrees[0].hasInterventionForDecision(decision);
+    }
+
+    @Override
+    public Potential copy() {
+        return new StrategicTablePotential(this);
+    }
+
+    /**
+     * Returns a deep copy in which each {@link StrategyTree} is independently
+     * cloned.
+     */
+    @Override
+    public Potential deepCopy(ProbNet copyNet) {
+        StrategicTablePotential copy = (StrategicTablePotential) super.deepCopy(copyNet);
+        if (this.strategyTrees != null) {
+            copy.strategyTrees = new StrategyTree[this.strategyTrees.length];
+            for (int i = 0; i < this.strategyTrees.length; i++) {
+                copy.strategyTrees[i] = (StrategyTree) this.strategyTrees[i].deepCopy(copyNet);
+            }
+        }
+        return copy;
+    }
+
+    /**
+     * Reorders both the {@code values} table and the {@code strategyTrees}
+     * array to match {@code newOrderOfVariables}.
+     */
+    @Override
+    public Potential reorder(List<Variable> newOrderOfVariables) {
+        StrategicTablePotential newPotential = new StrategicTablePotential(newOrderOfVariables, getPotentialRole());
+        int[] accOffsets = getAccumulatedOffsets(newOrderOfVariables);
+        int[] potentialPositions = new int[getNumVariables()];
+        int[] potentialDimensions = getDimensions();
+        double[] valuesOrig = values;
+        double[] valuesNew  = newPotential.values;
+        newPotential.strategyTrees = new StrategyTree[this.strategyTrees.length];
+
+        int copyPos = 0;
+        int numVariables = newOrderOfVariables.size();
+        int incrementedVariable, i;
+        for (i = 0; i < valuesOrig.length - 1; i++) {
+            valuesNew[copyPos] = valuesOrig[i];
+            newPotential.strategyTrees[copyPos] = this.strategyTrees[i];
+
+            for (incrementedVariable = 0; incrementedVariable < numVariables; incrementedVariable++) {
+                potentialPositions[incrementedVariable]++;
+                if (potentialPositions[incrementedVariable] == potentialDimensions[incrementedVariable]) {
+                    potentialPositions[incrementedVariable] = 0;
+                } else {
+                    break;
+                }
+            }
+            copyPos += accOffsets[incrementedVariable];
+        }
+        valuesNew[copyPos] = valuesOrig[i];
+        newPotential.strategyTrees[copyPos] = this.strategyTrees[i];
+
+        if (isAdditive()) {
+            newPotential.setCriterion(getCriterion());
+        }
+        newPotential.properties = properties;
+        return newPotential;
+    }
+}

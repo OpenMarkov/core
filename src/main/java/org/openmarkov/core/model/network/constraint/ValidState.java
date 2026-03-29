@@ -29,8 +29,10 @@ public class ValidState extends PNConstraint {
      * This method checks that the state field is filled and there isn't any
      * node with the same name.
      *
-     * @return true, if the state field isn't empty and there isn't any node with
-     * this name; otherwise, false.
+     * @param constraintChecker the constraint checker to add exceptions to
+     * @param newState the new state name to check
+     * @param node the node to check
+     * @param stateAction the state action being performed
      */
     public void checkState(ConstraintChecker constraintChecker, String newState, Node node, StateAction stateAction) {
         switch (stateAction) {

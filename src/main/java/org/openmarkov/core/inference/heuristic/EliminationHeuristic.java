@@ -132,7 +132,7 @@ public abstract class EliminationHeuristic implements PNEditListener {
 	}
 
 	/**
-	 * @param event {@code UndoableEditEvent}
+	 * @param edit {@code PNEdit}
 	 * @return node ({@code Node}) in the heuristic
 	 * {@code ProbNet} that will be removed
 	 */

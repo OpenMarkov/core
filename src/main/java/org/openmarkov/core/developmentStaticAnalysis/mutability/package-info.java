@@ -1,5 +1,5 @@
 /**
- * <h1>Immutability</h1>
+ * <h2>Immutability</h2>
  * An Immutability object is one whose state cannot be changed by any means. To meet this in the Object-Oriented
  * Paradigm this there are properties that must be met: Exterior mutability and Interior mutability.
  *
@@ -30,6 +30,7 @@
  * The previous class contains three parameters:
  *
  * <table>
+ *     <caption>Comparison of exterior and interior mutability for each field</caption>
  *     <tr>
  *         <td></td>
  *         <td>Exterior mutability</td>

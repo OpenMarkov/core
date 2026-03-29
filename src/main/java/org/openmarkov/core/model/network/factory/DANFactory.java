@@ -1430,7 +1430,7 @@ public class DANFactory extends NetsFactory {
 	}
 
 	/**
-	 * @return A DAN with 5 tests, similarly to the diabetes problem, but where the partial order of tests Ti is: {T0,T1}<{T2}<{T3,T4}.
+	 * @return A DAN with 5 tests, similarly to the diabetes problem, but where the partial order of tests Ti is: {T0,T1}&lt;{T2}&lt;{T3,T4}.
 	 * Thus, the SDAG has 3 phases of tests.
 	 */
 	public static ProbNet buildThreePhasesOfTestsDAN() {
@@ -1529,7 +1529,7 @@ public class DANFactory extends NetsFactory {
 	}
 
 	/**
-	 * @return A DAN with 2*numTestsPerPhase tests, similarly to the diabetes problem, but where the partial order of tests Ti is: {T0,T1,...,Tn-1}<{Tn,Tn+1,T2n-1}.
+	 * @return A DAN with 2*numTestsPerPhase tests, similarly to the diabetes problem, but where the partial order of tests Ti is: {T0,T1,...,Tn-1}&lt;{Tn,Tn+1,T2n-1}.
 	 */
 	public static ProbNet buildTwoPhasesOfTestsDAN(int numTestsPerPhase) {
 

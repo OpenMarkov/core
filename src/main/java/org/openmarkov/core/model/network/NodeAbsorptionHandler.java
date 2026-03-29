@@ -39,7 +39,6 @@ public final class NodeAbsorptionHandler {
      *
      * @param node             the node performing the absorption (the utility child's context)
      * @param absorbedVariable the variable whose node is being absorbed
-     * @throws DoEditException.CannotDoEditException if the operation fails
      */
     public static void absorbNodeConsistently(Node node, Variable absorbedVariable) {
         ProbNet probNet = node.getProbNet();

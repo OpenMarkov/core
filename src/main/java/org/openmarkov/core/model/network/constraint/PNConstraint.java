@@ -30,8 +30,7 @@ public abstract class PNConstraint implements PNEditListener, ClassLocalizable, 
     
     /**
      * @param probNet {@code ProbNet}
-     * @return {@code true} if the {@code probNet} fulfills the
-     * constraint.
+     * @param constraintChecker {@code ConstraintChecker}
      */
     public abstract void checkProbNet(ProbNet probNet, ConstraintChecker constraintChecker);
     

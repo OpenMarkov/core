@@ -81,8 +81,6 @@ public final class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 	// Methods
 
 	/**
-	 *
-	 * @throws DoEditException DoEditException
 	 */
 	@Override protected void doEdit() throws DoEditException.CannotDoEditException {
 		// The parents of x are retrieved

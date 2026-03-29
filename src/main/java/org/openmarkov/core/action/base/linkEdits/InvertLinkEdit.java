@@ -98,10 +98,6 @@ import java.util.List;
         }
     }
     
-    /**
-     *
-     * @throws DoEditException DoEditException
-     */
     @Override protected void doEdit() throws DoEditException.CannotInvertLink {
         // Remove links first
         probNet.removeLink(parent, child, isDirected);

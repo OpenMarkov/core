@@ -66,17 +66,6 @@ import java.util.List;
 		this.selectedColumn = selectedColumn;
 	}
 
-	/**
-	 * It replaces a column in the uncertain values table. If parameter 'column'
-	 * is null then all the replaced cells are set to null.
-	 *
-	 * @param potential Potential
-	 * @param column Column
-     * @param variable Variable
-	 * @param basePosition Base position
-	 */
-
-
 	public int getBasePosition() {
 		return basePosition;
 	}

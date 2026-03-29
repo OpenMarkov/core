@@ -114,8 +114,6 @@ public class FormatManager {
      * @param url URL of the resource
      *
      * @return a ProbNetReader object
-     *
-     * @throws Exception when an exception is raised is thrown to be caught by the gui
      */
     public ProbNetReader getProbNetReader(URL url) throws NoReaderForFileException, ParserException.BadlyStructuredFile {
         //checkVersion(url);
@@ -167,8 +165,6 @@ public class FormatManager {
      * @param version   - the version of the ProbModel required
      *
      * @return a probNetReader object
-     *
-     * @throws Exception when an exception is raised is thrown to be caught by the gui
      */
     public ProbNetReader getProbNetReaderInstanceFor(String extension, String version) {
         return this.readerInstances

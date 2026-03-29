@@ -104,8 +104,6 @@ public class EvidenceCase implements ClassLocalizable {
     
     /**
      * @param finding . {@code Finding}.
-     *
-     * @throws IncompatibleEvidenceException IncompatibleEvidenceException
      */
     public void addFinding(Finding finding) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         if (!isCompatible(finding)) {
@@ -132,8 +130,6 @@ public class EvidenceCase implements ClassLocalizable {
     
     /**
      * @param findings . {@code Collection} of {@code Finding}s.
-     *
-     * @throws IncompatibleEvidenceException IncompatibleEvidenceException
      */
     public void addFindings(Collection<Finding> findings) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         for (Finding finding : findings) {
@@ -145,8 +141,6 @@ public class EvidenceCase implements ClassLocalizable {
      * @param probNet      Network
      * @param variableName Variable name
      * @param stateName    {@code Finding}.
-     *
-     * @throws IncompatibleEvidenceException IncompatibleEvidenceException
      */
     public void addFinding(ProbNet probNet, String variableName, String stateName) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         Variable variable = probNet.getVariable(variableName);
@@ -158,8 +152,6 @@ public class EvidenceCase implements ClassLocalizable {
      * @param probNet      Network
      * @param variableName Variable name
      * @param value        {@code Finding}.
-     *
-     * @throws IncompatibleEvidenceException IncompatibleEvidenceException
      */
     public void addFinding(ProbNet probNet, String variableName, double value)
             throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
@@ -411,8 +403,6 @@ public class EvidenceCase implements ClassLocalizable {
      * @param evidenceCaseToFuse Evidence case to fuse
      * @param overwrite          if true the findings in the parameter will overwrite those in
      *                           this EvidenceCase
-     *
-     * @throws IncompatibleEvidenceException IncompatibleEvidenceException
      */
     public void fuse(EvidenceCase evidenceCaseToFuse, boolean overwrite) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         if (evidenceCaseToFuse == null) {

@@ -121,7 +121,6 @@ public class CEP implements Cloneable {
      * @param minThreshold  {@code double}
      * @param maxThreshold  {@code double}
      *
-     * @throws CostEffectivenessException CostEffectivenessException
      */
     public CEP(
             StrategyTree[] strategyTrees, double[] costs, double[] effectivities, double[] thresholds,

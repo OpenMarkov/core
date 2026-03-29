@@ -43,8 +43,6 @@ public class NoMultipleLinks extends PNConstraint {
      * @param node1 First node
      * @param node2 Second node
      * @param directed - true if the link is directed
-     * @return True if the link between node1 and
-     *         node1 has no multipleLinks
      */
     public void checkLink(ProbNet probNet, ConstraintChecker constraintChecker, Node node1, Node node2, boolean directed) {
         if (directed) {

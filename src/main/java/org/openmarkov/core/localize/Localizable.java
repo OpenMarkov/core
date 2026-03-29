@@ -48,7 +48,7 @@ public interface Localizable {
      * Localizes the current object based on the given {@link LocalizationFormatter} in order to give a String
      * representing it.
      * <p>
-     * The default implementation is just a call to {@link Localizable#localize(Localizable, LocalizationFormatter)}.
+     * The default implementation is just a call to {@link Localizable#localize(Object, LocalizationFormatter, String)}.
      *
      * @param formatter the {@link LocalizationFormatter} used to format the object.
      * @return the localized string if available.
@@ -65,11 +65,11 @@ public interface Localizable {
      * {@link StringDatabase#getUniqueInstance()}. If the String is found, it will format said String using
      * {@link StringFormat#apply(CharSequence, Map)}, where the arguments are the fields of the {@link Localizable}.
      * <p>
-     * If no localization String is found, it returns the name of the class surrounded by >>><<< as
+     * If no localization String is found, it returns the name of the class surrounded by &gt;&gt;&gt;&lt;&lt;&lt; as
      * {@link StringDatabase#surrondAsUnknown(String)} does.
      *
      * @param formatter the {@link LocalizationFormatter} used to format the object.
-     * @param stringDatabaseKey
+     * @param stringDatabaseKey the key used to look up the localized string in the {@link StringDatabase}.
      * @return the localized string if available.
      */
     @NotNull
@@ -106,7 +106,7 @@ public interface Localizable {
     
     /**
      * Gets in which order the Formatters should be discovered in the
-     * {@link Localizable#findLocalizedString(LocalizationFormatter)} function.
+     * {@link Localizable#findLocalizedString(LocalizationFormatter, String)} function.
      *
      * @param length the specified {@link LocalizationFormatter.LocalizationFormatterLength}.
      * @return a stream of {@link LocalizationFormatter.LocalizationFormatterLength} values in a specific discovery

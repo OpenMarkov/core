@@ -240,7 +240,6 @@ public class TaskUtilities {
 	 * @param network Network
 	 * @param evidence Evidence
 	 * @return Projected network
-	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
 	 */
 	public static ProbNet projectTablesAndBuildMarkovDecisionNetwork(ProbNet network, EvidenceCase evidence)
 			throws NonProjectablePotentialException {

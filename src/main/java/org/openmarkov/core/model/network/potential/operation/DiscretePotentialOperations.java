@@ -242,8 +242,6 @@ public final class DiscretePotentialOperations {
      * @param potential a {@code TablePotential}
      *
      * @return The {@code potential} normalized
-     *
-     * @
      */
     public static TablePotential normalize(TablePotential potential) {
         return TablePotentialTransform.normalize(potential);
@@ -264,8 +262,8 @@ public final class DiscretePotentialOperations {
     }
 
     /**
-     * @param numerator   <tt>Potential</tt>
-     * @param denominator <tt>Potential</tt>
+     * @param numerator   {@code Potential}
+     * @param denominator {@code Potential}
      *
      * @return The quotient
      */
@@ -431,9 +429,6 @@ public final class DiscretePotentialOperations {
      * @return TablePotential with decision as the first variable and the union of
      * the variables of the potentials.
      *
-     * @throws PotentialOperationException PotentialOperationException Condition:
-     *                                     The number of states of decision must be
-     *                                     equal to the number of potentials.
      */
     public static TablePotential merge(Variable decision, List<TablePotential> potentials)
             throws PotentialOperationException.DifferentSizesInPotentialsAndStates {

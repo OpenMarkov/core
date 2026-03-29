@@ -11,7 +11,6 @@ import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.action.base.PNESupport;
 import org.openmarkov.core.action.base.StateAction;
-import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.io.ProbNetReader;
@@ -39,7 +38,7 @@ import java.util.stream.Stream;
  * It has the operations to manage {@code Variables, nodes} and {@code
  * Potentials}.
  *
- * @author marias
+ * @author Manuel Arias
  * @author fjdiez
  * @author mpalacios
  * @author mluque
@@ -49,45 +48,7 @@ import java.util.stream.Stream;
  * @since OpenMarkov 1.0
  */
 public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable {
-    
-    public String toString() {
-        StringBuilder out = new StringBuilder();
-        out.append("Type: ").append(networkType.toString()).append("\n");
-        List<Node> nodes = getNodes();
-        int numPotentials = getNumPotentials();
-        int numNodes = nodes.size();
-        if (numNodes == 0) {
-            out.append("No nodes.\n");
-        } else {
-            out.append("Nodes (").append(numNodes).append("): ");
-            for (Node node : nodes) {
-                out.append("\n  ").append(node.toString());
-            }
-            out.append("\n");
-        }
-        if (numPotentials == 0) {
-            out.append("No potentials.\n");
-        } else {
-            out.append("Number of potentials: ").append(numPotentials).append("\n");
-        }
-        if (constraints.isEmpty()) {
-            out.append("No constraints\n");
-        } else {
-            out.append("Constraints: ");
-            String constraintsAsStr = constraints.stream().map(constraint -> {
-                String strConstraint = constraint.toString();
-                return strConstraint.substring(strConstraint.lastIndexOf('.') + 1);
-            }).collect(Collectors.joining(", "));
-            out.append(constraintsAsStr);
-            out.append("\n");
-        }
-        if (agents != null) {
-            out.append("\n");
-            out.append("Agents:\n").append(agents);
-        }
-        return out.toString();
-    }
-    
+
     /**
      * Additional properties read from disk that have no direct mapping to
      * fields of this object (e.g. format-specific metadata).
@@ -279,10 +240,21 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         }
     }
     
+    /**
+     * Checks all constraints applied to this network.
+     *
+     * @throws ConstraintViolatedException if any constraint is violated
+     */
     public void checkConstraints() throws ConstraintViolatedException {
         this.checkConstraints(this.constraints);
     }
     
+    /**
+     * Checks the given constraints against this network.
+     *
+     * @param constraints the constraints to check
+     * @throws ConstraintViolatedException if any constraint is violated
+     */
     public void checkConstraints(Iterable<PNConstraint> constraints) throws ConstraintViolatedException {
         ConstraintChecker checker = new ConstraintChecker(this);
         for (PNConstraint constraint : constraints) {
@@ -409,108 +381,52 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * otherwise {@code false}.
      */
     public boolean checkProbNet() {
-        for (PNConstraint constraint : constraints) {
-            if ((constraint != null) && (!constraint.isMetBy(this))) {
-                return false;
-            }
-        }
-        return true;
+        return getUnsatisfiedConstraints().isEmpty();
     }
-    
+
+    /**
+     * Returns the list of constraints that are currently not satisfied by this network.
+     *
+     * @return list of unsatisfied constraints; empty if all are satisfied
+     */
     public List<PNConstraint> getUnsatisfiedConstraints() {
-        List<PNConstraint> constraints = new ArrayList<>();
+        List<PNConstraint> unsatisfied = new ArrayList<>();
         for (PNConstraint constraint : this.constraints) {
-            if ((constraint != null) && (!constraint.isMetBy(this))) {
-                constraints.add(constraint);
+            if (!constraint.isMetBy(this)) {
+                unsatisfied.add(constraint);
             }
         }
-        return constraints;
+        return unsatisfied;
     }
     
-    /**
-     * Checks whether this {@code probNet} is temporal or not.
-     *
-     * @return {@code true} when this network has not associated
-     * OnlyAtemporalVariables constraint, otherwise {@code false}.
-     */
+    /** Delegates to {@link ProbNetClassifier#variablesCouldBeTemporal(ProbNet)}. */
     public boolean variablesCouldBeTemporal() {
-        for (PNConstraint constraint : constraints) {
-            if (constraint instanceof OnlyAtemporalVariables) {
-                return false;
-            }
-        }
-        return true;
+        return ProbNetClassifier.variablesCouldBeTemporal(this);
     }
-    
-    /**
-     * Checks whether this {@code probNet} is multiagent or not.
-     *
-     * @return {@code true} when this network has not associated
-     * OnlyOneAgent constraint, otherwise {@code false}.
-     */
+
+    /** Delegates to {@link ProbNetClassifier#isMultiagent(ProbNet)}. */
     public boolean isMultiagent() {
-        for (PNConstraint constraint : constraints) {
-            if (constraint instanceof OnlyOneAgent) {
-                return false;
-            }
-        }
-        return true;
+        return ProbNetClassifier.isMultiagent(this);
     }
-    
-    /**
-     * @return {@code int}
-     */
+
+    /** Delegates to {@link ProbNetClassifier#getNumCriteria(ProbNet)}. */
     public int getNumCriteria() {
-        List<String> criterionNames = new ArrayList<>(2);
-        int numDistinctCriteria = 0;
-        for (Potential potential : getPotentials()) {
-            Criterion criterion = potential.getCriterion();
-            if (criterion != null) {
-                String potentialCriterionName = criterion.getCriterionName();
-                int criteriaCount;
-                // Looks for a criterion in the list of criteria
-                for (criteriaCount = 0;
-                     criteriaCount < numDistinctCriteria && potentialCriterionName != null && !potentialCriterionName
-                             .equalsIgnoreCase(criterionNames.get(criteriaCount)); criteriaCount++)
-                    ;
-                if (criteriaCount == numDistinctCriteria) {
-                    criterionNames.add(potentialCriterionName);
-                    numDistinctCriteria++;
-                }
-            }
-        }
-        return numDistinctCriteria;
+        return ProbNetClassifier.getNumCriteria(this);
     }
-    
+
+    /** Delegates to {@link ProbNetClassifier#thereAreTemporalNodes(ProbNet)}. */
     public boolean thereAreTemporalNodes() {
-        boolean thereAreTemporalNodes = false;
-        for (Node node : getNodes()) {
-            if (node.getVariable().isTemporal()) {
-                thereAreTemporalNodes = true;
-                break;
-            }
-        }
-        return thereAreTemporalNodes;
+        return ProbNetClassifier.thereAreTemporalNodes(this);
     }
-    
-    /**
-     * Checks whether this {@code probNet} is temporal or not.
-     *
-     * @return {@code true} when this network has not associated
-     * OnlyAtemporalVariables constraint, otherwise {@code false}.
-     */
+
+    /** Delegates to {@link ProbNetClassifier#onlyTemporal(ProbNet)}. */
     public boolean onlyTemporal() {
-        return this.hasConstraintOfClass(OnlyTemporalVariables.class);
+        return ProbNetClassifier.onlyTemporal(this);
     }
-    
-    /**
-     * Checks whether this {@code probNet} has only chance node or not.
-     *
-     * @return {@code true} when this network has not associated
-     * OnlyChanceNodes constraint, otherwise {@code false}.
-     */
+
+    /** Delegates to {@link ProbNetClassifier#onlyChanceNodes(ProbNet)}. */
     public boolean onlyChanceNodes() {
-        return this.hasConstraintOfClass(OnlyChanceNodes.class);
+        return ProbNetClassifier.onlyChanceNodes(this);
     }
     
     /**
@@ -923,30 +839,23 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         nodeDepot.addNode(node);
     }
     
+    /**
+     * Adds a node with a default potential appropriate for its type, and
+     * places it at the given cursor position.
+     *
+     * @param variable       the variable for the new node
+     * @param nodeType       the type of node to create
+     * @param cursorPosition the screen position for the new node
+     */
     public void addNodeConsistently(Variable variable, NodeType nodeType, Point2D.Double cursorPosition) {
         cursorPosition = cursorPosition.clone();
-        // Adds the new variable to network ( creates a node instance )
         Node newNode = addNode(variable, nodeType);
-        // TODO revisar si es conveniente utilizar una constraint
-        // Sets a uniformPotential for the new node
-        // Decision node has no potential when is created
-        /*if (nodeType != NodeType.DECISION) {
-            addPotential(PotentialOperations.getUniformPotential(this, variable, nodeType));
-            newNode = getNode(variable);
-        } else {
-            newNode.setPolicyType(PolicyType.OPTIMAL);
-        }*/
-        if (nodeType == NodeType.DECISION){
-            //PotentialOperations.getTablePotential(this, variable, nodeType);
-            newNode.setPolicyType(PolicyType.OPTIMAL);
+        switch (nodeType) {
+            case DECISION -> newNode.setPolicyType(PolicyType.OPTIMAL);
+            case CHANCE   -> addPotential(PotentialOperations.getTablePotential(this, variable, nodeType));
+            case UTILITY  -> addPotential(PotentialOperations.getExactPotential(this, variable, nodeType));
+            default -> { /* SV_PRODUCT, SV_SUM: no initial potential */ }
         }
-        if (nodeType == NodeType.CHANCE){
-            addPotential(PotentialOperations.getTablePotential(this, variable, nodeType));
-        }
-        if (nodeType == NodeType.UTILITY){
-            addPotential(PotentialOperations.getExactPotential(this, variable, nodeType));
-        }
-        // Sets the visual node position
         newNode.setCoordinateX((int) cursorPosition.getX());
         newNode.setCoordinateY((int) cursorPosition.getY());
     }
@@ -977,7 +886,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      *
      * @return The {@code Node} that matches the {@code Variable}
      */
-    public Node getNode(Variable variable) {
+    public @Nullable Node getNode(Variable variable) {
         return nodeDepot.getNode(variable);
     }
     
@@ -1019,10 +928,18 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     // TODO Con este nuevo metodo podemos evitar la chapuza hecha en
     // varios lugares de invocar getVariable para ver si lanzaba una excepcion.
     // Revisar el uso de esa excepcion y evitarla en lo posible.
+    /**
+     * @param variableName the name to check
+     * @return {@code true} if this network contains a variable with the given name
+     */
     public boolean containsVariable(String variableName) {
         return nodeDepot.getNode(variableName) != null;
     }
     
+    /**
+     * @param variable the variable to check
+     * @return {@code true} if this network contains the given variable
+     */
     public boolean containsVariable(Variable variable) {
         return getNode(variable) != null;
     }
@@ -1128,20 +1045,27 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     }
     
     /**
-     * @return All {@code Variable}s except utility nodes variables.
-     * {@code ArrayList} of {@code Variable}.
+     * Returns all variables except those attached to UTILITY nodes.
+     * This includes CHANCE, DECISION, SV_PRODUCT and SV_SUM nodes.
+     *
+     * @return list of non-utility variables
      */
-    @ToCheck(reasonKind = ToCheck.ReasonKind.PROBABLE_BUG, reasonDescription = "This method is supposed to return " +
-            "variables that are of type Chance or Decision. But it also returns SV_Product and SV_Sum")
-    public List<Variable> getChanceAndDecisionVariables() {
+    public List<Variable> getNonUtilityVariables() {
         return new ArrayList<>(getNodes()
                                        .stream()
-                                       .filter(node -> switch (node.getNodeType()) {
-                                           case CHANCE, SV_PRODUCT, SV_SUM, DECISION -> true;
-                                           case UTILITY -> false;
-                                       })
+                                       .filter(node -> node.getNodeType() != NodeType.UTILITY)
                                        .map(Node::getVariable)
                                        .toList());
+    }
+
+    /**
+     * @deprecated Use {@link #getNonUtilityVariables()} instead.
+     *             This method was misnamed: it also returns SV_PRODUCT
+     *             and SV_SUM variables, not just CHANCE and DECISION.
+     */
+    @Deprecated
+    public List<Variable> getChanceAndDecisionVariables() {
+        return getNonUtilityVariables();
     }
     
     /**
@@ -1158,10 +1082,12 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * @return All the variables. {@code ArrayList} of
      * {@code Variable}
      */
+    /** @return all variables in this network */
     public ArrayList<Variable> getVariables() {
         return new ArrayList<>(getNodes().stream().map(Node::getVariable).toList());
     }
     
+    /** @return the names of all variables in this network */
     public ArrayList<String> getVariablesNames() {
         return new ArrayList<>(getNodes().stream().map(Node::getVariable).map(Variable::getName).toList());
     }
@@ -1195,6 +1121,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         return nodeDepot.getNumPotentials();
     }
     
+    /** @return the edit support that manages undo/redo and listeners */
     public PNESupport getPNESupport() {
         return pNESupport;
     }
@@ -1286,6 +1213,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         this.decisionCriteria = decisionCriteria;
     }
     
+    /** @return whether the network comment should be displayed when the file is opened */
     public boolean getShowCommentWhenOpening() {
         return showCommentWhenOpening;
     }
@@ -1378,51 +1306,61 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         this.additionalProperties.put(key, value);
     }
 
+    /**
+     * Moves the specified nodes to the given positions.
+     *
+     * @param namesNode    names of the nodes to move
+     * @param newPositions corresponding new positions for each node
+     * @throws IllegalArgumentException if the lists have different sizes
+     */
     public void moveNode(List<String> namesNode, List<Point2D.Double> newPositions) {
         if (namesNode.size() != newPositions.size()) {
             throw new IllegalArgumentException(
                     "namesNode and newPositions must have the same size: "
                     + namesNode.size() + " vs " + newPositions.size());
         }
-        int i = 0;
-        for (String name : namesNode) {
-            Node node = getNode(name);
-            node.setCoordinateX(newPositions.get(i).getX());
-            node.setCoordinateY(newPositions.get(i).getY());
-            i++;
+        for (int i = 0; i < namesNode.size(); i++) {
+            Node node = getNode(namesNode.get(i));
+            if (node != null) {
+                node.setCoordinateX(newPositions.get(i).getX());
+                node.setCoordinateY(newPositions.get(i).getY());
+            }
         }
     }
-    public void modifyAgent(StateAction stateAction,String agentName,Object[][] dataTable){
+    /**
+     * Adds, removes, or rearranges an agent in this network's agent list.
+     *
+     * @param stateAction the action to perform (ADD, REMOVE, RENAME, UP, DOWN)
+     * @param agentName   the name of the agent to modify
+     * @param dataTable   the full agent table used for RENAME/UP/DOWN operations
+     */
+    public void modifyAgent(StateAction stateAction, String agentName, Object[][] dataTable) {
         List<StringWithProperties> agents = getAgents();
-        StringWithProperties agent = null;
         switch (stateAction) {
             case ADD:
                 if (agents == null) {
                     agents = new ArrayList<>();
                 }
-                agent = new StringWithProperties(agentName);
-                agents.add(agent);
+                agents.add(new StringWithProperties(agentName));
                 setAgents(agents);
                 break;
             case REMOVE:
+                if (agents == null) break;
+                StringWithProperties agentToRemove = null;
                 for (StringWithProperties agente : agents) {
                     if (agente.getString().equals(agentName)) {
-                        agent = agente;
+                        agentToRemove = agente;
                     }
                 }
-                agents.remove(agent);
-                //it is also necessary to delete this agent from the node it was assigned to
-                if (agent != null) {
+                agents.remove(agentToRemove);
+                // Also delete this agent from any node it was assigned to
+                if (agentToRemove != null) {
                     for (Node node : getNodes()) {
                         StringWithProperties nodeAgent = node.getVariable().getAgent();
-                        if (nodeAgent!=null && nodeAgent.getString().equals(agentName)) {
+                        if (nodeAgent != null && nodeAgent.getString().equals(agentName)) {
                             node.getVariable().setAgent(null);
                         }
                     }
-                }
-
-                if (agents.isEmpty()) {
-                    agents = null;
                 }
                 setAgents(agents);
                 break;
@@ -1433,8 +1371,45 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
                 }
                 setAgents(modifiedAgent);
                 break;
-
         }
     }
 
+    @Override
+    public String toString() {
+        StringBuilder out = new StringBuilder();
+        out.append("Type: ").append(networkType.toString()).append("\n");
+        List<Node> nodes = getNodes();
+        int numPotentials = getNumPotentials();
+        int numNodes = nodes.size();
+        if (numNodes == 0) {
+            out.append("No nodes.\n");
+        } else {
+            out.append("Nodes (").append(numNodes).append("): ");
+            for (Node node : nodes) {
+                out.append("\n  ").append(node.toString());
+            }
+            out.append("\n");
+        }
+        if (numPotentials == 0) {
+            out.append("No potentials.\n");
+        } else {
+            out.append("Number of potentials: ").append(numPotentials).append("\n");
+        }
+        if (constraints.isEmpty()) {
+            out.append("No constraints\n");
+        } else {
+            out.append("Constraints: ");
+            String constraintsAsStr = constraints.stream().map(constraint -> {
+                String strConstraint = constraint.toString();
+                return strConstraint.substring(strConstraint.lastIndexOf('.') + 1);
+            }).collect(Collectors.joining(", "));
+            out.append(constraintsAsStr);
+            out.append("\n");
+        }
+        if (agents != null) {
+            out.append("\n");
+            out.append("Agents:\n").append(agents);
+        }
+        return out.toString();
+    }
 }

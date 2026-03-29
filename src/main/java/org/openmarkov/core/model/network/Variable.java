@@ -12,20 +12,13 @@ import org.openmarkov.core.action.base.StateAction;
 import org.openmarkov.core.exception.InvalidArgumentException;
 import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.localize.ClassLocalizable;
-import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.UniformPotential;
-import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 import org.openmarkov.java.cloneUtils.CloneUtils;
 import org.openmarkov.java.nullUtils.NullUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-// TODO  mantener la consistencia entre name y baseName cuando se cambian
 
 /**
  * A variable (for instance, a random variable or a decision). Each
@@ -67,7 +60,7 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
      */
     protected PartitionedInterval partitionedInterval;
     private Map<String, String> additionalProperties = new HashMap<>();
-    protected HashMap<String, HashMap<String, String>> statesAdditionalProperties;
+    protected HashMap<String, HashMap<String, String>> statesAdditionalProperties = new HashMap<>();
     /**
      * The time Slice of the node. The default value is no temporal.
      */
@@ -99,12 +92,10 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
      *               Condition: All the states must be different
      */
     public Variable(String name, State[] states) {
-        
-        this.name = name;
         this.states = states;
         this.variableType = VariableType.FINITE_STATES;
         this.partitionedInterval = null;
-        setTimeSlice(getTimeSlice(name));
+        parseNameIntoParts(name);
     }
     
     /**
@@ -120,17 +111,14 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
      *                     Java 5.
      */
     public Variable(String nameVariable, String... stateNames) {
-        
         int numStates = stateNames.length;
-        this.name = nameVariable;
         states = new State[numStates];
         for (int i = 0; i < numStates; i++) {
             states[i] = new State(stateNames[i]);
         }
         this.variableType = VariableType.FINITE_STATES;
         this.partitionedInterval = null;
-        setTimeSlice(getTimeSlice(name));
-        
+        parseNameIntoParts(nameVariable);
     }
     
     /**
@@ -143,15 +131,13 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
      * @param numStates {@code int}
      */
     public Variable(String name, int numStates) {
-        
-        this.name = name;
         this.states = new State[numStates];
         for (int i = 0; i < numStates; i++) {
             states[i] = new State("" + i);
         }
         this.variableType = VariableType.FINITE_STATES;
         this.partitionedInterval = null;
-        setTimeSlice(getTimeSlice(name));
+        parseNameIntoParts(name);
     }
     
     /**
@@ -160,19 +146,17 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
      * @param variable Variable
      */
     public Variable(Variable variable) {
-        this.name = variable.name;
         this.states = variable.states.clone();
         this.variableType = variable.variableType;
         this.partitionedInterval = CloneUtils.safeClone(variable.partitionedInterval);
         this.additionalProperties = variable.additionalProperties != null
                 ? new HashMap<>(variable.additionalProperties) : new HashMap<>();
         this.statesAdditionalProperties = CloneUtils.safeClone(variable.statesAdditionalProperties);
-        this.baseName = variable.baseName;
         this.precision = variable.precision;
         this.unit = CloneUtils.safeClone(variable.unit);
         this.agent = CloneUtils.safeClone(variable.agent);
         this.decisionCriterion = CloneUtils.safeClone(variable.decisionCriterion);
-        setTimeSlice(getTimeSlice(variable.name));
+        parseNameIntoParts(variable.name);
     }
     
     /**
@@ -282,18 +266,11 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
     }
     
     public void setStateAdditionalProperties(String stateName, HashMap<String, String> stateAdditionalProperties) {
-        if (statesAdditionalProperties == null) {
-            statesAdditionalProperties = new HashMap<>();
-        }
         statesAdditionalProperties.put(stateName, stateAdditionalProperties);
     }
-    
+
     public HashMap<String, String> getStateAdditionalProperties(String stateName) {
-        HashMap<String, String> stateAdditionalProperties = null;
-        if (statesAdditionalProperties != null) {
-            stateAdditionalProperties = statesAdditionalProperties.get(stateName);
-        }
-        return stateAdditionalProperties;
+        return statesAdditionalProperties.get(stateName);
     }
     
     public boolean isTemporal() {
@@ -302,26 +279,14 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
     }
     
     public void setStateAdditionalProperty(String stateName, String propertyName, String propertyValue) {
-        if (statesAdditionalProperties == null) {
-            statesAdditionalProperties = new HashMap<>();
-        }
-        HashMap<String, String> stateProperties = statesAdditionalProperties.get(stateName);
-        if (stateProperties == null) {
-            stateProperties = new HashMap<>();
-            statesAdditionalProperties.put(stateName, stateProperties);
-        }
-        stateProperties.put(propertyName, propertyValue);
+        statesAdditionalProperties
+                .computeIfAbsent(stateName, k -> new HashMap<>())
+                .put(propertyName, propertyValue);
     }
-    
+
     public String getStateAdditionalProperty(String stateName, String propertyName) {
-        String propertyValue = null;
-        if (statesAdditionalProperties != null) {
-            HashMap<String, String> stateProperties = statesAdditionalProperties.get(stateName);
-            if (stateProperties != null) {
-                propertyValue = stateProperties.get(propertyName);
-            }
-        }
-        return propertyValue;
+        HashMap<String, String> stateProperties = statesAdditionalProperties.get(stateName);
+        return stateProperties != null ? stateProperties.get(propertyName) : null;
     }
     
     public void renameState(State state, String newName) {
@@ -331,14 +296,10 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
             }
         }
         String oldName = state.getName();
-        // Change key of additional additionalProperties of this state if they
-        // exists
-        if (statesAdditionalProperties != null) {
-            HashMap<String, String> additionalPropertiesOldName = statesAdditionalProperties.get(oldName);
-            if (additionalPropertiesOldName != null) {
-                statesAdditionalProperties.remove(oldName);
-                statesAdditionalProperties.put(newName, additionalPropertiesOldName);
-            }
+        // Move additional properties from old key to new key if they exist
+        HashMap<String, String> additionalPropertiesOldName = statesAdditionalProperties.remove(oldName);
+        if (additionalPropertiesOldName != null) {
+            statesAdditionalProperties.put(newName, additionalPropertiesOldName);
         }
         state.setName(newName);
     }
@@ -427,26 +388,22 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
      * @param newName . {@code String}
      */
     public void setName(String newName) {
-        name = newName;// new String(newName);
-        timeSlice = getTimeSlice(name);
+        parseNameIntoParts(newName);
     }
-    
+
     /**
-     * @return name. {@code String}
+     * @return base name without time slice suffix; never {@code null}
      */
     public String getBaseName() {
-        if (baseName == null) {
-            return name;
-        }
         return baseName;
     }
-    
+
     /**
      * @param newBaseName . {@code String}
      */
     public void setBaseName(String newBaseName) {
         this.baseName = newBaseName;
-        this.name = this.baseName + ((timeSlice >= 0) ? " [" + timeSlice + "]" : "");
+        rebuildFullName();
     }
     
     /**
@@ -476,260 +433,20 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
         this.states = states.clone();
     }
     
+    /**
+     * Replaces all states and updates potentials. Delegates to
+     * {@link VariableStateOperations#replaceStates}.
+     */
     public void replaceStates(Node node, State[] newStates) {
-        State[] lastStates = node.getVariable().getStates();
-        List<Potential> lastPotential = node.getPotentials();
-        ProbNet probNet = node.getProbNet();
-
-        if (newStates != null) {
-            List<Node> nodes;
-            node.getVariable().setStates(newStates);
-            List<Potential> newPotentials = new ArrayList<>();
-            // set uniform potential for the edited node and children if the
-            // new number of states is different that the last states
-            if (newStates.length != lastStates.length) {
-                
-                if (!lastPotential.isEmpty()) {//decision nodes without imposed policy has no potential
-                    UniformPotential newPotential = new UniformPotential(lastPotential.getFirst().getVariables(),
-                                                                         lastPotential.getFirst().getPotentialRole());
-                    newPotentials.add(newPotential);
-                    node.setPotentials(newPotentials);
-                }
-                
-                UniformPotential childLastPotential;
-                nodes = probNet.getChildren(node);
-
-                List<Potential> childrenLastPotential = new ArrayList<>();
-                for (Node child : nodes) {
-                    if (!child.getPotentials().isEmpty()) {
-                        List<Potential> container = new ArrayList<>();
-                        childrenLastPotential.add(child.getPotentials().getFirst());
-                        childLastPotential = new UniformPotential(child.getPotentials().getFirst().getVariables(),
-                                                                  child.getPotentials().getFirst().getPotentialRole());
-                        // child.setUniformPotential();
-                        container.add(childLastPotential);
-                        child.setPotentials(container);
-                    }
-                }
-                resetLink(node);
-            }
-            
-            if (node.getVariable().getVariableType() == VariableType.DISCRETIZED) {
-                
-                node.getVariable().setPartitionedInterval(new PartitionedInterval(
-                        node.getVariable().getDefaultInterval(node.getVariable().getNumStates()),
-                        Variable.getDefaultBelongs(node.getVariable().getNumStates())));
-                
-            }
-        }
+        VariableStateOperations.replaceStates(this, node, newStates);
     }
     
+    /**
+     * Dispatches a state modification action. Delegates to
+     * {@link VariableStateOperations#modifyState}.
+     */
     public void modifyState(Node node, StateAction stateAction, int stateIndex, String newName) {
-        // For ADD the stateIndex is the insertion position; for all other actions it is
-        // converted to a reverse index (states are stored in reverse display order).
-        int selectedStateIndex = stateAction != StateAction.ADD
-                ? getNumStates() - (stateIndex + 1) : 0;
-        switch (stateAction) {
-            case ADD    -> addStateAt(node, stateIndex, newName);
-            case REMOVE -> removeStateAt(node, selectedStateIndex);
-            case DOWN   -> moveStateDown(node, selectedStateIndex);
-            case UP     -> moveStateUp(node, selectedStateIndex);
-            case RENAME -> renameState(selectedStateIndex, newName);
-        }
-    }
-
-    private void addStateAt(Node node, int stateIndex, String newName) {
-        State[] oldStates = getStates();
-        ArrayList<State> list = Arrays.stream(oldStates)
-                                      .collect(Collectors.toCollection(ArrayList::new));
-        list.add(stateIndex, new State(newName));
-        setStates(list.toArray(new State[0]));
-        setUniformPotential(node);
-        if (getVariableType() == VariableType.DISCRETIZED) {
-            setPartitionedInterval(getNewPartitionedInterval(node, getPartitionedInterval()));
-        }
-        resetLink(node);
-    }
-
-    private void removeStateAt(Node node, int selectedStateIndex) {
-        State[] oldStates = getStates();
-        State[] newStates = new State[getNumStates() - 1];
-        int dest = 0;
-        boolean skipped = false;
-        for (State vState : oldStates) {
-            if (dest != selectedStateIndex || skipped) {
-                newStates[dest++] = vState;
-            } else {
-                skipped = true;
-            }
-        }
-        setStates(newStates);
-        setUniformPotential(node);
-        if (getVariableType() == VariableType.NUMERIC
-                || getVariableType() == VariableType.DISCRETIZED) {
-            PartitionedInterval current = getPartitionedInterval();
-            double[]  oldLimits  = current.getLimits();
-            boolean[] oldBelongs = current.getBelongsToLeftSide();
-            List<Double>  newLimits  = new ArrayList<>(oldLimits.length - 1);
-            List<Boolean> newBelongs = new ArrayList<>(oldBelongs.length - 1);
-            for (int j = 0; j < oldLimits.length; j++) {
-                if (j != selectedStateIndex) {
-                    newLimits.add(oldLimits[j]);
-                    newBelongs.add(oldBelongs[j]);
-                }
-            }
-            double[]  limits  = new double[newLimits.size()];
-            boolean[] belongs = new boolean[newBelongs.size()];
-            for (int j = 0; j < newLimits.size(); j++) {
-                limits[j]  = newLimits.get(j);
-                belongs[j] = newBelongs.get(j);
-            }
-            setPartitionedInterval(new PartitionedInterval(limits, belongs));
-        }
-        resetLink(node);
-    }
-
-    private void moveStateDown(Node node, int selectedStateIndex) {
-        if (selectedStateIndex <= 0) {
-            return;
-        }
-        State[] oldStates = getStates();
-        State[] newStates = oldStates.clone();
-        newStates[selectedStateIndex - 1] = oldStates[selectedStateIndex];
-        newStates[selectedStateIndex]     = oldStates[selectedStateIndex - 1];
-        setPotentialAfterReorderingFirstPotentialInNodeAndItsChildrenSetStatesAndResetLink(
-                node, this, newStates);
-    }
-
-    private void moveStateUp(Node node, int selectedStateIndex) {
-        if (selectedStateIndex >= getNumStates() - 1) {
-            return;
-        }
-        State[] oldStates = getStates();
-        State[] newStates = oldStates.clone();
-        newStates[selectedStateIndex]     = oldStates[selectedStateIndex + 1];
-        newStates[selectedStateIndex + 1] = oldStates[selectedStateIndex];
-        setPotentialAfterReorderingFirstPotentialInNodeAndItsChildrenSetStatesAndResetLink(
-                node, this, newStates);
-    }
-
-    private void renameState(int selectedStateIndex, String newName) {
-        if (selectedStateIndex >= 0 && selectedStateIndex < getNumStates()) {
-            // getStates() returns a clone of the array, but the State objects
-            // inside are shared references, so setName() modifies the actual state.
-            getStates()[selectedStateIndex].setName(newName);
-        }
-    }
-    
-    private void setPotentialAfterReorderingFirstPotentialInNodeAndItsChildrenSetStatesAndResetLink(Node node, Variable variable, State[] newStates) {
-        setPotentialAfterReorderingFirstPotential(node, variable, newStates);
-        for (Node child : node.getChildren()) {
-            setPotentialAfterReorderingFirstPotential(child, variable, newStates);
-        }
-        variable.setStates(newStates);
-        resetLink(node);
-    }
-    
-    private static void setPotentialAfterReorderingFirstPotential(Node auxNode, Variable variable, State[] newStates) {
-        if (auxNode.getNodeType() == NodeType.CHANCE || auxNode.getNodeType() == NodeType.UTILITY) {
-            Potential oldPotential = auxNode.getPotentials().getFirst();
-            Potential newPotential = oldPotential.reorder(variable, newStates);
-            if (newPotential != null) {
-                auxNode.setPotential(newPotential);
-            }
-        }
-    }
-    
-    /**
-     * Set uniform potential for the edited node and its children (except for
-     * Decision nodes)
-     */
-    private void setUniformPotential(Node node) {
-        Potential uniformPotential;
-        List<Potential> potentials;
-        ProbNet probNet = node.getProbNet();
-        
-        if (node.getNodeType() != NodeType.DECISION) {
-            uniformPotential = PotentialOperations.getUniformPotential(probNet, node.getVariable(), node.getNodeType());
-            potentials = new ArrayList<>();
-            potentials.add(uniformPotential);
-            node.setPotentials(potentials);
-            
-        }
-        for (Node child : node.getChildren()) {
-            if (child.getNodeType() != NodeType.DECISION) {
-                potentials = new ArrayList<>();
-                uniformPotential = PotentialOperations.getUniformPotential(probNet, child.getVariable(),
-                                                                           child.getNodeType());
-                potentials.add(uniformPotential);
-                child.setPotentials(potentials);
-            }
-        }
-        
-    }
-    
-    /**
-     * This method add a new default subInterval, in the current PartitionedInterval
-     * object
-     *
-     * @return The PartitionedInterval object with a new default subInterval
-     */
-    
-    private PartitionedInterval getNewPartitionedInterval(Node node, PartitionedInterval currentPartitionedInterval) {
-        double[] limits = currentPartitionedInterval.getLimits();
-        double[] newLimits = new double[limits.length + 1];
-        boolean[] belongsToLeftSide = currentPartitionedInterval.getBelongsToLeftSide();
-        boolean[] newBelongsToLeftSide = new boolean[limits.length + 1];
-        for (int i = 0; i < limits.length; i++) {
-            newLimits[i] = limits[i];
-            newBelongsToLeftSide[i] = belongsToLeftSide[i];
-        }
-        
-        if (currentPartitionedInterval.getMax() == Double.POSITIVE_INFINITY) {
-            newLimits[limits.length - 1] = newLimits[limits.length - 2] + node.getVariable().getPrecision();
-            newLimits[limits.length] = Double.POSITIVE_INFINITY;
-        } else {
-            newLimits[limits.length] = currentPartitionedInterval.getMax() + node.getVariable().getPrecision();
-        }
-        newBelongsToLeftSide[limits.length] = false;
-        return new PartitionedInterval(newLimits, newBelongsToLeftSide);
-    }
-    
-    /****
-     * This method resets the link restrictions and revelation conditions of the
-     * links of the node
-     *
-     * @param node Node
-     */
-    private void resetLink(Node node) {
-        Map<Link<Node>, double[]> linkRestrictionMap = new HashMap<>();
-        Map<Link<Node>, List> revelationConditionMap = new HashMap<>();
-        ProbNet probNet = node.getProbNet();
-        
-        
-        for (Link<Node> link : probNet.getLinks(node)) {
-            if (link.hasRestrictions()) {
-                double[] lastPotential = (
-                        (TablePotential) link.getRestrictionsPotential()
-                ).values.clone();
-                linkRestrictionMap.put(link, lastPotential);
-                link.setRestrictionsPotential(null);
-            }
-        }
-        List<Node> children = probNet.getChildren(node);
-        for (Node child : children) {
-            Link<Node> link = probNet.getLink(node, child, true);
-            if (link.hasRevealingConditions()) {
-                VariableType varType = link.getFrom().getVariable().getVariableType();
-                if (varType == VariableType.NUMERIC) {
-                    revelationConditionMap.put(link, link.getRevealingIntervals());
-                    link.setRevealingIntervals(new ArrayList<PartitionedInterval>());
-                } else {
-                    revelationConditionMap.put(link, link.getRevealingStates());
-                    link.setRevealingStates(new ArrayList<>());
-                }
-            }
-        }
+        VariableStateOperations.modifyState(this, node, stateAction, stateIndex, newName);
     }
     
     /**
@@ -790,27 +507,20 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
     }
     
     public TablePotential deltaTablePotential(String stateName) {
-        List<Variable> potentialVariables = new ArrayList<>();
-        potentialVariables.add(this);
-        TablePotential potential = new TablePotential(potentialVariables, PotentialRole.CONDITIONAL_PROBABILITY);
-        Arrays.fill(potential.values, 0.0);
-        potential.values[this.getStateIndex(stateName)] = 1.0;
-        return potential;
+        return createDeltaTablePotential(getStateIndex(stateName));
     }
-    
+
     public TablePotential deltaTablePotential(State state) {
-        List<Variable> potentialVariables = new ArrayList<>();
-        potentialVariables.add(this);
-        TablePotential potential = new TablePotential(potentialVariables, PotentialRole.CONDITIONAL_PROBABILITY);
-        Arrays.fill(potential.values, 0.0);
-        potential.values[getStateIndex(state)] = 1.0;
-        return potential;
+        return createDeltaTablePotential(getStateIndex(state));
     }
-    
+
+    /**
+     * Creates a delta potential (spike at 1.0) for the state at the given index.
+     * All other values are set to 0.0.
+     */
     public TablePotential createDeltaTablePotential(int stateIndex) {
-        List<Variable> potentialVariables = new ArrayList<>();
-        potentialVariables.add(this);
-        TablePotential potential = new TablePotential(potentialVariables, PotentialRole.CONDITIONAL_PROBABILITY);
+        TablePotential potential = new TablePotential(List.of(this), PotentialRole.CONDITIONAL_PROBABILITY);
+        Arrays.fill(potential.values, 0.0);
         potential.values[stateIndex] = 1.0;
         return potential;
     }
@@ -846,31 +556,10 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
         return this.localize();
     }
     
-    private int getTimeSlice(String variableName) {
-        int timeSlice = noTemporalTimeSlice;
-        if (variableName.contains(" [")) {
-            // Set base name
-            int lastOpenBracket = variableName.lastIndexOf(" [");
-            baseName = variableName.substring(0, lastOpenBracket);
-            int lastClosedBracket = variableName.lastIndexOf(']');
-            if (lastClosedBracket > lastOpenBracket) {
-                int firstNumber = lastOpenBracket + 2;
-                try {
-                    timeSlice = Integer.parseInt((String) variableName.subSequence(firstNumber, lastClosedBracket));
-                } catch (NumberFormatException e) {
-                    //TODO: There is not a number between brackets
-                }
-            }
-        } else {
-            baseName = variableName;
-        }
-        return timeSlice;
-    }
-    
     public int getTimeSlice() {
         return timeSlice;
     }
-    
+
     /**
      * Changes or sets for the first time the time slice. Modifies the variable
      * name adding or changing [timeSlice]. If the variable is not temporal
@@ -879,14 +568,53 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
      * @param timeSlice . {@code int}
      */
     public void setTimeSlice(int timeSlice) {
-        if (timeSlice != Integer.MIN_VALUE) {
-            int beginSlicePart = name.lastIndexOf('[');
-            if (beginSlicePart != -1) {
-                baseName = name.substring(0, beginSlicePart - 1);
-            }
-            name = baseName + " [" + timeSlice + "]";
-        }
         this.timeSlice = timeSlice;
+        rebuildFullName();
+    }
+
+    // -----------------------------------------------------------------------
+    // Name / baseName / timeSlice synchronization
+    // -----------------------------------------------------------------------
+
+    /**
+     * Parses a full variable name (e.g. "X [3]") into {@code baseName} and
+     * {@code timeSlice}, then rebuilds {@code name} from those parts.
+     * This is the single entry point for decomposing a name string.
+     */
+    private void parseNameIntoParts(String variableName) {
+        int parsedTimeSlice = noTemporalTimeSlice;
+        String parsedBaseName = variableName;
+
+        if (variableName.contains(" [")) {
+            int lastOpenBracket = variableName.lastIndexOf(" [");
+            int lastClosedBracket = variableName.lastIndexOf(']');
+            if (lastClosedBracket > lastOpenBracket) {
+                try {
+                    parsedTimeSlice = Integer.parseInt(
+                            variableName.substring(lastOpenBracket + 2, lastClosedBracket));
+                    parsedBaseName = variableName.substring(0, lastOpenBracket);
+                } catch (NumberFormatException e) {
+                    // Not a valid time slice — treat entire string as base name
+                }
+            }
+        }
+
+        this.baseName = parsedBaseName;
+        this.timeSlice = parsedTimeSlice;
+        rebuildFullName();
+    }
+
+    /**
+     * Rebuilds {@code name} from the current {@code baseName} and
+     * {@code timeSlice}.  This is the single place where the full name
+     * is composed, ensuring the invariant is always maintained.
+     */
+    private void rebuildFullName() {
+        if (timeSlice != noTemporalTimeSlice) {
+            this.name = baseName + " [" + timeSlice + "]";
+        } else {
+            this.name = baseName;
+        }
     }
     
     /**
@@ -924,30 +652,7 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
     }
     
     @Override public int compareTo(Variable o) {
-        int othersHashCode = o.hashCode();
-        int thisHashCode = hashCode();
-        int result = 0;
-        if (othersHashCode > thisHashCode)
-            result = -1;
-        else if (othersHashCode < thisHashCode)
-            result = 1;
-        return result;
-    }
-    
-    /**
-     * This methods checks if a string may be a valid state name
-     *
-     * @param newState New state
-     *
-     * @return True if a string may be a valid state name
-     */
-    public boolean chekNewStateName(String newState) {
-        for (State state : states) {
-            if (state.getName().equals(newState)) {
-                return false;
-            }
-        }
-        return true;
+        return this.name.compareTo(o.name);
     }
     
     public VariableExpression asVariableExpression() {

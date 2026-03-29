@@ -20,6 +20,11 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Exponential hazard potential for survival analysis. This is a special case of the
+ * {@link WeibullHazardPotential} where the shape parameter k = 1 (i.e., constant hazard rate).
+ * Used for modeling time-to-event with memoryless property.
+ */
 @PotentialType(names = "Hazard (Exponential)")
 public class ExponentialHazardPotential extends WeibullHazardPotential {
     

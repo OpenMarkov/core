@@ -19,8 +19,8 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * {@code AddNodeEdit} is a edit that allow add a node to
- * {@code ProbNet} object.
+ * Edit that modifies the uncertain values and numeric values of a single column in a
+ * node's potential table. Used for sensitivity analysis parameters.
  *
  * @author mluque
  * @version 1 23/06/11

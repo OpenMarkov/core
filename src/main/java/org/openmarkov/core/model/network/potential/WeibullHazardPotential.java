@@ -22,6 +22,12 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.*;
 
+/**
+ * Weibull hazard potential for survival analysis. Models the probability of a binary
+ * event (e.g., death/survival) as a function of time using the Weibull hazard function,
+ * parameterized by a shape parameter (gamma) and covariates. Used in cost-effectiveness
+ * and temporal Bayesian network models.
+ */
 @PotentialType(names = "Hazard (Weibull)") public class WeibullHazardPotential extends GLMPotential {
     
     protected static final VariableExpression GAMMA = new VariableExpression(Collections.emptyList(), "Gamma");

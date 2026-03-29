@@ -7,13 +7,11 @@
 
 package org.openmarkov.core.action.base;
 
-@SuppressWarnings("serial")
-
-/*
-  The different between {@code PNUndoableEditEvent} and
-  {@code UndoableEditEvent} is that a <code>PNUndoableEditEvent</code>
-  use a {@code ProbNet}.
+/**
+ * An event that wraps a {@link PNEdit}. Unlike {@code UndoableEditEvent},
+ * this event is associated with a {@link org.openmarkov.core.model.network.ProbNet}.
  */
+@SuppressWarnings("serial")
 public class PNUndoableEditEvent {
     
     // Attributes

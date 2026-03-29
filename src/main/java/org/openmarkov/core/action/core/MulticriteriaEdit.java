@@ -15,6 +15,9 @@ import org.openmarkov.core.action.base.PNEdit;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Edit that changes the multicriteria options and decision criteria of a network.
+ */
 public class MulticriteriaEdit extends PNEdit {
 
 	/**

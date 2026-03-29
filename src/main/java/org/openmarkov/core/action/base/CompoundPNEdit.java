@@ -58,8 +58,20 @@ import java.util.ArrayList;
         }
     }
     
+    /**
+     * Generates the list of sub-edits that compose this compound edit.
+     * Called lazily on first access via {@link #getEdits()}.
+     *
+     * @return the list of sub-edits
+     */
     protected abstract ArrayList<PNEdit> generateEdits();
     
+    /**
+     * Returns the sub-edits, generating them on first call. All sub-edits are
+     * marked as belonging to this compound edit.
+     *
+     * @return the list of sub-edits
+     */
     public ArrayList<PNEdit> getEdits() {
         if (!this.generatedEdits) {
             this.edits = this.generateEdits();

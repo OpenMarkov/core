@@ -28,6 +28,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * A potential defined by a univariate probability density function (e.g., Normal, Beta,
+ * Gamma) whose parameters may depend on the parent variables. The distribution type
+ * is specified by a {@link org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction}
+ * class, and its parameters are stored in an {@link AugmentedProbTable}. Used for numeric
+ * conditioned variables.
+ */
 @PotentialType(names = "UnivariateDistr") public class UnivariateDistrPotential extends Potential {
     
     public static final String PSEUDO_VARIABLE = "pseudoVariableDistributionName";

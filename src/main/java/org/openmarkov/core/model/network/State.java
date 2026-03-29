@@ -13,6 +13,10 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Represents a single state of a finite-state variable.
+ * Each state has a name and optional additional properties (key-value metadata).
+ */
 public class State implements Cloneable, ClassLocalizable {
 
     // Attributes

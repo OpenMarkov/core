@@ -12,6 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Manages a stack of {@link EditsHistory} instances to support nested
+ * (transactional) edit groups. Sub-histories can be committed into the
+ * parent or discarded/undone via {@link CloseEditStackOptions}.
+ *
  * @author jrico
  */
 public class EditsHistoryStacker {
@@ -24,10 +28,20 @@ public class EditsHistoryStacker {
         this.uncommitedHistories = new ArrayDeque<>();
     }
     
+    /**
+     * Pushes a new empty {@link EditsHistory} onto the stack, starting a nested edit group.
+     */
     public void openNewSubEditHistory() {
         this.uncommitedHistories.addLast(new EditsHistory());
     }
     
+    /**
+     * Pops the topmost sub-history and applies the given close operations
+     * (e.g., forget, undo). If not forgotten, the edits are merged into
+     * the parent history as a single compound edit.
+     *
+     * @param closeOperations options controlling how the sub-history is closed
+     */
     public void closeSubEditHistory(List<CloseEditStackOptions> closeOperations) {
         if (this.uncommitedHistories.isEmpty()) {
             return;
@@ -52,6 +66,12 @@ public class EditsHistoryStacker {
         }
     }
     
+    /**
+     * Returns the currently active {@link EditsHistory}: the topmost sub-history
+     * if any are open, otherwise the main history.
+     *
+     * @return the current edit history
+     */
     public EditsHistory getCurrentUndoManager() {
         if (!this.uncommitedHistories.isEmpty()) {
             return this.uncommitedHistories.getLast();

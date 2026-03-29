@@ -18,6 +18,11 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * ICI potential implementing the AND/MIN family of canonical models (noisy-AND, causal MIN).
+ * The deterministic combination function returns the minimum state index among all
+ * auxiliary Z-variables and the leak variable.
+ */
 @PotentialType(names = "AND / MIN") public class MinPotential extends MinMaxPotential {
 
 	/**

@@ -16,7 +16,12 @@ import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 import java.util.*;
 
-// TODO Documentar la clase
+/**
+ * Represents a decision strategy as a tree structure. Each node in the tree corresponds
+ * to a decision or chance variable, and branches represent the chosen actions or observed
+ * states. Used during influence diagram solving to record and represent optimal policies.
+ * Extends {@link TreeADDPotential} and implements {@link Cloneable}.
+ */
 public class StrategyTree extends TreeADDPotential implements Cloneable {
     
     // Constructors

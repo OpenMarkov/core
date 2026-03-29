@@ -15,6 +15,11 @@ import org.openmarkov.java.enumUtils.EnumUtils;
 
 import java.io.Serializable;
 
+/**
+ * Enumerates the specific ICI model types: OR, CAUSAL_MAX, GENERAL_MAX (all in the
+ * OR/MAX family), AND, CAUSAL_MIN, GENERAL_MIN (all in the AND/MIN family), and TUNING.
+ * Each type maps to an {@link ICIFamily} via {@link #getFamily()}.
+ */
 public enum ICIModelType implements Serializable, Localizable {
     OR,
     CAUSAL_MAX,

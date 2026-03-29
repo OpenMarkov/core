@@ -12,6 +12,10 @@ import org.openmarkov.core.inference.TemporalOptions;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.action.base.PNEdit;
 
+/**
+ * Edit that changes the temporal options (horizon, discount rate, cycle length, etc.)
+ * of a dynamic network's inference configuration. Supports undo/redo.
+ */
 public class TemporalOptionsEdit extends PNEdit {
 
 	/**

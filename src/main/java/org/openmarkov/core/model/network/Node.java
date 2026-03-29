@@ -182,6 +182,9 @@ public class Node implements Cloneable, ClassLocalizable {
         return getVariable().getName();
     }
 
+    /**
+     * @return The base name of the variable (without temporal index).
+     */
     public String getBaseName() {
         return getVariable().getBaseName();
     }
@@ -200,6 +203,7 @@ public class Node implements Cloneable, ClassLocalizable {
         }
     }
 
+    /** Removes all potentials from this node. */
     public void clearPotentials(){
         this.potentials.clear();
     }
@@ -244,6 +248,11 @@ public class Node implements Cloneable, ClassLocalizable {
         return nodeType;
     }
     
+    /**
+     * Changes the type of this node and updates the internal depot index.
+     *
+     * @param nodeType the new node type
+     */
     public void setNodeType(NodeType nodeType) {
         // Remove node from NodeTypeDepot HashMap
         this.probNet.nodeDepot.removeNode(this);
@@ -261,6 +270,10 @@ public class Node implements Cloneable, ClassLocalizable {
         return new ArrayList<>(potentials);
     }
     
+    /**
+     * @return the first potential in this node's list
+     * @throws ThereIsNoPotentialsInNodeException if the node has no potentials
+     */
     public Potential getFirstPotential() throws ThereIsNoPotentialsInNodeException {
         if (this.potentials.isEmpty()) {
             throw new ThereIsNoPotentialsInNodeException(this);
@@ -293,38 +306,47 @@ public class Node implements Cloneable, ClassLocalizable {
         return probNet;
     }
     
+    /** @return all links (directed and undirected) incident to this node */
     public List<Link<Node>> getLinks() {
         return probNet.getLinks(this);
     }
-    
+
+    /** @return the child nodes of this node (targets of outgoing directed links) */
     public List<Node> getChildren() {
         return probNet.getChildren(this);
     }
-    
+
+    /** @return the parent nodes of this node (sources of incoming directed links) */
     public List<Node> getParents() {
         return probNet.getParents(this);
     }
-    
+
+    /** @return the sibling nodes of this node (connected by undirected links) */
     public List<Node> getSiblings() {
         return probNet.getSiblings(this);
     }
-    
+
+    /** @return all neighbor nodes (parents, children, and siblings) */
     public List<Node> getNeighbors() {
         return probNet.getNeighbors(this);
     }
-    
+
+    /** @return the number of child nodes */
     public int getNumChildren() {
         return probNet.getNumChildren(this);
     }
-    
+
+    /** @return the number of parent nodes */
     public int getNumParents() {
         return probNet.getNumParents(this);
     }
-    
+
+    /** @return the number of sibling nodes */
     public int getNumSiblings() {
         return probNet.getNumSiblings(this);
     }
-    
+
+    /** @return the number of neighbor nodes */
     public int getNumNeighbors() {
         return probNet.getNumNeighbors(this);
     }
@@ -543,7 +565,7 @@ public class Node implements Cloneable, ClassLocalizable {
     }
     
     /**
-     * This method is used to
+     * Returns the subset of this node's parents that are utility nodes.
      *
      * @return a list with utility parents
      */
@@ -630,6 +652,13 @@ public class Node implements Cloneable, ClassLocalizable {
         this.coordinateY = coordinateY;
     }
     
+    /**
+     * Creates a clone of this node bound to the given {@code ProbNet}, copying
+     * all metadata (coordinates, purpose, relevance, etc.) but not potentials.
+     *
+     * @param probNet the target network for the cloned node
+     * @return a new {@code Node} with cloned variable and copied properties
+     */
     public Node clone(ProbNet probNet) {
         Variable newVariable = CloneUtils.safeClone(this.variable);
         if (this.getNodeType() == NodeType.UTILITY) {
@@ -652,6 +681,9 @@ public class Node implements Cloneable, ClassLocalizable {
         return newNode;
     }
     
+    /**
+     * @return the first potential, or {@code null} if no potentials are assigned
+     */
     public Potential getPotential() {
         if(potentials.isEmpty()){
             return null;
@@ -659,6 +691,9 @@ public class Node implements Cloneable, ClassLocalizable {
             return getPotentials().getFirst();
         }
     }
+    /**
+     * @return the last potential in this node's list
+     */
     //TODO: very possibly removal
     public Potential getPreviousPotential() {
         int x = getPotentials().size() - 1;

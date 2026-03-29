@@ -19,6 +19,13 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * A potential for nodes with both finite-state and numeric parents. The finite-state
+ * parents define a table structure, while numeric parents are referenced via symbolic
+ * expressions in an {@link AugmentedProbTable}. During inference, the expressions are
+ * evaluated with the evidence values of the numeric parents to produce a standard
+ * {@link TablePotential}.
+ */
 @PotentialType(names = "AugmentedProbTable")
 public class AugmentedProbTablePotential extends Potential {
     

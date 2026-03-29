@@ -10,6 +10,10 @@ package org.openmarkov.core.action.base;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
 
+/**
+ * Listener interface for receiving notifications about {@link PNEdit} lifecycle events
+ * such as execution, undo, redo, and constraint violations.
+ */
 public interface PNEditListener {
     
     /**

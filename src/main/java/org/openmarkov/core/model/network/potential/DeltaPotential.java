@@ -26,6 +26,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * A deterministic potential that assigns probability 1 to a single state (for finite-states
+ * variables) or a single numeric value (for numeric/discretized variables). Represents a
+ * Dirac delta distribution.
+ */
 @PotentialType(names = "Delta") public class DeltaPotential extends Potential {
     
     // state and stateIndex are used for finite states variables

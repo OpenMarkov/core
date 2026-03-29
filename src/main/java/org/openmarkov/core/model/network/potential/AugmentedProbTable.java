@@ -20,9 +20,14 @@ import java.util.Collections;
 import java.util.List;
 
 /**
+ * A table potential whose cells contain symbolic function expressions ({@link VariableExpression})
+ * rather than plain numeric values. Each cell can hold a formula referencing numeric parent
+ * variables, enabling conditional probability tables that depend on continuous parameters.
+ * Extends {@link UncertainTablePotential} and is used as the internal storage for
+ * {@link AugmentedProbTablePotential} and {@link UnivariateDistrPotential}.
+ *
  * @author Manuel Arias
  */
-// TODO Add documentation
 public class AugmentedProbTable extends UncertainTablePotential {
     
     /**

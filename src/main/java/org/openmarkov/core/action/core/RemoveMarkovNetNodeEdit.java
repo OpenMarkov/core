@@ -16,6 +16,10 @@ import org.openmarkov.core.model.network.Variable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Edit that removes a node from a Markov network, marrying (connecting) all its
+ * former siblings to maintain the correct graph structure.
+ */
 @SuppressWarnings("serial") public class RemoveMarkovNetNodeEdit extends PNEdit implements UsesVariable {
     
     private Node node;

@@ -22,6 +22,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Abstract base for MIN and MAX families of ICI canonical potentials.
+ * Provides the factorization into delta and accrued potentials as described
+ * by Diez and Galan (2003). Subclasses implement the specific delta and
+ * accrued potential computations for MAX (OR) or MIN (AND) semantics.
+ */
 public abstract class MinMaxPotential extends ICIPotential {
     
     // Constants
@@ -44,6 +50,13 @@ public abstract class MinMaxPotential extends ICIPotential {
     protected Variable pseudoVariable;
     
     // Constructor
+    /**
+     * Creates a MinMax potential with the given model type and variables.
+     * Initializes the pseudo-variable used in the factorization.
+     *
+     * @param model     the ICI model type (e.g., GENERAL_MAX, GENERAL_MIN)
+     * @param variables the list of variables (conditioned variable first)
+     */
     public MinMaxPotential(ICIModelType model, List<Variable> variables) {
         // In principle, role will be "conditional probability"
         super(model, variables);
@@ -53,6 +66,11 @@ public abstract class MinMaxPotential extends ICIPotential {
         pseudoVariable = new Variable(pseudoVariableName, conditionedVariable.getNumStates());
     }
     
+    /**
+     * Copy constructor. Recreates the pseudo-variable from the conditioned variable.
+     *
+     * @param potential the MinMax potential to copy
+     */
     public MinMaxPotential(MinMaxPotential potential) {
         super(potential);
         Variable conditionedVariable = getConditionedVariable();

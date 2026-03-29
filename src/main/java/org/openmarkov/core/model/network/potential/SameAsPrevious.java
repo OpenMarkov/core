@@ -22,6 +22,11 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import java.util.List;
 
 /**
+ * A potential indicating that the distribution is identical to the previous temporal
+ * slice. Used in dynamic Bayesian networks where a variable at time t has the same
+ * CPT as at time t-1. Cannot be directly sampled or projected; the original potential
+ * must be retrieved via {@link #getOriginalPotential(ProbNet)}.
+ *
  * @author marias
  * @version 1.0
  */

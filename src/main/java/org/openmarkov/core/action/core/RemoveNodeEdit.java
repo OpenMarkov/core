@@ -18,6 +18,10 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.ProperUtilityPotentials;
 import org.openmarkov.core.action.base.UsesVariable;
 
+/**
+ * Edit that removes a node (and its links) from a {@code ProbNet}. Supports undo
+ * by re-adding the node.
+ */
 @SuppressWarnings("serial") public class RemoveNodeEdit extends PNEdit implements UsesVariable {
     
     // Attributes
@@ -39,6 +43,12 @@ import org.openmarkov.core.action.base.UsesVariable;
         this.node = node;
     }
     
+    /**
+     * Creates a remove-node edit by looking up the node for the given variable.
+     *
+     * @param probNet  the network containing the node
+     * @param variable the variable whose node will be removed
+     */
     public RemoveNodeEdit(ProbNet probNet, Variable variable) {
         super(probNet);
         this.variable = variable;

@@ -25,6 +25,19 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.*;
 
+/**
+ * Abstract base class for Independent Causal Influence (ICI) potentials.
+ * ICI models decompose a joint conditional probability into independent
+ * noisy contributions from each parent, combined via a deterministic function
+ * (e.g., OR/MAX, AND/MIN, or Tuning). Each parent has its own noisy parameter
+ * table, and there is a leak parameter for background causes.
+ * <p>
+ * Concrete subclasses include {@link MaxPotential} (OR/MAX family),
+ * {@link MinPotential} (AND/MIN family), and {@link TuningPotential}.
+ *
+ * @see ICIFamily
+ * @see ICIModelType
+ */
 @PotentialType(names = "ICIModel")
 public abstract class ICIPotential extends Potential {
     
@@ -77,6 +90,12 @@ public abstract class ICIPotential extends Potential {
         
     }
     
+    /**
+     * Copy constructor. Copies the model type, noisy parameters, and leaky parameters
+     * from the given potential.
+     *
+     * @param potential the ICI potential to copy
+     */
     public ICIPotential(ICIPotential potential) {
         super(potential);
         this.modelType = potential.modelType;
@@ -108,6 +127,12 @@ public abstract class ICIPotential extends Potential {
         return variables.size() > 1;
     }
     
+    /**
+     * Computes default noisy parameters for all parent variables. Each parent's parameters
+     * are initialized so that the identity mapping holds (state i of parent maps to state i of child).
+     *
+     * @return a 2D array where each row corresponds to a parent variable's noisy parameters
+     */
     public double[][] getDefaultNoisyParameters() {
         double[][] noisyParameters = new double[variables.size() - 1][];
         
@@ -136,6 +161,13 @@ public abstract class ICIPotential extends Potential {
         return probabilities;
     }
     
+    /**
+     * Returns the default leak parameters for the ICI model. The leak represents
+     * background causes not explicitly modeled.
+     *
+     * @param numStates number of states of the conditioned variable
+     * @return default leak parameter array
+     */
     public abstract double[] getDefaultLeakyParameters(int numStates);
     
     // Methods
@@ -199,6 +231,12 @@ public abstract class ICIPotential extends Potential {
         return DiscretePotentialOperations.multiplyAndMarginalize(potentials, variables);
     }
     
+    /**
+     * Returns the noisy parameters for the given parent variable.
+     *
+     * @param variable the parent variable
+     * @return the noisy parameter array for that parent
+     */
     public double[] getNoisyParameters(Variable variable) {
         return noisyParameters[variables.indexOf(variable) - 1];
     }
@@ -265,6 +303,11 @@ public abstract class ICIPotential extends Potential {
         return noisyPotentials;
     }
     
+    /**
+     * Updates the noisy parameters from a list of table potentials, one per parent variable.
+     *
+     * @param noisyPotentials list of table potentials whose values replace the noisy parameters
+     */
     public void setNoisyPotentials(List<TablePotential> noisyPotentials) {
         for (int i = 0; i < noisyPotentials.size(); ++i) {
             TablePotential noisyPotential = noisyPotentials.get(i);
@@ -296,6 +339,11 @@ public abstract class ICIPotential extends Potential {
         this.leakyParameters = leakyParameters;
     }
     
+    /**
+     * Returns the leak potential as a table potential with a single variable (the leak variable).
+     *
+     * @return the leak potential, or {@code null} if no leak parameters are set
+     */
     public TablePotential getLeakyPotential() {
         TablePotential leakyPotential = null;
         if (this.leakyParameters != null) {
@@ -443,6 +491,13 @@ public abstract class ICIPotential extends Potential {
         return computeFFunction(iciSampledStates);
     }
     
+    /**
+     * Computes the deterministic combination function (e.g., MAX, MIN) applied to the
+     * sampled states of all ICI auxiliary variables plus the leak.
+     *
+     * @param iciSampledStates sampled state indices for each parent's Z-variable and the leak
+     * @return the resulting state index for the conditioned variable
+     */
     protected abstract int computeFFunction(int[] iciSampledStates);
     
     @Override

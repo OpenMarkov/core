@@ -15,6 +15,10 @@ import org.openmarkov.core.model.network.potential.Potential;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Edit that removes the imposed policy from a decision node, restoring it to the
+ * optimal policy state. Supports undo by storing the previous potential.
+ */
 public class RemovePolicyEdit extends PNEdit {
     
     private final @Nullable Potential oldPotential;

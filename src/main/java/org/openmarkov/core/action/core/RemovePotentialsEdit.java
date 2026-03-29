@@ -13,11 +13,11 @@ import org.openmarkov.core.action.base.PNEdit;
 
 import java.util.ArrayList;
 
-@SuppressWarnings("serial")
-
-/*
-  Removes several potentials
+/**
+ * Edit that removes one or more potentials from a network. Potentials
+ * can be added incrementally via {@link #addPotentials}.
  */
+@SuppressWarnings("serial")
 public class RemovePotentialsEdit extends PNEdit {
 
 	private ArrayList<Potential> potentialsToDelete;

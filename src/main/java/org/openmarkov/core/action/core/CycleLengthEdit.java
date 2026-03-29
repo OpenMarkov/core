@@ -12,6 +12,9 @@ import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.core.model.network.ProbNet;
 
+/**
+ * Edit that changes the cycle length (temporal unit) of a dynamic network.
+ */
 public class CycleLengthEdit extends PNEdit {
 
 	/**

@@ -182,9 +182,11 @@ public class EvidenceCase implements ClassLocalizable {
     }
     
     /**
+     * Removes the finding for the variable with the given name.
+     *
      * @param variableName {@code String}.
      *
-     * @return
+     * @return the removed {@code Finding}, or {@code null} if no finding matched
      */
     public @Nullable Finding removeFinding(String variableName) {
         ArrayList<Variable> findingsVariables = new ArrayList<>(findings.keySet());
@@ -360,6 +362,14 @@ public class EvidenceCase implements ClassLocalizable {
         };
     }
     
+    /**
+     * Creates a new evidence case with all temporal findings shifted backwards
+     * by the given time difference. Non-temporal findings are copied as-is.
+     *
+     * @param timeDifference the number of time slices to shift backwards
+     * @param probNet        the network used to resolve shifted variables
+     * @return a new {@code EvidenceCase} with shifted findings
+     */
     public EvidenceCase shiftEvidenceBackwards(int timeDifference, ProbNet probNet) {
         try {
             EvidenceCase shiftedEvidence = new EvidenceCase();

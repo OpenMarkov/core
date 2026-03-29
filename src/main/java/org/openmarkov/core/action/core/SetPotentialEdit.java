@@ -14,6 +14,9 @@ import org.openmarkov.core.action.base.PNEdit;
 
 
 /**
+ * Edit that replaces a node's potential, respecting link restrictions. Supports undo/redo
+ * by storing both the old and new potentials.
+ *
  * @author Manuel Arias
  */
 public class SetPotentialEdit extends PNEdit {
@@ -25,6 +28,11 @@ public class SetPotentialEdit extends PNEdit {
     private final Node node;
     
     
+    /**
+     * Creates an edit that will clear the node's potential (set to {@code null}).
+     *
+     * @param node the node whose potential will be cleared
+     */
     public SetPotentialEdit(Node node) {
         super(node.getProbNet());
         this.node = node;
@@ -33,6 +41,12 @@ public class SetPotentialEdit extends PNEdit {
     }
     
     
+    /**
+     * Creates an edit that will replace the node's current potential with the given one.
+     *
+     * @param node      the node whose potential will be replaced
+     * @param potential the new potential to assign
+     */
     public SetPotentialEdit(Node node, Potential potential) {
         super(node.getProbNet());
         this.node = node;
@@ -46,6 +60,13 @@ public class SetPotentialEdit extends PNEdit {
     }
     
     
+    /**
+     * Creates an edit with explicit old and new potentials, useful for redo scenarios.
+     *
+     * @param node          the node whose potential will be replaced
+     * @param lastPotential the previous potential (for undo)
+     * @param newPotential  the new potential to assign
+     */
     public SetPotentialEdit(Node node,
                             Potential lastPotential,
                             Potential newPotential) {

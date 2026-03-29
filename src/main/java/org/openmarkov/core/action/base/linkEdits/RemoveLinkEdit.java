@@ -26,6 +26,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Removes a directed or undirected link between two nodes and optionally
+ * updates the destination node's potentials to no longer reference the removed parent.
+ */
 public final class RemoveLinkEdit extends BaseLinkEdit {
     
     /**
@@ -51,11 +55,11 @@ public final class RemoveLinkEdit extends BaseLinkEdit {
     // Constructor
     
     /**
-     * @param probNet          {@code ProbNet}
-     * @param variable1        {@code Variable}
-     * @param variable2        {@code Variable}
-     * @param isDirected       {@code boolean}
-     * @param updatePotentials {@code boolean}
+     * @param probNet          the probabilistic network
+     * @param variable1        the source variable of the link
+     * @param variable2        the destination variable of the link
+     * @param isDirected       {@code true} for a directed link
+     * @param updatePotentials whether to update potentials after removal
      */
     public RemoveLinkEdit(ProbNet probNet, Variable variable1, Variable variable2, boolean isDirected,
                           boolean updatePotentials) {

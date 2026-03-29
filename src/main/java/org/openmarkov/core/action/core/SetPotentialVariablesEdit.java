@@ -14,6 +14,10 @@ import org.openmarkov.core.action.base.PNEdit;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Edit that replaces the variable list of a node's first potential. Supports undo
+ * by restoring the original variable list.
+ */
 @SuppressWarnings("serial") public class SetPotentialVariablesEdit extends PNEdit {
 
 	private List<Variable> oldVariables;

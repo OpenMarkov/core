@@ -23,6 +23,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A GLM potential that applies the exponential link function: the conditioned
+ * variable's value is {@code exp(linear_combination)}. Used for modeling rates,
+ * counts, and other positive-valued quantities.
+ */
 @PotentialType(names = "Exponential") public class ExponentialPotential extends GLMPotential {
     
     public ExponentialPotential(List<Variable> variables, PotentialRole role) {

@@ -21,6 +21,11 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A potential representing a binomial distribution with parameters N (number of trials)
+ * and theta (probability of success). Used for numeric conditioned variables.
+ * This potential cannot be projected to a table.
+ */
 //UNCLEAR I think this potential does not belong to the GLM Family
 @PotentialType(names = "Binomial")
 

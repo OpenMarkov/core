@@ -142,18 +142,32 @@ public class PNESupport /*extends UndoableEditSupport*/ {
         return undoneEdits;
     }
     
+    /**
+     * Removes all undone edits from the current history, making redo unavailable.
+     */
     public void removeUndoneEdits() {
         editsHistoryStacker.getCurrentUndoManager().removeUndoneEdits();
     }
     
+    /**
+     * Returns the currently active {@link EditsHistory} (may be a sub-history).
+     *
+     * @return the current edit history
+     */
     public EditsHistory getCurrentEditHistory() {
         return editsHistoryStacker.getCurrentUndoManager();
     }
     
+    /**
+     * @return {@code true} if there are edits that can be undone
+     */
     public boolean getCanUndo() {
         return editsHistoryStacker.getCurrentUndoManager().canUndo();
     }
     
+    /**
+     * @return {@code true} if there are edits that can be redone
+     */
     public boolean getCanRedo() {
         return editsHistoryStacker.getCurrentUndoManager().canRedo();
     }
@@ -178,6 +192,9 @@ public class PNESupport /*extends UndoableEditSupport*/ {
         }
     }
     
+    /**
+     * Cancels the current sub-edit history by undoing all its edits and discarding them.
+     */
     public void cancelLastSubEditHistory() {
         closeSubEditHistory(CloseEditStackOptions.FORGET, CloseEditStackOptions.UNDO);
     }

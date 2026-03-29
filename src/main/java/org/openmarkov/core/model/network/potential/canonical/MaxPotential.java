@@ -18,6 +18,11 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * ICI potential implementing the OR/MAX family of canonical models (noisy-OR, causal MAX).
+ * The deterministic combination function returns the maximum state index among all
+ * auxiliary Z-variables and the leak variable.
+ */
 @PotentialType(names = "OR / MAX") public class MaxPotential extends MinMaxPotential {
     
     /**

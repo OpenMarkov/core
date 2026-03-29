@@ -23,6 +23,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A GLM potential using the identity link function: the conditioned variable's
+ * value equals a linear combination of covariates and their coefficients.
+ * Also known as "linear regression" potential. Used for numeric or discretized
+ * conditioned variables.
+ */
 @PotentialType(names = {"Linear combination", "Linear regression"})
 public class LinearCombinationPotential extends GLMPotential {
     

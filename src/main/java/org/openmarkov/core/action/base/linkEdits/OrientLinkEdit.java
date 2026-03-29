@@ -13,13 +13,16 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.ModelNetworkConstraint;
 
+/**
+ * Converts an undirected link into a directed one between two variables.
+ */
 @SuppressWarnings("serial") public final class OrientLinkEdit extends BaseLinkEdit {
 
 	/**
-	 * @param probNet    {@code ProbNet}
-	 * @param variable1  {@code Variable}
-	 * @param variable2  {@code Variable}
-	 * @param isDirected {@code boolean}
+	 * @param probNet    the probabilistic network
+	 * @param variable1  the source variable
+	 * @param variable2  the destination variable
+	 * @param isDirected whether the resulting link should be directed
 	 */
 	public OrientLinkEdit(ProbNet probNet, Variable variable1, Variable variable2, boolean isDirected) {
 		super(probNet, variable1, variable2, isDirected);

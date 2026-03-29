@@ -29,12 +29,22 @@ import org.openmarkov.core.model.network.ProbNet;
     public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
     }
     
+    /**
+     * Checks all constraints and throws if any are violated.
+     *
+     * @throws ConstraintViolatedException if at least one constraint would be violated
+     */
     public final void tryConstraintsWillBeMet() throws ConstraintViolatedException {
         ConstraintChecker constraintChecker = new ConstraintChecker(probNet);
         this.checkConstraintsWillBeMet(constraintChecker);
         constraintChecker.buildAndThrow();
     }
     
+    /**
+     * Returns whether all constraints will be met after this edit.
+     *
+     * @return {@code true} if no constraints would be violated
+     */
     public final boolean constraintsWillBeMet() {
         try {
             this.tryConstraintsWillBeMet();
@@ -51,6 +61,13 @@ import org.openmarkov.core.model.network.ProbNet;
      */
     protected abstract void doEdit() throws DoEditException;
     
+    /**
+     * Validates constraints, executes the edit, records it in the undo history
+     * if applicable, and notifies listeners.
+     *
+     * @throws DoEditException if the edit fails during execution
+     * @throws ConstraintViolatedException if constraints would be violated
+     */
     public void executeEdit() throws DoEditException {
         PNESupport pneSupport = getProbNet().getPNESupport();
         try {
@@ -100,7 +117,7 @@ import org.openmarkov.core.model.network.ProbNet;
     // Constructor
     
     /**
-     * @param probNet {@code ProbNet}
+     * @param probNet the probabilistic network this edit operates on
      */
     public PNEdit(ProbNet probNet) {
         this.probNet = probNet;
@@ -148,6 +165,10 @@ import org.openmarkov.core.model.network.ProbNet;
     
     private boolean belongsToACompoundEdit = false;
     
+    /**
+     * Marks this edit as belonging to a compound edit, so it will not be
+     * independently recorded in the undo history.
+     */
     public void markItBelongsToACompoundEdit() {
         this.belongsToACompoundEdit = true;
     }

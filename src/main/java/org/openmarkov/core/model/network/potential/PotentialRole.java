@@ -12,6 +12,9 @@ import org.openmarkov.core.stringformat.LocalizationFormatter;
 import org.openmarkov.java.enumUtils.EnumUtils;
 
 /**
+ * Enumerates the roles a potential can play in a probabilistic graphical model:
+ * conditional probability, joint probability, policy, link restriction, or unspecified.
+ *
  * @author marias
  * @version 1.0
  */

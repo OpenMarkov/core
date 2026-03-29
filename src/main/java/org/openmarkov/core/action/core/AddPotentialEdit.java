@@ -11,6 +11,9 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.action.base.PNEdit;
 
+/**
+ * Edit that adds a potential to the network's global potential list.
+ */
 @SuppressWarnings("serial") public class AddPotentialEdit extends PNEdit {
 
 	protected Potential potential;

@@ -68,9 +68,9 @@ public final class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 	// Constructor
 
 	/**
-	 * @param probNet   {@code ProbNet}
-     * @param variableFrom {@code Variable}
-     * @param variableTo {@code Variable}
+	 * @param probNet      the probabilistic network
+	 * @param variableFrom the current parent variable
+	 * @param variableTo   the current child variable
 	 */
     public InvertLinkAndUpdatePotentialsEdit(ProbNet probNet, Variable variableFrom, Variable variableTo) {
         super(probNet, variableFrom, variableTo, true);

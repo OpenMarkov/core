@@ -26,6 +26,16 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
+ * Abstract base class for all potentials in OpenMarkov. A potential represents a
+ * conditional probability table (CPT), a utility function, or any parametric
+ * distribution associated with a node in a probabilistic graphical model.
+ * <p>
+ * Subclasses must implement {@link #tableProject}, {@link #project}, {@link #copy},
+ * {@link #isUncertain}, {@link #scalePotential}, and {@link #reorder}.
+ * <p>
+ * Potentials are discovered at runtime via the {@code @PotentialType} annotation
+ * and the plugin system.
+ *
  * @author marias
  * @author fjdiez
  * @version 1.0
@@ -124,12 +134,25 @@ public abstract class Potential implements Localizable {
         return true;
     }
     
+    /**
+     * Converts a variable array to a list.
+     *
+     * @param variables array of variables
+     * @return a new {@code List} containing the given variables
+     */
     protected static List<Variable> toList(Variable[] variables) {
         List<Variable> variablesArrayList = new ArrayList<>();
         Collections.addAll(variablesArrayList, variables);
         return variablesArrayList;
     }
     
+    /**
+     * Finds the first potential in the list whose conditioned variable matches the given variable.
+     *
+     * @param variable   the variable to search for
+     * @param potentials list of table potentials to search
+     * @return the matching potential, or {@code null} if not found
+     */
     protected static TablePotential findPotentialByVariable(Variable variable, List<TablePotential> potentials) {
         int i = 0;
         TablePotential potential = null;
@@ -211,6 +234,12 @@ public abstract class Potential implements Localizable {
         return variables.get(position);
     }
     
+    /**
+     * Replaces one variable with another in this potential's variable list.
+     *
+     * @param variableToReplace the variable to be replaced
+     * @param variable          the replacement variable
+     */
     public void replaceVariable(Variable variableToReplace, Variable variable) {
         // TODO - Check if OOPN and ConditionalGaussian potential are still running
         //        if (variableToReplace.equals (utilityVariable))
@@ -224,8 +253,12 @@ public abstract class Potential implements Localizable {
         }
     }
     
-    // TODO documentar
-    
+    /**
+     * Replaces the variable at the given position with a new variable.
+     *
+     * @param position index of the variable to replace
+     * @param variable the replacement variable
+     */
     public void replaceVariable(int position, Variable variable) {
         variables.remove(position);
         variables.add(position, variable);
@@ -259,11 +292,28 @@ public abstract class Potential implements Localizable {
     //        return role == PotentialRole.UTILITY;
     //    }
     
+    /**
+     * Projects this potential onto the given evidence, returning a single table potential.
+     * Convenience overload that delegates to the three-argument version with an empty list.
+     *
+     * @param evidenceCase     evidence to project onto
+     * @param inferenceOptions inference options
+     * @return the projected table potential
+     * @throws NonProjectablePotentialException if the potential cannot be projected
+     */
     public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions)
             throws NonProjectablePotentialException {
         return tableProject(evidenceCase, inferenceOptions, new ArrayList<TablePotential>());
     }
     
+    /**
+     * Projects this potential onto the given evidence, returning a potential
+     * (not necessarily a {@link TablePotential}).
+     *
+     * @param evidenceCase evidence to project onto
+     * @return the projected potential
+     * @throws NonProjectablePotentialException if the potential cannot be projected
+     */
     public abstract Potential project(EvidenceCase evidenceCase) throws NonProjectablePotentialException;
     
     /**
@@ -397,6 +447,12 @@ public abstract class Potential implements Localizable {
         return toShortString();
     }
     
+    /**
+     * Returns a compact string representation of this potential, showing variables
+     * and role (e.g., "P(X | Y, Z)" for conditional probability).
+     *
+     * @return short string representation
+     */
     public String toShortString() {
         StringBuilder buffer = new StringBuilder();
         int numVariables = (variables != null) ? variables.size() : 0;
@@ -451,6 +507,11 @@ public abstract class Potential implements Localizable {
         return buffer;
     }
     
+    /**
+     * Returns a string representation suitable for display in a Tree/ADD potential.
+     *
+     * @return tree ADD string representation
+     */
     public String treeADDString() {
         return toString();
     }
@@ -540,10 +601,24 @@ public abstract class Potential implements Localizable {
         return newPotential;
     }
     
+    /**
+     * Returns the probability for the given configuration of state indices.
+     *
+     * @param sampledStateIndexes map from each variable to its state index
+     * @return the probability value for the configuration
+     * @throws NonProjectablePotentialException if the potential cannot compute the probability
+     */
     public double getProbability(HashMap<Variable, Integer> sampledStateIndexes) throws NonProjectablePotentialException {
         return 0;
     }
     
+    /**
+     * Returns the probability for the configuration specified by the evidence case.
+     *
+     * @param evidenceCase evidence case defining the variable-state configuration
+     * @return the probability value for the configuration
+     * @throws NonProjectablePotentialException if the potential cannot compute the probability
+     */
     public double getProbability(EvidenceCase evidenceCase) throws NonProjectablePotentialException {
         HashMap<Variable, Integer> configuration = new HashMap<>();
         for (Finding finding : evidenceCase.getFindings()) {
@@ -552,6 +627,11 @@ public abstract class Potential implements Localizable {
         return getProbability(configuration);
     }
     
+    /**
+     * Replaces a numeric variable with its discretized counterpart, matching by name.
+     *
+     * @param convertedParentVariable the discretized version of a previously numeric variable
+     */
     public void replaceNumericVariable(Variable convertedParentVariable) {
         int varIndex = -1;
         for (int i = 0; i < variables.size(); ++i) {

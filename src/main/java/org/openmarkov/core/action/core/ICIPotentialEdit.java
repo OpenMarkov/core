@@ -12,6 +12,10 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.canonical.ICIPotential;
 import org.openmarkov.core.action.base.PNEdit;
 
+/**
+ * Edit that modifies the noisy or leaky parameters of an {@link ICIPotential}
+ * (e.g., noisy-OR, noisy-MAX canonical models).
+ */
 @SuppressWarnings("serial") public class ICIPotentialEdit extends PNEdit {
     
     private ICIPotential potential;

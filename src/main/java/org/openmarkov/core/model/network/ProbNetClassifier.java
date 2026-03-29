@@ -24,6 +24,7 @@ import java.util.TreeSet;
  * Follows the same pattern as {@link VariableTypeConverter} and
  * {@link VariableStateOperations}.
  *
+ * @author Manuel Arias
  * @see ProbNet
  */
 public final class ProbNetClassifier {

@@ -211,16 +211,9 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * (otherwise the network would have no node, and it would be
      * impossible to assign constant potentials)
      */
+    /** Delegates to {@link ProbNetPotentialQueries#buildMarkovDecisionNetwork(ProbNet, Collection)}. */
     public ProbNet buildMarkovDecisionNetwork(Collection<? extends Potential> projectedTablePotentials) {
-        ProbNet markovDecisionNetwork = new ProbNet(MarkovNetworkType.getUniqueInstance());
-        
-        markovDecisionNetwork.addConstraint(new OnlyUndirectedLinks());
-        for (Potential potential : projectedTablePotentials) {
-            markovDecisionNetwork.addPotential(potential, this);
-        }
-        
-        markovDecisionNetwork.setInferenceOptions(this.getInferenceOptions());
-        return markovDecisionNetwork;
+        return ProbNetPotentialQueries.buildMarkovDecisionNetwork(this, projectedTablePotentials);
     }
     
     /**
@@ -506,14 +499,9 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      *
      * @throws NonProjectablePotentialException NonProjectablePotentialException
      */
+    /** Delegates to {@link ProbNetPotentialQueries#tableProjectPotentials(ProbNet, EvidenceCase)}. */
     public List<TablePotential> tableProjectPotentials(EvidenceCase evidenceCase) throws NonProjectablePotentialException {
-        List<Potential> originalPotentials = getSortedPotentials();
-        List<TablePotential> projectedPotentials = new ArrayList<>();
-        for (Potential potential : originalPotentials) {
-            InferenceOptions inferenceOptions = new InferenceOptions(this, null);
-            projectedPotentials.add(potential.tableProject(evidenceCase, inferenceOptions, projectedPotentials));
-        }
-        return projectedPotentials;
+        return ProbNetPotentialQueries.tableProjectPotentials(this, evidenceCase);
     }
     
     /**
@@ -683,22 +671,9 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * @return {@code ArrayList} of potentials containing
      * {@code variable}.
      */
+    /** Delegates to {@link ProbNetPotentialQueries#getProbPotentials(ProbNet, Variable)}. */
     public List<Potential> getProbPotentials(Variable variable) {
-        Node nodeVariable = getNode(variable);
-        List<Node> allNodes = getNeighbors(nodeVariable);
-        allNodes.add(nodeVariable);
-        List<Potential> potentialsVariable = new ArrayList<>();
-        for (Node node : allNodes) {
-            List<Potential> potentialsNode = node.getPotentials();
-            for (Potential potential : potentialsNode) {
-                if ((potential.getVariables().contains(variable))
-                        && potential.getVariable(0).getDecisionCriterion() == null
-                        && potential.getCriterion() == null) {
-                    potentialsVariable.add(potential);
-                }
-            }
-        }
-        return potentialsVariable;
+        return ProbNetPotentialQueries.getProbPotentials(this, variable);
     }
     
     /**
@@ -714,23 +689,9 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * @return {@code ArrayList} of potentials containing
      * {@code variable}.
      */
+    /** Delegates to {@link ProbNetPotentialQueries#getUtilityPotentials(ProbNet, Variable)}. */
     public List<Potential> getUtilityPotentials(Variable variable) {
-        Node nodeVariable = getNode(variable);
-        List<Node> allNodes = getNeighbors(nodeVariable);
-        allNodes.add(nodeVariable);
-        List<Potential> potentialsVariable = new ArrayList<>();
-        for (Node node : allNodes) {
-            List<Potential> potentialsNode = node.getPotentials();
-            for (Potential potential : potentialsNode) {
-                List<Variable> variables = potential.getVariables();
-                if (variables.contains(variable)
-                        && (potential.getCriterion() != null || (node.getNodeType() == NodeType.UTILITY
-                        && node.getVariable().getDecisionCriterion() != null))) {
-                    potentialsVariable.add(potential);
-                }
-            }
-        }
-        return potentialsVariable;
+        return ProbNetPotentialQueries.getUtilityPotentials(this, variable);
     }
     
     /**
@@ -1327,51 +1288,9 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
             }
         }
     }
-    /**
-     * Adds, removes, or rearranges an agent in this network's agent list.
-     *
-     * @param stateAction the action to perform (ADD, REMOVE, RENAME, UP, DOWN)
-     * @param agentName   the name of the agent to modify
-     * @param dataTable   the full agent table used for RENAME/UP/DOWN operations
-     */
+    /** Delegates to {@link ProbNetAgentManager#modifyAgent(ProbNet, StateAction, String, Object[][])}. */
     public void modifyAgent(StateAction stateAction, String agentName, Object[][] dataTable) {
-        List<StringWithProperties> agents = getAgents();
-        switch (stateAction) {
-            case ADD:
-                if (agents == null) {
-                    agents = new ArrayList<>();
-                }
-                agents.add(new StringWithProperties(agentName));
-                setAgents(agents);
-                break;
-            case REMOVE:
-                if (agents == null) break;
-                StringWithProperties agentToRemove = null;
-                for (StringWithProperties agente : agents) {
-                    if (agente.getString().equals(agentName)) {
-                        agentToRemove = agente;
-                    }
-                }
-                agents.remove(agentToRemove);
-                // Also delete this agent from any node it was assigned to
-                if (agentToRemove != null) {
-                    for (Node node : getNodes()) {
-                        StringWithProperties nodeAgent = node.getVariable().getAgent();
-                        if (nodeAgent != null && nodeAgent.getString().equals(agentName)) {
-                            node.getVariable().setAgent(null);
-                        }
-                    }
-                }
-                setAgents(agents);
-                break;
-            case DOWN, RENAME, UP:
-                ArrayList<StringWithProperties> modifiedAgent = new ArrayList<>();
-                for (Object[] objects : dataTable) {
-                    modifiedAgent.add(new StringWithProperties((String) objects[0]));
-                }
-                setAgents(modifiedAgent);
-                break;
-        }
+        ProbNetAgentManager.modifyAgent(this, stateAction, agentName, dataTable);
     }
 
     @Override

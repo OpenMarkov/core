@@ -30,6 +30,7 @@ import java.util.stream.Collectors;
  * <p>
  * Follows the same pattern as {@link VariableTypeConverter}.
  *
+ * @author Manuel Arias
  * @see Variable
  * @see VariableTypeConverter
  */

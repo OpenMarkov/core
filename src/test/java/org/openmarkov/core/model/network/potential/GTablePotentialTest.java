@@ -57,16 +57,10 @@ class GTablePotentialTest {
     }
 
     @Test
-    void singleVariableConstructorAllocatesValuesArrayAllZero() {
-        // Known side-effect: super(variables, null) allocates values[] with tableSize entries.
+    void singleVariableConstructorHasCorrectTableSize() {
         Variable v = var("X", 4);
         GTablePotential<String> g = new GTablePotential<>(List.of(v));
-        // values[] must be allocated (not null)
-        assertNotNull(g.values);
-        assertEquals(4, g.values.length, "values[] length should equal tableSize");
-        for (double d : g.values) {
-            assertEquals(0.0, d, "GTablePotential.values[] must be all-zero (unused)");
-        }
+        assertEquals(4, g.getTableSize(), "tableSize should equal number of states");
     }
 
     // ------------------------------------------------------------------
@@ -79,8 +73,7 @@ class GTablePotentialTest {
         Variable y = var("Y", 3);
         GTablePotential<Integer> g = new GTablePotential<>(List.of(x, y));
         // tableSize = 2 * 3 = 6
-        assertNotNull(g.values);
-        assertEquals(6, g.values.length);
+        assertEquals(6, g.getTableSize());
     }
 
     @Test
@@ -103,7 +96,7 @@ class GTablePotentialTest {
         Variable y = var("Y", 3);
         Variable z = var("Z", 4);
         GTablePotential<String> g = new GTablePotential<>(List.of(x, y, z));
-        assertEquals(24, g.values.length, "2*3*4 = 24");
+        assertEquals(24, g.getTableSize(), "2*3*4 = 24");
     }
 
     // ------------------------------------------------------------------
@@ -137,31 +130,29 @@ class GTablePotentialTest {
     }
 
     @Test
-    void roleAndElementTableConstructorStillHasZeroValuesArray() {
+    void roleAndElementTableConstructorHasCorrectTableSize() {
         Variable v = var("X", 2);
         List<Integer> table = List.of(10, 20);
         GTablePotential<Integer> g = new GTablePotential<>(List.of(v), PotentialRole.UNSPECIFIED, table);
-        assertEquals(2, g.values.length);
-        assertEquals(0.0, g.values[0]);
-        assertEquals(0.0, g.values[1]);
+        assertEquals(2, g.getTableSize());
     }
 
     // ------------------------------------------------------------------
-    // Invariant: values[] always all-zero after element writes
+    // Invariant: elementTable is independent of numeric state
     // ------------------------------------------------------------------
 
     @Test
-    void writingToElementTableDoesNotChangeValuesArray() {
+    void writingToElementTableDoesNotAffectTableSize() {
         Variable v = var("X", 3);
         GTablePotential<String> g = new GTablePotential<>(List.of(v), PotentialRole.UNSPECIFIED);
         g.elementTable.add("a");
         g.elementTable.add("b");
         g.elementTable.add("c");
 
-        for (double d : g.values) {
-            assertEquals(0.0, d,
-                    "Writing to elementTable must not modify values[] (invariant)");
-        }
+        assertEquals(3, g.getTableSize(),
+                "tableSize must remain equal to the number of variable states");
+        assertEquals(3, g.elementTable.size(),
+                "elementTable size must equal the number of added elements");
     }
 
     // ------------------------------------------------------------------
@@ -197,35 +188,30 @@ class GTablePotentialTest {
     }
 
     // ------------------------------------------------------------------
-    // Role — known issue: super(variables, null) discards the role arg
+    // Role — correctly stored after reparenting to AbstractIndexedPotential
     // ------------------------------------------------------------------
 
-    /**
-     * Documents a known quirk: the (variables, role) constructor calls
-     * {@code super(variables, null)}, so the role parameter is silently
-     * discarded and {@link GTablePotential#getPotentialRole()} always returns
-     * {@code null}.
-     */
     @Test
-    void roleParameterIsDiscardedBecauseConstructorPassesNullToSuper() {
+    void roleParameterIsStoredByTwoArgConstructor() {
         Variable v = var("X", 2);
         GTablePotential<String> g = new GTablePotential<>(List.of(v), PotentialRole.UNSPECIFIED);
-        // Known behaviour: super(variables, null) ignores the role argument.
-        assertNull(g.getPotentialRole(),
-                "GTablePotential(vars, role) passes null to super, so role is always null."
-                + " This is a known design issue relevant to re-parenting (Rediseño 3).");
+        assertEquals(PotentialRole.UNSPECIFIED, g.getPotentialRole(),
+                "GTablePotential(vars, role) must store the role via super(variables, role).");
     }
 
-    /**
-     * The (variables, role, elementTable) constructor also discards the role
-     * for the same reason.
-     */
     @Test
-    void roleParameterInThreeArgConstructorIsAlsoDiscarded() {
+    void roleParameterIsStoredByThreeArgConstructor() {
         Variable v = var("X", 2);
         List<String> table = List.of("a", "b");
         GTablePotential<String> g = new GTablePotential<>(List.of(v), PotentialRole.UNSPECIFIED, table);
-        assertNull(g.getPotentialRole(),
-                "Three-arg constructor also passes null to super, role is always null.");
+        assertEquals(PotentialRole.UNSPECIFIED, g.getPotentialRole(),
+                "Three-arg constructor must also store the role via super(variables, role).");
+    }
+
+    @Test
+    void noRoleConstructorHasNullRole() {
+        Variable v = var("X", 2);
+        GTablePotential<String> g = new GTablePotential<>(List.of(v));
+        assertNull(g.getPotentialRole(), "Single-arg constructor passes null role — getPotentialRole() must be null.");
     }
 }

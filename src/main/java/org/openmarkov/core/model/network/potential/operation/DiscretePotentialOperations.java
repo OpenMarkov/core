@@ -12,6 +12,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.PotentialOperationException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.AbstractIndexedPotential;
 import org.openmarkov.core.model.network.potential.FunctionPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -430,7 +431,7 @@ public final class DiscretePotentialOperations {
      * the variables of the potentials.
      *
      */
-    public static TablePotential merge(Variable decision, List<TablePotential> potentials)
+    public static AbstractIndexedPotential merge(Variable decision, List<? extends AbstractIndexedPotential> potentials)
             throws PotentialOperationException.DifferentSizesInPotentialsAndStates {
         return TablePotentialMerge.merge(decision, potentials);
     }

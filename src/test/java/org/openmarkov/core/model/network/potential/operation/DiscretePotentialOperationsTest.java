@@ -671,10 +671,11 @@ public class DiscretePotentialOperationsTest {
         p1.values[0] = 0.6;
         p1.values[1] = 0.4;
 
-        TablePotential merged = DiscretePotentialOperations.merge(dec, Arrays.asList(p0, p1));
+        AbstractIndexedPotential mergedRaw = DiscretePotentialOperations.merge(dec, Arrays.asList(p0, p1));
+        TablePotential merged = (TablePotential) mergedRaw;
 
         // Plain merge must NOT return GTablePotential
-        assertFalse(merged instanceof GTablePotential,
+        assertFalse(mergedRaw instanceof GTablePotential,
                 "Plain-potential merge should return TablePotential, not GTablePotential");
 
         // Decision variable is first, X second
@@ -710,7 +711,7 @@ public class DiscretePotentialOperationsTest {
         g1.elementTable.add(cep10);
         g1.elementTable.add(cep11);
 
-        TablePotential gMergedRaw = DiscretePotentialOperations.merge(dec, Arrays.asList(g0, g1));
+        AbstractIndexedPotential gMergedRaw = DiscretePotentialOperations.merge(dec, Arrays.asList(g0, g1));
 
         assertInstanceOf(GTablePotential.class, gMergedRaw,
                 "GTablePotential merge must return a GTablePotential");
@@ -734,11 +735,6 @@ public class DiscretePotentialOperationsTest {
         assertSame(cep01, gMerged.elementTable.get(2), "(D=0, X=1) must be cep01");
         assertSame(cep11, gMerged.elementTable.get(3), "(D=1, X=1) must be cep11");
 
-        // GTablePotential invariant: values[] are all zeros (unused storage)
-        for (double v : gMerged.values) {
-            assertEquals(0.0, v, "GTablePotential.values[] must be all-zero");
-        }
-
         // ----------------------------------------------------------------
         // 3. Context variables: potentials have more than one variable
         // ----------------------------------------------------------------
@@ -748,7 +744,7 @@ public class DiscretePotentialOperationsTest {
         Arrays.fill(pXY0.values, 1.0);
         Arrays.fill(pXY1.values, 2.0);
 
-        TablePotential mergedXY = DiscretePotentialOperations.merge(dec, Arrays.asList(pXY0, pXY1));
+        TablePotential mergedXY = (TablePotential) DiscretePotentialOperations.merge(dec, Arrays.asList(pXY0, pXY1));
         assertEquals(3, mergedXY.getVariables().size(), "merged variables: [D, X, Y]");
         assertEquals(dec, mergedXY.getVariables().getFirst());
         assertEquals(8, mergedXY.values.length, "2 × 2 × 2 = 8 positions");

@@ -184,7 +184,7 @@ public class AuxiliaryOperations {
 	 * @param variables  reference variable order
 	 * @return array of accumulated-offset arrays, one per potential
 	 */
-	public static int[][] getAccumulatedOffsets(List<TablePotential> potentials, List<Variable> variables) {
+	public static int[][] getAccumulatedOffsets(List<? extends Potential> potentials, List<Variable> variables) {
 		int numPotentials = potentials.size();
 		int[][] accumulatedOffsets = new int[numPotentials][];
 		for (int i = 0; i < numPotentials; i++) {

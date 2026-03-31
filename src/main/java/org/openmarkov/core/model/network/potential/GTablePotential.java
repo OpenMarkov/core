@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network.potential;
 
+import org.openmarkov.core.exception.NonProjectablePotentialException;
+import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Variable;
 
 import java.util.ArrayList;
@@ -16,7 +18,7 @@ import java.util.List;
  * A generalized {@code TablePotential} that contains an
  * {@code Objects} table of the same type: {@code Element}.
  */
-public class GTablePotential<E> extends TablePotential {
+public class GTablePotential<E> extends AbstractIndexedPotential {
 
 	// Attributes
 	/**
@@ -32,29 +34,17 @@ public class GTablePotential<E> extends TablePotential {
 	 * @param variables List of variables
 	 */
 	public GTablePotential(List<Variable> variables) {
-		super(variables, null); // <- Don't create a table of doubles
-		int numVariables = (variables != null) ? variables.size() : 0;
-		if (numVariables != 0) {
-			int sizeTable = dimensions[numVariables - 1] * offsets[numVariables - 1];
-			elementTable = new ArrayList<E>(sizeTable);
-		} else {// In this case the potential is a constant
-			elementTable = new ArrayList<E>(1);
-		}
+		super(variables, null);
+		elementTable = new ArrayList<>(tableSize);
 	}
 
 	/**
-	 * @param variables Listof variables
+	 * @param variables List of variables
 	 * @param role Potential role
 	 */
-	public GTablePotential(List<Variable> variables, PotentialRole role) {// TODO Remove this method
-		super(variables, null); // <- Don't create a table of doubles
-		int numVariables = (variables != null) ? variables.size() : 0;
-		if (numVariables != 0) {
-			int sizeTable = dimensions[numVariables - 1] * offsets[numVariables - 1];
-			elementTable = new ArrayList<E>(sizeTable);
-		} else {// In this case the potential is a constant
-			elementTable = new ArrayList<E>(1);
-		}
+	public GTablePotential(List<Variable> variables, PotentialRole role) {
+		super(variables, role);
+		elementTable = new ArrayList<>(tableSize);
 	}
 
 	/**
@@ -63,13 +53,23 @@ public class GTablePotential<E> extends TablePotential {
 	 * @param elementTable List of elements
 	 */
 	public GTablePotential(List<Variable> variables, PotentialRole role, List<E> elementTable) {
-		this(variables, role);
+		super(variables, role);
 		this.elementTable = elementTable;
 	}
 
 	// Methods
 	public GTablePotential(Potential potential) {
 		this(potential.getVariables(), potential.getPotentialRole());
+	}
+
+	@Override
+	public Potential project(EvidenceCase evidenceCase) throws NonProjectablePotentialException {
+		throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
+	}
+
+	@Override
+	public Potential copy() {
+		return new GTablePotential<>(variables, role, new ArrayList<>(elementTable));
 	}
 
 	/**

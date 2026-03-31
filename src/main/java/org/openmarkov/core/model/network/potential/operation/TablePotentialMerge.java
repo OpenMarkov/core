@@ -11,6 +11,7 @@ import org.openmarkov.core.exception.PotentialOperationException;
 import org.openmarkov.core.model.network.CEP;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
+import org.openmarkov.core.model.network.potential.AbstractIndexedPotential;
 import org.openmarkov.core.model.network.potential.GTablePotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -50,7 +51,7 @@ final class TablePotentialMerge {
      * @throws PotentialOperationException.DifferentSizesInPotentialsAndStates if sizes differ
      */
     @SuppressWarnings("unchecked")
-    static TablePotential merge(Variable decision, List<TablePotential> potentials)
+    static AbstractIndexedPotential merge(Variable decision, List<? extends AbstractIndexedPotential> potentials)
             throws PotentialOperationException.DifferentSizesInPotentialsAndStates {
         throwExceptionIfNecessaryInMergeOperation(decision, potentials);
 
@@ -107,17 +108,22 @@ final class TablePotentialMerge {
         // Populate tables, interventions and uncertain values from each potential
         double[][] tables = new double[numPotentials][];
         for (int indexPotential = 0; indexPotential < numPotentials; indexPotential++) {
-            TablePotential potential = potentials.get(indexPotential);
-            tables[indexPotential] = potential.values;
-            if (thereArePotentialsWithInterventions) {
-                potentialsInterventions[indexPotential] = potential instanceof StrategicTablePotential stp
-                        ? stp.strategyTrees : null;
-            }
-            if (thereArePotentialsWithUncertainValues) {
-                potentialsUncertainValues[indexPotential] = potential.getUncertainValues();
-            }
-            if (thereAreGTablePotentials && potentialsAreGTablePotentials[indexPotential]) {
-                elementsTables.set(indexPotential, ((GTablePotential<CEP>) potential).elementTable);
+            AbstractIndexedPotential potential = potentials.get(indexPotential);
+            if (potential instanceof GTablePotential<?> gtp) {
+                // GTablePotential has no values[] array; use a zero-filled placeholder.
+                // mergedValues is only used when there are no GTablePotentials in the result.
+                tables[indexPotential] = new double[gtp.getTableSize()];
+                elementsTables.set(indexPotential, ((GTablePotential<CEP>) gtp).elementTable);
+            } else {
+                TablePotential tp = (TablePotential) potential;
+                tables[indexPotential] = tp.values;
+                if (thereArePotentialsWithInterventions) {
+                    potentialsInterventions[indexPotential] = tp instanceof StrategicTablePotential stp
+                            ? stp.strategyTrees : null;
+                }
+                if (thereArePotentialsWithUncertainValues) {
+                    potentialsUncertainValues[indexPotential] = tp.getUncertainValues();
+                }
             }
         }
 
@@ -152,7 +158,7 @@ final class TablePotentialMerge {
         }
 
         PotentialRole role = potentials.get(0).getPotentialRole();
-        TablePotential mergedPotential;
+        AbstractIndexedPotential mergedPotential;
         if (thereAreGTablePotentials) {
             mergedPotential = new GTablePotential<>(mergedVariables, role, mergedElementsTable);
             // Note: GTablePotential does not support uncertain values
@@ -210,7 +216,7 @@ final class TablePotentialMerge {
     // -------------------------------------------------------------------------
 
     private static void throwExceptionIfNecessaryInMergeOperation(Variable decision,
-                                                                   Collection<TablePotential> potentials)
+                                                                   Collection<? extends AbstractIndexedPotential> potentials)
             throws PotentialOperationException.DifferentSizesInPotentialsAndStates {
         if (potentials == null) {
             potentials = new ArrayList<>();
@@ -233,36 +239,36 @@ final class TablePotentialMerge {
         return null;
     }
 
-    private static boolean[] getBooleanArrayOfPotentialsThatAreGTablePotentials(List<TablePotential> potentials,
-                                                                                 int numPotentials) {
+    private static boolean[] getBooleanArrayOfPotentialsThatAreGTablePotentials(
+            List<? extends AbstractIndexedPotential> potentials, int numPotentials) {
         boolean[] result = new boolean[numPotentials];
         int i = 0;
-        for (TablePotential potential : potentials) {
+        for (AbstractIndexedPotential potential : potentials) {
             result[i++] = potential instanceof GTablePotential;
         }
         return result;
     }
 
-    private static boolean[] getPotentialsHaveInterventions(List<TablePotential> potentials) {
+    private static boolean[] getPotentialsHaveInterventions(List<? extends AbstractIndexedPotential> potentials) {
         boolean[] result = new boolean[potentials.size()];
         int i = 0;
-        for (TablePotential potential : potentials) {
+        for (AbstractIndexedPotential potential : potentials) {
             result[i++] = potential instanceof StrategicTablePotential stp && stp.strategyTrees != null;
         }
         return result;
     }
 
-    private static boolean[] getPotentialsHaveUncertainValues(List<TablePotential> potentials) {
+    private static boolean[] getPotentialsHaveUncertainValues(List<? extends AbstractIndexedPotential> potentials) {
         boolean[] result = new boolean[potentials.size()];
         int i = 0;
-        for (TablePotential potential : potentials) {
+        for (AbstractIndexedPotential potential : potentials) {
             result[i++] = potential instanceof UncertainTablePotential utp && utp.uncertainValues != null;
         }
         return result;
     }
 
-    private static boolean thereArePotentialsWithUncertainValues(Collection<TablePotential> potentials) {
-        for (TablePotential potential : potentials) {
+    private static boolean thereArePotentialsWithUncertainValues(Collection<? extends AbstractIndexedPotential> potentials) {
+        for (AbstractIndexedPotential potential : potentials) {
             if (potential instanceof UncertainTablePotential utp && utp.uncertainValues != null) {
                 return true;
             }
@@ -270,8 +276,8 @@ final class TablePotentialMerge {
         return false;
     }
 
-    private static boolean thereArePotentialsWithInterventions(Collection<TablePotential> potentials) {
-        for (TablePotential potential : potentials) {
+    private static boolean thereArePotentialsWithInterventions(Collection<? extends AbstractIndexedPotential> potentials) {
+        for (AbstractIndexedPotential potential : potentials) {
             if (potential instanceof StrategicTablePotential stp && stp.strategyTrees != null) {
                 return true;
             }

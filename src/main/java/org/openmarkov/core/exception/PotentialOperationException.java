@@ -10,7 +10,7 @@ package org.openmarkov.core.exception;
 import org.openmarkov.core.exception.IBundledOpenMarkovException;
 
 import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.AbstractIndexedPotential;
 
 import java.util.Collection;
 
@@ -22,12 +22,12 @@ public abstract sealed class PotentialOperationException extends OpenMarkovExcep
     }
     
     public static final class DifferentSizesInPotentialsAndStates extends PotentialOperationException {
-        public DifferentSizesInPotentialsAndStates(Variable variable, Collection<TablePotential> potentials) {
+        public DifferentSizesInPotentialsAndStates(Variable variable, Collection<? extends AbstractIndexedPotential> potentials) {
             this.variable = variable;
             this.potentials = potentials;
         }
-        
+
         public final Variable variable;
-		public final Collection<TablePotential> potentials;
+		public final Collection<? extends AbstractIndexedPotential> potentials;
     }
 }

@@ -241,16 +241,6 @@ import java.util.List;
         return super.deepCopy(copyNet);
 	}
 
-	@Override
-	public Potential reorder(List<Variable> newOrderOfVariables) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public Potential reorder(Variable variable, State[] newOrder) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	// reorder(List<Variable>) and reorder(Variable, State[]) are inherited from ICIPotential
 
 }

@@ -16,6 +16,7 @@ import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.Projectable;
@@ -508,6 +509,106 @@ public abstract class ICIPotential extends Potential implements Projectable {
         return expandedPotential.getProbability(sampledStateIndexes);
     }
     
+    /**
+     * Reorders the variable list and the corresponding noisy-parameter arrays.
+     * The noisyParameters entry for each parent is moved to the new parent index.
+     * The expandedPotential cache is invalidated.
+     */
+    @Override
+    public Potential reorder(List<Variable> newOrderOfVariables) {
+        ICIPotential copy = (ICIPotential) copy();
+        // Build new noisyParameters in the order of the new parent list
+        double[][] newNoisyParams = new double[newOrderOfVariables.size() - 1][];
+        for (int i = 1; i < newOrderOfVariables.size(); i++) {
+            Variable parent = newOrderOfVariables.get(i);
+            // getNoisyParameters uses this.variables (old order)
+            newNoisyParams[i - 1] = this.getNoisyParameters(parent).clone();
+        }
+        // Rebuild zVariables in new parent order
+        copy.zVariables = new LinkedHashMap<>();
+        for (int i = 1; i < newOrderOfVariables.size(); i++) {
+            Variable parent = newOrderOfVariables.get(i);
+            copy.zVariables.put(parent, this.zVariables.get(parent));
+        }
+        copy.variables = new ArrayList<>(newOrderOfVariables);
+        copy.noisyParameters = newNoisyParams;
+        copy.expandedPotential = null;
+        return copy;
+    }
+
+    /**
+     * Reorders state entries within the noisy-parameter arrays and leaky parameters
+     * when a variable's states are permuted.
+     *
+     * <p>If the reordered variable is the conditioned variable, the {@code k} (conditioned-state)
+     * dimension of every noisy-parameter row and of leakyParameters is permuted.
+     * If it is a parent variable, the {@code j} (parent-state) dimension of that parent's
+     * noisy-parameter entry is permuted.
+     */
+    @Override
+    public Potential reorder(Variable variable, State[] newOrder) {
+        ICIPotential copy = (ICIPotential) copy();
+        Variable conditioned = variables.getFirst();
+        int numCondStates = conditioned.getNumStates();
+        if (variable == conditioned) {
+            // Build old-index map: oldIndex[newPos] = position of newOrder[newPos] in old state array
+            State[] oldStates = conditioned.getStates();
+            int[] oldIndex = buildOldIndex(oldStates, newOrder);
+            // Reorder k-dimension of each noisy-parameter entry
+            double[][] newNoisyParams = new double[noisyParameters.length][];
+            for (int p = 0; p < noisyParameters.length; p++) {
+                int numParentStates = variables.get(p + 1).getNumStates();
+                double[] oldParams = noisyParameters[p];
+                double[] newParams = new double[numParentStates * numCondStates];
+                for (int j = 0; j < numParentStates; j++) {
+                    for (int newK = 0; newK < numCondStates; newK++) {
+                        newParams[j * numCondStates + newK] = oldParams[j * numCondStates + oldIndex[newK]];
+                    }
+                }
+                newNoisyParams[p] = newParams;
+            }
+            copy.noisyParameters = newNoisyParams;
+            // Reorder leakyParameters (indexed by conditioned state)
+            double[] newLeaky = new double[numCondStates];
+            for (int newK = 0; newK < numCondStates; newK++) {
+                newLeaky[newK] = leakyParameters[oldIndex[newK]];
+            }
+            copy.leakyParameters = newLeaky;
+        } else {
+            int parentIdx = variables.indexOf(variable) - 1;
+            if (parentIdx >= 0) {
+                State[] oldStates = variable.getStates();
+                int[] oldIndex = buildOldIndex(oldStates, newOrder);
+                int numParentStates = variable.getNumStates();
+                double[] oldParams = noisyParameters[parentIdx];
+                double[] newParams = new double[numParentStates * numCondStates];
+                for (int newJ = 0; newJ < numParentStates; newJ++) {
+                    for (int k = 0; k < numCondStates; k++) {
+                        newParams[newJ * numCondStates + k] = oldParams[oldIndex[newJ] * numCondStates + k];
+                    }
+                }
+                copy.noisyParameters = copy.noisyParameters.clone();
+                copy.noisyParameters[parentIdx] = newParams;
+            }
+        }
+        copy.expandedPotential = null;
+        return copy;
+    }
+
+    /** Returns the displacement array: oldIndex[newPos] = where newOrder[newPos] sat in oldStates. */
+    private static int[] buildOldIndex(State[] oldStates, State[] newOrder) {
+        int[] oldIndex = new int[newOrder.length];
+        for (int newPos = 0; newPos < newOrder.length; newPos++) {
+            for (int oldPos = 0; oldPos < oldStates.length; oldPos++) {
+                if (oldStates[oldPos] == newOrder[newPos]) {
+                    oldIndex[newPos] = oldPos;
+                    break;
+                }
+            }
+        }
+        return oldIndex;
+    }
+
     @Override public Potential deepCopy(ProbNet copyNet) {
         ICIPotential potential = (ICIPotential) super.deepCopy(copyNet);
         potential.expandedPotential = this.expandedPotential == null ? null : (TablePotential) this.expandedPotential.deepCopy(copyNet);

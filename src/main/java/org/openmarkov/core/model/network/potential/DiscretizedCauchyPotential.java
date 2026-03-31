@@ -261,13 +261,22 @@ import java.util.List;
     
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
-        // TODO Auto-generated method stub
-        return null;
+        DiscretizedCauchyPotential copy = new DiscretizedCauchyPotential(this);
+        copy.variables = new ArrayList<>(newOrderOfVariables);
+        Potential reorderedMedian = this.median.reorder(newOrderOfVariables);
+        copy.median = (reorderedMedian != null) ? reorderedMedian : this.median.copy();
+        Potential reorderedScale = this.scale.reorder(newOrderOfVariables);
+        copy.scale = (reorderedScale != null) ? reorderedScale : this.scale.copy();
+        return copy;
     }
-    
+
     @Override
     public Potential reorder(Variable variable, State[] newOrder) {
-        // TODO Auto-generated method stub
-        return null;
+        DiscretizedCauchyPotential copy = new DiscretizedCauchyPotential(this);
+        Potential reorderedMedian = this.median.reorder(variable, newOrder);
+        copy.median = (reorderedMedian != null) ? reorderedMedian : this.median.copy();
+        Potential reorderedScale = this.scale.reorder(variable, newOrder);
+        copy.scale = (reorderedScale != null) ? reorderedScale : this.scale.copy();
+        return copy;
     }
 }

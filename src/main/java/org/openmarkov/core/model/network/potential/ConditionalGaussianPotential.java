@@ -251,14 +251,23 @@ import java.util.List;
     
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
-        // TODO Auto-generated method stub
-        return null;
+        ConditionalGaussianPotential copy = new ConditionalGaussianPotential(this);
+        copy.variables = new ArrayList<>(newOrderOfVariables);
+        Potential reorderedMean = this.mean.reorder(newOrderOfVariables);
+        copy.mean = (reorderedMean != null) ? reorderedMean : this.mean.copy();
+        Potential reorderedVariance = this.variance.reorder(newOrderOfVariables);
+        copy.variance = (reorderedVariance != null) ? reorderedVariance : this.variance.copy();
+        return copy;
     }
-    
+
     @Override
     public Potential reorder(Variable variable, State[] newOrder) {
-        // TODO Auto-generated method stub
-        return null;
+        ConditionalGaussianPotential copy = new ConditionalGaussianPotential(this);
+        Potential reorderedMean = this.mean.reorder(variable, newOrder);
+        copy.mean = (reorderedMean != null) ? reorderedMean : this.mean.copy();
+        Potential reorderedVariance = this.variance.reorder(variable, newOrder);
+        copy.variance = (reorderedVariance != null) ? reorderedVariance : this.variance.copy();
+        return copy;
     }
     
 }

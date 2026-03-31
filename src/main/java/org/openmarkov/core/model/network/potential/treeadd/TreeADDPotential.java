@@ -833,16 +833,30 @@ public class TreeADDPotential extends Potential {
         return strBuffer.toString();
     }
     
+    /**
+     * Expands the tree to a {@link TablePotential} and reorders its variables.
+     * The tree structure is not preserved, but the probability semantics are correct.
+     */
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
-        // TODO Auto-generated method stub
-        return null;
+        try {
+            return getCPT().reorder(newOrderOfVariables);
+        } catch (NonProjectablePotentialException e) {
+            return copy();
+        }
     }
-    
+
+    /**
+     * Expands the tree to a {@link TablePotential} and reorders the given variable's states.
+     * The tree structure is not preserved, but the probability semantics are correct.
+     */
     @Override
     public Potential reorder(Variable variable, State[] newOrder) {
-        // TODO Auto-generated method stub
-        return null;
+        try {
+            return getCPT().reorder(variable, newOrder);
+        } catch (NonProjectablePotentialException e) {
+            return copy();
+        }
     }
     
 }

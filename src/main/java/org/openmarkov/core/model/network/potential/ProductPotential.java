@@ -66,7 +66,7 @@ import java.util.List;
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
         boolean suitable = (
                 role == PotentialRole.CONDITIONAL_PROBABILITY || role == PotentialRole.POLICY
-        ) && variables.get(0).getVariableType() == VariableType.NUMERIC;
+        ) && variables.getFirst().getVariableType() == VariableType.NUMERIC;
         
         return suitable || (role == PotentialRole.UNSPECIFIED && node.isSuperValueNode());
     }
@@ -101,11 +101,7 @@ import java.util.List;
     @Override public Potential copy() {
         return new ProductPotential(this);
     }
-    
-    @Override public boolean isUncertain() {
-        return false;
-    }
-    
+
     @Override public void scalePotential(double scale) {
     
     }
@@ -114,16 +110,16 @@ import java.util.List;
         return super.deepCopy(copyNet);
     }
     
+    /** Structural potential with no state-indexed data; returns a copy. */
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
-        // TODO Auto-generated method stub
-        return null;
+        return copy();
     }
-    
+
+    /** Structural potential with no state-indexed data; returns a copy. */
     @Override
     public Potential reorder(Variable variable, State[] newOrder) {
-        // TODO Auto-generated method stub
-        return null;
+        return copy();
     }
     
 }

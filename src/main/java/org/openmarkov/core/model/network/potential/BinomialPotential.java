@@ -164,15 +164,15 @@ public class BinomialPotential extends Potential {
         
     }
     
+     /** Parameter-based potential; no state-indexed data to permute; returns a copy. */
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
-        // TODO Auto-generated method stub
-        return null;
+        return copy();
     }
-    
+
+    /** Parameter-based potential; no state-indexed data to permute; returns a copy. */
     @Override
     public Potential reorder(Variable variable, State[] newOrder) {
-        // TODO Auto-generated method stub
-        return null;
+        return copy();
     }
 }

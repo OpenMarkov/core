@@ -165,7 +165,7 @@ public class LinearCombinationPotential extends GLMPotential implements Scalable
             List<Variable> newVariables = new ArrayList<>(variables);
             newVariables.remove(variable);
             newPotential = new LinearCombinationPotential(newVariables, this.role);
-            List<String> newCovariates = new ArrayList<>();
+            //List<String> newCovariates = new ArrayList<>();
             List<Double> newCoefficients = new ArrayList<>();
             
             double[] newCoefficientsArray = new double[newCoefficients.size()];
@@ -203,16 +203,16 @@ public class LinearCombinationPotential extends GLMPotential implements Scalable
         return sb.toString();
     }
     
+    /** Expression-based potential; variable-name-based, not index-based; returns a copy. */
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
-        // TODO Auto-generated method stub
-        return null;
+        return copy();
     }
-    
+
+    /** Expression-based potential; variable-name-based, not index-based; returns a copy. */
     @Override
     public Potential reorder(Variable variable, State[] newOrder) {
-        // TODO Auto-generated method stub
-        return null;
+        return copy();
     }
     
 }

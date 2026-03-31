@@ -8,6 +8,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 
 import java.util.List;
@@ -110,14 +111,19 @@ public class StrategicTablePotential extends TablePotential implements StrategyC
         int[] potentialDimensions = getDimensions();
         double[] valuesOrig = values;
         double[] valuesNew  = newPotential.values;
-        newPotential.strategyTrees = new StrategyTree[this.strategyTrees.length];
+        StrategyTree[] origTrees = this.strategyTrees;
+        if (origTrees != null) {
+            newPotential.strategyTrees = new StrategyTree[origTrees.length];
+        }
 
         int copyPos = 0;
         int numVariables = newOrderOfVariables.size();
         int incrementedVariable, i;
         for (i = 0; i < valuesOrig.length - 1; i++) {
             valuesNew[copyPos] = valuesOrig[i];
-            newPotential.strategyTrees[copyPos] = this.strategyTrees[i];
+            if (origTrees != null) {
+                newPotential.strategyTrees[copyPos] = origTrees[i];
+            }
 
             for (incrementedVariable = 0; incrementedVariable < numVariables; incrementedVariable++) {
                 potentialPositions[incrementedVariable]++;
@@ -130,12 +136,61 @@ public class StrategicTablePotential extends TablePotential implements StrategyC
             copyPos += accOffsets[incrementedVariable];
         }
         valuesNew[copyPos] = valuesOrig[i];
-        newPotential.strategyTrees[copyPos] = this.strategyTrees[i];
+        if (origTrees != null) {
+            newPotential.strategyTrees[copyPos] = origTrees[i];
+        }
 
         if (isAdditive()) {
             newPotential.setCriterion(getCriterion());
         }
         newPotential.properties = properties;
         return newPotential;
+    }
+
+    /**
+     * Reorders both {@code values} and {@code strategyTrees} when the states of
+     * {@code variable} are renumbered to {@code newOrder}.
+     * <p>
+     * The inherited {@link TablePotential#reorder(Variable, State[])} only
+     * rearranges {@code values}; overriding here keeps {@code strategyTrees} in
+     * sync.
+     */
+    @Override
+    public StrategicTablePotential reorder(Variable variable, State[] newOrder) {
+        StrategicTablePotential copy = new StrategicTablePotential(this);
+        double[] origValues = values;
+        double[] newValues  = copy.values;
+        int variableIndex = copy.getVariables().indexOf(variable);
+        int offset = copy.getOffsets()[variableIndex];
+        State[] oldOrder = variable.getStates();
+
+        int[] displacements = new int[newOrder.length];
+        for (int i = 0; i < newOrder.length; i++) {
+            for (int j = 0; j < oldOrder.length; j++) {
+                if (oldOrder[i] == newOrder[j]) {
+                    displacements[i] = j - i;
+                    break;
+                }
+            }
+        }
+
+        StrategyTree[] origTrees = this.strategyTrees;
+        if (origTrees != null) {
+            copy.strategyTrees = new StrategyTree[origTrees.length];
+        }
+        for (int i = 0; i < origValues.length; i++) {
+            int indexOfState = (i / offset) % variable.getNumStates();
+            int newIndex = i + (displacements[indexOfState] * offset);
+            newValues[newIndex] = origValues[i];
+            if (origTrees != null) {
+                copy.strategyTrees[newIndex] = origTrees[i];
+            }
+        }
+
+        if (isAdditive()) {
+            copy.setCriterion(getCriterion());
+        }
+        copy.properties = properties;
+        return copy;
     }
 }

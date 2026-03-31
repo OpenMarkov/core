@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Potential identical to another but moved to another temporal slice.
  *
- * @author marias
+ * @author Manuel Arias
  * @version 1.0
  */
 @PotentialType(names = "CycleLengthShift")
@@ -84,7 +84,7 @@ public class CycleLengthShift extends Potential {
     @Override
     public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException.MissingVariableInEvidence {
         Variable conditionedVariable = getConditionedVariable();
-        Variable conditioningVariable = variables.get((conditionedVariable == variables.get(0)) ? 1 : 0);
+        Variable conditioningVariable = variables.get((conditionedVariable == variables.getFirst()) ? 1 : 0);
         TablePotential projectedPotential;
         if (conditionedVariable.getVariableType() == VariableType.NUMERIC) {
             for (Variable variable : variables) {
@@ -92,7 +92,7 @@ public class CycleLengthShift extends Potential {
                     throw new NonProjectablePotentialException.MissingVariableInEvidence(variable, evidenceCase);
                 }
             }
-            projectedPotential = new TablePotential(new ArrayList<Variable>(), role);
+            projectedPotential = new TablePotential(new ArrayList<>(), role);
             projectedPotential.values[0] = evidenceCase.getNumericalValue(conditioningVariable) + cycleLength
                     .getValue();
             return projectedPotential;
@@ -104,7 +104,7 @@ public class CycleLengthShift extends Potential {
         // replace parent variable with child variable in the list of
         // variables of the projected potential
         projectedVariables.remove(conditioningVariable);
-        projectedVariables.add(0, conditionedVariable);
+        projectedVariables.addFirst(conditionedVariable);
         projectedPotential = new TablePotential(projectedVariables, role);
         
         int numStates = conditionedVariable.getNumStates();
@@ -130,7 +130,7 @@ public class CycleLengthShift extends Potential {
     
     @Override public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase) {
         Variable conditionedVariable = getConditionedVariable();
-        Variable conditioningVariable = variables.get((conditionedVariable == variables.get(0)) ? 1 : 0);
+        Variable conditioningVariable = variables.get((conditionedVariable == variables.getFirst()) ? 1 : 0);
         List<Finding> inducedFindings = new ArrayList<>();
         if (evidenceCase.contains(conditioningVariable) && !evidenceCase.contains(conditionedVariable)) {
             double numericalValue = evidenceCase.getFinding(conditioningVariable).getNumericalValue() + cycleLength
@@ -150,11 +150,7 @@ public class CycleLengthShift extends Potential {
         return cycleLengthShift;
         
     }
-    
-    @Override public boolean isUncertain() {
-        return false;
-    }
-    
+
     @Override public String toString() {
         return super.toString() + " = CycleLengthShift";
     }
@@ -169,16 +165,16 @@ public class CycleLengthShift extends Potential {
         return potential;
     }
     
+    /** Structural/temporal potential; no state-indexed data; returns a copy. */
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
-        // TODO Auto-generated method stub
-        return null;
+        return copy();
     }
-    
+
+    /** Structural/temporal potential; no state-indexed data; returns a copy. */
     @Override
     public Potential reorder(Variable variable, State[] newOrder) {
-        // TODO Auto-generated method stub
-        return null;
+        return copy();
     }
     
 }

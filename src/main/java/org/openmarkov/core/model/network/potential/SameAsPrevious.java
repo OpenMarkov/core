@@ -90,7 +90,7 @@ import java.util.List;
         @Nullable Variable previousVariable = null;
         while (timeSlice > 0 && previousVariable == null) {
             previousVariable = probNet.getVariable(variable.getBaseName(), --timeSlice);
-            previousPotential = probNet.getNode(previousVariable).getPotentials().get(0);
+            previousPotential = probNet.getNode(previousVariable).getPotentials().getFirst();
             if (previousPotential instanceof SameAsPrevious) {
                 previousVariable = null;
             }
@@ -125,16 +125,16 @@ import java.util.List;
         return super.deepCopy(copyNet);
     }
     
+    /** No state-indexed data; returns a copy. */
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
-        // TODO Auto-generated method stub
-        return null;
+        return copy();
     }
-    
+
+    /** No state-indexed data; returns a copy. */
     @Override
     public Potential reorder(Variable variable, State[] newOrder) {
-        // TODO Auto-generated method stub
-        return null;
+        return copy();
     }
     
 }

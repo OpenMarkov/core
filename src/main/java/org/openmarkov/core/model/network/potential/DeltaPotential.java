@@ -132,11 +132,7 @@ import java.util.*;
     @Override public Potential copy() {
         return new DeltaPotential(this);
     }
-    
-    @Override public boolean isUncertain() {
-        return false;
-    }
-    
+
     public State getState() {
         return state;
     }
@@ -195,16 +191,50 @@ import java.util.*;
         
     }
     
+    /**
+     * Returns a copy of this potential with the variables in the new order.
+     * The conditioned variable (first in the list) is always
+     * {@code variables.getFirst()} regardless of variable ordering, so the
+     * delta state/value is preserved unchanged.
+     */
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
-        // TODO Auto-generated method stub
-        return null;
+        DeltaPotential copy = new DeltaPotential(newOrderOfVariables, role);
+        copy.state = this.state;
+        copy.stateIndex = this.stateIndex;
+        copy.numericValue = this.numericValue;
+        copy.properties = this.properties;
+        return copy;
     }
-    
+
+    /**
+     * Returns a copy of this potential reflecting the new state order of
+     * {@code variable}. If {@code variable} is the conditioned variable (a
+     * finite-states variable), the stored {@code stateIndex} is remapped to
+     * point to the same {@link State} object in the new order. If
+     * {@code variable} is a parent, the delta value is independent of parent
+     * states, so a plain copy is returned.
+     */
     @Override
     public Potential reorder(Variable variable, State[] newOrder) {
-        // TODO Auto-generated method stub
-        return null;
+        Variable conditioned = getConditionedVariable();
+        if (variable == conditioned && state != null) {
+            // Find the new index of our state in the reordered array
+            int newIndex = -1;
+            for (int i = 0; i < newOrder.length; i++) {
+                if (newOrder[i] == state) {
+                    newIndex = i;
+                    break;
+                }
+            }
+            DeltaPotential copy = new DeltaPotential(variables, role);
+            copy.state = this.state;
+            copy.stateIndex = newIndex >= 0 ? newIndex : this.stateIndex;
+            copy.numericValue = this.numericValue;
+            copy.properties = this.properties;
+            return copy;
+        }
+        return copy();
     }
     
 }

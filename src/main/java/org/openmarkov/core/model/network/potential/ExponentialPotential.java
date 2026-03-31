@@ -19,7 +19,6 @@ import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -58,7 +57,7 @@ import java.util.Map;
      * @return True if it is valid
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-        return role == PotentialRole.UNSPECIFIED || (!variables.isEmpty() && variables.get(0).getVariableType()
+        return role == PotentialRole.UNSPECIFIED || (!variables.isEmpty() && variables.getFirst().getVariableType()
                 == VariableType.NUMERIC
         );
     }
@@ -75,11 +74,11 @@ import java.util.Map;
         int constantIndex = getConstantIndex(covariates);
         
         List<Variable> projectedPotentialVariables = new ArrayList<>(evidencelessVariables);
-        projectedPotentialVariables.add(0, variables.get(0));
+        projectedPotentialVariables.addFirst(variables.getFirst());
         TablePotential projectedPotential = new TablePotential(projectedPotentialVariables, role);
         Variable conditionedVariable = getConditionedVariable();
         int numStates = conditionedVariable.getNumStates();
-        int parentFirstIndex = (conditionedVariable == projectedPotentialVariables.get(0)) ? 1 : 0;
+        int parentFirstIndex = (conditionedVariable == projectedPotentialVariables.getFirst()) ? 1 : 0;
         int[] offsets = projectedPotential.getOffsets();
         int[] dimensions = projectedPotential.getDimensions();
         for (int i = 0; i < projectedPotential.values.length; i += numStates) {
@@ -129,16 +128,16 @@ import java.util.Map;
         return super.deepCopy(copyNet);
     }
     
+    /** Expression-based potential; variable-name-based, not index-based; returns a copy. */
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
-        // TODO Auto-generated method stub
-        return null;
+        return copy();
     }
-    
+
+    /** Expression-based potential; variable-name-based, not index-based; returns a copy. */
     @Override
     public Potential reorder(Variable variable, State[] newOrder) {
-        // TODO Auto-generated method stub
-        return null;
+        return copy();
     }
     
 }

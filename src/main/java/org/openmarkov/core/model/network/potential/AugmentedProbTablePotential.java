@@ -17,7 +17,6 @@ import org.openmarkov.core.model.network.potential.operation.AugmentedProbTableI
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * A potential for nodes with both finite-state and numeric parents. The finite-state
@@ -36,9 +35,9 @@ public class AugmentedProbTablePotential extends Potential {
     /*Note should be discrete variables*/
     public AugmentedProbTablePotential(List<Variable> variables, PotentialRole role) {
         super(variables, role);
-        setFiniteStatesVariables(new ArrayList<Variable>());
-        setParameterVariables(new ArrayList<Variable>());
-        getFiniteStatesVariables().add(variables.get(0));
+        setFiniteStatesVariables(new ArrayList<>());
+        setParameterVariables(new ArrayList<>());
+        getFiniteStatesVariables().add(variables.getFirst());
         for (Variable variable : variables.subList(1, variables.size())) {
             if ((variable.getVariableType() == VariableType.FINITE_STATES) || (
                     variable.getVariableType() == VariableType.DISCRETIZED
@@ -143,8 +142,10 @@ public class AugmentedProbTablePotential extends Potential {
     
     @Override
     public Potential reorder(Variable variable, State[] newOrder) {
-        // TODO Auto-generated method stub
-        return null;
+        AugmentedProbTablePotential copy = new AugmentedProbTablePotential(this);
+        AugmentedProbTable reorderedTable = (AugmentedProbTable) augmentedProbTable.reorder(variable, newOrder);
+        copy.setAugmentedProbTable(reorderedTable);
+        return copy;
     }
     
 }

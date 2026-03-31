@@ -13,6 +13,7 @@ import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 
@@ -250,6 +251,34 @@ public class AugmentedProbTable extends UncertainTablePotential {
         newPotential.properties = properties;
         return newPotential;
     }
-    
-    
+
+    @Override
+    public AugmentedProbTable reorder(Variable variable, State[] newOrder) {
+        AugmentedProbTable copyPotential = new AugmentedProbTable(this);
+        int variableIndex = variables.indexOf(variable);
+        if (variableIndex < 0) {
+            return copyPotential;
+        }
+        VariableExpression[] orig = functionValues;
+        VariableExpression[] copy = copyPotential.getFunctionValues();
+        int offset = offsets[variableIndex];
+        State[] oldOrder = variable.getStates();
+        int[] displacements = new int[newOrder.length];
+        for (int i = 0; i < newOrder.length; ++i) {
+            for (int j = 0; j < oldOrder.length; j++) {
+                if (oldOrder[i] == newOrder[j]) {
+                    displacements[i] = j - i;
+                    break;
+                }
+            }
+        }
+        for (int i = 0; i < orig.length; i++) {
+            int indexOfState = (i / offset) % variable.getNumStates();
+            int newIndex = i + (displacements[indexOfState] * offset);
+            copy[newIndex] = orig[i];
+        }
+        return copyPotential;
+    }
+
+
 }

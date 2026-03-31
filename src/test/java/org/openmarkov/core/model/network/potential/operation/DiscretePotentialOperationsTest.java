@@ -12,10 +12,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.exception.*;
-import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.Choice;
 import org.openmarkov.core.model.network.*;
-import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.*;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.util.UtilTestMethods;
@@ -24,24 +22,24 @@ import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Tests for {@link DiscretePotentialOperations}.
+ *
+ * @author Manuel Arias
+ */
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class DiscretePotentialOperationsTest {
     
     /*  Public scope for use in all tests. */
     public static final double maxError = 0.0001;
     private final int numConstantPotentials = 10;
-    private final int numNormalPotentials = 10;
-    private final int numVarsNormalPotentials = 4;
-    private final int numVariableStates = 3;
     private SharedTestUtilities commonVariables;
     private List<TablePotential> constantPotentials;
     
     private List<TablePotential> normalPotentials;
     
     private List<TablePotential> allPotentials;
-    
-    private TablePotential aPotential;
-    
+
     /**
      * This method creates the variables used in the tests
      */
@@ -50,6 +48,9 @@ public class DiscretePotentialOperationsTest {
         normalPotentials = new ArrayList<>();
         allPotentials = new ArrayList<>();
         constantPotentials = SharedTestUtilities.generatePotentials(numConstantPotentials, 0, 0, 0);
+        int numNormalPotentials = 10;
+        int numVariableStates = 3;
+        int numVarsNormalPotentials = 4;
         normalPotentials = SharedTestUtilities
                 .generatePotentials(numNormalPotentials, numVarsNormalPotentials, 0, numVariableStates);
         
@@ -141,7 +142,7 @@ public class DiscretePotentialOperationsTest {
         
         // Only 1 potential so in this case the method does not do anything
         potentials.add(constantPotentials.get(1));
-        aPotential = (TablePotential) PotentialOperations.multiply(potentials);
+        TablePotential aPotential = (TablePotential) PotentialOperations.multiply(potentials);
         
         assertEquals(1, aPotential.values.length);
         assertEquals(2.0, aPotential.values[0], maxError);
@@ -162,12 +163,12 @@ public class DiscretePotentialOperationsTest {
         // Test constant and binary potential multiplication
         // Only 1 potential so in this case the method does not do anything
         potentials.clear();
-        potentials.add(normalPotentials.get(0));
+        potentials.add(normalPotentials.getFirst());
         aPotential = (TablePotential) PotentialOperations.multiply(potentials);
         
         // Check variables:
         // Same number of variables
-        TablePotential normalPotential = normalPotentials.get(0);
+        TablePotential normalPotential = normalPotentials.getFirst();
         assertEquals(aPotential.getVariables().size(), normalPotential.getVariables().size());
         // Same variables
         assertTrue(aPotential.getVariables().containsAll(normalPotential.getVariables()));
@@ -185,7 +186,7 @@ public class DiscretePotentialOperationsTest {
         assertEquals(81 * 81, aPotential.values.length);
         // check table content
         assertEquals(82.0, aPotential.values[0], maxError);
-        ArrayList<Variable> variablesPotentials = (ArrayList<Variable>) ((Object) getUnionVariablesOrdered(potentials));
+        ArrayList<Variable> variablesPotentials = (ArrayList<Variable>) (getUnionVariablesOrdered(potentials));
         int[] coordinate1 = {1, 0, 0, 0, 0, 0, 0, 0};
         double configuration = UtilTestMethods.getConfiguration(variablesPotentials, coordinate1, aPotential);
         assertEquals(164.0, configuration, maxError);
@@ -203,7 +204,7 @@ public class DiscretePotentialOperationsTest {
         assertEquals(81, aPotential.values.length);
         assertEquals(2.0, aPotential.values[0], maxError);
         int[] coordinate2 = {1, 0, 0, 0};
-        variablesPotentials = (ArrayList<Variable>) ((Object) getUnionVariablesOrdered(potentials));
+        variablesPotentials = (ArrayList<Variable>) ( getUnionVariablesOrdered(potentials));
         configuration = UtilTestMethods.getConfiguration(variablesPotentials, coordinate2, aPotential);
         assertEquals(4.0, configuration, maxError);
         
@@ -214,7 +215,7 @@ public class DiscretePotentialOperationsTest {
         aPotential = (TablePotential) PotentialOperations.multiply(potentials);
         assertEquals(81, aPotential.values.length);
         assertEquals(2.0, aPotential.values[0], maxError);
-        variablesPotentials = (ArrayList<Variable>) ((Object) getUnionVariablesOrdered(potentials));
+        variablesPotentials = (ArrayList<Variable>) ( getUnionVariablesOrdered(potentials));
         configuration = UtilTestMethods.getConfiguration(variablesPotentials, coordinate2, aPotential);
         assertEquals(4.0, configuration, maxError);
         
@@ -226,7 +227,7 @@ public class DiscretePotentialOperationsTest {
         aPotential = (TablePotential) PotentialOperations.multiply(potentials);
         assertEquals(81, aPotential.values.length);
         assertEquals(6.0, aPotential.values[0], maxError);
-        variablesPotentials = (ArrayList<Variable>) ((Object) getUnionVariablesOrdered(potentials));
+        variablesPotentials = (ArrayList<Variable>) (getUnionVariablesOrdered(potentials));
         int[] coordinate3 = {1, 0, 0, 0, 0, 0, 0, 0};
         configuration = UtilTestMethods.getConfiguration(variablesPotentials, coordinate3, aPotential);
         assertEquals(12.0, configuration, maxError);
@@ -251,14 +252,14 @@ public class DiscretePotentialOperationsTest {
         aPotential = (TablePotential) PotentialOperations.multiply(potentials);
         assertEquals(81, aPotential.values.length);
         assertEquals(6.0, aPotential.values[0], maxError);
-        variablesPotentials = (ArrayList<Variable>) ((Object) getUnionVariablesOrdered(potentials));
+        variablesPotentials = (ArrayList<Variable>) ( getUnionVariablesOrdered(potentials));
         configuration = UtilTestMethods.getConfiguration(variablesPotentials, coordinate3, aPotential);
         assertEquals(12.0, configuration, maxError);
     }
     
     @Test public void testMultiplyAndMarginalize() {
         // Call method under test
-        TablePotential mulAndMarg = (TablePotential) DiscretePotentialOperations
+        TablePotential mulAndMarg = DiscretePotentialOperations
                 .multiplyAndMarginalize(commonVariables.potentials, commonVariables.a);
         List<Variable> variables = mulAndMarg.getVariables();
         assertEquals(3, variables.size());
@@ -287,7 +288,6 @@ public class DiscretePotentialOperationsTest {
     }
     
     @Test
-    /** Multiplies and marginalize projected potentials */
     public void testMultiplyAndMarginalizeProjected() throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         // Create data
         // Variables
@@ -328,7 +328,7 @@ public class DiscretePotentialOperationsTest {
         variablesToMarginalize.add(B);
         
         // Do test
-        TablePotential result = (TablePotential) DiscretePotentialOperations
+        TablePotential result = DiscretePotentialOperations
                 .multiplyAndMarginalize(potentials, variablesToKeep, variablesToMarginalize);
         // Test table
         assertEquals(0.192, result.values[0], maxError);
@@ -347,7 +347,8 @@ public class DiscretePotentialOperationsTest {
     
     @Test
     /** Multiplies and maximizes two potentials: <code>tpAB(a,b)</code> and
-     * <code>tpCAB(c,a,d)</code> that share a variable: <code>a</code>. */ public void testMultiplyAndMaximize() {
+     * <code>tpCAB(c,a,d)</code> that share a variable: <code>a</code>. */
+    public void testMultiplyAndMaximize() {
         ArrayList<Potential> potentialsVariable = new ArrayList<>();
         potentialsVariable.add(commonVariables.tpAB);
         potentialsVariable.add(commonVariables.tpCAB);
@@ -409,14 +410,14 @@ public class DiscretePotentialOperationsTest {
     
     @Test public void testDivide() {
         // Call method under test
-        TablePotential division = (TablePotential) DiscretePotentialOperations
+        TablePotential division = DiscretePotentialOperations
                 .divide(commonVariables.tpConstant07, commonVariables.tpAB);
         assertEquals(2, division.getVariables().size());
         assertTrue(division.contains(commonVariables.a));
         assertTrue(division.contains(commonVariables.b));
         assertEquals(7, division.values[0], maxError);
         
-        division = (TablePotential) DiscretePotentialOperations.divide(commonVariables.tpAB, commonVariables.tpCAB);
+        division = DiscretePotentialOperations.divide(commonVariables.tpAB, commonVariables.tpCAB);
         assertEquals(4, division.getVariables().size());
         assertTrue(division.contains(commonVariables.a));
         assertTrue(division.contains(commonVariables.b));
@@ -654,45 +655,237 @@ public class DiscretePotentialOperationsTest {
         assertEquals(12, tablePotential.values.length);
     }
     
-    @Test public void testMerge() {
-        Variable decisionA = new Variable("DecA", 3);
-        Variable X = new Variable("X", "Xa", "Xb");
-        Variable Y = new Variable("Y", "Ya", "Yb", "Yc");
-        StrategyTree interventionX1 = new StrategyTree(X);
-        StrategyTree interventionX2 = new StrategyTree(X);
-        StrategyTree interventionXY1 = new StrategyTree(Y);
-        StrategyTree interventionXY2 = new StrategyTree(Y);
-        StrategyTree interventionXY3 = new StrategyTree(Y);
-        StrategyTree interventionXY4 = new StrategyTree(Y);
-        StrategyTree interventionXY5 = new StrategyTree(Y);
-        StrategyTree interventionXY6 = new StrategyTree(Y);
-        UncertainValue uncertainValue1 = new UncertainValue(1.0);
-        UncertainValue uncertainValue2 = new UncertainValue(2.0);
-        UncertainValue uncertainValue3 = new UncertainValue(3.0);
-        UncertainValue uncertainValue4 = new UncertainValue(4.0);
-        UncertainValue uncertainValue5 = new UncertainValue(5.0);
-        UncertainValue uncertainValue6 = new UncertainValue(6.0);
-        PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
-        TablePotential x1P = new TablePotential(Arrays.asList(X), role);
-        TablePotential xyP = new TablePotential(Arrays.asList(X, Y), role);
-        TablePotential x2P = new TablePotential(Arrays.asList(X), role);
-        // TODO Finish this method
+    @Test
+    public void testMerge() throws org.openmarkov.core.exception.PotentialOperationException.DifferentSizesInPotentialsAndStates {
+        // ----------------------------------------------------------------
+        // 1. Plain TablePotential merge
+        // ----------------------------------------------------------------
+        Variable dec = new Variable("D", "d0", "d1");          // 2-state decision
+        Variable X   = new Variable("X", "x0", "x1");          // 2-state chance
+
+        TablePotential p0 = new TablePotential(List.of(X), PotentialRole.UNSPECIFIED);
+        p0.values[0] = 0.3;  // X=x0
+        p0.values[1] = 0.7;  // X=x1
+
+        TablePotential p1 = new TablePotential(List.of(X), PotentialRole.UNSPECIFIED);
+        p1.values[0] = 0.6;
+        p1.values[1] = 0.4;
+
+        TablePotential merged = DiscretePotentialOperations.merge(dec, Arrays.asList(p0, p1));
+
+        // Plain merge must NOT return GTablePotential
+        assertFalse(merged instanceof GTablePotential,
+                "Plain-potential merge should return TablePotential, not GTablePotential");
+
+        // Decision variable is first, X second
+        List<Variable> mergedVars = merged.getVariables();
+        assertEquals(2, mergedVars.size());
+        assertEquals(dec, mergedVars.get(0), "Decision variable must be first");
+        assertEquals(X,   mergedVars.get(1));
+
+        // For variables [D(2), X(2)], offsets = [1, 2]:
+        //   values[0] = (D=0, X=0)  from p0[X=0] = 0.3
+        //   values[1] = (D=1, X=0)  from p1[X=0] = 0.6
+        //   values[2] = (D=0, X=1)  from p0[X=1] = 0.7
+        //   values[3] = (D=1, X=1)  from p1[X=1] = 0.4
+        assertEquals(4, merged.values.length);
+        assertEquals(0.3, merged.values[0], maxError, "(D=0, X=0)");
+        assertEquals(0.6, merged.values[1], maxError, "(D=1, X=0)");
+        assertEquals(0.7, merged.values[2], maxError, "(D=0, X=1)");
+        assertEquals(0.4, merged.values[3], maxError, "(D=1, X=1)");
+
+        // ----------------------------------------------------------------
+        // 2. GTablePotential<CEP> merge
+        // ----------------------------------------------------------------
+        CEP cep00 = new CEP.CEPBuilder().build(null, 100.0, 2.0);
+        CEP cep01 = new CEP.CEPBuilder().build(null, 200.0, 3.0);
+        CEP cep10 = new CEP.CEPBuilder().build(null, 300.0, 4.0);
+        CEP cep11 = new CEP.CEPBuilder().build(null, 400.0, 5.0);
+
+        GTablePotential<CEP> g0 = new GTablePotential<>(List.of(X), PotentialRole.UNSPECIFIED);
+        g0.elementTable.add(cep00);  // X=x0
+        g0.elementTable.add(cep01);  // X=x1
+
+        GTablePotential<CEP> g1 = new GTablePotential<>(List.of(X), PotentialRole.UNSPECIFIED);
+        g1.elementTable.add(cep10);
+        g1.elementTable.add(cep11);
+
+        TablePotential gMergedRaw = DiscretePotentialOperations.merge(dec, Arrays.asList(g0, g1));
+
+        assertInstanceOf(GTablePotential.class, gMergedRaw,
+                "GTablePotential merge must return a GTablePotential");
+        @SuppressWarnings("unchecked")
+        GTablePotential<CEP> gMerged = (GTablePotential<CEP>) gMergedRaw;
+
+        // Variable order: [D, X]
+        assertEquals(dec, gMerged.getVariables().get(0));
+        assertEquals(X,   gMerged.getVariables().get(1));
+
+        // elementTable has 4 entries
+        assertEquals(4, gMerged.elementTable.size());
+
+        // CEP placement mirrors the double-values layout:
+        //   position 0: (D=0, X=0) → cep00
+        //   position 1: (D=1, X=0) → cep10
+        //   position 2: (D=0, X=1) → cep01
+        //   position 3: (D=1, X=1) → cep11
+        assertSame(cep00, gMerged.elementTable.get(0), "(D=0, X=0) must be cep00");
+        assertSame(cep10, gMerged.elementTable.get(1), "(D=1, X=0) must be cep10");
+        assertSame(cep01, gMerged.elementTable.get(2), "(D=0, X=1) must be cep01");
+        assertSame(cep11, gMerged.elementTable.get(3), "(D=1, X=1) must be cep11");
+
+        // GTablePotential invariant: values[] are all zeros (unused storage)
+        for (double v : gMerged.values) {
+            assertEquals(0.0, v, "GTablePotential.values[] must be all-zero");
+        }
+
+        // ----------------------------------------------------------------
+        // 3. Context variables: potentials have more than one variable
+        // ----------------------------------------------------------------
+        Variable Y = new Variable("Y", "y0", "y1");
+        TablePotential pXY0 = new TablePotential(Arrays.asList(X, Y), PotentialRole.UNSPECIFIED);
+        TablePotential pXY1 = new TablePotential(Arrays.asList(X, Y), PotentialRole.UNSPECIFIED);
+        Arrays.fill(pXY0.values, 1.0);
+        Arrays.fill(pXY1.values, 2.0);
+
+        TablePotential mergedXY = DiscretePotentialOperations.merge(dec, Arrays.asList(pXY0, pXY1));
+        assertEquals(3, mergedXY.getVariables().size(), "merged variables: [D, X, Y]");
+        assertEquals(dec, mergedXY.getVariables().getFirst());
+        assertEquals(8, mergedXY.values.length, "2 × 2 × 2 = 8 positions");
+        // Positions where D=0 come from pXY0 (1.0), positions where D=1 from pXY1 (2.0)
+        // D is the first variable, so it alternates: [1.0, 2.0, 1.0, 2.0, ...]
+        for (int i = 0; i < 8; i++) {
+            double expected = (i % 2 == 0) ? 1.0 : 2.0;
+            assertEquals(expected, mergedXY.values[i], maxError,
+                    "Position " + i + ": D=" + (i % 2));
+        }
+
+        // ----------------------------------------------------------------
+        // 4. Size mismatch must throw
+        // ----------------------------------------------------------------
+        assertThrows(
+                org.openmarkov.core.exception.PotentialOperationException.DifferentSizesInPotentialsAndStates.class,
+                () -> DiscretePotentialOperations.merge(dec, List.of(p0)), // 2-state dec, only 1 potential
+                "Providing fewer potentials than decision states must throw");
     }
     
     /**
-     * Convert a Potential list to a TablePotential list.
-     *
-     * @param potentials
-     *
-     * @return
+     * Extends {@link #testMultiplyAndMaximize()} to verify the second element of
+     * the result — the {@code GTablePotential<Choice>} that records which decision
+     * state was chosen as optimal at each position of the remaining variables.
      */
+    @Test
+    public void testMultiplyAndMaximize_choiceTableIsPopulated() {
+        ArrayList<Potential> potentialsVariable = new ArrayList<>();
+        potentialsVariable.add(commonVariables.tpAB);
+        potentialsVariable.add(commonVariables.tpCAB);
+        Variable a = commonVariables.a; // variable to maximize
+
+        Object[] result = DiscretePotentialOperations.multiplyAndMaximize(potentialsVariable, a);
+        assertEquals(2, result.length);
+
+        // result[1] must be a GTablePotential<Choice>
+        assertInstanceOf(GTablePotential.class, result[1], "result[1] must be a GTablePotential");
+        @SuppressWarnings("unchecked")
+        GTablePotential<Choice> choices = (GTablePotential<Choice>) result[1];
+
+        TablePotential maximized = (TablePotential) result[0];
+
+        // Same variables as the maximized potential
+        assertEquals(maximized.getVariables(), choices.getVariables(),
+                "Choice potential must have the same variables as the maximized potential");
+        assertEquals(maximized.values.length, choices.elementTable.size(),
+                "One Choice per position in the result table");
+
+        // Spot-check: position 0 always corresponds to (all context vars = 0).
+        //
+        // Position 0 → all context variables at state 0 (regardless of variable ordering)
+        //   tpAB[A=0,B=0]*tpCAD[C=0,A=0,D=0] = 0.1*0.2 = 0.02
+        //   tpAB[A=1,B=0]*tpCAD[C=0,A=1,D=0] = 0.2*0.1 = 0.02
+        //   tpAB[A=2,B=0]*tpCAD[C=0,A=2,D=0] = 0.7*0.3 = 0.21  ← max at A=2
+        //
+        // Note: variablesToKeep is built from a HashSet, so the variable order
+        // in the result potential is non-deterministic beyond position 0.
+        // Position-specific assertions beyond position 0 would be fragile.
+        Choice ch0 = choices.elementTable.getFirst();
+        assertEquals(a, ch0.getVariable());
+        assertEquals(1, ch0.getNumValues());
+        assertEquals(2, ch0.getValues()[0], "(all context vars=0): optimal A should be 2");
+
+        // Structural assertions across all choices
+        for (int i = 0; i < choices.elementTable.size(); i++) {
+            Choice ch = choices.elementTable.get(i);
+            assertNotNull(ch, "Choice at position " + i + " must not be null");
+            assertEquals(a, ch.getVariable(), "Choice must reference the maximized variable");
+            assertTrue(ch.getNumValues() >= 1, "At least one optimal state per position");
+            for (int k = 0; k < ch.getNumValues(); k++) {
+                int stateIdx = ch.getValues()[k];
+                assertTrue(stateIdx >= 0 && stateIdx < a.getNumStates(),
+                        "State index " + stateIdx + " must be in [0, " + a.getNumStates() + ")");
+            }
+        }
+    }
+
+    /**
+     * Tests that tied states are correctly recorded in the {@code Choice} table
+     * when all decision states yield equal utility.
+     */
+    @Test
+    public void testMultiplyAndMaximize_tiedStatesBothRecorded() {
+        Variable dec = new Variable("Dec", "opt0", "opt1");
+        TablePotential uniform = new TablePotential(List.of(dec), PotentialRole.UNSPECIFIED);
+        uniform.values[0] = 1.0;
+        uniform.values[1] = 1.0; // tie
+
+        ArrayList<Potential> potsList = new ArrayList<>();
+        potsList.add(uniform);
+        Object[] result = DiscretePotentialOperations.multiplyAndMaximize(potsList, dec);
+
+        @SuppressWarnings("unchecked")
+        GTablePotential<Choice> choices = (GTablePotential<Choice>) result[1];
+        assertEquals(1, choices.elementTable.size(), "One remaining position (no context variables)");
+
+        Choice ch = choices.elementTable.getFirst();
+        assertEquals(dec, ch.getVariable());
+        assertEquals(2, ch.getNumValues(), "Both tied states must be recorded");
+
+        int[] vals = ch.getValues();
+        boolean has0 = false, has1 = false;
+        for (int i = 0; i < ch.getNumValues(); i++) {
+            if (vals[i] == 0) has0 = true;
+            if (vals[i] == 1) has1 = true;
+        }
+        assertTrue(has0, "State 0 must be listed as a tied optimum");
+        assertTrue(has1, "State 1 must be listed as a tied optimum");
+    }
+
+    /**
+     * Tests a three-way tie: all three states have equal utility, so numValues must be 3.
+     */
+    @Test
+    public void testMultiplyAndMaximize_threeWayTieAllRecorded() {
+        Variable dec = new Variable("Dec", "opt0", "opt1", "opt2");
+        TablePotential uniform = new TablePotential(List.of(dec), PotentialRole.UNSPECIFIED);
+        Arrays.fill(uniform.values, 5.0);
+
+        ArrayList<Potential> potsList3 = new ArrayList<>();
+        potsList3.add(uniform);
+        Object[] result = DiscretePotentialOperations.multiplyAndMaximize(potsList3, dec);
+
+        @SuppressWarnings("unchecked")
+        GTablePotential<Choice> choices = (GTablePotential<Choice>) result[1];
+        Choice ch = choices.elementTable.getFirst();
+
+        assertEquals(3, ch.getNumValues(), "All three tied states must be recorded");
+    }
+
     private List<TablePotential> getTablePotentials(List<Potential> potentials) throws NonProjectablePotentialException {
         List<TablePotential> tablePotentials = new ArrayList<>(potentials.size());
         for (Potential potential : potentials) {
             if (potential instanceof ExactDistrPotential) {
                 tablePotentials.add(((ExactDistrPotential) potential).getTablePotential());
             } else {
-                tablePotentials.add((TablePotential) potential.getCPT());
+                tablePotentials.add(potential.getCPT());
             }
         }
         return tablePotentials;
@@ -718,13 +911,13 @@ public class DiscretePotentialOperationsTest {
         assertEquals(1, utilityVariables.size());
         
         // Test utility values
-        assertEquals(disease, utilityVariables.get(0));
+        assertEquals(disease, utilityVariables.getFirst());
         assertEquals(2, utility.values.length);
         assertEquals(10, utility.values[0], maxError);
         assertEquals(7.75, utility.values[1], maxError);
         
         // Test utility interventions
-        assertTrue(utility instanceof StrategicTablePotential);
+        assertInstanceOf(StrategicTablePotential.class, utility);
         StrategicTablePotential strategicUtility = (StrategicTablePotential) utility;
         assertNotNull(strategicUtility.strategyTrees);
         assertEquals(2, strategicUtility.strategyTrees.length);
@@ -732,15 +925,15 @@ public class DiscretePotentialOperationsTest {
         assertEquals(therapy, strategyTreeNo.getRootVariable());
         List<TreeADDBranch> branches = strategyTreeNo.getBranches();
         assertEquals(1, branches.size());
-        TreeADDBranch branch = branches.get(0);
+        TreeADDBranch branch = branches.getFirst();
         List<State> states = branch.getBranchStates();
         assertEquals(1, states.size());
-        State noState = states.get(0);
+        State noState = states.getFirst();
         assertEquals(0, therapy.getStateIndex(noState));
     }
     
     private List<TablePotential> projectToTable(List<Potential> potentials, ProbNet probNet) throws NonProjectablePotentialException {
-        List<TablePotential> tablePotentials = new ArrayList<TablePotential>(potentials.size());
+        List<TablePotential> tablePotentials = new ArrayList<>(potentials.size());
         for (Potential potential : potentials) {
             tablePotentials.add(potential.tableProject(new EvidenceCase(), probNet.getInferenceOptions()));
         }

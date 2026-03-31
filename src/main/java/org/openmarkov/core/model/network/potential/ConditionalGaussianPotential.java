@@ -26,8 +26,11 @@ import java.util.List;
  * This class represents a conditional Gaussian potential for discrete variables.
  * It is defined by two potentials, namely the mean and the variance potentials
  * In the case of discrete variables it uses each state index
+ *
+ * @author Manuel Arias
  */
-@PotentialType(names = "Conditional Gaussian") public class ConditionalGaussianPotential extends Potential {
+@PotentialType(names = "Conditional Gaussian") public class ConditionalGaussianPotential extends Potential
+        implements Projectable {
     
     private Potential mean;
     private Potential variance;
@@ -74,7 +77,7 @@ import java.util.List;
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
         // not a utility potential, only discrete or discretized conditioned variables
         return role != PotentialRole.UNSPECIFIED && !variables.isEmpty()
-                && variables.get(0).getVariableType() != VariableType.NUMERIC;
+                && variables.getFirst().getVariableType() != VariableType.NUMERIC;
     }
     
     public Potential getMean() {
@@ -146,9 +149,7 @@ import java.util.List;
         if (conditionedVariable.getVariableType() == VariableType.DISCRETIZED) {
             double[] limits = conditionedVariable.getPartitionedInterval().getLimits();
             // Ignore first limit, as it is considered minus infinity
-            for (int i = 0; i < numStates; ++i) {
-                thresholds[i] = limits[i + 1];
-            }
+            System.arraycopy(limits, 1, thresholds, 0, numStates);
         } else {
             // Default thresholds
             for (int i = 0; i < numStates; ++i) {

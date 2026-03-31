@@ -24,7 +24,7 @@ import java.util.List;
  * @author Manuel Arias Calleja
  * @since OpenMarkov 0.3
  */
-public class StrategicTablePotential extends TablePotential {
+public class StrategicTablePotential extends TablePotential implements StrategyCarrier {
 
     /**
      * One strategy tree per table position.  Created and owned by
@@ -58,8 +58,14 @@ public class StrategicTablePotential extends TablePotential {
     }
 
     // -------------------------------------------------------------------------
-    // Overrides
+    // StrategyCarrier implementation
     // -------------------------------------------------------------------------
+
+    /** Implements {@link StrategyCarrier#getStrategyTrees()}. */
+    @Override
+    public StrategyTree[] getStrategyTrees() {
+        return strategyTrees;
+    }
 
     @Override
     public boolean hasInterventions() {

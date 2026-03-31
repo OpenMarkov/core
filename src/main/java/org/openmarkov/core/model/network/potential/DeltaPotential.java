@@ -21,17 +21,16 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * A deterministic potential that assigns probability 1 to a single state (for finite-states
  * variables) or a single numeric value (for numeric/discretized variables). Represents a
  * Dirac delta distribution.
+ *
+ * @author Manuel Arias
  */
-@PotentialType(names = "Delta") public class DeltaPotential extends Potential {
+@PotentialType(names = "Delta") public class DeltaPotential extends Potential implements Projectable, Scalable {
     
     // state and stateIndex are used for finite states variables
     private State state = null;
@@ -118,7 +117,7 @@ import java.util.List;
             projectedPotential.values[0] = 1;
             return projectedPotential;
         }
-        TablePotential projectedPotential = new TablePotential(Arrays.asList(conditionedVariable), PotentialRole.CONDITIONAL_PROBABILITY);
+        TablePotential projectedPotential = new TablePotential(Collections.singletonList(conditionedVariable), PotentialRole.CONDITIONAL_PROBABILITY);
         for (int i = 0; i < projectedPotential.values.length; ++i) {
             projectedPotential.values[i] = (i == stateIndex) ? 1 : 0;
         }
@@ -160,7 +159,7 @@ import java.util.List;
     }
     
     @Override public String toString() {
-        return variables.get(0) + " = " + (state != null ? state.getName() : numericValue);
+        return variables.getFirst() + " = " + (state != null ? state.getName() : numericValue);
     }
     
     @Override public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase) {
@@ -170,11 +169,16 @@ import java.util.List;
         } else {
             inducedFinding = new Finding(getConditionedVariable(), numericValue);
         }
-        return Arrays.asList(inducedFinding);
+        return List.of(inducedFinding);
     }
     
     @Override public void scalePotential(double scale) {
         this.numericValue *= scale;
+    }
+
+    /** Implements {@link Scalable#scale(double)}; delegates to {@link #scalePotential(double)}. */
+    @Override public void scale(double factor) {
+        scalePotential(factor);
     }
     
     @Override public Potential deepCopy(ProbNet copyNet) {

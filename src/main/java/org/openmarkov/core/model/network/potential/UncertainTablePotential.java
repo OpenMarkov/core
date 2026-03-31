@@ -27,7 +27,7 @@ import java.util.List;
  *
  * @author Manuel Arias
  */
-public class UncertainTablePotential extends TablePotential {
+public class UncertainTablePotential extends TablePotential implements UncertaintyCarrier {
 
     /**
      * Uncertain values for sensitivity analysis.  {@code null} means no uncertainty.
@@ -54,7 +54,7 @@ public class UncertainTablePotential extends TablePotential {
      * {@link #deepCopy} performs the full clone.
      */
     public UncertainTablePotential(UncertainTablePotential source) {
-        super((TablePotential) source);
+        super(source);
         this.uncertainValues = source.uncertainValues;   // deepCopy will replace this with a deep clone
     }
 

@@ -41,7 +41,8 @@ import java.util.*;
  * @since OpenMarkov 1.0
  */
 @PotentialType(names = {"Table", "ProbTable"})
-public class TablePotential extends AbstractIndexedPotential implements Comparable<TablePotential> {
+public class TablePotential extends AbstractIndexedPotential
+        implements Comparable<TablePotential>, Projectable, Reorderable, Scalable {
     // Attributes
     /**
      * Table storing the numerical values of the potential. This attribute is
@@ -455,7 +456,7 @@ public class TablePotential extends AbstractIndexedPotential implements Comparab
                  */
                     case CONDITIONAL_PROBABILITY:
                     case POLICY:
-                        value = 1.0 / variables.get(0).getNumStates();
+                        value = 1.0 / variables.getFirst().getNumStates();
                         break;
                     case JOINT_PROBABILITY:
                         value = 1.0;
@@ -521,7 +522,7 @@ public class TablePotential extends AbstractIndexedPotential implements Comparab
     
     @Override public String treeADDString() {
         if (role == PotentialRole.CONDITIONAL_PROBABILITY && variables != null && variables.size() == 1) {
-            Variable firstVariable = variables.get(0);
+            Variable firstVariable = variables.getFirst();
             for (int i = 0; i < firstVariable.getNumStates(); i++) {
                 if (values[i] == 1) {
                     return firstVariable.getName() + " = " + firstVariable.getStateName(i);
@@ -578,7 +579,7 @@ public class TablePotential extends AbstractIndexedPotential implements Comparab
         while (random > accumulatedProbability
                 // Make sure we don't go out of bounds even if the sum of probabilities
                 // is smaller than one.
-                && sampleIndex < variables.get(0).getNumStates() - 1) {
+                && sampleIndex < variables.getFirst().getNumStates() - 1) {
             ++sampleIndex;
             accumulatedProbability += values[index + sampleIndex];
         }
@@ -623,7 +624,11 @@ public class TablePotential extends AbstractIndexedPotential implements Comparab
         for (int j = 0; j < this.values.length; j++) {
             this.values[j] = this.values[j] * scale;
         }
-        
+    }
+
+    /** Implements {@link Scalable#scale(double)}; delegates to {@link #scalePotential(double)}. */
+    @Override public void scale(double factor) {
+        scalePotential(factor);
     }
     
     @Override public Potential deepCopy(ProbNet copyNet) {

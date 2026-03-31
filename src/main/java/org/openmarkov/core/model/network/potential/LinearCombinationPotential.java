@@ -19,7 +19,6 @@ import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -28,9 +27,11 @@ import java.util.Map;
  * value equals a linear combination of covariates and their coefficients.
  * Also known as "linear regression" potential. Used for numeric or discretized
  * conditioned variables.
+ *
+ * @author Manuel Arias
  */
 @PotentialType(names = {"Linear combination", "Linear regression"})
-public class LinearCombinationPotential extends GLMPotential {
+public class LinearCombinationPotential extends GLMPotential implements Scalable {
     
     public LinearCombinationPotential(List<Variable> variables, PotentialRole role) {
         super(variables, role, getDefaultCovariates(variables, role), new double[variables.size()]);
@@ -56,7 +57,7 @@ public class LinearCombinationPotential extends GLMPotential {
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
         return role == PotentialRole.UNSPECIFIED || (
-                !variables.isEmpty() && variables.get(0).getVariableType() == VariableType.NUMERIC
+                !variables.isEmpty() && variables.getFirst().getVariableType() == VariableType.NUMERIC
         );
     }
     
@@ -65,7 +66,8 @@ public class LinearCombinationPotential extends GLMPotential {
         throw new NotSupportedOperationException();
     }
     
-    @Override protected TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
+    @Override
+    protected TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
                                                     double[] coefficients, VariableExpression[] covariates, List<Variable> evidencelessVariables,
                                                     Map<Variable, String> variableValues) throws NonProjectablePotentialException.CannotEvaluate, NonProjectablePotentialException.CannotResolveVariable {
         Variable conditionedVariable = getConditionedVariable();
@@ -75,7 +77,7 @@ public class LinearCombinationPotential extends GLMPotential {
         int constantIndex = getConstantIndex(covariates);
         
         List<Variable> projectedPotentialVariables = new ArrayList<>(evidencelessVariables);
-        projectedPotentialVariables.add(0, variables.get(0));
+        projectedPotentialVariables.addFirst(variables.getFirst());
         TablePotential projectedPotential = new TablePotential(projectedPotentialVariables, role);
         
         int[] offsets = projectedPotential.getOffsets();
@@ -114,34 +116,39 @@ public class LinearCombinationPotential extends GLMPotential {
         return projectedPotential;
     }
     
-    @Override public Potential copy() {
+    @Override
+    public Potential copy() {
         return new LinearCombinationPotential(this);
     }
     
-    @Override public void scalePotential(double scale) {
+    @Override
+    public void scalePotential(double scale) {
         // Multiply all the coefficients by the scale
         for (int i = 0; i < coefficients.length; i++) {
             coefficients[i] *= scale;
         }
-        
+    }
+
+    /** Implements {@link Scalable#scale(double)}; delegates to {@link #scalePotential(double)}. */
+    @Override
+    public void scale(double factor) {
+        scalePotential(factor);
     }
     
-    @Override public Potential addVariable(Variable variable) {
+    @Override
+    public Potential addVariable(Variable variable) {
         LinearCombinationPotential newPotential;
         if (!variables.contains(variable)) {
             List<Variable> newVariables = new ArrayList<>(variables);
             newVariables.add(variable);
             newPotential = new LinearCombinationPotential(newVariables, this.role);
             VariableExpression[] newCovariates = new VariableExpression[covariates.length + 1];
-            for (int i = 0; i < covariates.length; ++i) {
-                newCovariates[i] = covariates[i];
-            }
+            System.arraycopy(covariates, 0, newCovariates, 0, covariates.length);
             newCovariates[covariates.length] = new VariableExpression(newVariables, "{" + variable.getName() + "}");
             newPotential.setCovariates(newCovariates);
             
             double[] newCoefficients = new double[coefficients.length + 1];
-            for (int i = 0; i < coefficients.length; ++i)
-                newCoefficients[i] = coefficients[i];
+            System.arraycopy(coefficients, 0, newCoefficients, 0, coefficients.length);
             newCoefficients[coefficients.length] = 0.0;
             newPotential.setCoefficients(newCoefficients);
         } else {
@@ -151,7 +158,8 @@ public class LinearCombinationPotential extends GLMPotential {
         
     }
     
-    @Override public Potential removeVariable(Variable variable) {
+    @Override
+    public Potential removeVariable(Variable variable) {
         LinearCombinationPotential newPotential;
         if (variables.contains(variable)) {
             List<Variable> newVariables = new ArrayList<>(variables);
@@ -172,11 +180,13 @@ public class LinearCombinationPotential extends GLMPotential {
         return newPotential;
     }
     
-    @Override public Potential deepCopy(ProbNet copyNet) {
+    @Override
+    public Potential deepCopy(ProbNet copyNet) {
         return super.deepCopy(copyNet);
     }
     
-    @Override public String toString() {
+    @Override
+    public String toString() {
         StringBuilder sb = new StringBuilder(super.toString() + " = ");
         VariableExpression[] covariates = this.covariates;
         boolean first = true;

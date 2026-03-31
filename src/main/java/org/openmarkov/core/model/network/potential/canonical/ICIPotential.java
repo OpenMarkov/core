@@ -18,6 +18,7 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.Projectable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -35,11 +36,12 @@ import java.util.*;
  * Concrete subclasses include {@link MaxPotential} (OR/MAX family),
  * {@link MinPotential} (AND/MIN family), and {@link TuningPotential}.
  *
+ * @author Manuel Arias
  * @see ICIFamily
  * @see ICIModelType
  */
 @PotentialType(names = "ICIModel")
-public abstract class ICIPotential extends Potential {
+public abstract class ICIPotential extends Potential implements Projectable {
     
     /* Model type may be OR, causal MAX, AND, etc. */
     protected ICIModelType modelType;
@@ -138,7 +140,7 @@ public abstract class ICIPotential extends Potential {
         
         for (int i = 1; i < variables.size(); ++i) {
             Variable parent = variables.get(i);
-            noisyParameters[i - 1] = initializeNoisyParameters(variables.get(0), parent);
+            noisyParameters[i - 1] = initializeNoisyParameters(variables.getFirst(), parent);
         }
         return noisyParameters;
     }
@@ -212,8 +214,8 @@ public abstract class ICIPotential extends Potential {
         List<Variable> allVariables = new ArrayList<>(variables);
         allVariables.addAll(variablesToEliminate);
         while (allVariables.size() > variables.size()) {
-            Variable variableToEliminate = allVariables.get(allVariables.size() - 1);
-            allVariables.remove(allVariables.size() - 1);
+            Variable variableToEliminate = allVariables.getLast();
+            allVariables.removeLast();
             List<TablePotential> relatedPotentials = new ArrayList<>();
             int i = 0;
             while (i < potentials.size()) {
@@ -226,7 +228,7 @@ public abstract class ICIPotential extends Potential {
                 }
             }
             //add resulting potential
-            potentials.add(0, DiscretePotentialOperations.multiplyAndMarginalize(relatedPotentials, allVariables));
+            potentials.addFirst(DiscretePotentialOperations.multiplyAndMarginalize(relatedPotentials, allVariables));
         }
         return DiscretePotentialOperations.multiplyAndMarginalize(potentials, variables);
     }
@@ -248,12 +250,11 @@ public abstract class ICIPotential extends Potential {
      * @param parameters the noisy parameters. The length of the array must be the multiplication of the parent's and child's state number
      */
     public void setNoisyParameters(Variable parent, double[] parameters) {
-        if (parameters.length != variables.get(0).getNumStates() * parent.getNumStates()) {
+        if (parameters.length != variables.getFirst().getNumStates() * parent.getNumStates()) {
             throw new UnrecoverableException(new InvalidArgumentException(Arrays.stream(parameters)
-                                                                                .boxed()
-                                                                                .toList(), "parameters", "The length of the array must be the multiplication" + " of the parent's and child's state number "
-                                                                                  + variables.get(0)
-                                                                                             .getNumStates() * parent.getNumStates() + " and is " + parameters.length));
+                    .boxed()
+                    .toList(), "parameters", "The length of the array must be the multiplication of the parent's and child's state number "
+                    + variables.getFirst().getNumStates() * parent.getNumStates() + " and is " + parameters.length));
         }
         if (!getVariables().contains(parent)) {
             throw new UnrecoverableException(new InvalidArgumentException(this, "potential", "There is no variable " + parent + " in this ICI family."));
@@ -309,8 +310,7 @@ public abstract class ICIPotential extends Potential {
      * @param noisyPotentials list of table potentials whose values replace the noisy parameters
      */
     public void setNoisyPotentials(List<TablePotential> noisyPotentials) {
-        for (int i = 0; i < noisyPotentials.size(); ++i) {
-            TablePotential noisyPotential = noisyPotentials.get(i);
+        for (TablePotential noisyPotential : noisyPotentials) {
             noisyParameters[variables.indexOf(noisyPotential.getVariable(0)) - 1] = noisyPotential.values;
         }
     }
@@ -328,11 +328,11 @@ public abstract class ICIPotential extends Potential {
      * @param leakyParameters Array of leaky parameters
      */
     public void setLeakyParameters(double[] leakyParameters) {
-        if (leakyParameters.length != variables.get(0).getNumStates()) {
+        if (leakyParameters.length != variables.getFirst().getNumStates()) {
             throw new UnrecoverableException(new InvalidArgumentException(Arrays.stream(leakyParameters)
-                                                                                .boxed()
-                                                                                .toList(), "parameters",
-                                                                          "The length of the array must be the conditioned variable's state number " + variables.get(0)
+                       .boxed()
+                       .toList(), "parameters",
+                       "The length of the array must be the conditioned variable's state number " + variables.getFirst()
                                                                                                                                                                 .getNumStates() + " and is " + leakyParameters.length));
         }
         expandedPotential = null;
@@ -386,14 +386,14 @@ public abstract class ICIPotential extends Potential {
     
     public String toString() {
         StringBuilder buffer = new StringBuilder(super.toString());
-        buffer.append("\nFamily: " + family + ". Model: " + modelType);
-        buffer.append("\nNumber of variables: " + variables.size());
+        buffer.append("\nFamily: ").append(family).append(". Model: ").append(modelType);
+        buffer.append("\nNumber of variables: ").append(variables.size());
         buffer.append("\nVariables: ");
         buffer.append("[");
         for (int i = 0; i < variables.size() - 1; i++) {
-            buffer.append(variables.get(i) + ", ");
+            buffer.append(variables.get(i)).append(", ");
         }
-        buffer.append(variables.get(variables.size() - 1) + "] ");
+        buffer.append(variables.getLast()).append("] ");
         buffer.append("\n");
         return buffer.toString();
     }
@@ -443,7 +443,7 @@ public abstract class ICIPotential extends Potential {
         // if position == 0, it is the conditioned variable, not a noisy one
         if (position > 0) {
             zVariables.remove(oldVariable);
-            zVariables.put(variable, createZVariable(variables.get(0), variable));
+            zVariables.put(variable, createZVariable(variables.getFirst(), variable));
         }
         
     }
@@ -462,7 +462,7 @@ public abstract class ICIPotential extends Potential {
     
     @Override public int sampleConditionedVariable(Random randomGenerator, Map<Variable, Integer> sampledParents) {
         int[] iciSampledStates = new int[noisyParameters.length + 1];
-        int childNumStates = variables.get(0).getNumStates();
+        int childNumStates = variables.getFirst().getNumStates();
         
         // Sample noisy
         for (int i = 1; i < variables.size(); ++i) {

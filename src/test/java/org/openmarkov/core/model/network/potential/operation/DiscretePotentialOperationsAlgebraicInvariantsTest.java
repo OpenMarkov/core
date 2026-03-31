@@ -10,6 +10,7 @@ package org.openmarkov.core.model.network.potential.operation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 import java.util.Arrays;
@@ -261,38 +262,91 @@ public class DiscretePotentialOperationsAlgebraicInvariantsTest {
     // Normalize
     // -----------------------------------------------------------------------
 
-    /** After normalization, all values must sum to 1. */
+    /**
+     * For {@code CONDITIONAL_PROBABILITY} potentials, normalize divides each
+     * group of {@code numStates[0]} values by its row-sum — not the whole table.
+     * Each row must sum to 1.0 after normalization.
+     *
+     * <p>The fixture tpAB already has normalised rows ({sum=1.0} per row), so
+     * we build an unnormalised version (2×tpAB) to make the test meaningful.</p>
+     */
     @Test
-    public void normalize_resultSumsToOne() {
-        TablePotential normalized = DiscretePotentialOperations.normalize(u.tpAB);
+    public void normalize_conditionalProbability_eachRowSumsToOne() {
+        // tpAB * 2: each row sums to 2.0 before normalization
+        double[] doubled = Arrays.stream(u.tpAB.values).map(v -> v * 2.0).toArray();
+        TablePotential unnormalized = new TablePotential(u.variablesAB,
+                PotentialRole.CONDITIONAL_PROBABILITY, doubled);
 
-        double sum = Arrays.stream(normalized.values).sum();
-        assertEquals(1.0, sum, DELTA);
+        DiscretePotentialOperations.normalize(unnormalized);
+
+        int rowSize = u.a.getNumStates(); // 3 — first variable's state count
+        for (int i = 0; i < unnormalized.values.length; i += rowSize) {
+            double rowSum = 0.0;
+            for (int j = 0; j < rowSize; j++) rowSum += unnormalized.values[i + j];
+            assertEquals(1.0, rowSum, DELTA,
+                    "Row starting at index " + i + " must sum to 1.0 after normalization");
+        }
         // No negative values
-        for (double v : normalized.values) {
+        for (double v : unnormalized.values) {
             assertTrue(v >= 0.0, "Normalized value must be non-negative");
         }
     }
 
-    /** Normalizing a potential that already sums to 1 must not change its values. */
+    /**
+     * For {@code JOINT_PROBABILITY} potentials, normalize divides the whole table
+     * by its total sum, so the result sums to 1.0.
+     */
+    @Test
+    public void normalize_jointProbability_tableSumsToOne() {
+        // tpAB values sum to 3.0 — use them as a joint potential
+        TablePotential joint = new TablePotential(u.variablesAB,
+                PotentialRole.JOINT_PROBABILITY, u.tpAB.values.clone());
+
+        DiscretePotentialOperations.normalize(joint);
+
+        double sum = Arrays.stream(joint.values).sum();
+        assertEquals(1.0, sum, DELTA);
+        for (double v : joint.values) {
+            assertTrue(v >= 0.0, "Normalized value must be non-negative");
+        }
+    }
+
+    /**
+     * Normalizing a JOINT_PROBABILITY potential that already sums to 1 must not
+     * change its values (idempotency).
+     *
+     * <p>Note: {@code normalize} mutates the input in place, so we work on clones
+     * to be able to compare before/after independently.</p>
+     */
     @Test
     public void normalize_alreadyNormalized_isIdempotent() {
-        // tpA = {0.5, 0.4, 0.1} sums to 1.0
-        TablePotential once  = DiscretePotentialOperations.normalize(u.tpA);
-        TablePotential twice = DiscretePotentialOperations.normalize(once);
+        // Build a joint potential that already sums to 1.0
+        double[] table = {0.5, 0.4, 0.1};
+        TablePotential joint = new TablePotential(u.variablesA,
+                PotentialRole.JOINT_PROBABILITY, table.clone());
 
-        assertArrayEquals(new double[]{0.5, 0.4, 0.1}, once.values, DELTA);
-        assertArrayEquals(once.values, twice.values, DELTA,
+        double[] afterOnce = DiscretePotentialOperations.normalize(joint).values.clone();
+        double[] afterTwice = DiscretePotentialOperations.normalize(joint).values.clone();
+
+        assertArrayEquals(new double[]{0.5, 0.4, 0.1}, afterOnce, DELTA);
+        assertArrayEquals(afterOnce, afterTwice, DELTA,
                 "normalize(normalize(f)) must equal normalize(f)");
     }
 
-    /** Normalize idempotency holds for any potential, not just pre-normalized ones. */
+    /**
+     * Idempotency holds for unnormalised potentials too: normalising twice must give
+     * the same result as normalising once.
+     */
     @Test
-    public void normalize_idempotency_holdsForAnyPotential() {
-        TablePotential once  = DiscretePotentialOperations.normalize(u.tpAB);
-        TablePotential twice = DiscretePotentialOperations.normalize(once);
+    public void normalize_idempotency_holdsForUnnormalisedPotential() {
+        // Joint potential with sum 3.0
+        TablePotential joint = new TablePotential(u.variablesAB,
+                PotentialRole.JOINT_PROBABILITY, u.tpAB.values.clone());
 
-        assertArrayEquals(once.values, twice.values, DELTA,
+        double[] afterOnce = DiscretePotentialOperations.normalize(joint).values.clone();
+        double[] afterTwice = DiscretePotentialOperations.normalize(joint).values.clone();
+
+        assertArrayEquals(afterOnce, afterTwice, DELTA,
                 "normalize(normalize(f)) must equal normalize(f)");
     }
 

@@ -110,7 +110,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * and the various {@code getPotentials*} getters can be called safely from
      * different threads without {@link java.util.ConcurrentModificationException}.
      */
-    private final Set<TablePotential> constantPotentials;
+    private final Set<Potential> constantPotentials;
     
     /**
      * Reader used to read this network.
@@ -965,13 +965,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         
         // add the potential
         if (variables.isEmpty()) {
-            // TODO - Change constant potentials (Potential vs TablePotential)
-            if (!(potential instanceof TablePotential tablePotential)) {
-                throw new IllegalArgumentException(
-                        "Constant potential must be a TablePotential, got: "
-                        + potential.getClass().getName());
-            }
-            this.constantPotentials.add(tablePotential);
+            this.constantPotentials.add(potential);
         } else {
             nodes.getFirst().addPotential(potential);
         }
@@ -1229,7 +1223,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      *
      * @return unmodifiable view of the constant {@link TablePotential}s
      */
-    public Set<TablePotential> getConstantPotentials() {
+    public Set<Potential> getConstantPotentials() {
         return Collections.unmodifiableSet(constantPotentials);
     }
     

@@ -190,7 +190,7 @@ public abstract class DecisionTreeNode<T> implements DecisionTreeElement {
 	 * 
 	 * @param tablePotential The potential containing utility values.
 	 */
-	public abstract void setOnlyValueForUtility(TablePotential tablePotential);
+	public abstract void setOnlyValueForUtility(Potential tablePotential);
 
 	/**
 	 * Formats the utility value as a string.

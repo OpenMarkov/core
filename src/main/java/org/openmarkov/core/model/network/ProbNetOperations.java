@@ -105,7 +105,7 @@ public class ProbNetOperations {
      * @return {@code true} if {@code node} has at least a neighbor
      * other than those in {@code nodeList}
      */
-    public static boolean hasNeighborsOutside(ProbNet probNet, Node node, Collection<Node> nodes) {
+    public static boolean hasNeighborsOutside(GraphNetwork probNet, Node node, Collection<Node> nodes) {
         boolean hasNeighborsOutside = false;
         boolean neighborIsInList; // aux for the for-loop
         for (Node neighbor : probNet.getNeighbors(node)) {
@@ -454,7 +454,7 @@ public class ProbNetOperations {
                         convertedNodes.add(node);
                         TablePotential potential = new TablePotential(Arrays.asList(newVariable),
                                                                       oldPotential.getPotentialRole());
-                        potential.values[0] = 1;
+                        potential.getValues()[0] = 1;
                         node.setPotential(potential);
                     }
                 } else {
@@ -488,7 +488,7 @@ public class ProbNetOperations {
                         
                         // Calculate scalar value projecting configuration
                         double scalarValue = Double.NEGATIVE_INFINITY;
-                        scalarValue = oldPotential.tableProject(configuration, inferenceOptions).values[0];
+                        scalarValue = oldPotential.tableProject(configuration, inferenceOptions).getValues()[0];
                         scalarValue = oldVariable.round(scalarValue);
                         projectedValues[index++] = scalarValue;
                         if (!newStates.contains(scalarValue)) {
@@ -545,7 +545,7 @@ public class ProbNetOperations {
                     
                     TablePotential newPotential = new TablePotential(newPotentialVariables,
                                                                      oldPotential.getPotentialRole());
-                    double[] values = newPotential.values;
+                    double[] values = newPotential.getValues();
                     int newVariableNumStates = newVariable.getNumStates();
                     for (int i = 0; i < numConfigurations; i++) {
                         int stateIndex = stateIndices.get(projectedValues[i]);
@@ -629,7 +629,7 @@ public class ProbNetOperations {
             configIndex = potential.getPosition(potentialVariableIndices);
             // TODO update potentialVariableIndices
             for (int i = 0; i < conditionedVariable.getNumStates(); ++i) {
-                potential.values[configIndex + i] = projectedPotential.values[projectedConfigIndex + i];
+                potential.getValues()[configIndex + i] = projectedPotential.getValues()[projectedConfigIndex + i];
                 if (projUV != null && uncertainPotential != null && uncertainPotential.uncertainValues != null) {
                     uncertainPotential.uncertainValues[configIndex + i] = projUV[projectedConfigIndex + i];
                 }

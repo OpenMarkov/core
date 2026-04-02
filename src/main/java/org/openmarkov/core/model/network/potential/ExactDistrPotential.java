@@ -134,7 +134,7 @@ import java.util.List;
     }
     
     public void setValues(double[] values) {
-        this.tablePotential.values = values;
+        this.tablePotential.setValues(values);
     }
     
     @Override public List<Variable> getVariables() {
@@ -167,13 +167,13 @@ import java.util.List;
             buffer.append(" = ");
         }
         
-        if (tablePotential.values.length == 1) {
-            buffer.append(tablePotential.values[0]);
-        } else if (tablePotential.values.length > 1) {
+        if (tablePotential.getValues().length == 1) {
+            buffer.append(tablePotential.getValues()[0]);
+        } else if (tablePotential.getValues().length > 1) {
             buffer.append("{");
-            for (int i = 0; i < tablePotential.values.length; i++) {
-                buffer.append(tablePotential.values[i]);
-                if (i != tablePotential.values.length - 1) {
+            for (int i = 0; i < tablePotential.getValues().length; i++) {
+                buffer.append(tablePotential.getValues()[i]);
+                if (i != tablePotential.getValues().length - 1) {
                     buffer.append(",");
                 }
             }

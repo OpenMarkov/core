@@ -109,8 +109,8 @@ public class StrategicTablePotential extends TablePotential implements StrategyC
         int[] accOffsets = getAccumulatedOffsets(newOrderOfVariables);
         int[] potentialPositions = new int[getNumVariables()];
         int[] potentialDimensions = getDimensions();
-        double[] valuesOrig = values;
-        double[] valuesNew  = newPotential.values;
+        double[] valuesOrig = getValues();
+        double[] valuesNew  = newPotential.getValues();
         StrategyTree[] origTrees = this.strategyTrees;
         if (origTrees != null) {
             newPotential.strategyTrees = new StrategyTree[origTrees.length];
@@ -158,8 +158,8 @@ public class StrategicTablePotential extends TablePotential implements StrategyC
     @Override
     public StrategicTablePotential reorder(Variable variable, State[] newOrder) {
         StrategicTablePotential copy = new StrategicTablePotential(this);
-        double[] origValues = values;
-        double[] newValues  = copy.values;
+        double[] origValues = getValues();
+        double[] newValues  = copy.getValues();
         int variableIndex = copy.getVariables().indexOf(variable);
         int offset = copy.getOffsets()[variableIndex];
         State[] oldOrder = variable.getStates();

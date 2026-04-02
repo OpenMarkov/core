@@ -47,7 +47,7 @@ public class Choice {
 	 */
 	public Choice(Variable variable, int[] values) {
 		this.variable = variable;
-		this.values = values;
+		this.setValues(values);
 		numValues = values.length;
 	}
 

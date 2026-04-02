@@ -110,9 +110,9 @@ public class TablePotentialProjectionRegressionTest {
 
         assertEquals(1, projected.getVariables().size(), "Must keep only X");
         assertEquals(x, projected.getVariables().getFirst());
-        assertEquals(2, projected.values.length);
+        assertEquals(2, projected.getValues().length);
         assertEquals(0, projected.getInitialPosition());
-        assertArrayEquals(new double[]{0.0, 1.0}, projected.values, DELTA);
+        assertArrayEquals(new double[]{0.0, 1.0}, projected.getValues(), DELTA);
     }
 
     /**
@@ -130,7 +130,7 @@ public class TablePotentialProjectionRegressionTest {
         assertEquals(1, projected.getVariables().size());
         assertEquals(x, projected.getVariables().getFirst());
         assertEquals(0, projected.getInitialPosition());
-        assertArrayEquals(new double[]{2.0, 3.0}, projected.values, DELTA);
+        assertArrayEquals(new double[]{2.0, 3.0}, projected.getValues(), DELTA);
     }
 
     // -----------------------------------------------------------------------
@@ -153,9 +153,9 @@ public class TablePotentialProjectionRegressionTest {
 
         assertEquals(1, projected.getVariables().size(), "Must keep only Y");
         assertEquals(y, projected.getVariables().getFirst());
-        assertEquals(2, projected.values.length);
+        assertEquals(2, projected.getValues().length);
         assertEquals(0, projected.getInitialPosition());
-        assertArrayEquals(new double[]{0.0, 2.0}, projected.values, DELTA);
+        assertArrayEquals(new double[]{0.0, 2.0}, projected.getValues(), DELTA);
     }
 
     /**
@@ -172,7 +172,7 @@ public class TablePotentialProjectionRegressionTest {
         assertEquals(1, projected.getVariables().size());
         assertEquals(y, projected.getVariables().getFirst());
         assertEquals(0, projected.getInitialPosition());
-        assertArrayEquals(new double[]{1.0, 3.0}, projected.values, DELTA);
+        assertArrayEquals(new double[]{1.0, 3.0}, projected.getValues(), DELTA);
     }
 
     // -----------------------------------------------------------------------
@@ -194,7 +194,7 @@ public class TablePotentialProjectionRegressionTest {
 
         assertEquals(2, projected.getVariables().size(),
                 "Variables of interest must be unchanged when evidence is irrelevant");
-        assertArrayEquals(tpXY.values, projected.values, DELTA);
+        assertArrayEquals(tpXY.getValues(), projected.getValues(), DELTA);
     }
 
     // -----------------------------------------------------------------------
@@ -218,8 +218,8 @@ public class TablePotentialProjectionRegressionTest {
 
         assertEquals(0, projected.getVariables().size(),
                 "Result must be a constant (0-variable) potential");
-        assertEquals(1, projected.values.length);
-        assertEquals(2.0, projected.values[0], DELTA);
+        assertEquals(1, projected.getValues().length);
+        assertEquals(2.0, projected.getValues()[0], DELTA);
     }
 
     // -----------------------------------------------------------------------
@@ -255,7 +255,7 @@ public class TablePotentialProjectionRegressionTest {
         assertEquals(2, projected.getVariables().size(),
                 "Result must have 2 variables: [A, C]");
         assertTrue(projected.getVariables().containsAll(List.of(vA, vC)));
-        assertEquals(9, projected.values.length, "3×3 = 9 entries");
+        assertEquals(9, projected.getValues().length, "3×3 = 9 entries");
         assertEquals(0, projected.getInitialPosition());
 
         // Verify values using accumulated offsets against the result variable order
@@ -267,14 +267,14 @@ public class TablePotentialProjectionRegressionTest {
         for (int a = 0; a < 3; a++) {
             for (int c = 0; c < 3; c++) {
                 int origIdx  = a * 1 + 0 * 3 + c * 6;   // offset for (A=a, B=0, C=c)
-                double expected = tpABC.values[origIdx];
+                double expected = tpABC.getValues()[origIdx];
 
                 // Find a in result variable list
                 int aPos = resultVars.indexOf(vA);
                 int cPos = resultVars.indexOf(vC);
                 int resultIdx = a * resultOffsets[aPos] + c * resultOffsets[cPos];
 
-                assertEquals(expected, projected.values[resultIdx], DELTA,
+                assertEquals(expected, projected.getValues()[resultIdx], DELTA,
                         String.format("Mismatch at (A=%d, B=0, C=%d)", a, c));
             }
         }
@@ -292,7 +292,7 @@ public class TablePotentialProjectionRegressionTest {
         TablePotential projected = tpABC.tableProject(ev, null);
 
         assertEquals(2, projected.getVariables().size());
-        assertEquals(9, projected.values.length);
+        assertEquals(9, projected.getValues().length);
 
         List<Variable> resultVars = projected.getVariables();
         int[] resultOffsets = projected.getOffsets();
@@ -300,13 +300,13 @@ public class TablePotentialProjectionRegressionTest {
         for (int a = 0; a < 3; a++) {
             for (int c = 0; c < 3; c++) {
                 int origIdx = a * 1 + 1 * 3 + c * 6;  // B=1 slice
-                double expected = tpABC.values[origIdx];
+                double expected = tpABC.getValues()[origIdx];
 
                 int aPos = resultVars.indexOf(vA);
                 int cPos = resultVars.indexOf(vC);
                 int resultIdx = a * resultOffsets[aPos] + c * resultOffsets[cPos];
 
-                assertEquals(expected, projected.values[resultIdx], DELTA,
+                assertEquals(expected, projected.getValues()[resultIdx], DELTA,
                         String.format("Mismatch at (A=%d, B=1, C=%d)", a, c));
             }
         }
@@ -347,7 +347,7 @@ public class TablePotentialProjectionRegressionTest {
         TablePotential projectedProduct = product.tableProject(ev, null);
 
         assertEquals(productOfProjected.getVariables().size(), projectedProduct.getVariables().size());
-        assertArrayEquals(productOfProjected.values, projectedProduct.values, DELTA,
+        assertArrayEquals(productOfProjected.getValues(), projectedProduct.getValues(), DELTA,
                 "project-then-multiply must equal multiply-then-project");
     }
 }

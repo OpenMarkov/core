@@ -116,7 +116,7 @@ public class PotentialTest {
                                                                                                                .get(0)
                                                                                                                .getParentVariables()),
                                                                   PotentialRole.CONDITIONAL_PROBABILITY);
-        tablePotentialBranch1.values = new double[]{5};
+        tablePotentialBranch1.setValues(new double[]{5});
         potTreeAddUtility.getBranches().get(0).setPotential(tablePotentialBranch1);
         
         LinearCombinationPotential lcPotentialBranch2 = new LinearCombinationPotential(UtilTestMethods

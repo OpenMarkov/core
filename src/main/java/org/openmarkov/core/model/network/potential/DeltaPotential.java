@@ -107,19 +107,19 @@ import java.util.*;
         // numeric variable
         if (state == null) {
             TablePotential projectedPotential = new TablePotential(new ArrayList<>(), PotentialRole.CONDITIONAL_PROBABILITY);
-            projectedPotential.values[0] = numericValue;
+            projectedPotential.getValues()[0] = numericValue;
             return projectedPotential;
         }
         // finite states variable
         Variable conditionedVariable = getConditionedVariable();
         if (evidenceCase.contains(conditionedVariable)) {
             TablePotential projectedPotential = new TablePotential(new ArrayList<>(), PotentialRole.CONDITIONAL_PROBABILITY);
-            projectedPotential.values[0] = 1;
+            projectedPotential.getValues()[0] = 1;
             return projectedPotential;
         }
         TablePotential projectedPotential = new TablePotential(Collections.singletonList(conditionedVariable), PotentialRole.CONDITIONAL_PROBABILITY);
-        for (int i = 0; i < projectedPotential.values.length; ++i) {
-            projectedPotential.values[i] = (i == stateIndex) ? 1 : 0;
+        for (int i = 0; i < projectedPotential.getValues().length; ++i) {
+            projectedPotential.getValues()[i] = (i == stateIndex) ? 1 : 0;
         }
         return projectedPotential;
     }

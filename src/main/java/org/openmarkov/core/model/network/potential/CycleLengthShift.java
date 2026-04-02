@@ -93,7 +93,7 @@ public class CycleLengthShift extends Potential {
                 }
             }
             projectedPotential = new TablePotential(new ArrayList<>(), role);
-            projectedPotential.values[0] = evidenceCase.getNumericalValue(conditioningVariable) + cycleLength
+            projectedPotential.getValues()[0] = evidenceCase.getNumericalValue(conditioningVariable) + cycleLength
                     .getValue();
             return projectedPotential;
         }
@@ -112,10 +112,10 @@ public class CycleLengthShift extends Potential {
         int configurationIndex = 0;
         // Copy values from parent's projected potential, shifting values
         // one state
-        for (int i = 0; i < projectedParentPotential.values.length; i += numStatesParent) {
-            projectedPotential.values[configurationIndex * numStates] = 0;
+        for (int i = 0; i < projectedParentPotential.getValues().length; i += numStatesParent) {
+            projectedPotential.getValues()[configurationIndex * numStates] = 0;
             for (int j = 0; j < numStatesParent; ++j) {
-                projectedPotential.values[configurationIndex * numStates + j + 1] = projectedParentPotential.values[
+                projectedPotential.getValues()[configurationIndex * numStates + j + 1] = projectedParentPotential.getValues()[
                         i + j];
             }
             configurationIndex++;

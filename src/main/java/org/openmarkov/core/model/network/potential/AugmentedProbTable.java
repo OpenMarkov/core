@@ -194,9 +194,10 @@ public class AugmentedProbTable extends UncertainTablePotential {
         boolean isEqual = super.equals(arg0) && arg0 instanceof TablePotential;
         if (isEqual) {
             double[] otherValues = ((TablePotential) arg0).getValues();
-            if (values.length == otherValues.length) {
-                for (int i = 0; i < values.length; i++) {
-                    isEqual &= values[i] == otherValues[i];
+            double[] myValues = getValues();
+            if (myValues.length == otherValues.length) {
+                for (int i = 0; i < myValues.length; i++) {
+                    isEqual &= myValues[i] == otherValues[i];
                 }
             } else {
                 isEqual = false;

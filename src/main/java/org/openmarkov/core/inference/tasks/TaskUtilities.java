@@ -252,12 +252,12 @@ public class TaskUtilities {
 			} else {
 				if (potential.isAdditive()) {
 					// It is a utility potential
-					if (potential.values[0] != 0) {
+					if (potential.getValues()[0] != 0) {
 						projectedPotentials.add(potential);
 					}
 				} else {
 					// It is a probability potential
-					if (potential.values[0] != 1) {
+					if (potential.getValues()[0] != 1) {
 						projectedPotentials.add(potential);
 					}
 				}

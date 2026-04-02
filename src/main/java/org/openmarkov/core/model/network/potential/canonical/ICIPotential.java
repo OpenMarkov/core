@@ -312,7 +312,7 @@ public abstract class ICIPotential extends Potential implements Projectable {
      */
     public void setNoisyPotentials(List<TablePotential> noisyPotentials) {
         for (TablePotential noisyPotential : noisyPotentials) {
-            noisyParameters[variables.indexOf(noisyPotential.getVariable(0)) - 1] = noisyPotential.values;
+            noisyParameters[variables.indexOf(noisyPotential.getVariable(0)) - 1] = noisyPotential.getValues();
         }
     }
     

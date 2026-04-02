@@ -187,14 +187,14 @@ public class ProbNetOperationsTest {
                 (TablePotential) nodeB.getPotentials().get(0);
         assertEquals(1, bPotential.getNumVariables());
         assertTrue(bPotential.contains(B));
-        assertEquals(2, ((TablePotential) bPotential).values.length);
+        assertEquals(2, ((TablePotential) bPotential).getValues().length);
         int[] offsets = bPotential.getOffsets();
         assertEquals(1, offsets.length);
         int initialPosition = bPotential.getInitialPosition();
         assertEquals(0, initialPosition);
-        double a = bPotential.values[initialPosition];
+        double a = bPotential.getValues()[initialPosition];
         assertEquals(0.9, a, maxError);
-        assertEquals(0.1, bPotential.values[initialPosition + offsets[0]], maxError);
+        assertEquals(0.1, bPotential.getValues()[initialPosition + offsets[0]], maxError);
     }
     
     @Test
@@ -226,21 +226,21 @@ public class ProbNetOperationsTest {
         //create potentials
         TablePotential pA = new TablePotential(
                 aVariables, PotentialRole.CONDITIONAL_PROBABILITY);
-        pA.values[0] = 0.9;
-        pA.values[1] = 0.1;
+        pA.getValues()[0] = 0.9;
+        pA.getValues()[1] = 0.1;
         TablePotential pBA = new TablePotential(
                 baVariables, PotentialRole.CONDITIONAL_PROBABILITY);
-        pBA.values[0] = 0.2;
-        pBA.values[1] = 0.8;
-        pBA.values[2] = 0.9;
-        pBA.values[3] = 0.1;
+        pBA.getValues()[0] = 0.2;
+        pBA.getValues()[1] = 0.8;
+        pBA.getValues()[2] = 0.9;
+        pBA.getValues()[3] = 0.1;
         TablePotential pU = new TablePotential(
                 adVariables, PotentialRole.CONDITIONAL_PROBABILITY);
         //pU.setUtilityVariable(U);
-        pU.values[0] = 1;
-        pU.values[1] = 2;
-        pU.values[2] = 3;
-        pU.values[3] = 4;
+        pU.getValues()[0] = 1;
+        pU.getValues()[1] = 2;
+        pU.getValues()[2] = 3;
+        pU.getValues()[3] = 4;
         ProbNet simpleProbNet = new ProbNet();
         simpleProbNet.addConstraint(new NoCycle());
         simpleProbNet.addConstraint(new OnlyDirectedLinks());
@@ -375,14 +375,14 @@ public class ProbNetOperationsTest {
         }
         assertEquals(1, potential0B.getNumVariables());
         assertTrue(potential0B.contains(variableB));
-        assertEquals(2, potential0B.values.length);
+        assertEquals(2, potential0B.getValues().length);
         int[] offsets0B = potential0B.getOffsets();
         assertEquals(1, offsets0B.length);
         assertEquals(1, offsets0B[0]);
         int initialPosition = potential0B.getInitialPosition();
         assertEquals(0, initialPosition);
-        assertEquals(0.26, potential0B.values[potential0B.getInitialPosition()], maxError);
-        assertEquals(0.74, potential0B.values[
+        assertEquals(0.26, potential0B.getValues()[potential0B.getInitialPosition()], maxError);
+        assertEquals(0.74, potential0B.getValues()[
                 potential0B.getInitialPosition() + offsets0B[0]], maxError);
         //Test projected potential p (D | B, I), D = 1 = psi(B, I)
         TablePotential potential1B = (TablePotential) potentialsB.get(1);
@@ -653,22 +653,22 @@ public class ProbNetOperationsTest {
         double[] ageAtStateEntry_1_expectedValues = new double[]{0, 1, 1, 0};
         double[] ageAtStateEntry_1_Values = ((TablePotential) convertedNet.getNode("Age at state entry [1]")
                                                                           .getPotentials()
-                                                                          .get(0)).values;
+                                                                          .get(0)).getValues();
         assertArrayEquals(ageAtStateEntry_1_expectedValues, ageAtStateEntry_1_Values, 0.001);
         double[] timeInState_1_expectedValues = new double[]{0, 1, 1, 0};
         double[] timeInState_1_Values = ((TablePotential) convertedNet.getNode("Time in state [1]")
                                                                       .getPotentials()
-                                                                      .get(0)).values;
+                                                                      .get(0)).getValues();
         assertArrayEquals(timeInState_1_expectedValues, timeInState_1_Values, 0.001);
         double[] ageAtStateEntry_2_expectedValues = new double[]{0, 0, 1, 0, 1, 0, 1, 0, 0};
         double[] ageAtStateEntry_2_Values = ((TablePotential) convertedNet.getNode("Age at state entry [2]")
                                                                           .getPotentials()
-                                                                          .get(0)).values;
+                                                                          .get(0)).getValues();
         assertArrayEquals(ageAtStateEntry_2_expectedValues, ageAtStateEntry_2_Values, 0.001);
         double[] timeInState_2_expectedValues = new double[]{0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0};
         double[] timeInState_2_Values = ((TablePotential) convertedNet.getNode("Time in state [2]")
                                                                       .getPotentials()
-                                                                      .get(0)).values;
+                                                                      .get(0)).getValues();
         assertArrayEquals(timeInState_2_expectedValues, timeInState_2_Values, 0.001);
         //Test projection of potentials of not -numeric nodes with numeric parents
         double[] transitionPotential_2_expectedValues = new double[]{0.730278527, 0.269721473, 0.729796819, 0.270203181, 0.578080011, 0.421919989, 0.57741534, 0.42258466};
@@ -676,7 +676,7 @@ public class ProbNetOperationsTest {
                                           .getPotentials()
                                           .get(0);
         
-        double[] transitionPotential_2_Values = ((TablePotential) potential).values;
+        double[] transitionPotential_2_Values = ((TablePotential) potential).getValues();
         assertArrayEquals(transitionPotential_2_expectedValues, transitionPotential_2_Values, 0.001);
     }
     
@@ -690,19 +690,19 @@ public class ProbNetOperationsTest {
         List<Variable> projectedPotentialVariables = Arrays.asList(varA, varC);
         TablePotential originalPotential = new TablePotential(originalVariables, PotentialRole.CONDITIONAL_PROBABILITY);
         TablePotential projectedPotential = new TablePotential(projectedPotentialVariables, PotentialRole.CONDITIONAL_PROBABILITY);
-        projectedPotential.values = new double[]{0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12};
+        projectedPotential.setValues(new double[]{0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.10, 0.11, 0.12});
         EvidenceCase configuration = new EvidenceCase();
         configuration.addFinding(new Finding(varB, 0));
         configuration.addFinding(new Finding(varD, 1));
-        for (int i = 0; i < originalPotential.values.length; ++i) {
-            originalPotential.values[i] = 0;
+        for (int i = 0; i < originalPotential.getValues().length; ++i) {
+            originalPotential.getValues()[i] = 0;
         }
         ProbNetOperations.sumProjectedPotential(originalPotential, projectedPotential, configuration);
         double[] expectedValues = new double[]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0, 0.01, 0.02, 0.03, 0, 0, 0, 0.04, 0.05, 0.06, 0, 0, 0, 0.07, 0.08, 0.09,
                 0, 0, 0, 0.1, 0.11, 0.12, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0, 0};
-        assertArrayEquals(expectedValues, originalPotential.values, 0.0001);
+        assertArrayEquals(expectedValues, originalPotential.getValues(), 0.0001);
     }
     
     @Test
@@ -714,14 +714,14 @@ public class ProbNetOperationsTest {
         List<Variable> projectedPotentialVariables = Arrays.asList(varTransition, varTherapy, varState);
         TablePotential originalPotential = new TablePotential(originalVariables, PotentialRole.CONDITIONAL_PROBABILITY);
         TablePotential projectedPotential = new TablePotential(projectedPotentialVariables, PotentialRole.CONDITIONAL_PROBABILITY);
-        projectedPotential.values = new double[]{1, 0, 1, 0, 1, 0, 1, 0, 0.883, 0.117, 0.904, 0.096, 0.764, 0.236, 0.773, 0.227};
+        projectedPotential.setValues(new double[]{1, 0, 1, 0, 1, 0, 1, 0, 0.883, 0.117, 0.904, 0.096, 0.764, 0.236, 0.773, 0.227});
         EvidenceCase configuration = new EvidenceCase();
-        for (int i = 0; i < originalPotential.values.length; ++i) {
-            originalPotential.values[i] = 0;
+        for (int i = 0; i < originalPotential.getValues().length; ++i) {
+            originalPotential.getValues()[i] = 0;
         }
         ProbNetOperations.sumProjectedPotential(originalPotential, projectedPotential, configuration);
         double[] expectedValues = new double[]{1, 0, 1, 0, 0.883, 0.117, 0.764, 0.236, 1, 0, 1, 0, 0.904, 0.096, 0.773, 0.227};
-        assertArrayEquals(expectedValues, originalPotential.values, 0.0001);
+        assertArrayEquals(expectedValues, originalPotential.getValues(), 0.0001);
     }
     
     @Test

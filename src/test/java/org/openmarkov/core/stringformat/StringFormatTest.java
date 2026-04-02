@@ -18,7 +18,7 @@ import java.util.Map;
 @SuppressWarnings({"ConstantExpression", "DuplicateStringLiteralInspection"})
 class StringFormatTest {
     
-    private static final String TEST_PATTERN = "The {probNetWrapper.getNet#name} net created at {CreationDate, date, short} is not a " +
+    private static final String TEST_PATTERN = "The {probNetWrapper.getNet.getName} net created at {CreationDate, date, short} is not a " +
             "{DesiredNetType} network, and this functionality is only available for {DesiredNetType}";
     
     private static final String EXPECTED = "The MyNet net created at 3/6/23 is not a " +

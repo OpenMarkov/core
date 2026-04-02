@@ -80,7 +80,7 @@ public class DiscretePotentialOperationsRegressionTest {
 
         // P(B=b0) = 0.4*0.9 + 0.6*0.3 = 0.54
         // P(B=b1) = 0.4*0.1 + 0.6*0.7 = 0.46
-        double[] values = marginal.values;
+        double[] values = marginal.getValues();
         assertEquals(0.54, values[0], 1e-6);
         assertEquals(0.46, values[1], 1e-6);
     }
@@ -95,7 +95,7 @@ public class DiscretePotentialOperationsRegressionTest {
         TablePotential constant = (TablePotential) result;
         assertEquals(0, constant.getVariables().size());
         // The constant is the sum of all joint probabilities = 1.0
-        assertEquals(1.0, constant.values[0], 1e-6);
+        assertEquals(1.0, constant.getValues()[0], 1e-6);
     }
 
     @Test
@@ -105,7 +105,7 @@ public class DiscretePotentialOperationsRegressionTest {
                 List.of(pA), List.of(a));
 
         TablePotential constant = (TablePotential) result;
-        assertEquals(1.0, constant.values[0], 1e-6);
+        assertEquals(1.0, constant.getValues()[0], 1e-6);
     }
 
     // -----------------------------------------------------------------------
@@ -115,7 +115,7 @@ public class DiscretePotentialOperationsRegressionTest {
     @Test
     public void createZeroProbabilityPotentialHasValueZero() {
         TablePotential zero = DiscretePotentialOperations.createZeroProbabilityPotential();
-        assertEquals(0.0, zero.values[0], DELTA);
+        assertEquals(0.0, zero.getValues()[0], DELTA);
     }
 
     @Test
@@ -137,7 +137,7 @@ public class DiscretePotentialOperationsRegressionTest {
     @Test
     public void createUnityProbabilityPotentialHasValueOne() {
         TablePotential unity = DiscretePotentialOperations.createUnityProbabilityPotential();
-        assertEquals(1.0, unity.values[0], DELTA);
+        assertEquals(1.0, unity.getValues()[0], DELTA);
     }
 
     @Test
@@ -154,7 +154,7 @@ public class DiscretePotentialOperationsRegressionTest {
     public void createOneValuePotentialWithArbitraryValue() {
         TablePotential p = DiscretePotentialOperations.createOneValuePotential(
                 PotentialRole.UNSPECIFIED, 3.14);
-        assertEquals(3.14, p.values[0], DELTA);
+        assertEquals(3.14, p.getValues()[0], DELTA);
         assertEquals(PotentialRole.UNSPECIFIED, p.getPotentialRole());
     }
 
@@ -172,7 +172,7 @@ public class DiscretePotentialOperationsRegressionTest {
     @Test
     public void createZeroUtilityPotentialWithNullNetHasValueZero() {
         TablePotential util = DiscretePotentialOperations.createZeroUtilityPotential(null);
-        assertEquals(0.0, util.values[0], DELTA);
+        assertEquals(0.0, util.getValues()[0], DELTA);
     }
 
     // -----------------------------------------------------------------------
@@ -225,7 +225,7 @@ public class DiscretePotentialOperationsRegressionTest {
 
     @Test
     public void sumOfProbabilityDistributionIsOne() {
-        assertEquals(1.0, DiscretePotentialOperations.sum(pA.values), 1e-9);
+        assertEquals(1.0, DiscretePotentialOperations.sum(pA.getValues()), 1e-9);
     }
 
     // -----------------------------------------------------------------------
@@ -244,8 +244,8 @@ public class DiscretePotentialOperationsRegressionTest {
     public void normalizeAlreadyNormalizedIsIdentity() {
         TablePotential result = DiscretePotentialOperations.normalize(pA);
         // P(A) sums to 1 already; each value should be the same.
-        assertEquals(0.4, result.values[0], 1e-6);
-        assertEquals(0.6, result.values[1], 1e-6);
+        assertEquals(0.4, result.getValues()[0], 1e-6);
+        assertEquals(0.6, result.getValues()[1], 1e-6);
     }
 
     @Test
@@ -253,8 +253,8 @@ public class DiscretePotentialOperationsRegressionTest {
         TablePotential unnorm = new TablePotential(List.of(a), PotentialRole.CONDITIONAL_PROBABILITY,
                 new double[]{2.0, 6.0});  // sum = 8
         TablePotential result = DiscretePotentialOperations.normalize(unnorm);
-        assertEquals(0.25, result.values[0], 1e-6);
-        assertEquals(0.75, result.values[1], 1e-6);
+        assertEquals(0.25, result.getValues()[0], 1e-6);
+        assertEquals(0.75, result.getValues()[1], 1e-6);
     }
 
     // -----------------------------------------------------------------------
@@ -273,8 +273,8 @@ public class DiscretePotentialOperationsRegressionTest {
         TablePotential result = DiscretePotentialOperations.imposeOtherDistributionWhenDistributionIsZero(p);
 
         // b0 column untouched
-        assertEquals(0.3, result.values[0], DELTA);
-        assertEquals(0.7, result.values[1], DELTA);
+        assertEquals(0.3, result.getValues()[0], DELTA);
+        assertEquals(0.7, result.getValues()[1], DELTA);
     }
 
     @Test
@@ -290,8 +290,8 @@ public class DiscretePotentialOperationsRegressionTest {
         TablePotential result = DiscretePotentialOperations.imposeOtherDistributionWhenDistributionIsZero(p);
 
         // b1 column: first state gets 1.0, rest 0.0
-        assertEquals(1.0, result.values[2], DELTA);
-        assertEquals(0.0, result.values[3], DELTA);
+        assertEquals(1.0, result.getValues()[2], DELTA);
+        assertEquals(0.0, result.getValues()[3], DELTA);
     }
 
     // -----------------------------------------------------------------------
@@ -311,9 +311,9 @@ public class DiscretePotentialOperationsRegressionTest {
         assertEquals(1, margA.getVariables().size());
         assertTrue(margA.getVariables().contains(a));
         // P(A=a0) = 0.36 + 0.04 = 0.40
-        assertEquals(0.40, margA.values[0], 1e-6);
+        assertEquals(0.40, margA.getValues()[0], 1e-6);
         // P(A=a1) = 0.24 + 0.36 = 0.60
-        assertEquals(0.60, margA.values[1], 1e-6);
+        assertEquals(0.60, margA.getValues()[1], 1e-6);
     }
 
     @Test
@@ -335,7 +335,7 @@ public class DiscretePotentialOperationsRegressionTest {
                 new double[]{0.4, 0.6});
         TablePotential constant = DiscretePotentialOperations.marginalize(pANorm, a);
         assertEquals(0, constant.getVariables().size());
-        assertEquals(1.0, constant.values[0], 1e-6);
+        assertEquals(1.0, constant.getValues()[0], 1e-6);
     }
 
     // -----------------------------------------------------------------------
@@ -420,8 +420,8 @@ public class DiscretePotentialOperationsRegressionTest {
 
         TablePotential result = DiscretePotentialOperations.multiplyAndMarginalize(halfProb, utility, b);
 
-        assertEquals(2.0, result.values[0], 1e-6);
-        assertEquals(4.0, result.values[1], 1e-6);
+        assertEquals(2.0, result.getValues()[0], 1e-6);
+        assertEquals(4.0, result.getValues()[1], 1e-6);
     }
 
     @Test
@@ -434,7 +434,7 @@ public class DiscretePotentialOperationsRegressionTest {
 
         // E[U] = 0.4*10 + 0.6*20 = 4 + 12 = 16
         assertEquals(0, result.getVariables().size());
-        assertEquals(16.0, result.values[0], 1e-6);
+        assertEquals(16.0, result.getValues()[0], 1e-6);
     }
 
     @Test
@@ -445,7 +445,7 @@ public class DiscretePotentialOperationsRegressionTest {
         // single variable, tableSize=2 → not a constant, but length ≤ 1 check...
         // Let's use a genuinely constant one (no variables):
         TablePotential trueConst = new TablePotential(PotentialRole.CONDITIONAL_PROBABILITY);
-        trueConst.values[0] = 0.0;
+        trueConst.getValues()[0] = 0.0;
         TablePotential result = DiscretePotentialOperations.imposeOtherDistributionWhenDistributionIsZero(trueConst);
         assertSame(trueConst, result, "Constant potential must be returned as-is");
     }

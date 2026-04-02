@@ -89,7 +89,7 @@ public class UtilTestMethods {
     public static double getConfiguration(ArrayList<Variable> variables, int[] coordinateVariables,
                                           TablePotential potential) {
         int position = getConfigurationPosition(variables, coordinateVariables, potential);
-        return potential.values[position];
+        return potential.getValues()[position];
     }
     
     /**

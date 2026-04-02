@@ -108,7 +108,7 @@ public final class UtilityFunctionComputer {
         Potential firstPotential = potentials.getFirst();
         if (!node.isSuperValueNode()) {
             TablePotential tableProject = firstPotential.tableProject(null, null);
-            double[] values = tableProject != null ? tableProject.values : new double[1];
+            double[] values = tableProject != null ? tableProject.getValues() : new double[1];
             return computeMax ? Tools.max(values) : Tools.min(values);
         }
         List<Node> parents = node.getParents();

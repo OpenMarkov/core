@@ -64,7 +64,7 @@ public class SharedDataMultiplyAndMarginalize extends SharedDataMultiply {
 		TablePotential unionPotential = new TablePotential(unionVariables, null);
 		for (int i = 0; i < numPotentials; i++) {
             TablePotential potential = potentials.get(i);
-			tables[i] = potential.values;
+			tables[i] = potential.getValues();
 			initialPositions[i] = potential.getInitialPosition();
 			currentPositions[i] = initialPositions[i];
 			accumulatedOffsets[i] = unionPotential

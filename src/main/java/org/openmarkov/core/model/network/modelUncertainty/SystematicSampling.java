@@ -151,7 +151,7 @@ public class SystematicSampling extends Sampler {
 			int offset = i * values.length;
 			for (int j = 0; j < values.length; j++) {
 				int newPos = j + offset;
-				newPotential.values[newPos] = values[j];
+				newPotential.getValues()[newPos] = values[j];
 				if (hasUncertainty) {
 					uncertainNew.uncertainValues[newPos] = uncertainValues[j];
 				}
@@ -211,7 +211,7 @@ public class SystematicSampling extends Sampler {
 				double[] sampledConfigurationValues = sampler.generateSample(columnUncertainValues, numStates, functionTypes);
 				double[] auxSampledConfigurationValues = new double[numStates];
 				double auxValueToAssign = min;
-				double[] newSubpotentialTableValues = newSubPotentialTable.values;
+				double[] newSubpotentialTableValues = newSubPotentialTable.getValues();
 				for (int i = 0; i < numPoints; i++) {
 					System.arraycopy(sampledConfigurationValues, 0, auxSampledConfigurationValues, 0, numStates);
 					replaceValueAndRedistributeComplements(auxSampledConfigurationValues, sampler, posUncertainInColumn,
@@ -219,7 +219,7 @@ public class SystematicSampling extends Sampler {
 					copyInArray(newSubpotentialTableValues, configurationBasePositionInitColumn + i * originalValuesLength,
 							auxSampledConfigurationValues);
 					//TODO Distribute the probability mass when changing one value
-					/*newSubPotential.values[position + i * originalValuesLength] = min
+					/*newSubPotential.getValues()[position + i * originalValuesLength] = min
 							+ i * pointsDistance;*/
 					auxValueToAssign += pointsDistance;
 				}
@@ -293,7 +293,7 @@ public class SystematicSampling extends Sampler {
 				if(interval > numIntervals) {
 					auxValueToAssign = uncertainParameter.getBaseLineValue();
 				}
-				double[] newSubpotentialTableValues = newSubPotentialTable.values;
+				double[] newSubpotentialTableValues = newSubPotentialTable.getValues();
 								
 				System.arraycopy(sampledConfigurationValues, 0, auxSampledConfigurationValues, 0, numStates);
 				replaceValueAndRedistributeComplements(auxSampledConfigurationValues, sampler, posUncertainInColumn,

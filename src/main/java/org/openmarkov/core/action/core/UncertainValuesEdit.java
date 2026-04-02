@@ -62,7 +62,7 @@ import java.util.List;
 		UncertainValue[] oldUncertainValues = getPotential().getUncertainValues();
 		wasNullOldUncertainValues = oldUncertainValues == null;
 		oldUncertainColumn = wasNullOldUncertainValues ? null : getColumn(oldUncertainValues, variable, basePosition);
-		oldValuesColumn = getColumn(getPotential().values, variable, basePosition);
+		oldValuesColumn = getColumn(getPotential().getValues(), variable, basePosition);
 		this.selectedColumn = selectedColumn;
 	}
 

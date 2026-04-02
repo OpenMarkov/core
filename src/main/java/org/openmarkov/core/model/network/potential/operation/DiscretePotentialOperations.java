@@ -350,8 +350,8 @@ public final class DiscretePotentialOperations {
      */
     static boolean thereAreRelevantUtilities(TablePotential outputUtilityPotential) {
         boolean thereAreRelevantUtilities = false;
-        for (int i = 0; i < outputUtilityPotential.values.length; i++) {
-            if (!almostEqual(outputUtilityPotential.values[i], 0.0)) {
+        for (int i = 0; i < outputUtilityPotential.getValues().length; i++) {
+            if (!almostEqual(outputUtilityPotential.getValues()[i], 0.0)) {
                 thereAreRelevantUtilities = true;
                 break;
             }

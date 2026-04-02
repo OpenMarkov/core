@@ -71,8 +71,8 @@ public class DiscretePotentialOperationsAlgebraicInvariantsTest {
 
         assertEquals(1, result.getVariables().size(), "Result should have 1 variable (B)");
         assertEquals(u.b, result.getVariables().getFirst());
-        assertEquals(3, result.values.length);
-        assertArrayEquals(new double[]{1.0, 1.0, 1.0}, result.values, DELTA);
+        assertEquals(3, result.getValues().length);
+        assertArrayEquals(new double[]{1.0, 1.0, 1.0}, result.getValues(), DELTA);
     }
 
     /**
@@ -89,7 +89,7 @@ public class DiscretePotentialOperationsAlgebraicInvariantsTest {
 
         assertEquals(1, result.getVariables().size(), "Result should have 1 variable (A)");
         assertEquals(u.a, result.getVariables().getFirst());
-        assertArrayEquals(new double[]{0.9, 1.0, 1.1}, result.values, DELTA);
+        assertArrayEquals(new double[]{0.9, 1.0, 1.1}, result.getValues(), DELTA);
     }
 
     /**
@@ -104,8 +104,8 @@ public class DiscretePotentialOperationsAlgebraicInvariantsTest {
         TablePotential elimB = DiscretePotentialOperations.marginalize(u.tpAB, u.b);
 
         assertEquals(1, keepA.getVariables().size());
-        assertArrayEquals(elimB.values, keepA.values, DELTA);
-        assertArrayEquals(new double[]{0.9, 1.0, 1.1}, keepA.values, DELTA);
+        assertArrayEquals(elimB.getValues(), keepA.getValues(), DELTA);
+        assertArrayEquals(new double[]{0.9, 1.0, 1.1}, keepA.getValues(), DELTA);
     }
 
     // -----------------------------------------------------------------------
@@ -131,8 +131,8 @@ public class DiscretePotentialOperationsAlgebraicInvariantsTest {
 
         assertEquals(1, elimCA.getVariables().size());
         assertEquals(1, elimAC.getVariables().size());
-        assertArrayEquals(new double[]{3.0, 3.0}, elimCA.values, DELTA);
-        assertArrayEquals(elimCA.values, elimAC.values, DELTA,
+        assertArrayEquals(new double[]{3.0, 3.0}, elimCA.getValues(), DELTA);
+        assertArrayEquals(elimCA.getValues(), elimAC.getValues(), DELTA,
                 "Marginalizing in different orders must yield identical results");
     }
 
@@ -150,7 +150,7 @@ public class DiscretePotentialOperationsAlgebraicInvariantsTest {
         TablePotential stepwise = DiscretePotentialOperations.marginalize(elimC, u.a);
 
         assertEquals(1, direct.getVariables().size(), "keepD result should have 1 variable (D)");
-        assertArrayEquals(stepwise.values, direct.values, DELTA);
+        assertArrayEquals(stepwise.getValues(), direct.getValues(), DELTA);
     }
 
     // -----------------------------------------------------------------------
@@ -179,7 +179,7 @@ public class DiscretePotentialOperationsAlgebraicInvariantsTest {
 
         assertEquals(1, result.getVariables().size());
         assertEquals(u.a, result.getVariables().getFirst());
-        assertArrayEquals(new double[]{0.45, 0.40, 0.11}, result.values, DELTA);
+        assertArrayEquals(new double[]{0.45, 0.40, 0.11}, result.getValues(), DELTA);
     }
 
     /**
@@ -198,7 +198,7 @@ public class DiscretePotentialOperationsAlgebraicInvariantsTest {
 
         assertEquals(1, result.getVariables().size());
         assertEquals(u.b, result.getVariables().getFirst());
-        assertArrayEquals(new double[]{0.20, 0.33, 0.43}, result.values, DELTA);
+        assertArrayEquals(new double[]{0.20, 0.33, 0.43}, result.getValues(), DELTA);
     }
 
     /**
@@ -212,8 +212,8 @@ public class DiscretePotentialOperationsAlgebraicInvariantsTest {
         TablePotential singleVar = DiscretePotentialOperations.multiplyAndMarginalize(
                 List.of(u.tpAB), u.a);   // eliminates A
 
-        assertArrayEquals(explicit.values, singleVar.values, DELTA);
-        assertArrayEquals(new double[]{1.0, 1.0, 1.0}, singleVar.values, DELTA);
+        assertArrayEquals(explicit.getValues(), singleVar.getValues(), DELTA);
+        assertArrayEquals(new double[]{1.0, 1.0, 1.0}, singleVar.getValues(), DELTA);
     }
 
     // -----------------------------------------------------------------------
@@ -236,7 +236,7 @@ public class DiscretePotentialOperationsAlgebraicInvariantsTest {
                 List.of(u.tpAB, u.tpA), List.of(u.a), List.of(u.b));
 
         assertEquals(twoStep.getVariables().size(), oneStep.getVariables().size());
-        assertArrayEquals(twoStep.values, oneStep.values, DELTA,
+        assertArrayEquals(twoStep.getValues(), oneStep.getValues(), DELTA,
                 "multiply-then-marginalize must equal multiplyAndMarginalize");
     }
 
@@ -255,7 +255,7 @@ public class DiscretePotentialOperationsAlgebraicInvariantsTest {
         TablePotential result = DiscretePotentialOperations.multiplyAndMarginalize(
                 List.of(u.tpAB, u.tpConstant07), List.of(u.b), List.of(u.a));
 
-        assertArrayEquals(new double[]{0.7, 0.7, 0.7}, result.values, DELTA);
+        assertArrayEquals(new double[]{0.7, 0.7, 0.7}, result.getValues(), DELTA);
     }
 
     // -----------------------------------------------------------------------
@@ -273,21 +273,21 @@ public class DiscretePotentialOperationsAlgebraicInvariantsTest {
     @Test
     public void normalize_conditionalProbability_eachRowSumsToOne() {
         // tpAB * 2: each row sums to 2.0 before normalization
-        double[] doubled = Arrays.stream(u.tpAB.values).map(v -> v * 2.0).toArray();
+        double[] doubled = Arrays.stream(u.tpAB.getValues()).map(v -> v * 2.0).toArray();
         TablePotential unnormalized = new TablePotential(u.variablesAB,
                 PotentialRole.CONDITIONAL_PROBABILITY, doubled);
 
         DiscretePotentialOperations.normalize(unnormalized);
 
         int rowSize = u.a.getNumStates(); // 3 — first variable's state count
-        for (int i = 0; i < unnormalized.values.length; i += rowSize) {
+        for (int i = 0; i < unnormalized.getValues().length; i += rowSize) {
             double rowSum = 0.0;
-            for (int j = 0; j < rowSize; j++) rowSum += unnormalized.values[i + j];
+            for (int j = 0; j < rowSize; j++) rowSum += unnormalized.getValues()[i + j];
             assertEquals(1.0, rowSum, DELTA,
                     "Row starting at index " + i + " must sum to 1.0 after normalization");
         }
         // No negative values
-        for (double v : unnormalized.values) {
+        for (double v : unnormalized.getValues()) {
             assertTrue(v >= 0.0, "Normalized value must be non-negative");
         }
     }
@@ -300,13 +300,13 @@ public class DiscretePotentialOperationsAlgebraicInvariantsTest {
     public void normalize_jointProbability_tableSumsToOne() {
         // tpAB values sum to 3.0 — use them as a joint potential
         TablePotential joint = new TablePotential(u.variablesAB,
-                PotentialRole.JOINT_PROBABILITY, u.tpAB.values.clone());
+                PotentialRole.JOINT_PROBABILITY, u.tpAB.getValues().clone());
 
         DiscretePotentialOperations.normalize(joint);
 
-        double sum = Arrays.stream(joint.values).sum();
+        double sum = Arrays.stream(joint.getValues()).sum();
         assertEquals(1.0, sum, DELTA);
-        for (double v : joint.values) {
+        for (double v : joint.getValues()) {
             assertTrue(v >= 0.0, "Normalized value must be non-negative");
         }
     }
@@ -325,8 +325,8 @@ public class DiscretePotentialOperationsAlgebraicInvariantsTest {
         TablePotential joint = new TablePotential(u.variablesA,
                 PotentialRole.JOINT_PROBABILITY, table.clone());
 
-        double[] afterOnce = DiscretePotentialOperations.normalize(joint).values.clone();
-        double[] afterTwice = DiscretePotentialOperations.normalize(joint).values.clone();
+        double[] afterOnce = DiscretePotentialOperations.normalize(joint).getValues().clone();
+        double[] afterTwice = DiscretePotentialOperations.normalize(joint).getValues().clone();
 
         assertArrayEquals(new double[]{0.5, 0.4, 0.1}, afterOnce, DELTA);
         assertArrayEquals(afterOnce, afterTwice, DELTA,
@@ -341,10 +341,10 @@ public class DiscretePotentialOperationsAlgebraicInvariantsTest {
     public void normalize_idempotency_holdsForUnnormalisedPotential() {
         // Joint potential with sum 3.0
         TablePotential joint = new TablePotential(u.variablesAB,
-                PotentialRole.JOINT_PROBABILITY, u.tpAB.values.clone());
+                PotentialRole.JOINT_PROBABILITY, u.tpAB.getValues().clone());
 
-        double[] afterOnce = DiscretePotentialOperations.normalize(joint).values.clone();
-        double[] afterTwice = DiscretePotentialOperations.normalize(joint).values.clone();
+        double[] afterOnce = DiscretePotentialOperations.normalize(joint).getValues().clone();
+        double[] afterTwice = DiscretePotentialOperations.normalize(joint).getValues().clone();
 
         assertArrayEquals(afterOnce, afterTwice, DELTA,
                 "normalize(normalize(f)) must equal normalize(f)");
@@ -361,12 +361,12 @@ public class DiscretePotentialOperationsAlgebraicInvariantsTest {
      */
     @Test
     public void marginalize_sumIsPreserved() {
-        double originalSum = Arrays.stream(u.tpAB.values).sum(); // 3.0
+        double originalSum = Arrays.stream(u.tpAB.getValues()).sum(); // 3.0
 
         double sumMargA = Arrays.stream(
-                DiscretePotentialOperations.marginalize(u.tpAB, u.a).values).sum();
+                DiscretePotentialOperations.marginalize(u.tpAB, u.a).getValues()).sum();
         double sumMargB = Arrays.stream(
-                DiscretePotentialOperations.marginalize(u.tpAB, u.b).values).sum();
+                DiscretePotentialOperations.marginalize(u.tpAB, u.b).getValues()).sum();
 
         assertEquals(originalSum, sumMargA, DELTA,
                 "Marginalizing A must preserve the total sum");

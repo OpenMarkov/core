@@ -54,7 +54,7 @@ public class EvidencePotentials {
 					int indexStateEvidence = evidence.getState(variable);
 					for (int indexState = 0; indexState < variable.getStates().length; indexState++) {
 						// Sets potential table configurations
-						potential.values[indexState] = (indexState == indexStateEvidence) ? 1.0 : 0.0;
+						potential.getValues()[indexState] = (indexState == indexStateEvidence) ? 1.0 : 0.0;
 					}
 					// Inserts potential in individualProbabilities
 					individualProbabilities.put(variable, potential);

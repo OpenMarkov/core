@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.model.network;
 
-import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -73,7 +72,7 @@ public final class NodeAbsorptionHandler {
 
                 // Convert to utility potential
                 ExactDistrPotential exactDistrPotential = new ExactDistrPotential(variablesToKeep);
-                exactDistrPotential.setValues(marginalizedPotential.values);
+                exactDistrPotential.setValues(marginalizedPotential.getValues());
 
                 newPotentials.add(exactDistrPotential);
             }
@@ -107,7 +106,7 @@ public final class NodeAbsorptionHandler {
 
                 // Convert to utility potential
                 ExactDistrPotential exactDistrPotential = new ExactDistrPotential(newVariables);
-                exactDistrPotential.setValues(maximizedPotential.values);
+                exactDistrPotential.setValues(maximizedPotential.getValues());
 
                 newPotentials.add(exactDistrPotential);
             }

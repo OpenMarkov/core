@@ -31,7 +31,7 @@ public class UncertainTablePotential extends TablePotential implements Uncertain
 
     /**
      * Uncertain values for sensitivity analysis.  {@code null} means no uncertainty.
-     * Public and volatile for the same reasons as {@link TablePotential#values}.
+     * Public and volatile for efficiency reasons.
      */
     public volatile UncertainValue[] uncertainValues;
 
@@ -105,8 +105,8 @@ public class UncertainTablePotential extends TablePotential implements Uncertain
         int[] accOffsets = getAccumulatedOffsets(newOrderOfVariables);
         int[] potentialPositions = new int[getNumVariables()];
         int[] potentialDimensions = getDimensions();
-        double[] valuesOrig = values;
-        double[] valuesNew  = newPotential.values;
+        double[] valuesOrig = getValues();
+        double[] valuesNew  = newPotential.getValues();
         UncertainValue[] origUncertain = this.uncertainValues;
         UncertainValue[] newUncertain  = null;
         if (origUncertain != null) {
@@ -143,8 +143,8 @@ public class UncertainTablePotential extends TablePotential implements Uncertain
     @Override
     public TablePotential reorder(Variable variable, State[] newOrder) {
         UncertainTablePotential copyPotential = new UncertainTablePotential(this);
-        double[] tableOrig = values;
-        double[] tableCopy = copyPotential.values;
+        double[] tableOrig = getValues();
+        double[] tableCopy = copyPotential.getValues();
         int[] displacements = new int[newOrder.length];
         List<Variable> vars = copyPotential.getVariables();
         int variableIndex = vars.indexOf(variable);
@@ -200,7 +200,7 @@ public class UncertainTablePotential extends TablePotential implements Uncertain
             return this;   // no projection needed
         }
         UncertainTablePotential projectedPotential = new UncertainTablePotential(unobservedVariables, role);
-        int length = projectedPotential.values.length;
+        int length = projectedPotential.getValues().length;
         if (uncertainValues != null) {
             projectedPotential.uncertainValues = new UncertainValue[length];
         }
@@ -215,7 +215,7 @@ public class UncertainTablePotential extends TablePotential implements Uncertain
         }
         if (numUnobservedVariables == 0) {
             // Constant potential after projection
-            projectedPotential.values[0] = values[firstPosition];
+            projectedPotential.getValues()[0] = getValues()[firstPosition];
             if (projectedPotential.uncertainValues != null) {
                 projectedPotential.uncertainValues[0] = uncertainValues[firstPosition];
             }
@@ -228,7 +228,7 @@ public class UncertainTablePotential extends TablePotential implements Uncertain
                 projectedDimensions[i] = unobservedVariables.get(i).getNumStates();
             }
             for (int projectedPosition = 0; projectedPosition < length - 1; projectedPosition++) {
-                projectedPotential.values[projectedPosition] = values[firstPosition];
+                projectedPotential.getValues()[projectedPosition] = getValues()[firstPosition];
                 if (projectedPotential.uncertainValues != null) {
                     projectedPotential.uncertainValues[projectedPosition] = uncertainValues[firstPosition];
                 }
@@ -243,7 +243,7 @@ public class UncertainTablePotential extends TablePotential implements Uncertain
                 }
                 firstPosition += accumulatedOffsets[increasedVariable];
             }
-            projectedPotential.values[length - 1] = values[firstPosition];
+            projectedPotential.getValues()[length - 1] = getValues()[firstPosition];
             if (projectedPotential.uncertainValues != null) {
                 projectedPotential.uncertainValues[length - 1] = uncertainValues[firstPosition];
             }

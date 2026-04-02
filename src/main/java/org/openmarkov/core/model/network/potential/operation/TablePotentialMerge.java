@@ -116,7 +116,7 @@ final class TablePotentialMerge {
                 elementsTables.set(indexPotential, ((GTablePotential<CEP>) gtp).elementTable);
             } else {
                 TablePotential tp = (TablePotential) potential;
-                tables[indexPotential] = tp.values;
+                tables[indexPotential] = tp.getValues();
                 if (thereArePotentialsWithInterventions) {
                     potentialsInterventions[indexPotential] = tp instanceof StrategicTablePotential stp
                             ? stp.strategyTrees : null;

@@ -124,7 +124,7 @@ public final class RemoveLinkEdit extends BaseLinkEdit {
 					 */
                     
                     // Temporal patch to be removed when the above TO-DO is implemented
-                    if (Arrays.stream(newPotential.getCPT().values).sum() == 0) {
+                    if (Arrays.stream(newPotential.getCPT().getValues()).sum() == 0) {
                         newPotential = new UniformPotential(newPotential.getVariables(), newPotential.getPotentialRole());
                     }
                     

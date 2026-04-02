@@ -27,7 +27,7 @@ public abstract class InferenceEvaluationTaskIDTest extends InferenceResolutionT
     
     protected void testMEU(ProbNet net, double expectedMEU, StrategyTree expectedStrategy) throws IncompatibleEvidenceException, NotEvaluableNetworkException {
         Evaluation algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(net);
-        Double meuEvaluation = algorithm.getUtility().values[0];
+        Double meuEvaluation = algorithm.getUtility().getValues()[0];
         assertEquals(expectedMEU, meuEvaluation, maxError);
     }
     
@@ -42,7 +42,7 @@ public abstract class InferenceEvaluationTaskIDTest extends InferenceResolutionT
         
         // test max expected utility
         
-        Double meuEvaluation = algorithm.getUtility().values[0];
+        Double meuEvaluation = algorithm.getUtility().getValues()[0];
         assertEquals(96.006, meuEvaluation, maxError);
         
         // Test optimal policy
@@ -130,7 +130,7 @@ public abstract class InferenceEvaluationTaskIDTest extends InferenceResolutionT
         
         
         // test max expected utility
-        Double meuEvaluation = algorithm.getUtility().values[0];
+        Double meuEvaluation = algorithm.getUtility().getValues()[0];
         assertEquals(expectedMeu, meuEvaluation, maxError);
         
         
@@ -345,7 +345,7 @@ public abstract class InferenceEvaluationTaskIDTest extends InferenceResolutionT
         
         Evaluation algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram);
         // test max expected utility
-        Double meuEvaluation = algorithm.getUtility().values[0];
+        Double meuEvaluation = algorithm.getUtility().getValues()[0];
         assertEquals(10.0, meuEvaluation, maxError);
         
         // Test optimal policy

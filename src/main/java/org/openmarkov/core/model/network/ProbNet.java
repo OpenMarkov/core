@@ -17,6 +17,7 @@ import org.openmarkov.core.io.ProbNetReader;
 import org.openmarkov.core.io.ProbNetWriter;
 import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.graph.Graph;
+import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Criterion.CECriterion;
 import org.openmarkov.core.model.network.constraint.*;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -47,16 +48,16 @@ import java.util.stream.Stream;
  * @see org.openmarkov.core.model.network.Node
  * @since OpenMarkov 1.0
  */
-public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable {
+public class ProbNet implements PotentialNetwork, Cloneable, ClassLocalizable {
+
+    /** Internal graph that holds the topology (nodes, directed/undirected links). */
+    private final Graph<Node> graph = new Graph<>();
 
     /**
-     * Additional properties read from disk that have no direct mapping to
-     * fields of this object (e.g. format-specific metadata).
-     * Exposed as an unmodifiable view via {@link #getAdditionalProperties()};
-     * mutated through {@link #setAdditionalProperties(Map)} and
-     * {@link #putAdditionalProperty(String, String)}.
+     * Descriptive and configuration metadata (name, comment, criteria,
+     * agents, inference options, etc.).
      */
-    private final Map<String, String> additionalProperties = new LinkedHashMap<>();
+    private final NetworkMetadata metadata = new NetworkMetadata();
     /**
      * Nodes are stored in several HashMaps to accelerate the access. The type
      * of node determines the {@code HashMap} in which the node is stored.
@@ -71,38 +72,7 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      * {@code ProbNet}. This attribute is not frozen to allow conversions
      */
     private TreeSet<PNConstraint> constraints;
-    /**
-     * Set of agents, defined by a name. Each one may have several properties.
-     */
-    private List<StringWithProperties> agents;
-    /**
-     * Set of criterion for decision, defined by a name. Each one may have
-     * several properties.
-     */
-    private List<Criterion> decisionCriteria;
-    /**
-     * Cycle length value and unit of the probNet
-     */
-    private CycleLength cycleLength;
     private PNESupport pNESupport;
-    /**
-     * The file where the network has been saved
-     */
-    private String name;
-    /**
-     * ProbNet comment
-     */
-    private String comment = "";
-    /**
-     * Indicates whether the comment should be shown when opening the net
-     */
-    private boolean showCommentWhenOpening = false;
-    /**
-     * Default States of the probNet
-     */
-    private State[] defaultStates = {new State("absent"), new State("present")};
-    
-    private InferenceOptions inferenceOptions;
     
     /**
      * Potentials that have no associated variables (i.e. constant potentials).
@@ -155,15 +125,9 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      */
     public ProbNet(NetworkType networkType) {
         this.pNESupport = new PNESupport(this);
-        this.decisionCriteria = new ArrayList<>();
-        decisionCriteria.add(new Criterion());
         this.constraints = new TreeSet<>();
         this.nodeDepot = new NodeTypeDepot();
-        this.inferenceOptions = new InferenceOptions();
         this.constantPotentials = ConcurrentHashMap.newKeySet();
-        if (!this.hasConstraintOfClass(OnlyAtemporalVariables.class)) {
-            this.cycleLength = new CycleLength();
-        }
         try {
             this.setNetworkType(networkType);
         } catch (ConstraintViolatedException e) {
@@ -434,6 +398,15 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     }
 
     /**
+     * Returns a shallow structural copy of this network, satisfying the
+     * {@link Cloneable} contract. Delegates to {@link #copy()}.
+     */
+    @Override
+    public ProbNet clone() {
+        return copy();
+    }
+
+    /**
      * Inserts a link ({@code directed = true} or {@code false})
      * between the nodes associated to {@code variable1} and
      * {@code variable2} in {@code this} graph.
@@ -464,21 +437,14 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         addLink(variable2, variable1, true);
     }
     
-    public String getName() {
-        return name;
-    }
-    
-    /**
-     * @param name the name to set
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getName() { return metadata.getName(); }
+
+    public void setName(String name) { metadata.setName(name); }
     
     /**
      * @return Number of nodes in {@code probNet}. {@code int}
      */
-    @Override public int getNumNodes() {
+    public int getNumNodes() {
         return nodeDepot.getNumNodes();
     }
     
@@ -795,8 +761,8 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      *             used to redo the {@code AddVariableEdit}, i.e., to
      *             reinsert a Node that has been removed.
      */
-    @Override public void addNode(Node node) {
-        super.addNode(node);
+    public void addNode(Node node) {
+        graph.addNode(node);
         nodeDepot.addNode(node);
     }
     
@@ -1055,8 +1021,8 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
      *
      * @param node {@code Node}
      */
-    @Override public void removeNode(Node node) {
-        super.removeNode(node);
+    public void removeNode(Node node) {
+        graph.removeNode(node);
         nodeDepot.removeNode(node);
     }
     
@@ -1080,40 +1046,15 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     public PNESupport getPNESupport() {
         return pNESupport;
     }
+
+    /** Package-private accessor to the metadata object (for copiers and serializers). */
+    NetworkMetadata getMetadata() { return metadata; }
     
-    /**
-     * @return the comment
-     */
-    public String getComment() {
-        return comment;
-    }
-    
-    /**
-     * @param comment the comment to set
-     */
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-    
-    /**
-     * @return the defaultStates
-     */
-    public State[] getDefaultStates() {
-        State[] states = new State[defaultStates.length];
-        
-        for (int stateIndex = 0; stateIndex < defaultStates.length; stateIndex++) {
-            states[stateIndex] = new State(defaultStates[stateIndex]);
-        }
-        
-        return states;
-    }
-    
-    /**
-     * @param defaultStates the defaultStates to set
-     */
-    public void setDefaultStates(State[] defaultStates) {
-        this.defaultStates = defaultStates;
-    }
+    public String getComment() { return metadata.getComment(); }
+    public void setComment(String comment) { metadata.setComment(comment); }
+
+    public State[] getDefaultStates() { return metadata.getDefaultStates(); }
+    public void setDefaultStates(State[] defaultStates) { metadata.setDefaultStates(defaultStates); }
     
     /**
      * Condition: oldNode belongs to this probNet
@@ -1140,42 +1081,15 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         return newNode;
     }
     
-    /**
-     * @return {@code ArrayList} of {@code StringsWithProperties}
-     */
-    public List<StringWithProperties> getAgents() {
-        return agents;
-    }
-    
-    /**
-     * @param agents . {@code StringsWithProperties}
-     */
-    public void setAgents(List<StringWithProperties> agents) {
-        this.agents = agents;
-    }
-    
-    /**
-     * @return {@code StringsWithProperties}
-     */
-    public List<Criterion> getDecisionCriteria() {
-        return decisionCriteria;
-    }
-    
-    /**
-     * @param decisionCriteria . {@code StringsWithProperties}
-     */
-    public void setDecisionCriteria(List<Criterion> decisionCriteria) {
-        this.decisionCriteria = decisionCriteria;
-    }
-    
+    public List<StringWithProperties> getAgents() { return metadata.getAgents(); }
+    public void setAgents(List<StringWithProperties> agents) { metadata.setAgents(agents); }
+
+    public List<Criterion> getDecisionCriteria() { return metadata.getDecisionCriteria(); }
+    public void setDecisionCriteria(List<Criterion> decisionCriteria) { metadata.setDecisionCriteria(decisionCriteria); }
+
     /** @return whether the network comment should be displayed when the file is opened */
-    public boolean getShowCommentWhenOpening() {
-        return showCommentWhenOpening;
-    }
-    
-    public void setShowCommentWhenOpening(boolean showCommentWhenOpening) {
-        this.showCommentWhenOpening = showCommentWhenOpening;
-    }
+    public boolean getShowCommentWhenOpening() { return metadata.getShowCommentWhenOpening(); }
+    public void setShowCommentWhenOpening(boolean show) { metadata.setShowCommentWhenOpening(show); }
     
     /**
      * Node calls this method when its variable instance has been changed, so
@@ -1189,21 +1103,11 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
         nodeDepot.addNode(node);
     }
     
-    public InferenceOptions getInferenceOptions() {
-        return inferenceOptions;
-    }
-    
-    public void setInferenceOptions(InferenceOptions inferenceOptions) {
-        this.inferenceOptions = inferenceOptions;
-    }
-    
-    public CycleLength getCycleLength() {
-        return cycleLength;
-    }
-    
-    public void setCycleLength(CycleLength temporalUnit) {
-        this.cycleLength = temporalUnit;
-    }
+    public InferenceOptions getInferenceOptions() { return metadata.getInferenceOptions(); }
+    public void setInferenceOptions(InferenceOptions inferenceOptions) { metadata.setInferenceOptions(inferenceOptions); }
+
+    public CycleLength getCycleLength() { return metadata.getCycleLength(); }
+    public void setCycleLength(CycleLength temporalUnit) { metadata.setCycleLength(temporalUnit); }
     
     /**
      * Creates a full deep copy of {@code this ProbNet}: all mutable objects
@@ -1228,37 +1132,15 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     }
     
     
-    /**
-     * Returns an unmodifiable view of the additional properties.
-     * Use {@link #setAdditionalProperties(Map)} to bulk-replace or
-     * {@link #putAdditionalProperty(String, String)} to add a single entry.
-     *
-     * @return unmodifiable map; never {@code null}
-     */
-    public Map<String, String> getAdditionalProperties() {
-        return Collections.unmodifiableMap(additionalProperties);
-    }
+    /** @return unmodifiable view of format-specific additional properties */
+    public Map<String, String> getAdditionalProperties() { return metadata.getAdditionalProperties(); }
 
-    /**
-     * Replaces all additional properties with the entries from the given map.
-     *
-     * @param additionalProperties new properties; {@code null} is treated as empty
-     */
     public void setAdditionalProperties(Map<String, String> additionalProperties) {
-        this.additionalProperties.clear();
-        if (additionalProperties != null) {
-            this.additionalProperties.putAll(additionalProperties);
-        }
+        metadata.setAdditionalProperties(additionalProperties);
     }
 
-    /**
-     * Adds or replaces a single additional property.
-     *
-     * @param key   property name; must not be {@code null}
-     * @param value property value
-     */
     public void putAdditionalProperty(String key, String value) {
-        this.additionalProperties.put(key, value);
+        metadata.putAdditionalProperty(key, value);
     }
 
     /**
@@ -1286,6 +1168,38 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
     public void modifyAgent(StateAction stateAction, String agentName, Object[][] dataTable) {
         ProbNetAgentManager.modifyAgent(this, stateAction, agentName, dataTable);
     }
+
+    // =========================================================
+    // Graph structure — delegation to internal Graph<Node>
+    // =========================================================
+
+    public List<Node> getNodes() { return graph.getNodes(); }
+    public List<Node> getChildren(Node node) { return graph.getChildren(node); }
+    public List<Node> getParents(Node node) { return graph.getParents(node); }
+    public List<Node> getSiblings(Node node) { return graph.getSiblings(node); }
+    public List<Node> getNeighbors(Node node) { return graph.getNeighbors(node); }
+    public int getNumChildren(Node node) { return graph.getNumChildren(node); }
+    public int getNumParents(Node node) { return graph.getNumParents(node); }
+    public int getNumSiblings(Node node) { return graph.getNumSiblings(node); }
+    public int getNumNeighbors(Node node) { return graph.getNumNeighbors(node); }
+    public boolean isChild(Node node1, Node node2) { return graph.isChild(node1, node2); }
+    public boolean isParent(Node node1, Node node2) { return graph.isParent(node1, node2); }
+    public boolean isSibling(Node node1, Node node2) { return graph.isSibling(node1, node2); }
+    public boolean isNeighbor(Node node1, Node node2) { return graph.isNeighbor(node1, node2); }
+    public Link<Node> addLink(Node node1, Node node2, boolean directed) { return graph.addLink(node1, node2, directed); }
+    public void removeLink(Node node1, Node node2, boolean directed) { graph.removeLink(node1, node2, directed); }
+    public void removeLink(Link<Node> link) { graph.removeLink(link); }
+    public void removeLinks(Node node) { graph.removeLinks(node); }
+    public Link<Node> getLink(Node node1, Node node2, boolean directed) { return graph.getLink(node1, node2, directed); }
+    public List<Link<Node>> getLinks(Node node) { return graph.getLinks(node); }
+    public List<Link<Node>> getLinks() { return graph.getLinks(); }
+    public int getNumLinks(Node node) { return graph.getNumLinks(node); }
+    public void makeLinksExplicit(boolean createLabelledLinks) { graph.makeLinksExplicit(createLabelledLinks); }
+    public boolean hasExplicitLinks() { return graph.hasExplicitLinks(); }
+    public boolean existsPath(Node node1, Node node2, boolean directed, List<Link<Node>> linksToIgnore) {
+        return graph.existsPath(node1, node2, directed, linksToIgnore);
+    }
+    public void marry(Collection<Node> nodeList) { graph.marry(nodeList); }
 
     @Override
     public String toString() {
@@ -1319,9 +1233,9 @@ public class ProbNet extends Graph<Node> implements Cloneable, ClassLocalizable 
             out.append(constraintsAsStr);
             out.append("\n");
         }
-        if (agents != null) {
+        if (getAgents() != null) {
             out.append("\n");
-            out.append("Agents:\n").append(agents);
+            out.append("Agents:\n").append(getAgents());
         }
         return out.toString();
     }

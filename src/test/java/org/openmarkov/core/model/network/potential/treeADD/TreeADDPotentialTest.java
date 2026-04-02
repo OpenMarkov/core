@@ -160,10 +160,10 @@ public class TreeADDPotentialTest {
 				treeADD.tableProject(null, null).get(0);
 		ArrayList<Variable> variables = tablePotential.getVariables();
 		assertEquals(2, variables.size());
-		assertEquals(1.0, tablePotential.values[0]);
-		assertEquals(0.0, tablePotential.values[1]);
-		assertEquals(0.9, tablePotential.values[2]);
-		assertEquals(0.1, tablePotential.values[3]);
+		assertEquals(1.0, tablePotential.getValues()[0]);
+		assertEquals(0.0, tablePotential.getValues()[1]);
+		assertEquals(0.9, tablePotential.getValues()[2]);
+		assertEquals(0.1, tablePotential.getValues()[3]);
 		
 		Finding bFinding = new Finding(variableB, 0);
 		EvidenceCase evidence = new EvidenceCase();
@@ -172,8 +172,8 @@ public class TreeADDPotentialTest {
 			treeADD.tableProject(evidence, null).get(0);
 		variables = tablePotential.getVariables();
 		assertEquals(1, variables.size());
-		assertEquals(1.0, tablePotential.values[0]);
-		assertEquals(0.9, tablePotential.values[1]);
+		assertEquals(1.0, tablePotential.getValues()[0]);
+		assertEquals(0.9, tablePotential.getValues()[1]);
 
 		Finding aFinding = new Finding(variableA, 1);
 		evidence = new EvidenceCase();
@@ -182,8 +182,8 @@ public class TreeADDPotentialTest {
 			treeADD.tableProject(evidence, null).get(0);
 		variables = tablePotential.getVariables();
 		assertEquals(1, variables.size());
-		assertEquals(0.9, tablePotential.values[0]);
-		assertEquals(0.1, tablePotential.values[1]);
+		assertEquals(0.9, tablePotential.getValues()[0]);
+		assertEquals(0.1, tablePotential.getValues()[1]);
 	}*/
     
     @Test public void testShift() {

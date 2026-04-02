@@ -105,7 +105,7 @@ import java.util.List;
         // If there is no unobserved variables, the resulting potential is constant
         if (unobservedVariables.isEmpty()) {// Projection = constant potential
             // For the time being no utility potentials are supported
-            projectedPotential.values[0] = 1.0;
+            projectedPotential.getValues()[0] = 1.0;
         } else {
             // Project median and scale potentials
             TablePotential projectedMedianPotential = median
@@ -121,18 +121,18 @@ import java.util.List;
             // Copy configurations using the accumulated offsets algorithm
             for (int configuration = 0; configuration < numConfigurations; configuration++) {
                 int configurationIndex = configuration * numStates;
-                double median = projectedMedianPotential.values[configuration];
-                double scale = projectedScalePotential.values[configuration];
+                double median = projectedMedianPotential.getValues()[configuration];
+                double scale = projectedScalePotential.getValues()[configuration];
                 org.apache.commons.math3.distribution.CauchyDistribution dist = new org.apache.commons.math3.distribution.CauchyDistribution(
                         median, scale);
                 double lastCdf = 0;
                 for (int i = 0; i < numStates - 1; i++) {
                     double cdf = dist.cumulativeProbability(thresholds[i]);
-                    projectedPotential.values[configurationIndex + i] = cdf - lastCdf;
+                    projectedPotential.getValues()[configurationIndex + i] = cdf - lastCdf;
                     lastCdf = cdf;
                 }
                 // The remaining probability is assigned to the last state
-                projectedPotential.values[configurationIndex + (numStates - 1)] = 1 - lastCdf;
+                projectedPotential.getValues()[configurationIndex + (numStates - 1)] = 1 - lastCdf;
             }
         }
         return projectedPotential;
@@ -190,7 +190,7 @@ import java.util.List;
         TablePotential scalePotential = new TablePotential(scalePotentialVariables,
                                                            PotentialRole.CONDITIONAL_PROBABILITY);
         // Set variance to 1 for all configurations
-        Arrays.fill(scalePotential.values, 1);
+        Arrays.fill(scalePotential.getValues(), 1);
         return scalePotential;
     }
     

@@ -42,7 +42,7 @@ final class TablePotentialTransform {
      */
     static TablePotential normalize(TablePotential potential) {
         TablePotential tablePotential = potential;
-        if (Arrays.stream(tablePotential.values).allMatch(value -> value == 0.0)) {
+        if (Arrays.stream(tablePotential.getValues()).allMatch(value -> value == 0.0)) {
             throw new CannotNormalizePotentialException(tablePotential);
         }
         List<Variable> variables = tablePotential.getVariables();
@@ -50,22 +50,22 @@ final class TablePotentialTransform {
             if (potential.getPotentialRole() == PotentialRole.CONDITIONAL_PROBABILITY) {
                 int numStates = variables.get(0).getNumStates();
                 double normalizationFactor;
-                for (int i = 0; i < tablePotential.values.length; i += numStates) {
+                for (int i = 0; i < tablePotential.getValues().length; i += numStates) {
                     normalizationFactor = 0.0;
                     for (int j = 0; j < numStates; j++) {
-                        normalizationFactor += tablePotential.values[i + j];
+                        normalizationFactor += tablePotential.getValues()[i + j];
                     }
                     for (int j = 0; j < numStates; j++) {
-                        tablePotential.values[i + j] /= normalizationFactor;
+                        tablePotential.getValues()[i + j] /= normalizationFactor;
                     }
                 }
             } else if (potential.getPotentialRole() == PotentialRole.JOINT_PROBABILITY) {
                 double normalizationFactor = 0.0;
-                for (int i = 0; i < tablePotential.values.length; i++) {
-                    normalizationFactor += tablePotential.values[i];
+                for (int i = 0; i < tablePotential.getValues().length; i++) {
+                    normalizationFactor += tablePotential.getValues()[i];
                 }
-                for (int i = 0; i < tablePotential.values.length; i++) {
-                    tablePotential.values[i] /= normalizationFactor;
+                for (int i = 0; i < tablePotential.getValues().length; i++) {
+                    tablePotential.getValues()[i] /= normalizationFactor;
                 }
             }
         }
@@ -99,25 +99,25 @@ final class TablePotentialTransform {
      */
     static TablePotential imposeOtherDistributionWhenDistributionIsZero(TablePotential xNewPotential) {
         List<Variable> variables = xNewPotential.getVariables();
-        if (variables == null || variables.isEmpty() || xNewPotential.values == null
-                || xNewPotential.values.length <= 1) {
+        if (variables == null || variables.isEmpty() || xNewPotential.getValues() == null
+                || xNewPotential.getValues().length <= 1) {
             return xNewPotential;
         }
         Variable firstVariable = variables.get(0);
         int numStatesFirstVariable = firstVariable.getNumStates();
-        int numOuterIterations = xNewPotential.values.length / numStatesFirstVariable;
+        int numOuterIterations = xNewPotential.getValues().length / numStatesFirstVariable;
         int numConfiguration = 0;
         for (int i = 0; i < numOuterIterations; i++) {
             boolean allZeros = true;
             int startConfiguration = numConfiguration;
             for (int j = 0; j < numStatesFirstVariable; j++) {
-                allZeros &= DiscretePotentialOperations.almostEqual(0.0, xNewPotential.values[startConfiguration++]);
+                allZeros &= DiscretePotentialOperations.almostEqual(0.0, xNewPotential.getValues()[startConfiguration++]);
             }
             if (allZeros) {
                 startConfiguration = numConfiguration;
-                xNewPotential.values[startConfiguration++] = 1.0;
+                xNewPotential.getValues()[startConfiguration++] = 1.0;
                 for (int j = 1; j < numStatesFirstVariable; j++) {
-                    xNewPotential.values[startConfiguration++] = 0.0;
+                    xNewPotential.getValues()[startConfiguration++] = 0.0;
                 }
             }
             numConfiguration += numStatesFirstVariable;

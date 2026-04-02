@@ -48,7 +48,7 @@ public class AuxiliaryOperations {
 	public static List<TablePotential> getNonConstantPotentials(Collection<TablePotential> potentials) {
 		List<TablePotential> properPotentials = new ArrayList<>();
 		for (TablePotential potential : potentials) {
-			if (potential.values.length > 1) {
+			if (potential.getValues().length > 1) {
 				properPotentials.add(potential);
 			}
 		}
@@ -152,8 +152,8 @@ public class AuxiliaryOperations {
 	public static double getConstantFactor(List<TablePotential> potentials) {
 		double constantFactor = 1.0;
 		for (TablePotential potential : potentials) {
-			if (potential.values.length == 1) {
-				constantFactor *= potential.values[0];
+			if (potential.getValues().length == 1) {
+				constantFactor *= potential.getValues()[0];
 			}
 		}
 		return constantFactor;

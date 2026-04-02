@@ -213,10 +213,10 @@ public class ProbNetCopyTest {
     public void mutatingSharedPotentialAffectsBothNets() {
         ProbNet copy = original.copy();
         // Potentials are shared; mutating the shared array changes both views.
-        pRain.values[0] = 0.99;
+        pRain.getValues()[0] = 0.99;
         Node copyRain = copy.getNode(rain);
         TablePotential copyPotential = (TablePotential) copyRain.getPotentials().get(0);
-        assertEquals(0.99, copyPotential.values[0], DELTA,
+        assertEquals(0.99, copyPotential.getValues()[0], DELTA,
                 "Shared potential mutation must be visible from the copy");
     }
 

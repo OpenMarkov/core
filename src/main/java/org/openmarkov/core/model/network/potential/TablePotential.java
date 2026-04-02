@@ -45,11 +45,10 @@ public class TablePotential extends AbstractIndexedPotential
         implements Comparable<TablePotential>, Projectable, Reorderable, Scalable {
     // Attributes
     /**
-     * Table storing the numerical values of the potential. This attribute is
-     * public for efficiency and volatile for efficiency in concurrent
-     * operations.
+     * Table storing the numerical values of the potential.
+     * Use {@link #getValues()} for read access and {@link #setValues(double[])} for bulk assignment.
      */
-    public volatile double[] values;
+    private double[] values;
 
     // Constructors
     
@@ -97,6 +96,24 @@ public class TablePotential extends AbstractIndexedPotential
     }
     
     // Methods
+
+    /**
+     * Returns the internal values array directly (live reference, not a copy).
+     * Callers must not assign a new array to the returned reference; use
+     * {@link #setValues(double[])} for bulk replacement.
+     */
+    public double[] getValues() {
+        return values;
+    }
+
+    /**
+     * Replaces the values array.
+     *
+     * @param newValues new values array
+     */
+    public void setValues(double[] newValues) {
+        this.values = newValues;
+    }
 
     // Static methods calculateDimensions, calculateOffsets, computeTableSize,
     // getAccumulatedOffsets and getNextPosition have moved to AbstractIndexedPotential.
@@ -283,23 +300,6 @@ public class TablePotential extends AbstractIndexedPotential
             }
         }
         values[position] = value;
-    }
-    
-    /**
-     * @return {@code double[]}: Table containing the values of the
-     * potential.
-     */
-    public double[] getValues() {
-        return values;
-    }
-    
-    /**
-     * Set the values of the table. The dimensions of the new table have to be same that the current table
-     *
-     * @param table Table
-     */
-    public void setValues(double[] table) {
-        this.values = table;
     }
     
     /**

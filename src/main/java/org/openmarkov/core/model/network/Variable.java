@@ -520,8 +520,8 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
      */
     public TablePotential createDeltaTablePotential(int stateIndex) {
         TablePotential potential = new TablePotential(List.of(this), PotentialRole.CONDITIONAL_PROBABILITY);
-        Arrays.fill(potential.values, 0.0);
-        potential.values[stateIndex] = 1.0;
+        Arrays.fill(potential.getValues(), 0.0);
+        potential.getValues()[stateIndex] = 1.0;
         return potential;
     }
     

@@ -582,26 +582,26 @@ public class VariableTest {
             TablePotential delta = variable.deltaTablePotential("1");
             assertEquals(1, delta.getVariables().size());
             assertEquals(variable, delta.getVariables().getFirst());
-            assertEquals(0.0, delta.values[0]);
-            assertEquals(1.0, delta.values[1]);
-            assertEquals(0.0, delta.values[2]);
+            assertEquals(0.0, delta.getValues()[0]);
+            assertEquals(1.0, delta.getValues()[1]);
+            assertEquals(0.0, delta.getValues()[2]);
         }
 
         @Test
         void deltaTablePotentialByStateObject() {
             State state = variable.getState("2");
             TablePotential delta = variable.deltaTablePotential(state);
-            assertEquals(0.0, delta.values[0]);
-            assertEquals(0.0, delta.values[1]);
-            assertEquals(1.0, delta.values[2]);
+            assertEquals(0.0, delta.getValues()[0]);
+            assertEquals(0.0, delta.getValues()[1]);
+            assertEquals(1.0, delta.getValues()[2]);
         }
 
         @Test
         void createDeltaTablePotentialByIndex() {
             TablePotential delta = variable.createDeltaTablePotential(0);
-            assertEquals(1.0, delta.values[0]);
-            assertEquals(0.0, delta.values[1]);
-            assertEquals(0.0, delta.values[2]);
+            assertEquals(1.0, delta.getValues()[0]);
+            assertEquals(0.0, delta.getValues()[1]);
+            assertEquals(0.0, delta.getValues()[2]);
         }
 
         @Test

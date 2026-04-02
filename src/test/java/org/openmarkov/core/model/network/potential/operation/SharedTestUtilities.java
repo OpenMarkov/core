@@ -198,32 +198,32 @@ public class SharedTestUtilities {
         tpCAB = new TablePotential(variablesCAD, PotentialRole.CONDITIONAL_PROBABILITY);
         tpA = new TablePotential(variablesA, PotentialRole.CONDITIONAL_PROBABILITY);
         // Initialize not constant potentials tables
-        tpAB.values[0] = 0.1;
-        tpAB.values[1] = 0.2;
-        tpAB.values[2] = 0.7;
-        tpAB.values[3] = 0.2;
-        tpAB.values[4] = 0.5;
-        tpAB.values[5] = 0.3;
-        tpAB.values[6] = 0.6;
-        tpAB.values[7] = 0.3;
-        tpAB.values[8] = 0.1;
+        tpAB.getValues()[0] = 0.1;
+        tpAB.getValues()[1] = 0.2;
+        tpAB.getValues()[2] = 0.7;
+        tpAB.getValues()[3] = 0.2;
+        tpAB.getValues()[4] = 0.5;
+        tpAB.getValues()[5] = 0.3;
+        tpAB.getValues()[6] = 0.6;
+        tpAB.getValues()[7] = 0.3;
+        tpAB.getValues()[8] = 0.1;
         
-        tpCAB.values[0] = 0.2;
-        tpCAB.values[1] = 0.8;
-        tpCAB.values[2] = 0.1;
-        tpCAB.values[3] = 0.9;
-        tpCAB.values[4] = 0.3;
-        tpCAB.values[5] = 0.7;
-        tpCAB.values[6] = 0.4;
-        tpCAB.values[7] = 0.6;
-        tpCAB.values[8] = 0.9;
-        tpCAB.values[9] = 0.1;
-        tpCAB.values[10] = 0.8;
-        tpCAB.values[11] = 0.2;
+        tpCAB.getValues()[0] = 0.2;
+        tpCAB.getValues()[1] = 0.8;
+        tpCAB.getValues()[2] = 0.1;
+        tpCAB.getValues()[3] = 0.9;
+        tpCAB.getValues()[4] = 0.3;
+        tpCAB.getValues()[5] = 0.7;
+        tpCAB.getValues()[6] = 0.4;
+        tpCAB.getValues()[7] = 0.6;
+        tpCAB.getValues()[8] = 0.9;
+        tpCAB.getValues()[9] = 0.1;
+        tpCAB.getValues()[10] = 0.8;
+        tpCAB.getValues()[11] = 0.2;
         
-        tpA.values[0] = 0.5;
-        tpA.values[1] = 0.4;
-        tpA.values[2] = 0.1;
+        tpA.getValues()[0] = 0.5;
+        tpA.getValues()[1] = 0.4;
+        tpA.getValues()[2] = 0.1;
         
         // Create array of potentials
         potentials = new ArrayList<>();
@@ -235,8 +235,8 @@ public class SharedTestUtilities {
         potentials.add(tpCAB);
         
         // Initialize the constant potentials
-        tpConstant07.values[0] = 0.7;
-        tpConstant05.values[0] = 0.5;
+        tpConstant07.getValues()[0] = 0.7;
+        tpConstant05.getValues()[0] = 0.5;
     }
     
     /**

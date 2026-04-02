@@ -9,8 +9,8 @@ package org.openmarkov.core.model.network.constraint;
 
 import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.exception.ConstraintViolatedException;
+import org.openmarkov.core.model.network.GraphNetwork;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.List;
 @Constraint(name = "DistinctLinks", defaultBehavior = ConstraintBehavior.YES)
 public class DistinctLinks extends PNConstraint {
     
-    @Override public void checkProbNet(ProbNet probNet, ConstraintChecker constraintChecker) {
+    @Override public void checkProbNet(GraphNetwork probNet, ConstraintChecker constraintChecker) {
         List<Node> nodes = probNet.getNodes();
         for (Node node : nodes) {
             boolean linksAreValid = probNet.getNumLinks(node) <= (
@@ -39,7 +39,7 @@ public class DistinctLinks extends PNConstraint {
     }
     
     
-    public static boolean checkLink(ProbNet graph, Node node1, Node node2, boolean directed) {
+    public static boolean checkLink(GraphNetwork graph, Node node1, Node node2, boolean directed) {
         return !(
                 (graph.getLink(node1, node2, directed) != null) || (
                         !directed && graph.getLink(node2, node1, directed) != null

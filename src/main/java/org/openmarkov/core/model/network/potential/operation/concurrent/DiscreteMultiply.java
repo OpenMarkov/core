@@ -37,7 +37,7 @@ public class DiscreteMultiply implements Runnable {
         resultCoordinate = sdm.resultIntervals[logicalProcessor];
         tables = sdm.tables;
         offAccPotentials = sdm.offAccPotentials;
-        resultTable = sdm.result.values;
+        resultTable = sdm.result.getValues();
         numPotentials = sdm.numPotentials;
         constantFactor = sdm.constantFactor;
     }

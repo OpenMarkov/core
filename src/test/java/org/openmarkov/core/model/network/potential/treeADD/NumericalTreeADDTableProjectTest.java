@@ -119,13 +119,13 @@ public class NumericalTreeADDTableProjectTest {
         TablePotential tablePotential = tree.tableProject(evidenceCase, null);
         List<Variable> variables = tablePotential.getVariables();
         assertEquals(2, variables.size());
-        assertEquals(4, tablePotential.values.length);
+        assertEquals(4, tablePotential.getValues().length);
         double[] projectedValues = {0.0, 1.0, 1.0, 0.0};
         
-        assertEquals(projectedValues[0], tablePotential.values[0], 0.1);
-        assertEquals(projectedValues[1], tablePotential.values[1], 0.1);
-        assertEquals(projectedValues[2], tablePotential.values[2], 0.1);
-        assertEquals(projectedValues[3], tablePotential.values[3], 0.1);
+        assertEquals(projectedValues[0], tablePotential.getValues()[0], 0.1);
+        assertEquals(projectedValues[1], tablePotential.getValues()[1], 0.1);
+        assertEquals(projectedValues[2], tablePotential.getValues()[2], 0.1);
+        assertEquals(projectedValues[3], tablePotential.getValues()[3], 0.1);
         
     }
     
@@ -145,11 +145,11 @@ public class NumericalTreeADDTableProjectTest {
                                                 .tableProject(evidence, null);
         List<Variable> variables = tablePotential1.getVariables();
         assertEquals(2, variables.size());
-        assertEquals(4, tablePotential1.values.length);
-        assertEquals(0.5, tablePotential1.values[0], 0.1);
-        assertEquals(0.5, tablePotential1.values[1], 0.1);
-        assertEquals(0.0, tablePotential1.values[2], 0.1);
-        assertEquals(1.0, tablePotential1.values[3], 0.1);
+        assertEquals(4, tablePotential1.getValues().length);
+        assertEquals(0.5, tablePotential1.getValues()[0], 0.1);
+        assertEquals(0.5, tablePotential1.getValues()[1], 0.1);
+        assertEquals(0.0, tablePotential1.getValues()[2], 0.1);
+        assertEquals(1.0, tablePotential1.getValues()[3], 0.1);
         
         
         List<Finding> findings2 = new ArrayList<>();
@@ -163,11 +163,11 @@ public class NumericalTreeADDTableProjectTest {
                                                 .tableProject(evidence2, null);
         List<Variable> variables2 = tablePotential2.getVariables();
         assertEquals(2, variables2.size());
-        assertEquals(4, tablePotential2.values.length);
-        assertEquals(0.5, tablePotential2.values[0], 0.1);
-        assertEquals(0.5, tablePotential2.values[1], 0.1);
-        assertEquals(0.0, tablePotential2.values[2], 0.1);
-        assertEquals(1.0, tablePotential2.values[3], 0.1);
+        assertEquals(4, tablePotential2.getValues().length);
+        assertEquals(0.5, tablePotential2.getValues()[0], 0.1);
+        assertEquals(0.5, tablePotential2.getValues()[1], 0.1);
+        assertEquals(0.0, tablePotential2.getValues()[2], 0.1);
+        assertEquals(1.0, tablePotential2.getValues()[3], 0.1);
         
         
         List<Finding> findings3 = new ArrayList<>();
@@ -181,11 +181,11 @@ public class NumericalTreeADDTableProjectTest {
                                                 .tableProject(evidence3, null);
         List<Variable> variables3 = tablePotential3.getVariables();
         assertEquals(2, variables3.size());
-        assertEquals(4, tablePotential3.values.length);
-        assertEquals(0.5, tablePotential3.values[0], 0.1);
-        assertEquals(0.5, tablePotential3.values[1], 0.1);
-        assertEquals(0.0, tablePotential3.values[2], 0.1);
-        assertEquals(1.0, tablePotential3.values[3], 0.1);
+        assertEquals(4, tablePotential3.getValues().length);
+        assertEquals(0.5, tablePotential3.getValues()[0], 0.1);
+        assertEquals(0.5, tablePotential3.getValues()[1], 0.1);
+        assertEquals(0.0, tablePotential3.getValues()[2], 0.1);
+        assertEquals(1.0, tablePotential3.getValues()[3], 0.1);
         
     }
 }

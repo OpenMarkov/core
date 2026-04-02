@@ -60,8 +60,8 @@ public class SharedDataDivide {
 		// Gets the tables of each TablePotential
         //TODO: The tables variable is never read nor returned.
 		double[][] tables = new double[2][];
-		tables[0] = numerator.values;
-		tables[1] = denominator.values;
+		tables[0] = numerator.getValues();
+		tables[1] = denominator.getValues();
 
 		// Gets dimension
 		quotientDimension = quotient.getDimensions();

@@ -21,9 +21,9 @@
  * <h3>Network container (green)</h3>
  *
  * <p>{@link org.openmarkov.core.model.network.ProbNet} is the central class.
- * It extends {@link org.openmarkov.core.model.graph.Graph Graph&lt;Node&gt;},
- * inheriting the directed/undirected graph structure (nodes, links, parent/child
- * maps).  On top of the graph it adds network-level metadata: the
+ * It holds a {@link org.openmarkov.core.model.graph.Graph Graph&lt;Node&gt;} by
+ * composition, delegating the directed/undirected graph structure (nodes, links,
+ * parent/child maps).  On top of the graph it adds network-level metadata: the
  * {@link org.openmarkov.core.model.network.type.NetworkType} (Bayesian network,
  * influence diagram, LIMID, etc.), a set of
  * {@link org.openmarkov.core.model.network.constraint.PNConstraint constraints}

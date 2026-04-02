@@ -508,7 +508,7 @@ public abstract class InferenceResolutionTaskBNTest extends InferenceTaskTest {
         Task algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(iD_DiagnosisProblem);
         
         // test max expected utility
-        Double meuEvaluation = algorithm.getGlobalUtility().values[0];
+        Double meuEvaluation = algorithm.getGlobalUtility().getValues()[0];
         assertEquals(96.006, meuEvaluation, maxError);
         
         // Test optimal policy

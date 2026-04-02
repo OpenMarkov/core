@@ -112,7 +112,7 @@ public class TablePotentialTest {
         
         for (int i = 0; i < numConfigurationsActual; i++) {
             int[] auxConfiguration = actual.getConfiguration(i);
-            double actualValue = actual.values[i];
+            double actualValue = actual.getValues()[i];
             findings = new ArrayList<>();
             List<Variable> variables = actual.getVariables();
             for (int j = 0; j < variables.size(); j++) {
@@ -172,11 +172,11 @@ public class TablePotentialTest {
         tablePotential4 = new TablePotential(fsVariables4, PotentialRole.CONDITIONAL_PROBABILITY);
         tablePotential5 = new TablePotential(fsVariables5, PotentialRole.CONDITIONAL_PROBABILITY);
         // initialize tables
-        double[] table = tablePotential4.values;
+        double[] table = tablePotential4.getValues();
         for (int i = 0; i < table.length; i++) {
             table[i] = Double.valueOf(i);
         }
-        table = tablePotential5.values;
+        table = tablePotential5.getValues();
         for (int i = 0; i < table.length; i++) {
             table[i] = Double.valueOf(i);
         }
@@ -189,7 +189,7 @@ public class TablePotentialTest {
     }
     
     @Test public void testTablePotential() {
-        assertEquals(16, tablePotential1.values.length);
+        assertEquals(16, tablePotential1.getValues().length);
     }
     
     /**
@@ -284,8 +284,8 @@ public class TablePotentialTest {
         assertEquals(fsVariable1, projected.getVariables().get(0));
         
         // Test same table as original potential
-        double[] tableProjected = projected.values;
-        assertArrayEquals(tablePotential5.values, tableProjected);
+        double[] tableProjected = projected.getValues();
+        assertArrayEquals(tablePotential5.getValues(), tableProjected);
         
         // Initial position
         int initialPosition = projected.getInitialPosition();
@@ -314,7 +314,7 @@ public class TablePotentialTest {
         assertEquals(fsVariable1, projected.getVariables().get(0));
         
         // Test projected potential size
-        double[] tableProjected = projected.values;
+        double[] tableProjected = projected.getValues();
         assertEquals(2, tableProjected.length);
         
         // Initial position
@@ -441,13 +441,13 @@ public class TablePotentialTest {
         assertEquals(2, variables.size());
         
         // Test table
-        assertEquals(6, multiplication.values.length);
-        assertEquals(0.06, multiplication.values[0], maxError);
-        assertEquals(0.06, multiplication.values[1], maxError);
-        assertEquals(0.02, multiplication.values[2], maxError);
-        assertEquals(0.14, multiplication.values[3], maxError);
-        assertEquals(0.02, multiplication.values[4], maxError);
-        assertEquals(0.2, multiplication.values[5], maxError);
+        assertEquals(6, multiplication.getValues().length);
+        assertEquals(0.06, multiplication.getValues()[0], maxError);
+        assertEquals(0.06, multiplication.getValues()[1], maxError);
+        assertEquals(0.02, multiplication.getValues()[2], maxError);
+        assertEquals(0.14, multiplication.getValues()[3], maxError);
+        assertEquals(0.02, multiplication.getValues()[4], maxError);
+        assertEquals(0.2, multiplication.getValues()[5], maxError);
     }
     
     @Test public void testGetInitialPosition() {

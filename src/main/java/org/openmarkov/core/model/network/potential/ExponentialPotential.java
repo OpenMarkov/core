@@ -81,7 +81,7 @@ import java.util.Map;
         int parentFirstIndex = (conditionedVariable == projectedPotentialVariables.getFirst()) ? 1 : 0;
         int[] offsets = projectedPotential.getOffsets();
         int[] dimensions = projectedPotential.getDimensions();
-        for (int i = 0; i < projectedPotential.values.length; i += numStates) {
+        for (int i = 0; i < projectedPotential.getValues().length; i += numStates) {
             // Set the values of variables without evidence
             for (int j = parentFirstIndex; j < projectedPotentialVariables.size(); ++j) {
                 Variable variable = projectedPotentialVariables.get(j);
@@ -102,7 +102,7 @@ import java.util.Map;
                         regression += covariateValue * coefficients[j];
                 }
             }
-            projectedPotential.values[i] = Math.exp(regression);
+            projectedPotential.getValues()[i] = Math.exp(regression);
         }
         return projectedPotential;
     }

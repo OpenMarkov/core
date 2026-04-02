@@ -96,7 +96,7 @@ public class SharedDataMultiply {
 		// Gets the tables of each TablePotential
 		tables = new double[numPotentials][];
 		for (int i = 0; i < numPotentials; i++) {
-			tables[i] = potentials.get(i).values;
+			tables[i] = potentials.get(i).getValues();
 		}
 
 		// Gets offset accumulate

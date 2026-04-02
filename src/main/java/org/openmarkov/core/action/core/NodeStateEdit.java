@@ -242,7 +242,7 @@ public class NodeStateEdit extends PNEdit {
         
         for (Link<Node> link : node.getLinks()) {
             if (link.hasRestrictions()) {
-                double[] lastPotential = ((TablePotential) link.getRestrictionsPotential()).values.clone();
+                double[] lastPotential = ((TablePotential) link.getRestrictionsPotential()).getValues().clone();
                 linkRestrictionMap.put(link, lastPotential);
                 link.setRestrictionsPotential(null);
                 

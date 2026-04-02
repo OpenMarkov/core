@@ -46,7 +46,7 @@ public class TuningPotentialTest {
     }
     
     @Test public void testGetCPT() throws NonProjectablePotentialException {
-        double[] cPTValues = tuningModelPotential.getCPT().values;
+        double[] cPTValues = tuningModelPotential.getCPT().getValues();
         assertEquals(1.0, cPTValues[0], admissibleError);
         assertEquals(0.0, cPTValues[1], admissibleError);
         assertEquals(0.8, cPTValues[3], admissibleError);

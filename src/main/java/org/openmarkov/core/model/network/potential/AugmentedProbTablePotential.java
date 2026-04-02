@@ -99,12 +99,12 @@ public class AugmentedProbTablePotential extends Potential {
         var resolvedTablePotential = new TablePotential(this.finiteStatesVariables, role);
         var variableOfPotential = variables.getFirst();
         int numStates = variableOfPotential.getNumStates();
-        int divisions = resolvedTablePotential.values.length / numStates;
+        int divisions = resolvedTablePotential.getValues().length / numStates;
         for (int columnIndex = 0; columnIndex < divisions; columnIndex++){
             var unresolvedValues = Arrays.copyOfRange(expressions, columnIndex*numStates, (1+columnIndex)*numStates);
             var resolvedValues = AugmentedProbTableInference.resolveColumn(unresolvedValues, findingsMap, AugmentedProbTableInference.Operation.values());
             for(int rowIndex = 0; rowIndex < numStates; rowIndex++){
-                resolvedTablePotential.values[columnIndex*numStates + rowIndex] = resolvedValues[rowIndex];
+                resolvedTablePotential.getValues()[columnIndex*numStates + rowIndex] = resolvedValues[rowIndex];
             }
         }
         return resolvedTablePotential;

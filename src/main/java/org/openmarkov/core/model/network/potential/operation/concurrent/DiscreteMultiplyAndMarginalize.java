@@ -23,7 +23,7 @@ public class DiscreteMultiplyAndMarginalize extends DiscreteMultiply implements 
 
 	public DiscreteMultiplyAndMarginalize(SharedDataMultiplyAndMarginalize sdm, int logicalProcessor) {
 		super(sdm, logicalProcessor);
-		resultSize = sdm.result.values.length;
+		resultSize = sdm.result.getValues().length;
 		eliminationSize = sdm.eliminationSize;
 		unionCoordinate = sdm.unionCoordinate;
 		unionDimensions = sdm.unionDimensions;

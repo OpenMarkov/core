@@ -60,14 +60,14 @@ final class TablePotentialMaximization {
             if (potential.getNumVariables() != 0) {
                 properPotentials.add(potential);
             } else {
-                constantFactor *= potential.values[potential.getInitialPosition()];
+                constantFactor *= potential.getValues()[potential.getInitialPosition()];
             }
         }
 
         int numProperPotentials = properPotentials.size();
 
         if (numProperPotentials == 0) {
-            resultingPotential.values[0] = constantFactor;
+            resultingPotential.getValues()[0] = constantFactor;
             return new Object[]{resultingPotential, gResult};
         }
 
@@ -86,13 +86,13 @@ final class TablePotentialMaximization {
         TablePotential unionPotential = new TablePotential(unionVariables, null);
         for (int i = 0; i < numProperPotentials; i++) {
             TablePotential potential = properPotentials.get(i);
-            tables[i] = potential.values;
+            tables[i] = potential.getValues();
             initialPositions[i] = potential.getInitialPosition();
             currentPositions[i] = initialPositions[i];
             accumulatedOffsets[i] = unionPotential.getAccumulatedOffsets(potential.getVariables());
         }
 
-        int resultSize = resultingPotential.values.length;
+        int resultSize = resultingPotential.getValues().length;
         int eliminationSize = fSVariableToMaximize.getNumStates();
 
         double multiplicationResult;
@@ -143,7 +143,7 @@ final class TablePotentialMaximization {
                 }
             }
 
-            resultingPotential.values[outerIteration] = maxValue;
+            resultingPotential.getValues()[outerIteration] = maxValue;
             gResult.elementTable.add(choice);
         }
 
@@ -181,14 +181,14 @@ final class TablePotentialMaximization {
             if (potential.getNumVariables() != 0) {
                 properPotentials.add(potential);
             } else {
-                constantFactor *= potential.values[potential.getInitialPosition()];
+                constantFactor *= potential.getValues()[potential.getInitialPosition()];
             }
         }
 
         int numProperPotentials = properPotentials.size();
 
         if (numProperPotentials == 0) {
-            resultingPotential.values[0] = constantFactor;
+            resultingPotential.getValues()[0] = constantFactor;
             return new TablePotential[]{resultingPotential, policy};
         }
 
@@ -207,13 +207,13 @@ final class TablePotentialMaximization {
         TablePotential unionPotential = new TablePotential(unionVariables, null);
         for (int i = 0; i < numProperPotentials; i++) {
             TablePotential potential = properPotentials.get(i);
-            tables[i] = potential.values;
+            tables[i] = potential.getValues();
             initialPositions[i] = potential.getInitialPosition();
             currentPositions[i] = initialPositions[i];
             accumulatedOffsets[i] = unionPotential.getAccumulatedOffsets(potential.getVariables());
         }
 
-        int resultSize = resultingPotential.values.length;
+        int resultSize = resultingPotential.getValues().length;
         int eliminationSize = variableToMaximize.getNumStates();
 
         double multiplicationResult;
@@ -274,7 +274,7 @@ final class TablePotentialMaximization {
                 }
             }
 
-            resultingPotential.values[outerIteration] = accumulator;
+            resultingPotential.getValues()[outerIteration] = accumulator;
             assignProbUniformlyInTies(policy, variableToMaximize.getNumStates(), statesTies,
                     resultingPotential.getConfiguration(outerIteration));
         }
@@ -358,12 +358,12 @@ final class TablePotentialMaximization {
                 while (iterPotentials.hasNext()) {
                     setPot.add((TablePotential) iterPotentials.next().reorder(variablesFirst));
                 }
-                int lengthValues = potFirst.values.length;
+                int lengthValues = potFirst.getValues().length;
                 double[] newValues = new double[lengthValues];
                 for (int i = 0; i < lengthValues; i++) {
                     double max = Double.NEGATIVE_INFINITY;
                     for (TablePotential pot : setPot) {
-                        max = Math.max(pot.values[i], max);
+                        max = Math.max(pot.getValues()[i], max);
                     }
                     newValues[i] = max;
                 }
@@ -395,7 +395,7 @@ final class TablePotentialMaximization {
             tPConfiguration[0] = i;
             int posTPConfiguration = tp.getPosition(tPConfiguration);
             double iProb = (statesTies.contains(i)) ? probTies : 0.0;
-            tp.values[posTPConfiguration] = iProb;
+            tp.getValues()[posTPConfiguration] = iProb;
         }
     }
 }

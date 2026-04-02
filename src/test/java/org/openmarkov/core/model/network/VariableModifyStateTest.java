@@ -219,7 +219,7 @@ public class VariableModifyStateTest {
 
     @Test
     public void addStateAlsoResetsChildNodePotential() {
-        // Build A → B. Give B an initial CPT with pBgA.values[0]=0.9.
+        // Build A → B. Give B an initial CPT with pBgA.getValues()[0]=0.9.
         Variable b = new Variable("B", new State[]{new State("b0"), new State("b1")});
         Node nodeB = net.addNode(b, NodeType.CHANCE);
         net.addLink(node, nodeB, true);

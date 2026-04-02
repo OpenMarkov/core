@@ -53,7 +53,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
      * Checks if 'pot' is a conditional probability potential correctly defined: the values in each column sum 1.0.
      */
     public static void checkIsAConditionalProbability(TablePotential pot) {
-        double[] potValues = pot.values;
+        double[] potValues = pot.getValues();
         int numStates = pot.getVariable(0).getNumStates();
         double[] auxValues = new double[numStates];
         int numColumns = potValues.length / numStates;
@@ -111,7 +111,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
             int size = potA.getTableSize();
             
             for (int i = 0; i < size && areEqual; i++) {
-                double valueA = potA.values[i];
+                double valueA = potA.getValues()[i];
                 double valueB = potB.getValue(varsA, potA.getConfiguration(i));
                 areEqual = Math.abs(valueA - valueB) < maxError;
                 
@@ -178,7 +178,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
      */
     protected void checkProbabilities(TablePotential pot, double... values) {
         
-        double[] potValues = pot.values;
+        double[] potValues = pot.getValues();
         int potValuesLength = potValues.length;
         assertEquals(values.length + 1, potValuesLength);
         double sum = 0.0;

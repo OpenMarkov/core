@@ -190,9 +190,9 @@ import java.util.*;
                     probability = 1 - Math.exp(lambda * diff);
                 }
                 // p
-                projectedPotential.values[configBaseIndex + 1] = probability;
+                projectedPotential.getValues()[configBaseIndex + 1] = probability;
                 // Complement (1-p)
-                projectedPotential.values[configBaseIndex] = 1 - probability;
+                projectedPotential.getValues()[configBaseIndex] = 1 - probability;
             }
         }
         

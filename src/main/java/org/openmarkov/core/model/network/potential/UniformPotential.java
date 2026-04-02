@@ -116,7 +116,7 @@ import java.util.Random;
                 if (evidenceCase != null && evidenceCase.contains(conditionedVariable)) {
                     // returns a constant
                     TablePotential projectedPotential = new TablePotential(new ArrayList<>(), role);
-                    projectedPotential.values[0] = 1.0 / conditionedVariable.getNumStates();
+                    projectedPotential.getValues()[0] = 1.0 / conditionedVariable.getNumStates();
                     return projectedPotential;
                 }
                 return createUniformTablePotential(evidenceCase, variables);

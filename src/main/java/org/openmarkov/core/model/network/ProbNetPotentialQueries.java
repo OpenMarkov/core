@@ -45,7 +45,7 @@ public final class ProbNetPotentialQueries {
      * @param variable variable that belongs to this network
      * @return list of probability potentials containing {@code variable}
      */
-    public static List<Potential> getProbPotentials(ProbNet probNet, Variable variable) {
+    public static List<Potential> getProbPotentials(GraphNetwork probNet, Variable variable) {
         Node nodeVariable = probNet.getNode(variable);
         List<Node> allNodes = probNet.getNeighbors(nodeVariable);
         allNodes.add(nodeVariable);
@@ -71,7 +71,7 @@ public final class ProbNetPotentialQueries {
      * @param variable variable that belongs to this network
      * @return list of utility potentials containing {@code variable}
      */
-    public static List<Potential> getUtilityPotentials(ProbNet probNet, Variable variable) {
+    public static List<Potential> getUtilityPotentials(GraphNetwork probNet, Variable variable) {
         Node nodeVariable = probNet.getNode(variable);
         List<Node> allNodes = probNet.getNeighbors(nodeVariable);
         allNodes.add(nodeVariable);

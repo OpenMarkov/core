@@ -8,7 +8,7 @@
 package org.openmarkov.core.model.network.constraint;
 
 import org.openmarkov.core.action.base.ConstraintChecker;
-import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.GraphNetwork;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
 @Constraint(name = "NoValidCriterionName", defaultBehavior = ConstraintBehavior.YES) public class ValidCriterionName
@@ -19,7 +19,7 @@ import org.openmarkov.core.model.network.constraint.annotation.Constraint;
     private static final int IS_NAME_ALREADY_EXIST = 1;
     
     
-    @Override public void checkProbNet(ProbNet probNet, ConstraintChecker constraintChecker) {
+    @Override public void checkProbNet(GraphNetwork probNet, ConstraintChecker constraintChecker) {
 		
 		/*
 		List<Criterion> criteria = probNet.getDecisionCriteria();

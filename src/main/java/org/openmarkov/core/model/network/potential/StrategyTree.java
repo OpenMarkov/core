@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.sdag.SDAGStrategyTree;
 import org.openmarkov.core.model.network.potential.treeadd.Threshold;
@@ -831,7 +830,7 @@ public class StrategyTree extends TreeADDPotential implements Cloneable {
     
     private static void fillCompatibleConfigurations(TablePotential tablePotential, EvidenceCase evidenceCase) {
         if (tablePotential.getNumVariables() == evidenceCase.getNumberOfFindings()) {
-            tablePotential.values[tablePotential.getPosition(evidenceCase)] = 1.0;
+            tablePotential.getValues()[tablePotential.getPosition(evidenceCase)] = 1.0;
         } else {
             List<Variable> variables = tablePotential.getVariables();
             variables.removeAll(evidenceCase.getVariables());

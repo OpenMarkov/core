@@ -9,7 +9,7 @@ package org.openmarkov.core.model.network.constraint;
 
 import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.exception.ConstraintViolatedException;
-import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.GraphNetwork;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
@@ -19,7 +19,7 @@ import java.util.List;
 @Constraint(name = "OnlyNumericVariables", defaultBehavior = ConstraintBehavior.OPTIONAL) public class OnlyNumericVariables
 		extends PNConstraint {
     
-    @Override public void checkProbNet(ProbNet probNet, ConstraintChecker constraintChecker) {
+    @Override public void checkProbNet(GraphNetwork probNet, ConstraintChecker constraintChecker) {
 		List<Variable> variables = probNet.getVariables();
 		for (Variable variable : variables) {
 			VariableType varType = variable.getVariableType();

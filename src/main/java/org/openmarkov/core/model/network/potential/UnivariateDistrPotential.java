@@ -380,7 +380,7 @@ import java.util.List;
     }
     
     public void setValues(double[] values) {
-        this.getDistributionTable().values = values;
+        this.getDistributionTable().setValues(values);
     }
     
     @Override public String toString() {
@@ -400,13 +400,13 @@ import java.util.List;
         }
         buffer.append("UnivariateName").append(probDensFunctionUnivariateName).append(" ").append("Parametrization").append(probDensFunctionParametrizationName).append(" ");
         
-        if (getDistributionTable().values.length == 1) {
-            buffer.append(getDistributionTable().values[0]);
-        } else if (getDistributionTable().values.length > 1) {
+        if (getDistributionTable().getValues().length == 1) {
+            buffer.append(getDistributionTable().getValues()[0]);
+        } else if (getDistributionTable().getValues().length > 1) {
             buffer.append("{");
-            for (int i = 0; i < getDistributionTable().values.length; i++) {
-                buffer.append(getDistributionTable().values[i]);
-                if (i != getDistributionTable().values.length - 1) {
+            for (int i = 0; i < getDistributionTable().getValues().length; i++) {
+                buffer.append(getDistributionTable().getValues()[i]);
+                if (i != getDistributionTable().getValues().length - 1) {
                     buffer.append(",");
                 }
             }

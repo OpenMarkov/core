@@ -83,7 +83,7 @@ public class LinearCombinationPotential extends GLMPotential implements Scalable
         int[] offsets = projectedPotential.getOffsets();
         int[] dimensions = projectedPotential.getDimensions();
         int firstParentIndex = 1;
-        for (int i = 0; i < projectedPotential.values.length; i += numStates) {
+        for (int i = 0; i < projectedPotential.getValues().length; i += numStates) {
             // Set the values of variables without evidence
             for (int j = firstParentIndex; j < projectedPotentialVariables.size(); ++j) {
                 Variable variable = projectedPotentialVariables.get(j);
@@ -105,11 +105,11 @@ public class LinearCombinationPotential extends GLMPotential implements Scalable
                 }
             }
             if (getConditionedVariable().getVariableType() == VariableType.NUMERIC) {
-                projectedPotential.values[i] = regression;
+                projectedPotential.getValues()[i] = regression;
             } else {
                 int stateIndex = getConditionedVariable().getStateIndex(regression);
                 for (int j = 0; j < numStates; ++j) {
-                    projectedPotential.values[i + j] = (j == stateIndex) ? 1 : 0;
+                    projectedPotential.getValues()[i + j] = (j == stateIndex) ? 1 : 0;
                 }
             }
         }

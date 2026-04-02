@@ -35,7 +35,7 @@ public abstract class InferenceAlgorithmDANTest extends InferenceAlgorithmDecTes
             throws IncompatibleEvidenceException,
             UnexpectedInferenceException {
         InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(net);
-        Double meuEvaluation = algorithm.getGlobalUtility().values[0];
+        Double meuEvaluation = algorithm.getGlobalUtility().getValues()[0];
         assertEquals(expectedMEU, meuEvaluation, maxError);
         assertNotNull(algorithm.getOptimalStrategy());
     }

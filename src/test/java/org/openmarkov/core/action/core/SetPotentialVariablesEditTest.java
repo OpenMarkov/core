@@ -100,21 +100,21 @@ class SetPotentialVariablesEditTest {
 
         // New layout: [C, B, A], offsets: C=1, B=2, A=6
         // pos = cState + bState*2 + aState*6
-        // P(c0|a0,b0) = reordered.values[c=0 + b=0*2 + a=0*6] = values[0]
-        assertEquals(0.9, reordered.values[0 + 0 + 0], 1e-12, "P(c0|a0,b0)");
-        assertEquals(0.1, reordered.values[1 + 0 + 0], 1e-12, "P(c1|a0,b0)");
+        // P(c0|a0,b0) = reordered.getValues()[c=0 + b=0*2 + a=0*6] = values[0]
+        assertEquals(0.9, reordered.getValues()[0 + 0 + 0], 1e-12, "P(c0|a0,b0)");
+        assertEquals(0.1, reordered.getValues()[1 + 0 + 0], 1e-12, "P(c1|a0,b0)");
 
         // P(c0|a0,b1): new pos = 0 + 1*2 + 0*6 = 2
         // original pos for (c0,a0,b1) = 0 + 0*2 + 1*4 = 4 → value 0.7
-        assertEquals(0.7, reordered.values[0 + 2 + 0], 1e-12, "P(c0|a0,b1)");
+        assertEquals(0.7, reordered.getValues()[0 + 2 + 0], 1e-12, "P(c0|a0,b1)");
 
         // P(c0|a1,b0): new pos = 0 + 0*2 + 1*6 = 6
         // original pos for (c0,a1,b0) = 0 + 1*2 + 0*4 = 2 → value 0.8
-        assertEquals(0.8, reordered.values[0 + 0 + 6], 1e-12, "P(c0|a1,b0)");
+        assertEquals(0.8, reordered.getValues()[0 + 0 + 6], 1e-12, "P(c0|a1,b0)");
 
         // P(c0|a1,b2): new pos = 0 + 2*2 + 1*6 = 10
         // original pos for (c0,a1,b2) = 0 + 1*2 + 2*4 = 10 → value 0.4
-        assertEquals(0.4, reordered.values[0 + 4 + 6], 1e-12, "P(c0|a1,b2)");
+        assertEquals(0.4, reordered.getValues()[0 + 4 + 6], 1e-12, "P(c0|a1,b2)");
     }
 
     @Test
@@ -150,13 +150,13 @@ class SetPotentialVariablesEditTest {
 
     @Test
     void undoRestoresOriginalValues() throws DoEditException {
-        double[] origValues = cpt.values.clone();
+        double[] origValues = cpt.getValues().clone();
         SetPotentialVariablesEdit edit = new SetPotentialVariablesEdit(nodeC, List.of(c, b, a));
         edit.executeEdit();
         edit.undo();
 
         TablePotential restored = (TablePotential) nodeC.getPotentials().getFirst();
-        assertArrayEquals(origValues, restored.values, 1e-12,
+        assertArrayEquals(origValues, restored.getValues(), 1e-12,
                 "undo() must restore the original values array");
     }
 

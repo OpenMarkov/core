@@ -607,7 +607,7 @@ public class TreeADDPotential extends Potential {
         boolean containsInterventions = false;
         for (int i = 0; i < numPotentials; i++) {
             TablePotential tp = potentials.get(i);
-            tables[i] = tp.values;
+            tables[i] = tp.getValues();
             if (tp instanceof StrategicTablePotential stp) {
                 interventionsTables[i] = stp.strategyTrees;
                 containsInterventions = true;
@@ -655,7 +655,7 @@ public class TreeADDPotential extends Potential {
 
         int incrementedVariable = 0;
         int tableSize = resultPotential.getTableSize();
-        double[] resultValues = resultPotential.values;
+        double[] resultValues = resultPotential.getValues();
         StrategyTree[] resultStrategyTrees = containsInterventions ? strategicResult.strategyTrees : null;
         UncertainValue[] uncertainValues = (uncertainResult != null) ? uncertainResult.uncertainValues : null;
         int topVariableStateIndex = (topVariableEvidenceStateIndex != -1) ?

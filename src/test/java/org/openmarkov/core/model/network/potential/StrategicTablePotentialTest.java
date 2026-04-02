@@ -62,7 +62,7 @@ class StrategicTablePotentialTest {
         StrategicTablePotential stp = new StrategicTablePotential(List.of(x, y), PotentialRole.UNSPECIFIED);
         StrategyTree[] origTrees = new StrategyTree[6];
         for (int i = 0; i < 6; i++) {
-            stp.values[i] = i + 1.0;
+            stp.getValues()[i] = i + 1.0;
             origTrees[i] = tree();
         }
         stp.strategyTrees = origTrees;
@@ -77,7 +77,7 @@ class StrategicTablePotentialTest {
             for (int j = 0; j < 3; j++) {
                 int origPos = i + j * 2;
                 int newPos  = j + i * 3;
-                assertEquals(origPos + 1.0, reordered.values[newPos], 1e-12,
+                assertEquals(origPos + 1.0, reordered.getValues()[newPos], 1e-12,
                         "values mismatch at (x=" + i + ", y=" + j + ")");
                 assertSame(origTrees[origPos], reordered.strategyTrees[newPos],
                         "strategyTree mismatch at (x=" + i + ", y=" + j + ")");
@@ -116,7 +116,7 @@ class StrategicTablePotentialTest {
         StrategicTablePotential stp = new StrategicTablePotential(List.of(y, x), PotentialRole.UNSPECIFIED);
         StrategyTree[] origTrees = new StrategyTree[6];
         for (int i = 0; i < 6; i++) {
-            stp.values[i] = i + 1.0;
+            stp.getValues()[i] = i + 1.0;
             origTrees[i] = tree();
         }
         stp.strategyTrees = origTrees;
@@ -134,11 +134,11 @@ class StrategicTablePotentialTest {
         //   newIndex = i + displacement[indexOfState] * 2
         int offset = 2;
         int[] disp = {2, 0, -2};  // for states a, b, c
-        double[] origValues = stp.values;
+        double[] origValues = stp.getValues();
         for (int i = 0; i < 6; i++) {
             int stateIdx = (i / offset) % 3;
             int newIdx = i + disp[stateIdx] * offset;
-            assertEquals(origValues[i], reordered.values[newIdx], 1e-12,
+            assertEquals(origValues[i], reordered.getValues()[newIdx], 1e-12,
                     "values mismatch at orig pos " + i);
             assertSame(origTrees[i], reordered.strategyTrees[newIdx],
                     "strategyTree mismatch at orig pos " + i);
@@ -192,12 +192,12 @@ class StrategicTablePotentialTest {
 
         StrategicTablePotential stp = new StrategicTablePotential(List.of(x, y), PotentialRole.UNSPECIFIED);
         stp.strategyTrees = new StrategyTree[]{tree(), tree(), tree(), tree()};
-        double[] origValues = stp.values.clone();
+        double[] origValues = stp.getValues().clone();
         StrategyTree[] origTrees = stp.strategyTrees.clone();
 
         stp.reorder(List.of(y, x));
 
-        assertArrayEquals(origValues, stp.values, "reorder must not mutate original values");
+        assertArrayEquals(origValues, stp.getValues(), "reorder must not mutate original values");
         assertArrayEquals(origTrees, stp.strategyTrees, "reorder must not mutate original strategyTrees");
     }
 }

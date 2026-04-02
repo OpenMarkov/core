@@ -56,15 +56,15 @@ public class DiscretePotentialOperationsTest {
         
         // Initializes the constant potentials tables with 1, 2, ... n
         for (int i = 0; i < numConstantPotentials; i++) {
-            constantPotentials.get(i).values[0] = i + 1;
+            constantPotentials.get(i).getValues()[0] = i + 1;
         }
         
         // Initializes the potentials tables with:
         TablePotential auxTablePotential;
         for (int i = 0; i < numNormalPotentials; i++) {
             auxTablePotential = normalPotentials.get(i);
-            for (int j = 0; j < auxTablePotential.values.length; j++) {
-                auxTablePotential.values[j] = auxTablePotential.values.length * i + j + 1;
+            for (int j = 0; j < auxTablePotential.getValues().length; j++) {
+                auxTablePotential.getValues()[j] = auxTablePotential.getValues().length * i + j + 1;
             }
         }
         commonVariables = new SharedTestUtilities();
@@ -83,7 +83,7 @@ public class DiscretePotentialOperationsTest {
                 .asList(commonVariables.a, commonVariables.b, commonVariables.c, commonVariables.d);
         assertTrue(sumVariables.containsAll(testVariables));
         // test table content
-        double[] table = sum.values;
+        double[] table = sum.getValues();
         assertEquals(36, table.length);
         int[] configuration = {0, 0, 0, 0};
         assertEquals(0.3, getConfiguration(testVariables, configuration, sum), maxError);
@@ -114,7 +114,7 @@ public class DiscretePotentialOperationsTest {
         assertTrue(variables.contains(commonVariables.b));
         assertTrue(variables.contains(commonVariables.a));
         assertTrue(variables.contains(commonVariables.d));
-        assertEquals(36, multiplication.values.length);
+        assertEquals(36, multiplication.getValues().length);
         int[] coordinate = {0, 0, 0, 0}; // test configuration a=0,b=0,c=0,d=0
         double value = getConfiguration(commonVariables.variablesABCD, coordinate, multiplication);
         assertEquals(0.007, value, maxError);
@@ -144,21 +144,21 @@ public class DiscretePotentialOperationsTest {
         potentials.add(constantPotentials.get(1));
         TablePotential aPotential = (TablePotential) PotentialOperations.multiply(potentials);
         
-        assertEquals(1, aPotential.values.length);
-        assertEquals(2.0, aPotential.values[0], maxError);
+        assertEquals(1, aPotential.getValues().length);
+        assertEquals(2.0, aPotential.getValues()[0], maxError);
         
         // Two constant potentials
         potentials.add(constantPotentials.get(1));
         aPotential = (TablePotential) PotentialOperations.multiply(potentials);
         
-        assertEquals(4.0, aPotential.values[0], maxError);
+        assertEquals(4.0, aPotential.getValues()[0], maxError);
         
         // Several constant potentials
         for (int i = 2; i < numConstantPotentials; i++) {
             potentials.add(constantPotentials.get(i));
         }
         aPotential = (TablePotential) PotentialOperations.multiply(potentials);
-        assertEquals(7257600.0, aPotential.values[0], maxError);
+        assertEquals(7257600.0, aPotential.getValues()[0], maxError);
         
         // Test constant and binary potential multiplication
         // Only 1 potential so in this case the method does not do anything
@@ -175,17 +175,17 @@ public class DiscretePotentialOperationsTest {
         
         // Check table
         // size:
-        assertEquals(81, aPotential.values.length);
+        assertEquals(81, aPotential.getValues().length);
         // travels around all the table
-        assertEquals(1.0, aPotential.values[0], maxError);
+        assertEquals(1.0, aPotential.getValues()[0], maxError);
         
         // Two normal potentials
         potentials.add(normalPotentials.get(1));
         aPotential = (TablePotential) PotentialOperations.multiply(potentials);
         // check table size
-        assertEquals(81 * 81, aPotential.values.length);
+        assertEquals(81 * 81, aPotential.getValues().length);
         // check table content
-        assertEquals(82.0, aPotential.values[0], maxError);
+        assertEquals(82.0, aPotential.getValues()[0], maxError);
         ArrayList<Variable> variablesPotentials = (ArrayList<Variable>) (getUnionVariablesOrdered(potentials));
         int[] coordinate1 = {1, 0, 0, 0, 0, 0, 0, 0};
         double configuration = UtilTestMethods.getConfiguration(variablesPotentials, coordinate1, aPotential);
@@ -201,8 +201,8 @@ public class DiscretePotentialOperationsTest {
         potentials.add(constantPotentials.get(1));
         potentials.add(normalPotentials.get(0));
         aPotential = (TablePotential) PotentialOperations.multiply(potentials);
-        assertEquals(81, aPotential.values.length);
-        assertEquals(2.0, aPotential.values[0], maxError);
+        assertEquals(81, aPotential.getValues().length);
+        assertEquals(2.0, aPotential.getValues()[0], maxError);
         int[] coordinate2 = {1, 0, 0, 0};
         variablesPotentials = (ArrayList<Variable>) ( getUnionVariablesOrdered(potentials));
         configuration = UtilTestMethods.getConfiguration(variablesPotentials, coordinate2, aPotential);
@@ -213,8 +213,8 @@ public class DiscretePotentialOperationsTest {
         potentials.add(normalPotentials.get(0));
         potentials.add(constantPotentials.get(1));
         aPotential = (TablePotential) PotentialOperations.multiply(potentials);
-        assertEquals(81, aPotential.values.length);
-        assertEquals(2.0, aPotential.values[0], maxError);
+        assertEquals(81, aPotential.getValues().length);
+        assertEquals(2.0, aPotential.getValues()[0], maxError);
         variablesPotentials = (ArrayList<Variable>) ( getUnionVariablesOrdered(potentials));
         configuration = UtilTestMethods.getConfiguration(variablesPotentials, coordinate2, aPotential);
         assertEquals(4.0, configuration, maxError);
@@ -225,8 +225,8 @@ public class DiscretePotentialOperationsTest {
         potentials.add(constantPotentials.get(2));
         potentials.add(normalPotentials.get(0));
         aPotential = (TablePotential) PotentialOperations.multiply(potentials);
-        assertEquals(81, aPotential.values.length);
-        assertEquals(6.0, aPotential.values[0], maxError);
+        assertEquals(81, aPotential.getValues().length);
+        assertEquals(6.0, aPotential.getValues()[0], maxError);
         variablesPotentials = (ArrayList<Variable>) (getUnionVariablesOrdered(potentials));
         int[] coordinate3 = {1, 0, 0, 0, 0, 0, 0, 0};
         configuration = UtilTestMethods.getConfiguration(variablesPotentials, coordinate3, aPotential);
@@ -238,8 +238,8 @@ public class DiscretePotentialOperationsTest {
         potentials.add(normalPotentials.get(0));
         potentials.add(constantPotentials.get(2));
         aPotential = (TablePotential) PotentialOperations.multiply(potentials);
-        assertEquals(81, aPotential.values.length);
-        assertEquals(6.0, aPotential.values[0], maxError);
+        assertEquals(81, aPotential.getValues().length);
+        assertEquals(6.0, aPotential.getValues()[0], maxError);
         variablesPotentials = (ArrayList<Variable>) ((Object) getUnionVariablesOrdered(potentials));
         configuration = UtilTestMethods.getConfiguration(variablesPotentials, coordinate3, aPotential);
         assertEquals(12.0, configuration, maxError);
@@ -250,8 +250,8 @@ public class DiscretePotentialOperationsTest {
         potentials.add(constantPotentials.get(1));
         potentials.add(constantPotentials.get(2));
         aPotential = (TablePotential) PotentialOperations.multiply(potentials);
-        assertEquals(81, aPotential.values.length);
-        assertEquals(6.0, aPotential.values[0], maxError);
+        assertEquals(81, aPotential.getValues().length);
+        assertEquals(6.0, aPotential.getValues()[0], maxError);
         variablesPotentials = (ArrayList<Variable>) ( getUnionVariablesOrdered(potentials));
         configuration = UtilTestMethods.getConfiguration(variablesPotentials, coordinate3, aPotential);
         assertEquals(12.0, configuration, maxError);
@@ -266,7 +266,7 @@ public class DiscretePotentialOperationsTest {
         assertTrue(variables.contains(commonVariables.b));
         assertTrue(variables.contains(commonVariables.c));
         assertTrue(variables.contains(commonVariables.d));
-        assertEquals(12, mulAndMarg.values.length);
+        assertEquals(12, mulAndMarg.getValues().length);
         int[] coordinate = {0, 0, 0}; // coordinate = {0,0,0}
         double value = getConfiguration(commonVariables.arrayVariablesBCD, coordinate, mulAndMarg);
         assertEquals(0.0875, value, maxError);
@@ -331,9 +331,9 @@ public class DiscretePotentialOperationsTest {
         TablePotential result = DiscretePotentialOperations
                 .multiplyAndMarginalize(potentials, variablesToKeep, variablesToMarginalize);
         // Test table
-        assertEquals(0.192, result.values[0], maxError);
-        assertEquals(0.808, result.values[1], maxError);
-        assertEquals(2, result.values.length);
+        assertEquals(0.192, result.getValues()[0], maxError);
+        assertEquals(0.808, result.getValues()[1], maxError);
+        assertEquals(2, result.getValues().length);
         
         // Test variables
         List<Variable> variables = result.getVariables();
@@ -365,8 +365,8 @@ public class DiscretePotentialOperationsTest {
         assertTrue(maximizedVariables.contains(commonVariables.d));
         assertFalse(maximizedVariables.contains(commonVariables.a));
         // Test maximization
-        assertEquals(12, maximized.values.length);
-        assertEquals(0.21, maximized.values[0], maxError);
+        assertEquals(12, maximized.getValues().length);
+        assertEquals(0.21, maximized.getValues()[0], maxError);
         HashMap<Variable, Integer> coordinate = new HashMap<>();
         coordinate.put(commonVariables.b, 0);
         coordinate.put(commonVariables.c, 0);
@@ -376,7 +376,7 @@ public class DiscretePotentialOperationsTest {
         assertEquals(0.09, maximized.getProbability(coordinate), 0.0001);
         
         //		assertNotNull(maximized.interventions);
-        //		assertEquals(maximized.interventions.length, maximized.values.length);
+        //		assertEquals(maximized.interventions.length, maximized.getValues().length);
     }
     
     @Test public void testGetProperPotentials() {
@@ -415,7 +415,7 @@ public class DiscretePotentialOperationsTest {
         assertEquals(2, division.getVariables().size());
         assertTrue(division.contains(commonVariables.a));
         assertTrue(division.contains(commonVariables.b));
-        assertEquals(7, division.values[0], maxError);
+        assertEquals(7, division.getValues()[0], maxError);
         
         division = DiscretePotentialOperations.divide(commonVariables.tpAB, commonVariables.tpCAB);
         assertEquals(4, division.getVariables().size());
@@ -455,7 +455,7 @@ public class DiscretePotentialOperationsTest {
         assertEquals(1, variablesPotential.size());
         assertTrue(variablesPotential.contains(commonVariables.b));
         // Check table
-        double[] table = maximizedPotential.values;
+        double[] table = maximizedPotential.getValues();
         assertEquals(3, table.length); // size table reduced
         assertEquals(0.7, table[0], maxError);
         assertEquals(0.5, table[1], maxError);
@@ -508,10 +508,10 @@ public class DiscretePotentialOperationsTest {
         assertEquals(variablesReordered.get(0), variablesAB.get(1));
         assertEquals(variablesReordered.get(1), variablesAB.get(0));
         // 2. Test table
-        assertEquals(0.2, reorderedBA.values[0], maxError);
-        assertEquals(0.4, reorderedBA.values[1], maxError);
-        assertEquals(0.8, reorderedBA.values[2], maxError);
-        assertEquals(0.6, reorderedBA.values[3], maxError);
+        assertEquals(0.2, reorderedBA.getValues()[0], maxError);
+        assertEquals(0.4, reorderedBA.getValues()[1], maxError);
+        assertEquals(0.8, reorderedBA.getValues()[2], maxError);
+        assertEquals(0.6, reorderedBA.getValues()[3], maxError);
     }
     
     @Test public void testReorder2() {
@@ -533,10 +533,10 @@ public class DiscretePotentialOperationsTest {
             assertEquals(variablesAfterReorder.get(i), variablesReorderedPotential.get(i));
         }
         // Test table of TablePotential
-        assertEquals(commonVariables.tpCAB.values.length, tablePotentialAfterReorder.values.length);
+        assertEquals(commonVariables.tpCAB.getValues().length, tablePotentialAfterReorder.getValues().length);
         double[] reorderedTable = {0.2, 0.4, 0.1, 0.9, 0.3, 0.8, 0.8, 0.6, 0.9, 0.1, 0.7, 0.2};
         for (int i = 0; i < reorderedTable.length; i++) {
-            assertEquals(reorderedTable[i], tablePotentialAfterReorder.values[i], maxError);
+            assertEquals(reorderedTable[i], tablePotentialAfterReorder.getValues()[i], maxError);
         }
     }
     
@@ -559,10 +559,10 @@ public class DiscretePotentialOperationsTest {
             assertEquals(variablesAfterReorder.get(i), variablesReorderedPotential.get(i));
         }
         // Test table of TablePotential
-        assertEquals(commonVariables.tpCAB.values.length, tablePotentialAfterReorder.values.length);
+        assertEquals(commonVariables.tpCAB.getValues().length, tablePotentialAfterReorder.getValues().length);
         double[] reorderedTable = {0.2, 0.8, 0.4, 0.6, 0.1, 0.9, 0.9, 0.1, 0.3, 0.7, 0.8, 0.2};
         for (int i = 0; i < reorderedTable.length; i++) {
-            assertEquals(reorderedTable[i], tablePotentialAfterReorder.values[i], maxError);
+            assertEquals(reorderedTable[i], tablePotentialAfterReorder.getValues()[i], maxError);
         }
     }
     
@@ -570,7 +570,7 @@ public class DiscretePotentialOperationsTest {
     /** Test without utilities */ public void testSumOutVariable1() {
         Marginalization marginalization = new SumOutVariable(commonVariables.a, commonVariables.potentials);
         TablePotential utility = marginalization.getUtility();
-        assertTrue(utility == null || (utility.values.length == 1 && utility.values[0] == 0.0)); // No utility
+        assertTrue(utility == null || (utility.getValues().length == 1 && utility.getValues()[0] == 0.0)); // No utility
         TablePotential probability = marginalization.getProbability();
         assertNotNull(probability);
         TablePotential tablePotential = marginalization.getProbability();
@@ -580,7 +580,7 @@ public class DiscretePotentialOperationsTest {
         assertTrue(variables.contains(commonVariables.b));
         assertTrue(variables.contains(commonVariables.c));
         assertTrue(variables.contains(commonVariables.d));
-        assertEquals(12, tablePotential.values.length);
+        assertEquals(12, tablePotential.getValues().length);
     }
     
     // que me lleva a desactivar este test.
@@ -642,7 +642,7 @@ public class DiscretePotentialOperationsTest {
     @Test public void testSumOutVariable4() {
         Marginalization marginalization = new SumOutVariable(commonVariables.a, commonVariables.potentials);
         TablePotential utility = marginalization.getUtility();
-        assertTrue(utility == null || (utility.values.length == 1 && utility.values[0] == 0.0)); // No utility
+        assertTrue(utility == null || (utility.getValues().length == 1 && utility.getValues()[0] == 0.0)); // No utility
         TablePotential probability = marginalization.getProbability();
         assertNotNull(probability);
         TablePotential tablePotential = marginalization.getProbability();
@@ -652,7 +652,7 @@ public class DiscretePotentialOperationsTest {
         assertTrue(variables.contains(commonVariables.b));
         assertTrue(variables.contains(commonVariables.c));
         assertTrue(variables.contains(commonVariables.d));
-        assertEquals(12, tablePotential.values.length);
+        assertEquals(12, tablePotential.getValues().length);
     }
     
     @Test
@@ -664,12 +664,12 @@ public class DiscretePotentialOperationsTest {
         Variable X   = new Variable("X", "x0", "x1");          // 2-state chance
 
         TablePotential p0 = new TablePotential(List.of(X), PotentialRole.UNSPECIFIED);
-        p0.values[0] = 0.3;  // X=x0
-        p0.values[1] = 0.7;  // X=x1
+        p0.getValues()[0] = 0.3;  // X=x0
+        p0.getValues()[1] = 0.7;  // X=x1
 
         TablePotential p1 = new TablePotential(List.of(X), PotentialRole.UNSPECIFIED);
-        p1.values[0] = 0.6;
-        p1.values[1] = 0.4;
+        p1.getValues()[0] = 0.6;
+        p1.getValues()[1] = 0.4;
 
         AbstractIndexedPotential mergedRaw = DiscretePotentialOperations.merge(dec, Arrays.asList(p0, p1));
         TablePotential merged = (TablePotential) mergedRaw;
@@ -689,11 +689,11 @@ public class DiscretePotentialOperationsTest {
         //   values[1] = (D=1, X=0)  from p1[X=0] = 0.6
         //   values[2] = (D=0, X=1)  from p0[X=1] = 0.7
         //   values[3] = (D=1, X=1)  from p1[X=1] = 0.4
-        assertEquals(4, merged.values.length);
-        assertEquals(0.3, merged.values[0], maxError, "(D=0, X=0)");
-        assertEquals(0.6, merged.values[1], maxError, "(D=1, X=0)");
-        assertEquals(0.7, merged.values[2], maxError, "(D=0, X=1)");
-        assertEquals(0.4, merged.values[3], maxError, "(D=1, X=1)");
+        assertEquals(4, merged.getValues().length);
+        assertEquals(0.3, merged.getValues()[0], maxError, "(D=0, X=0)");
+        assertEquals(0.6, merged.getValues()[1], maxError, "(D=1, X=0)");
+        assertEquals(0.7, merged.getValues()[2], maxError, "(D=0, X=1)");
+        assertEquals(0.4, merged.getValues()[3], maxError, "(D=1, X=1)");
 
         // ----------------------------------------------------------------
         // 2. GTablePotential<CEP> merge
@@ -741,18 +741,18 @@ public class DiscretePotentialOperationsTest {
         Variable Y = new Variable("Y", "y0", "y1");
         TablePotential pXY0 = new TablePotential(Arrays.asList(X, Y), PotentialRole.UNSPECIFIED);
         TablePotential pXY1 = new TablePotential(Arrays.asList(X, Y), PotentialRole.UNSPECIFIED);
-        Arrays.fill(pXY0.values, 1.0);
-        Arrays.fill(pXY1.values, 2.0);
+        Arrays.fill(pXY0.getValues(), 1.0);
+        Arrays.fill(pXY1.getValues(), 2.0);
 
         TablePotential mergedXY = (TablePotential) DiscretePotentialOperations.merge(dec, Arrays.asList(pXY0, pXY1));
         assertEquals(3, mergedXY.getVariables().size(), "merged variables: [D, X, Y]");
         assertEquals(dec, mergedXY.getVariables().getFirst());
-        assertEquals(8, mergedXY.values.length, "2 × 2 × 2 = 8 positions");
+        assertEquals(8, mergedXY.getValues().length, "2 × 2 × 2 = 8 positions");
         // Positions where D=0 come from pXY0 (1.0), positions where D=1 from pXY1 (2.0)
         // D is the first variable, so it alternates: [1.0, 2.0, 1.0, 2.0, ...]
         for (int i = 0; i < 8; i++) {
             double expected = (i % 2 == 0) ? 1.0 : 2.0;
-            assertEquals(expected, mergedXY.values[i], maxError,
+            assertEquals(expected, mergedXY.getValues()[i], maxError,
                     "Position " + i + ": D=" + (i % 2));
         }
 
@@ -790,7 +790,7 @@ public class DiscretePotentialOperationsTest {
         // Same variables as the maximized potential
         assertEquals(maximized.getVariables(), choices.getVariables(),
                 "Choice potential must have the same variables as the maximized potential");
-        assertEquals(maximized.values.length, choices.elementTable.size(),
+        assertEquals(maximized.getValues().length, choices.elementTable.size(),
                 "One Choice per position in the result table");
 
         // Spot-check: position 0 always corresponds to (all context vars = 0).
@@ -830,8 +830,8 @@ public class DiscretePotentialOperationsTest {
     public void testMultiplyAndMaximize_tiedStatesBothRecorded() {
         Variable dec = new Variable("Dec", "opt0", "opt1");
         TablePotential uniform = new TablePotential(List.of(dec), PotentialRole.UNSPECIFIED);
-        uniform.values[0] = 1.0;
-        uniform.values[1] = 1.0; // tie
+        uniform.getValues()[0] = 1.0;
+        uniform.getValues()[1] = 1.0; // tie
 
         ArrayList<Potential> potsList = new ArrayList<>();
         potsList.add(uniform);
@@ -862,7 +862,7 @@ public class DiscretePotentialOperationsTest {
     public void testMultiplyAndMaximize_threeWayTieAllRecorded() {
         Variable dec = new Variable("Dec", "opt0", "opt1", "opt2");
         TablePotential uniform = new TablePotential(List.of(dec), PotentialRole.UNSPECIFIED);
-        Arrays.fill(uniform.values, 5.0);
+        Arrays.fill(uniform.getValues(), 5.0);
 
         ArrayList<Potential> potsList3 = new ArrayList<>();
         potsList3.add(uniform);
@@ -908,9 +908,9 @@ public class DiscretePotentialOperationsTest {
         
         // Test utility values
         assertEquals(disease, utilityVariables.getFirst());
-        assertEquals(2, utility.values.length);
-        assertEquals(10, utility.values[0], maxError);
-        assertEquals(7.75, utility.values[1], maxError);
+        assertEquals(2, utility.getValues().length);
+        assertEquals(10, utility.getValues()[0], maxError);
+        assertEquals(7.75, utility.getValues()[1], maxError);
         
         // Test utility interventions
         assertInstanceOf(StrategicTablePotential.class, utility);
@@ -1010,7 +1010,7 @@ public class DiscretePotentialOperationsTest {
         for (Variable variablePotential : variablesPotential) {
             coordinate[i++] = coordinateVariables[variables.indexOf(variablePotential)];
         }
-        return potential.values[potential.getPosition(coordinate)];
+        return potential.getValues()[potential.getPosition(coordinate)];
     }
     
     /**

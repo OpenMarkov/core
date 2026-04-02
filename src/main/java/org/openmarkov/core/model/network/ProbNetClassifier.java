@@ -68,7 +68,7 @@ public final class ProbNetClassifier {
      * Returns {@code true} when at least one node in the network has a
      * temporal variable.
      */
-    public static boolean thereAreTemporalNodes(ProbNet probNet) {
+    public static boolean thereAreTemporalNodes(GraphNetwork probNet) {
         return probNet.getNodes().stream()
                       .anyMatch(node -> node.getVariable().isTemporal());
     }
@@ -77,7 +77,7 @@ public final class ProbNetClassifier {
      * Counts the number of distinct decision criteria across all potentials
      * in the network (case-insensitive comparison).
      */
-    public static int getNumCriteria(ProbNet probNet) {
+    public static int getNumCriteria(PotentialNetwork probNet) {
         Set<String> criterionNames = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
         for (Potential potential : probNet.getPotentials()) {
             Criterion criterion = potential.getCriterion();

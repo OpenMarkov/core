@@ -48,7 +48,7 @@ final class TablePotentialElimination {
             if (potential.getNumVariables() != 0) {
                 nonConstantPotentials.add(potential);
             } else {
-                constantFactor *= potential.values[potential.getInitialPosition()];
+                constantFactor *= potential.getValues()[potential.getInitialPosition()];
             }
         }
 
@@ -57,7 +57,7 @@ final class TablePotentialElimination {
         if (numNonConstantPotentials == 0) {
             TablePotential resultingPotential = new TablePotential(variablesToKeep,
                     TablePotentialArithmetic.getRole(tablePotentials));
-            resultingPotential.values[0] = constantFactor;
+            resultingPotential.getValues()[0] = constantFactor;
             return resultingPotential;
         }
 
@@ -74,7 +74,7 @@ final class TablePotentialElimination {
         int[][] accumulatedOffsets = new int[numNonConstantPotentials][];
         for (int i = 0; i < numNonConstantPotentials; i++) {
             TablePotential potential = nonConstantPotentials.get(i);
-            tables[i] = potential.values;
+            tables[i] = potential.getValues();
             initialPositions[i] = potential.getInitialPosition();
             currentPositions[i] = initialPositions[i];
             accumulatedOffsets[i] = TablePotential.getAccumulatedOffsets(unionVariables, potential.getVariables());
@@ -141,13 +141,13 @@ final class TablePotentialElimination {
     static TablePotential multiplyAndMarginalize(TablePotential probPotential, TablePotential utilityPotential,
                                                  Variable variableToEliminate) {
         if (probPotential.getVariables().isEmpty()) {
-            double prob = probPotential.values[0];
+            double prob = probPotential.getValues()[0];
             if (prob == 1) {
                 return utilityPotential;
             }
             TablePotential result = (TablePotential) utilityPotential.copy();
-            for (int i = 0; i < result.values.length; i++) {
-                result.values[i] *= prob;
+            for (int i = 0; i < result.getValues().length; i++) {
+                result.getValues()[i] *= prob;
             }
             return result;
         }
@@ -167,7 +167,7 @@ final class TablePotentialElimination {
         TablePotential resultPotential;
         if (thereAreInterventions) {
             strategicResult = new StrategicTablePotential(variablesToKeep, PotentialRole.UNSPECIFIED);
-            strategicResult.strategyTrees = new StrategyTree[strategicResult.values.length];
+            strategicResult.strategyTrees = new StrategyTree[strategicResult.getValues().length];
             resultPotential = strategicResult;
         } else {
             resultPotential = new TablePotential(variablesToKeep, PotentialRole.UNSPECIFIED);
@@ -185,12 +185,12 @@ final class TablePotentialElimination {
 
         double accumulator;
         int increasedVariable = 0;
-        double[] probValues = probPotential.values;
-        double[] utilValues = utilityPotential.values;
+        double[] probValues = probPotential.getValues();
+        double[] utilValues = utilityPotential.getValues();
         double[] probs = new double[variableToEliminate.getNumStates()];
         StrategyTree[] strategyTrees = new StrategyTree[variableToEliminate.getNumStates()];
 
-        for (int outerIteration = 0; outerIteration < resultPotential.values.length; outerIteration++) {
+        for (int outerIteration = 0; outerIteration < resultPotential.getValues().length; outerIteration++) {
             accumulator = 0;
 
             for (int stateIndex = 0; stateIndex < variableToEliminate.getNumStates(); stateIndex++) {
@@ -209,14 +209,14 @@ final class TablePotentialElimination {
                 }
             }
 
-            resultPotential.values[outerIteration] = accumulator;
+            resultPotential.getValues()[outerIteration] = accumulator;
 
             if (thereAreInterventions) {
                 strategicResult.strategyTrees[outerIteration] = StrategyTree.averageOfInterventions(
                         variableToEliminate, probs, strategyTrees);
             }
 
-            if (outerIteration < resultPotential.values.length - 1) {
+            if (outerIteration < resultPotential.getValues().length - 1) {
                 increasedVariable = AuxiliaryOperations.findNextConfigurationAndIndexIncreasedVariable(
                         dimensions, coordinates, increasedVariable);
                 currentPositionProb += accumulatedOffsetsProb[increasedVariable];

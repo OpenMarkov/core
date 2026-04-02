@@ -313,8 +313,8 @@ public class TemporalNetOperations {
                             
                             TablePotential sumPotential = DiscretePotentialOperations
                                     .sum(Arrays.asList(currentCyclePotential, previousCyclePotential));
-                            for (int j = 0; j < sumPotential.values.length; ++j)
-                                sumPotential.values[j] /= 2;
+                            for (int j = 0; j < sumPotential.getValues().length; ++j)
+                                sumPotential.getValues()[j] /= 2;
                             newPotentials.add(sumPotential);
                         }
                         
@@ -420,7 +420,7 @@ public class TemporalNetOperations {
     //				e.printStackTrace();
     //			}
     //			TablePotential decisionCEPotential = new TablePotential(newPotentialVariables, PotentialRole.UTILITY);
-    //			double newValues [] = new double[decisionCEPotential.values.length];
+    //			double newValues [] = new double[decisionCEPotential.getValues().length];
     //
     //			int startPosition = 0;
     //			if(utilityNode.getVariable().getDecisionCriterion().getCECriterion() == CECriterion.Cost){

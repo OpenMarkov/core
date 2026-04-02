@@ -71,20 +71,20 @@ public class TablePotentialRegressionTest {
     @Test
     public void copyProducesDistinctValuesArray() {
         TablePotential copy = (TablePotential) pAB.copy();
-        assertNotSame(pAB.values, copy.values);
+        assertNotSame(pAB.getValues(), copy.getValues());
     }
 
     @Test
     public void copyPreservesValues() {
         TablePotential copy = (TablePotential) pAB.copy();
-        assertArrayEquals(pAB.values, copy.values, DELTA);
+        assertArrayEquals(pAB.getValues(), copy.getValues(), DELTA);
     }
 
     @Test
     public void copyValuesAreIndependent() {
         TablePotential copy = (TablePotential) pAB.copy();
-        copy.values[0] = 0.0;
-        assertEquals(0.9, pAB.values[0], DELTA,
+        copy.getValues()[0] = 0.0;
+        assertEquals(0.9, pAB.getValues()[0], DELTA,
                 "Modifying copy must not affect original");
     }
 
@@ -166,7 +166,7 @@ public class TablePotentialRegressionTest {
     @Test
     public void setValueAndRetrieve() {
         pAB.setValue(List.of(a, b), new int[]{0, 1}, 0.55);
-        assertEquals(0.55, pAB.values[pAB.getPosition(new int[]{0, 1})], DELTA);
+        assertEquals(0.55, pAB.getValues()[pAB.getPosition(new int[]{0, 1})], DELTA);
     }
 
     // -----------------------------------------------------------------------
@@ -196,8 +196,8 @@ public class TablePotentialRegressionTest {
         pAB.setUniform();
         // For a CPT P(A|B), setUniform sets each P(A=ai|b) = 1/numStates(A) = 0.5
         double expected = 1.0 / a.getNumStates();
-        for (int i = 0; i < pAB.values.length; i++) {
-            assertEquals(expected, pAB.values[i], DELTA,
+        for (int i = 0; i < pAB.getValues().length; i++) {
+            assertEquals(expected, pAB.getValues()[i], DELTA,
                     "Value at index " + i + " should be uniform");
         }
     }
@@ -208,26 +208,26 @@ public class TablePotentialRegressionTest {
 
     @Test
     public void scalePotentialMultipliesAllValues() {
-        double[] before = pAB.values.clone();
+        double[] before = pAB.getValues().clone();
         pAB.scalePotential(2.0);
-        for (int i = 0; i < pAB.values.length; i++) {
-            assertEquals(before[i] * 2.0, pAB.values[i], DELTA);
+        for (int i = 0; i < pAB.getValues().length; i++) {
+            assertEquals(before[i] * 2.0, pAB.getValues()[i], DELTA);
         }
     }
 
     @Test
     public void scalePotentialByZeroProducesAllZeros() {
         pAB.scalePotential(0.0);
-        for (double v : pAB.values) {
+        for (double v : pAB.getValues()) {
             assertEquals(0.0, v, DELTA);
         }
     }
 
     @Test
     public void scalePotentialByOneIsIdentity() {
-        double[] before = pAB.values.clone();
+        double[] before = pAB.getValues().clone();
         pAB.scalePotential(1.0);
-        assertArrayEquals(before, pAB.values, DELTA);
+        assertArrayEquals(before, pAB.getValues(), DELTA);
     }
 
     // -----------------------------------------------------------------------
@@ -247,9 +247,9 @@ public class TablePotentialRegressionTest {
         Variable c = new Variable("C", new State[]{new State("c0"), new State("c1")});
         TablePotential expanded = (TablePotential) pAB.addVariable(c);
         // The original 6 values must appear twice (once for C=c0, once for C=c1)
-        for (int i = 0; i < pAB.values.length; i++) {
-            assertEquals(pAB.values[i], expanded.values[i],             DELTA);
-            assertEquals(pAB.values[i], expanded.values[i + pAB.values.length], DELTA);
+        for (int i = 0; i < pAB.getValues().length; i++) {
+            assertEquals(pAB.getValues()[i], expanded.getValues()[i],             DELTA);
+            assertEquals(pAB.getValues()[i], expanded.getValues()[i + pAB.getValues().length], DELTA);
         }
     }
 
@@ -333,8 +333,8 @@ public class TablePotentialRegressionTest {
         ProbNet copyNet = net.copy();
 
         TablePotential deepCopied = (TablePotential) pAB.deepCopy(copyNet);
-        deepCopied.values[0] = 0.0;
-        assertEquals(0.9, pAB.values[0], DELTA,
+        deepCopied.getValues()[0] = 0.0;
+        assertEquals(0.9, pAB.getValues()[0], DELTA,
                 "Mutating deepCopy must not affect original values");
     }
 
@@ -346,7 +346,7 @@ public class TablePotentialRegressionTest {
         ProbNet copyNet = net.copy();
 
         TablePotential deepCopied = (TablePotential) pAB.deepCopy(copyNet);
-        assertArrayEquals(pAB.values, deepCopied.values, DELTA);
+        assertArrayEquals(pAB.getValues(), deepCopied.getValues(), DELTA);
     }
 
     // -----------------------------------------------------------------------
@@ -356,8 +356,8 @@ public class TablePotentialRegressionTest {
     @Test
     public void getValuesReturnsCurrentArray() {
         double[] returned = pAB.getValues();
-        assertSame(pAB.values, returned,
-                "getValues() must return the same array reference as .values");
+        assertSame(pAB.getValues(), returned,
+                "getValues() must return the same array reference as .getValues()");
     }
 
     @Test
@@ -386,7 +386,7 @@ public class TablePotentialRegressionTest {
     @Test
     public void isUncertainTrueWhenUncertainValuesAssigned() {
         UncertainTablePotential utp = new UncertainTablePotential(pAB.getVariables(), pAB.getPotentialRole());
-        utp.uncertainValues = new UncertainValue[utp.values.length];
+        utp.uncertainValues = new UncertainValue[utp.getValues().length];
         assertTrue(utp.isUncertain());
     }
 

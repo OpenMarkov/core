@@ -9,7 +9,7 @@ package org.openmarkov.core.model.network.constraint;
 
 import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.exception.ConstraintViolatedException;
-import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.GraphNetwork;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
@@ -19,7 +19,7 @@ import java.util.List;
 @Constraint(name = "DistinctVariableNames", defaultBehavior = ConstraintBehavior.YES)
 public class DistinctVariableNames extends PNConstraint {
     
-    @Override public void checkProbNet(ProbNet probNet, ConstraintChecker constraintChecker) {
+    @Override public void checkProbNet(GraphNetwork probNet, ConstraintChecker constraintChecker) {
         List<Variable> variablesProbNet = probNet.getVariables();
         List<String> variablesProbNetNames = new ArrayList<>();
         for (Variable variable : variablesProbNet) {

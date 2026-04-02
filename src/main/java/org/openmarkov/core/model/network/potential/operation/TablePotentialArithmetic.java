@@ -226,7 +226,7 @@ final class TablePotentialArithmetic {
         StrategyTree constantPotentialsStrategyTree = null;
         int numConstantPotentials = constantPotentials.size();
         for (int i = 0; i < numConstantPotentials; i++) {
-            sumConstantPotentials += constantPotentials.get(i).values[0];
+            sumConstantPotentials += constantPotentials.get(i).getValues()[0];
             StrategyTree[] iConstantPotentialStrategyTrees = constantPotentials.get(i) instanceof StrategicTablePotential stp
                     ? stp.strategyTrees : null;
             if (iConstantPotentialStrategyTrees != null) {
@@ -458,8 +458,8 @@ final class TablePotentialArithmetic {
         // Gets the tables of each TablePotential
         //TODO: The array positionTies is never read.
         double[][] tables = new double[2][];
-        tables[0] = tNumerator.values;
-        tables[1] = tDenominator.values;
+        tables[0] = tNumerator.getValues();
+        tables[1] = tDenominator.getValues();
 
         // Gets dimension
         int[] quotientDimension = quotient.getDimensions();
@@ -491,11 +491,11 @@ final class TablePotentialArithmetic {
             incrementedVariable = AuxiliaryOperations.findNextConfigurationAndIndexIncreasedVariable(quotientDimension, quotientCoordinate, incrementedVariable);
 
             // divide
-            if (tDenominator.values[potentialsPositions[1]] == 0.0) {
-                quotient.values[quotientPosition] = 0.0;
+            if (tDenominator.getValues()[potentialsPositions[1]] == 0.0) {
+                quotient.getValues()[quotientPosition] = 0.0;
             } else {
-                quotient.values[quotientPosition] = tNumerator.values[potentialsPositions[0]]
-                        / tDenominator.values[potentialsPositions[1]];
+                quotient.getValues()[quotientPosition] = tNumerator.getValues()[potentialsPositions[0]]
+                        / tDenominator.getValues()[potentialsPositions[1]];
             }
             for (int iPotential = 0; iPotential < 2; iPotential++) {
                 // update the current position in each potential table
@@ -520,16 +520,16 @@ final class TablePotentialArithmetic {
     private static TablePotential divide(TablePotential numerator, TablePotential denominator, TablePotential quotient,
                                          int numNumeratorVariables, int numDenominatorVariables) {
         if (numNumeratorVariables == 0) {
-            int sizeTableDenominator = denominator.values.length;
-            double dNumerator = numerator.values[0];
+            int sizeTableDenominator = denominator.getValues().length;
+            double dNumerator = numerator.getValues()[0];
             for (int i = 0; i < sizeTableDenominator; i++) {
-                quotient.values[i] = dNumerator / denominator.values[i];
+                quotient.getValues()[i] = dNumerator / denominator.getValues()[i];
             }
         } else {
-            int sizeTableNumerator = numerator.values.length;
-            double dDenominator = denominator.values[0];
+            int sizeTableNumerator = numerator.getValues().length;
+            double dDenominator = denominator.getValues()[0];
             for (int i = 0; i < sizeTableNumerator; i++) {
-                quotient.values[i] = numerator.values[i] / dDenominator;
+                quotient.getValues()[i] = numerator.getValues()[i] / dDenominator;
             }
         }
         quotient.setPotentialRole(PotentialRole.CONDITIONAL_PROBABILITY);
@@ -668,14 +668,14 @@ final class TablePotentialArithmetic {
         int numPotentials = potentials.size();
         double[][] tables = new double[numPotentials][];
         for (int i = 0; i < numPotentials; i++) {
-            tables[i] = potentials.get(i).values;
+            tables[i] = potentials.get(i).getValues();
         }
         return tables;
     }
 
     private static TablePotential buildConstantPotential(double constantFactor, PotentialRole role) {
         TablePotential constantTablePotential = new TablePotential(null, role);
-        constantTablePotential.values[0] = constantFactor;
+        constantTablePotential.getValues()[0] = constantFactor;
         return constantTablePotential;
     }
 

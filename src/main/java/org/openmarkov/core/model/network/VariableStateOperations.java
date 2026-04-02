@@ -282,7 +282,7 @@ public final class VariableStateOperations {
             if (link.hasRestrictions()) {
                 double[] lastPotential = (
                         (TablePotential) link.getRestrictionsPotential()
-                ).values.clone();
+                ).getValues().clone();
                 linkRestrictionMap.put(link, lastPotential);
                 link.setRestrictionsPotential(null);
             }

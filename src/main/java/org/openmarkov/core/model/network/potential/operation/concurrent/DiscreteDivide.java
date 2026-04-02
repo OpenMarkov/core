@@ -59,11 +59,11 @@ public class DiscreteDivide implements Runnable {
 			}
 
 			// divide
-			if (denominator.values[potentialsPositions[1]] == 0.0) {
-				quotient.values[quotientPosition] = 0.0;
+			if (denominator.getValues()[potentialsPositions[1]] == 0.0) {
+				quotient.getValues()[quotientPosition] = 0.0;
 			} else {
-				quotient.values[quotientPosition] = numerator.values[potentialsPositions[0]]
-						/ denominator.values[potentialsPositions[1]];
+				quotient.getValues()[quotientPosition] = numerator.getValues()[potentialsPositions[0]]
+						/ denominator.getValues()[potentialsPositions[1]];
 			}
 			for (int iPotential = 0; iPotential < 2; iPotential++) {
 				// update the current position in each potential table

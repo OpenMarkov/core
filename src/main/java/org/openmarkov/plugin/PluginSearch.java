@@ -17,7 +17,7 @@ import java.util.stream.Stream;
  * {@code PluginSearch.init().extending(NetworkType.class).list()}
  * </pre>
  *
- * @param <T>
+ * @param <T> the <t>
  *
  * @author jrico
  */

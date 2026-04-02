@@ -89,7 +89,7 @@ public interface Localizable {
      * Searches for the first localization String in the bundles matching the {@link LocalizationFormatter}.
      *
      * @param formatter The {@link LocalizationFormatter} that specifies the desired format for the localization string.
-     * @param stringDatabaseKey
+     * @param stringDatabaseKey the string database key
      * @return An {@link Optional} containing the first matching localized string found.
      */
     @SuppressWarnings("SimplifyForEach")

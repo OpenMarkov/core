@@ -366,7 +366,7 @@ public class Graph<T> {
      * @param directed      {@code boolean}. If this parameter is true, this
      *                      method returns {@code true} only if there is a directed path;
      *                      otherwise, this method returns {@code true} if there is any path.
-     * @param linksToIgnore
+     * @param linksToIgnore the links to ignore
      *
      * @return {@code true} if it exists a path between node1 and node2
      * with a criterion to go from a node to another.

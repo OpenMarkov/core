@@ -32,8 +32,8 @@ public interface TemporalEvolution extends Task {
      * To be used with one variable or for CE
      *
      * @return temporal evolution of a node or a set of utility nodes where discounting is applied
-     * @throws IncompatibleEvidenceException
-     * @throws NotEvaluableNetworkException
+     * @throws IncompatibleEvidenceException if the evidence is incompatible with the network
+     * @throws NotEvaluableNetworkException if the network cannot be evaluated
      */
     default HashMap<Variable, TablePotential> getTemporalEvolutionWithDiscount()
             throws IncompatibleEvidenceException, ConstraintViolatedException {

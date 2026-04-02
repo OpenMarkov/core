@@ -172,7 +172,7 @@ public class MaxOutVariable {
 	/*
 	 * @param decisionVariable <code>Variable</code>
 	 * @param potentials <code>List</code> of <code>TablePotential</code>
-	 * @param sdagInterventions
+	 * @param sdagInterventions the sdag interventions
 	 * @return A <code>List</code> of <code>TablePotential</code>, with these, some of them optional, potentials:
 	 * <ol>
 	 * <li>if there are probability potentials in <code>potentials</code>, a join probability potential.

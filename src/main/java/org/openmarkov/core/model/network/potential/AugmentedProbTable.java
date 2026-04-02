@@ -135,9 +135,9 @@ public class AugmentedProbTable extends UncertainTablePotential {
      * Assigns a value at the table for the combination of a set of variables
      * and the corresponding state indices.
      *
-     * @param variables
+     * @param variables the variables
      *            . {@code ArrayList} of {@code Variable}
-     * @param statesIndexes
+     * @param statesIndexes the states indexes
      *            . {@code int[]}
      * @param function value to be assigned
      */

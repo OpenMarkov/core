@@ -97,8 +97,8 @@ public class TaskUtilities {
 
 	//TODO Do not delete next commented code as we are still debugging the transition from super-value nodes' concepts to numeric concepts
 	/*
-	 * @param probNet
-	 * @param evidenceCase
+	 * @param probNet the prob net
+	 * @param evidenceCase the evidence case
 	 * @return Remove super value nodes from probNet
 	 *//*
 		 * public static ProbNet removeSuperValueNodes(ProbNet probNet, EvidenceCase

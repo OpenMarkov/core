@@ -116,15 +116,15 @@ public class LinkRestrictionPotentialOperations {
 	 * Checks whether a combination of states of the node is influenced by a
 	 * link restriction
 	 *
-	 * @param combination
+	 * @param combination the combination
 	 *            - combination of states of the variables of the potential
-	 * @param links
+	 * @param links the links
 	 *            - parent links with a link restriction
-	 * @param node
+	 * @param node the node
 	 *            - the node
-	 * @param nodeVariables
+	 * @param nodeVariables the node variables
 	 *            - the variables of the potential of the node
-	 * @param nodeStateIndex
+	 * @param nodeStateIndex the node state index
 	 *            - the index of the state of the node
 	 * @return {@code true} if the combination of states is not influences
 	 *         by a link restriction
@@ -151,11 +151,11 @@ public class LinkRestrictionPotentialOperations {
 	 * This methods only assigns probabilities to state combinations, which are
 	 * not influenced by a link restriction.
 	 *
-	 * @param node
+	 * @param node the node
 	 *            - the probability node
-	 * @param potential
+	 * @param potential the potential
 	 *            - the probability potential
-	 * @param stateCombination
+	 * @param stateCombination the state combination
 	 *            - the combination of states of the potential.
 	 *
 	 * @return the potential with the updated probabilities.
@@ -209,13 +209,13 @@ public class LinkRestrictionPotentialOperations {
 	 * added. The link restriction belongs to the combination of the variables
 	 * of the link as specified by var1StateIndex and var2StateIndex.
 	 *
-	 * @param node
+	 * @param node the node
 	 *            - The child node of the link.
-	 * @param linkRestriction
+	 * @param linkRestriction the link restriction
 	 *            - the linkRestriction
-	 * @param var1StateIndex
+	 * @param var1StateIndex the var1 state index
 	 *            - the index of the state of the parent variable
-	 * @param var2StateIndex
+	 * @param var2StateIndex the var2 state index
 	 *            - the index of the state of the child variable.
 	 * @return the probability potential of the node updated properly.
 
@@ -280,11 +280,11 @@ public class LinkRestrictionPotentialOperations {
 	 * Updates the probability potential of the node according to the link
 	 * restriction.
 	 *
-	 * @param node
+	 * @param node the node
 	 *            - the node having the potential
-	 * @param linkRestriction
+	 * @param linkRestriction the link restriction
 	 *            - the link restriction potential
-	 * @param potential
+	 * @param potential the potential
 	 *            - the probability potential to update.
 	 * @return the probability potential updated according to the link
 	 *         restriction.
@@ -340,18 +340,18 @@ public class LinkRestrictionPotentialOperations {
 	 * Generates the state combinations for a set of variables having variable 1
 	 * and variable 2 a given value.
 	 * 
-	 * @param independentVariables
+	 * @param independentVariables the independent variables
 	 *            - Set of independent variables
-	 * @param variables
+	 * @param variables the variables
 	 *            - List containing the variables
-	 * @param var1Value
+	 * @param var1Value the var1 value
 	 *            - the value of the state of variable1
-	 * @param var1Index
+	 * @param var1Index the var1 index
 	 *            - the index to which corresponds variable1 in the variables
 	 *            list.
-	 * @param var2Value
+	 * @param var2Value the var2 value
 	 *            - the value of the state of variable2.
-	 * @param var2Index
+	 * @param var2Index the var2 index
 	 *            - the index to which corresponds variable2 in the variables
 	 *            list.
 	 * @return an List containing the generated state combinations.
@@ -389,18 +389,18 @@ public class LinkRestrictionPotentialOperations {
 	 * Generates the state combinations for a set of variables having variable 1
 	 * and variable 2 a given value.
 	 *
-	 * @param independentVariables
+	 * @param independentVariables the independent variables
 	 *            - Set of independent variables
-	 * @param variables
+	 * @param variables the variables
 	 *            - List containing the variables
-	 * @param var1Value
+	 * @param var1Value the var1 value
 	 *            - the value of the state of variable1
-	 * @param var1Index
+	 * @param var1Index the var1 index
 	 *            - the index to which corresponds variable1 in the variables
 	 *            list.
-	 * @param var2Value
+	 * @param var2Value the var2 value
 	 *            - the value of the state of variable2.
-	 * @param var2Index
+	 * @param var2Index the var2 index
 	 *            - the index to which corresponds variable2 in the variables
 	 *            list.
 	 * @return an List containing the generated state combinations.
@@ -425,17 +425,17 @@ public class LinkRestrictionPotentialOperations {
 	 * Generates a new state combination for the variable corresponding to the
 	 * variableIndex inside the independent variable list.
 	 * 
-	 * @param rightLifo
+	 * @param rightLifo the right lifo
 	 *            - the queue containing the variables to update at the right
 	 *            (higher position at the independent variable list).
-	 * @param variableIndex
+	 * @param variableIndex the variable index
 	 *            - the index of the current variable of the independent
 	 *            variable list.
-	 * @param independentVariables
+	 * @param independentVariables the independent variables
 	 *            - set of independent variables
-	 * @param currentCombination
+	 * @param currentCombination the current combination
 	 *            - the current combination of variables
-	 * @param combinationsList
+	 * @param combinationsList the combinations list
 	 *            - the list of combinations
 	 *//*
 	private static void generateCombination(LinkedList<Integer> rightLifo,

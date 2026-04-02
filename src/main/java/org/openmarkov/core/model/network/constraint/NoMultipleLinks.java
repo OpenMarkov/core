@@ -39,7 +39,7 @@ public class NoMultipleLinks extends PNConstraint {
      * Checks if a link between node1 and node2
      * satisfies the restriction of noMultipleLinks
      * @param probNet Network
-     * @param constraintChecker
+     * @param constraintChecker the constraint checker
      * @param node1 First node
      * @param node2 Second node
      * @param directed - true if the link is directed
@@ -55,7 +55,7 @@ public class NoMultipleLinks extends PNConstraint {
     /*********
      * Checks if a directed link between {@code node1} and {@code node2} satisfies the restriction of noMultipleLinks
      * @param probNet Network
-     * @param constraintChecker
+     * @param constraintChecker the constraint checker
      * @param node1 First node
      * @param node2 Second node
      * @return {@code true} if the link between {@code node1} and {@code node2}has no multipleLinks
@@ -70,7 +70,7 @@ public class NoMultipleLinks extends PNConstraint {
      * Checks if a undirected link between {@code node1} and
      * {@code node2} satisfies the restriction of noMultipleLinks
      * @param probNet Network
-     * @param constraintChecker
+     * @param constraintChecker the constraint checker
      * @param node1 First node
      * @param node2 Second node
      * @return {@code true} if the link between {@code node1} and

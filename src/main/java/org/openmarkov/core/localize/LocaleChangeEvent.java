@@ -35,7 +35,7 @@ public class LocaleChangeEvent extends EventObject {
 	 * default LocaleChangeEvent constructor when the language is set. In this
 	 * case, the locale for the LocaleChangeEvent is internally set.
 	 *
-	 * @param language
+	 * @param language the language
 	 */
 	public LocaleChangeEvent(Object source, final String language) {
 
@@ -54,7 +54,7 @@ public class LocaleChangeEvent extends EventObject {
 	 * default LocaleChangeEvent constructor when the locale is set. In this
 	 * case, the language for the LocaleChangeEvent is internally set.
 	 *
-	 * @param locale
+	 * @param locale the locale
 	 */
 	public LocaleChangeEvent(Object source, final Locale locale) {
 

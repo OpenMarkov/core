@@ -37,7 +37,7 @@ public class NetsFactory {
     public static String[] yesNoStates = {"yes", "no"};
 
 	/**
-	 * @param variables
+	 * @param variables the variables
 	 * @return An ArrayList containing the variables
 	 */
 	private static List<Variable> createVariableList(Variable... variables) {
@@ -73,7 +73,7 @@ public class NetsFactory {
 	}
 
 	/**
-	 * @param net
+	 * @param net the net
 	 * @param potentials It adds a list of potentials to the network.
 	 */
 	protected static void addPotentials(ProbNet net, Potential... potentials) {
@@ -120,7 +120,7 @@ public class NetsFactory {
 	/**
 	 * Create utility potential
 	 *
-	 * @param varSV
+	 * @param varSV the var sv
 	 * @param parents Variables
 	 * @return A TablePotential
 	 */
@@ -131,8 +131,8 @@ public class NetsFactory {
 	}
 
 	/**
-	 * @param relevance
-	 * @param value
+	 * @param relevance the relevance
+	 * @param value the value
 	 * @param variables It sets the relevance to a set of variables
 	 */
 	protected static void setAdditionalProperties(String relevance, String value, Variable... variables) {

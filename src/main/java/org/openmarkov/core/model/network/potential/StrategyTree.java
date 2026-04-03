@@ -63,7 +63,7 @@ public class StrategyTree extends TreeADDPotential implements Cloneable {
             // Check if there is any intervention equal to "intervention" in "distinctInterventions"
             for (int j = 0; j < numDistinctInterventions && noMatch; j++) {
                 distinctStrategyTree = distinctStrategyTrees.get(j);
-                noMatch &= !(distinctStrategyTree == strategyTree || distinctStrategyTree.equals(strategyTree));
+                noMatch &= !(distinctStrategyTree == strategyTree || (distinctStrategyTree != null && distinctStrategyTree.equals(strategyTree)));
                 correspondingState = (!noMatch) ? states.get(i) : correspondingState;
             }
             if (noMatch) { // If no, add it to distinctInterventions and create a set of states in corresponding states

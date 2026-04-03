@@ -13,6 +13,7 @@ import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
@@ -151,11 +152,13 @@ public final class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 
 		// 4. Calculate P(y|a, b, c) through P(y|a, b, c) = Σ(x) P(x, y|a, b, c) and assign to node Y this probability.
         childNewPotential = DiscretePotentialOperations.marginalize(xyPotentialMultiplied, parent.getVariable());
+        childNewPotential.setPotentialRole(PotentialRole.CONDITIONAL_PROBABILITY);
         child.setPotential(childNewPotential);
 
 		// 5. Calculate P(x|a, b, c, y) through P(x|a, b, c, y) = P(x, y|a, b, c) / P(y|a, b, c) and assign to node X this probability.
         parentNewPotential = DiscretePotentialOperations.divide(xyPotentialMultiplied, childNewPotential);
         parentNewPotential = DiscretePotentialOperations.imposeOtherDistributionWhenDistributionIsZero(parentNewPotential);
+        parentNewPotential.setPotentialRole(PotentialRole.CONDITIONAL_PROBABILITY);
         parent.setPotential(parentNewPotential);
 
 		for (Link<Node> link : linksToUndo) {

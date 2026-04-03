@@ -68,13 +68,12 @@ import java.util.List;
      * Returns if an instance of a certain Potential type makes sense given the
      * variables and the potential role.
      *
-     * @param node      {@code Node}
      * @param variables {@code ArrayList} of {@code Variable}.
      * @param role      {@code PotentialRole}.
      *
      * @return True if valid
      */
-    public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+    public static boolean validate(List<Variable> variables, PotentialRole role) {
         // not a utility potential, only discrete or discretized conditioned variables
         return role != PotentialRole.UNSPECIFIED && !variables.isEmpty()
                 && variables.getFirst().getVariableType() != VariableType.NUMERIC;
@@ -162,11 +161,7 @@ import java.util.List;
     @Override public Potential copy() {
         return new ConditionalGaussianPotential(this);
     }
-    
-    @Override public boolean isUncertain() {
-        return false;
-    }
-    
+
     private Potential getDefaultMeanPotential() {
         // TODO use next line for something or remove it
         // Variable meanVariable = new Variable("Mean");

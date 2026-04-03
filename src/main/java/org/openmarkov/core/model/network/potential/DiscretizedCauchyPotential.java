@@ -75,7 +75,7 @@ import java.util.List;
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
         // not a utility potential, only discrete or discretized conditioned variables
         return role != PotentialRole.UNSPECIFIED && !variables.isEmpty()
-                && variables.get(0).getVariableType() != VariableType.NUMERIC;
+                && variables.getFirst().getVariableType() != VariableType.NUMERIC;
     }
     
     public Potential getMedian() {
@@ -150,8 +150,7 @@ import java.util.List;
         if (conditionedVariable.getVariableType() == VariableType.DISCRETIZED) {
             double[] limits = conditionedVariable.getPartitionedInterval().getLimits();
             // Ignore first limit, as it is considered minus infinity
-            for (int i = 0; i < numStates; ++i)
-                thresholds[i] = limits[i + 1];
+            System.arraycopy(limits, 1, thresholds, 0, numStates);
         } else {
             // Default thresholds
             for (int i = 0; i < numStates; ++i)
@@ -163,33 +162,16 @@ import java.util.List;
     @Override public Potential copy() {
         return new DiscretizedCauchyPotential(this);
     }
-    
-    @Override public boolean isUncertain() {
-        return false;
-    }
-    
+
     private Potential getDefaultMedianPotential() {
-        Variable medianVariable = new Variable("Median");
         List<Variable> medianPotentialVariables = new ArrayList<>(variables);
-        // Remove conditioned variable
-        // medianPotentialVariables.remove(0);
-        // We create a utility potential because it is the only kind of
-        // potential assumed to have a numeric conditioned variable
         return new TablePotential(medianPotentialVariables, PotentialRole.CONDITIONAL_PROBABILITY);
-        //return new TablePotential(medianVariable, medianPotentialVariables);
     }
     
     private Potential getDefaultScalePotential() {
-        Variable scaleVariable = new Variable("Scale");
         List<Variable> scalePotentialVariables = new ArrayList<>(variables);
-        // Remove conditioned variable
-        // scalePotentialVariables.remove(0);
-        // We create a utility potential because it is the only kind of
-        // potential assumed to have a numeric conditioned variable
-        //TablePotential scalePotential = new TablePotential(scaleVariable, scalePotentialVariables);
         TablePotential scalePotential = new TablePotential(scalePotentialVariables,
                                                            PotentialRole.CONDITIONAL_PROBABILITY);
-        // Set variance to 1 for all configurations
         Arrays.fill(scalePotential.getValues(), 1);
         return scalePotential;
     }

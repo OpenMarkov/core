@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * A compound edit is a complex edition composed of several editions. This is an
  * abstract class.
  */
-@SuppressWarnings("serial") public abstract class CompoundPNEdit extends PNEdit {
+public abstract class CompoundPNEdit extends PNEdit {
 
     // Attribute
     private boolean generatedEdits;
@@ -80,15 +80,7 @@ import java.util.ArrayList;
         }
         return this.edits;
     }
-    
-    @Override public ProbNet getProbNet() {
-        return this.probNet;
-    }
-    
-    @Override public void setProbNet(ProbNet probNet) {
-        this.probNet = probNet;
-    }
-    
+
     @Override public void redo() {
         this.getEdits().forEach(PNEdit::redo);
         this.setTypicalRedo(false);

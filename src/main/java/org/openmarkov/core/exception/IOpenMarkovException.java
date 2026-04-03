@@ -102,8 +102,8 @@ public interface IOpenMarkovException extends Localizable {
                     .getNullableString(exceptionClassName + BundleSearch.BUNDLE_SUFFIX_MESSAGE);
             if (title != null || message != null) {
                 LocalizedJavaException localizedJavaError = new LocalizedJavaException(exceptionClassName);
-                ((Exception) localizedJavaError).setStackTrace(exception.getStackTrace());
-                ((Exception) localizedJavaError).initCause(exception.getCause());
+                localizedJavaError.setStackTrace(exception.getStackTrace());
+                localizedJavaError.initCause(exception.getCause());
                 return localizedJavaError;
             }
             try {
@@ -116,8 +116,8 @@ public interface IOpenMarkovException extends Localizable {
             }
         }
         UnlocalizedJavaException unlocalizedJavaError = new UnlocalizedJavaException(exception);
-        ((Exception) unlocalizedJavaError).setStackTrace(exception.getStackTrace());
-        ((Exception) unlocalizedJavaError).initCause(exception.getCause());
+        unlocalizedJavaError.setStackTrace(exception.getStackTrace());
+        unlocalizedJavaError.initCause(exception.getCause());
         return unlocalizedJavaError;
     }
     
@@ -183,7 +183,7 @@ public interface IOpenMarkovException extends Localizable {
      * @return A string representation of the exception including the class name, exception title, and/or exception
      * message, depending on nullability.
      */
-    @SuppressWarnings({"ConstantValue", "GrazieInspection"})
+    @SuppressWarnings({"ConstantValue"})
     static @NotNull String toString(IOpenMarkovException exception) {
         String className = exception.getClass().getName();
         String title = exception.getExceptionTitle();
@@ -278,11 +278,7 @@ public interface IOpenMarkovException extends Localizable {
     @Override @NotNull default String path() {
         return this.getClass().getName();
     }
-    
-    @Override @Nullable default String bundle() {
-        return null;
-    }
-    
+
     @Override @NotNull default String localize(LocalizationFormatter formatter) {
         return this.getExceptionTitle() + ": " + this.getExceptionMessage();
     }

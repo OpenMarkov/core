@@ -32,6 +32,7 @@ import java.util.Random;
  * @version 1.0
  */
 @PotentialType(names = "Uniform") public class UniformPotential extends Potential implements Projectable {
+
     // Attributes
     /**
      * Value of a potential configuration when all the variables are discrete.
@@ -39,7 +40,6 @@ import java.util.Random;
     private double discreteValue = 0.0;
     
     // Constructors
-    
     /**
      * @param variables {@code ArrayList} of {@code Variable}
      * @param role      {@code PotentialRole}
@@ -72,24 +72,6 @@ import java.util.Random;
     }
     
     // Methods
-    
-    /**
-     * Returns if an instance of a certain Potential type makes sense given the
-     * variables and the potential role
-     *
-     * @param node      {@code Node}
-     * @param variables {@code ArrayList} of {@code Variable}
-     * @param role      {@code PotentialRole}
-     *
-     * @return True if it is valid
-     */
-    public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-        // TODO
-        return true;
-    }
-    
-    // Methods
-    
     /**
      * @param evidenceCase        {@code evidenceCase}
      * @param projectedPotentials List of projected potentials
@@ -195,11 +177,7 @@ import java.util.Random;
     @Override public double getProbability(HashMap<Variable, Integer> sampledStateIndexes) {
         return 1.0 / variables.getFirst().getNumStates();
     }
-    
-    @Override public boolean isUncertain() {
-        return false;
-    }
-    
+
     @Override public String toString() {
         return super.toString() + " = Uniform";
     }

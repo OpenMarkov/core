@@ -208,7 +208,15 @@ public class BasicOperations {
         List<Potential> newPotentials = new ArrayList<>();
         newPotentials.add(potential);
         network.getNode(nodeVariable).setPotentials(newPotentials);
-        parents.forEach(network::removeNode);
+        // Only remove parent nodes that have no remaining children in the network.
+        // In non-tree super-value structures, a parent may be shared by multiple
+        // super-value nodes, so it should only be removed after all its children
+        // have absorbed it.
+        for (Node parent : parents) {
+            if (parent.getChildren().isEmpty()) {
+                network.removeNode(parent);
+            }
+        }
     }
     
     

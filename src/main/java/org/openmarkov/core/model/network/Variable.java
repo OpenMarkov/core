@@ -25,7 +25,7 @@ import java.util.stream.IntStream;
  * {@code Node} in a {@code ProbNet}work represents a
  * {@code Variable}
  *
- * @author marias
+ * @author Manuel Arias
  * @author fjdiez
  * @version 1.0
  * @see org.openmarkov.core.model.network.Node

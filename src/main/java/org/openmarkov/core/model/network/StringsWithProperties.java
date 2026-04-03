@@ -12,7 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.Set;
 
 /**
- * @author marias
+ * @author Manuel Arias
  */
 public class StringsWithProperties {
 

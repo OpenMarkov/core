@@ -26,7 +26,7 @@ import java.util.List;
  * Potential associated to supervalue node to indicate that the utility is a
  * product of the utilities of its parents.
  *
- * @author marias
+ * @author Manuel Arias
  * @author mkpalacio
  * @version 1.0
  */

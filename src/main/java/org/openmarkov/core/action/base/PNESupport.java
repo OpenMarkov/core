@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * listener it does the edition.
  * </ol>
  *
- * @author marias
+ * @author Manuel Arias
  */
 public class PNESupport /*extends UndoableEditSupport*/ {
 

@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.openmarkov.core.util.UtilTestMethods.addLink;
 //TODO - Adapt these test to
 
-///** @author marias */
+///** @author Manuel Arias */
 public class ProbNetOperationsTest {
     /*  Public scope for use in all tests. */
     public static final double maxError = 0.0001;

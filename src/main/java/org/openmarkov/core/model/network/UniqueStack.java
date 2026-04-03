@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * This class stack ensures that each element is stored only once.
  *
- * @author marias
+ * @author Manuel Arias
  */
 public class UniqueStack<T> {
 	private final Deque<T> stack = new ArrayDeque<>();

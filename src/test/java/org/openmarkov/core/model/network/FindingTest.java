@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Unit tests for {@link Finding}.
  *
- * @author marias
+ * @author Manuel Arias
  */
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 class FindingTest {

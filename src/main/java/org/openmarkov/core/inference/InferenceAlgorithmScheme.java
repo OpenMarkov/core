@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * @author mluque
- * @author marias
+ * @author Manuel Arias
  * @author fjdiez
  */
 public abstract class InferenceAlgorithmScheme {

@@ -27,7 +27,7 @@ import java.util.List;
  * CPT as at time t-1. Cannot be directly sampled or projected; the original potential
  * must be retrieved via {@link #getOriginalPotential(ProbNet)}.
  *
- * @author marias
+ * @author Manuel Arias
  * @version 1.0
  */
 @PotentialType(names = "Same as previous") public class SameAsPrevious extends Potential {

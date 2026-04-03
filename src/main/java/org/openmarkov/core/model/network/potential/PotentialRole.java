@@ -15,7 +15,7 @@ import org.openmarkov.java.enumUtils.EnumUtils;
  * Enumerates the roles a potential can play in a probabilistic graphical model:
  * conditional probability, joint probability, policy, link restriction, or unspecified.
  *
- * @author marias
+ * @author Manuel Arias
  * @version 1.0
  */
 public enum PotentialRole implements Localizable {

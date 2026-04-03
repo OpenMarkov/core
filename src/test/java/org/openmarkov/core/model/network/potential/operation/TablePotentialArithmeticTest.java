@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * live in the same package and call the class directly, covering the edge-cases
  * that the higher-level {@link DiscretePotentialOperations} tests do not reach.</p>
  *
- * @author marias
+ * @author Manuel Arias
  */
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 class TablePotentialArithmeticTest {

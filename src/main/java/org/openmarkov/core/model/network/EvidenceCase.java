@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * This class stores an {@code ArrayList} of {@code Findings} and can
  * search them with the name.
  *
- * @author marias
+ * @author Manuel Arias
  * @author fjdiez
  * @version 1.0
  * @see org.openmarkov.core.model.network.Finding

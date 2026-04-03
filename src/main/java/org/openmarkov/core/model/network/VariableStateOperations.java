@@ -10,7 +10,6 @@ package org.openmarkov.core.model.network;
 import org.openmarkov.core.action.base.StateAction;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;

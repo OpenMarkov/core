@@ -9,7 +9,6 @@ package org.openmarkov.core.model.network.constraint;
 
 import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.action.base.linkEdits.BaseLinkEdit;
-import org.openmarkov.core.developmentStaticAnalysis.mutability.ConsiderFieldAsInteriorImmutable;
 import org.openmarkov.core.model.network.GraphNetwork;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;

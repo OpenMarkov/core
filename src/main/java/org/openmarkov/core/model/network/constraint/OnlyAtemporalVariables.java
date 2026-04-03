@@ -13,8 +13,6 @@ import org.openmarkov.core.model.network.GraphNetwork;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
-import java.util.List;
-
 @Constraint(name = "OnlyAtemporalVariables", defaultBehavior = ConstraintBehavior.YES) public class OnlyAtemporalVariables
 		extends PNConstraint {
     

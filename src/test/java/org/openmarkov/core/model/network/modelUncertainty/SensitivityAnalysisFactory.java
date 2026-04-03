@@ -14,7 +14,6 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.factory.IDFactory;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UncertainTablePotential;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 

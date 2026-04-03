@@ -9,9 +9,6 @@ package org.openmarkov.core.action.core;
 
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.potential.Potential;
-
-import java.util.List;
 
 /**
  * {@code NetworkCommentEdit} is a simple edit that allow modify a network

@@ -8,7 +8,6 @@
 package org.openmarkov.core.model.network.potential.canonical;
 
 import org.jetbrains.annotations.NotNull;
-import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.localize.Localizable;
 import org.openmarkov.core.stringformat.LocalizationFormatter;
 import org.openmarkov.java.enumUtils.EnumUtils;

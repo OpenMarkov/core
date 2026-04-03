@@ -9,11 +9,9 @@ package org.openmarkov.core.inference;
 
 
 import org.junit.jupiter.api.Disabled;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.Tools;
-import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 

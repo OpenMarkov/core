@@ -9,7 +9,6 @@ package org.openmarkov.core.model.network.potential;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;

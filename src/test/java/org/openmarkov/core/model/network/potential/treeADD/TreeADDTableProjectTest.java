@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.model.network.potential.treeADD;
 
-import net.sourceforge.jeval.EvaluationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

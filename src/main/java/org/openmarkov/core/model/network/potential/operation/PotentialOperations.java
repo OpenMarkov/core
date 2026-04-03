@@ -8,7 +8,6 @@
 package org.openmarkov.core.model.network.potential.operation;
 
 import org.openmarkov.core.exception.NotSupportedOperationException;
-import org.openmarkov.core.exception.PotentialOperationException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;

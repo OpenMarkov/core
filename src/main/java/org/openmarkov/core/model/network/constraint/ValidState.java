@@ -13,11 +13,8 @@ import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.GraphNetwork;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Checks that the state field is filled and there isn't any node with the same

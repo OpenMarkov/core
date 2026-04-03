@@ -11,11 +11,7 @@
 package org.openmarkov.core.inference;
 
 import org.junit.jupiter.api.Disabled;
-import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.ProbNet;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 
 /**

@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.inference.tasks;
 
-import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.network.EvidenceCase;

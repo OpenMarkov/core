@@ -7,17 +7,8 @@
 
 package org.openmarkov.core.action.core;
 
-import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.*;
-import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.action.base.PNEdit;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * {@code NodeReplaceStatesEdit} is a simple edit that allows modify the

@@ -11,17 +11,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openmarkov.core.exception.CannotNormalizePotentialException;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.type.BayesianNetworkType;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;

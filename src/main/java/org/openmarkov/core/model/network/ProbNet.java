@@ -25,7 +25,6 @@ import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
-import org.openmarkov.core.model.network.type.MarkovNetworkType;
 import org.openmarkov.core.model.network.type.NetworkType;
 
 import java.util.*;

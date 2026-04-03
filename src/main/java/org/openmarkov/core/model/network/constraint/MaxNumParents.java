@@ -14,9 +14,6 @@ import org.openmarkov.core.model.network.GraphNetwork;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.constraint.annotation.Constraint;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Constraint(name = "MaxNumParents", defaultBehavior = ConstraintBehavior.OPTIONAL)
 public class MaxNumParents extends PNConstraint {
     

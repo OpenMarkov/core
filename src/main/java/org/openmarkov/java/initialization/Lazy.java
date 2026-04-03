@@ -4,8 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.UnrecoverableException;
 
-import java.util.function.Supplier;
-
 public class Lazy<T> {
     private boolean isInitialized;
     private final @NotNull ThrowingSupplier<? extends T, Exception> initializer;

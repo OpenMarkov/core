@@ -71,9 +71,9 @@ final class TablePotentialArithmetic {
         // Special cases: one or zero potentials
         if (numPotentials < 2) {
             if (numPotentials == 1) {
-                return tablePotentials.get(0);
+                return tablePotentials.getFirst();
             }
-            return null;
+            return buildConstantPotential(1.0, PotentialRole.CONDITIONAL_PROBABILITY);
         }
         // Find out if some potential has criterion. In that case, set that criterion in
         // the resulting potential
@@ -165,9 +165,8 @@ final class TablePotentialArithmetic {
 
         }
 
-        TablePotential resultPotential = buildResultPotential(criterion, role, resultVariables, resultValues,
+        return buildResultPotential(criterion, role, resultVariables, resultValues,
                                                               thereAreInterventions, resultStrategyTrees);
-        return resultPotential;
     }
 
     private static Criterion findFirstNonNullCriterion(List<TablePotential> tablePotentials) {
@@ -185,7 +184,7 @@ final class TablePotentialArithmetic {
     /**
      * @param tablePotentials List of TablePotential
      *
-     * @return First potential with interventions; if any, null
+     * @return First potential with interventions, or {@code null} if none
      */
     private static StrategicTablePotential findFirstPotentialWithInterventions(List<TablePotential> tablePotentials) {
         for (TablePotential auxPotential : tablePotentials) {
@@ -206,7 +205,7 @@ final class TablePotentialArithmetic {
             return new TablePotential(null, PotentialRole.CONDITIONAL_PROBABILITY, new double[]{0.0});
         }
         if (tablePotentials.size() == 1) {
-            return tablePotentials.get(0);
+            return tablePotentials.getFirst();
         }
 
         // list of non-constant potentials
@@ -225,9 +224,9 @@ final class TablePotentialArithmetic {
         double sumConstantPotentials = 0.0;
         StrategyTree constantPotentialsStrategyTree = null;
         int numConstantPotentials = constantPotentials.size();
-        for (int i = 0; i < numConstantPotentials; i++) {
-            sumConstantPotentials += constantPotentials.get(i).getValues()[0];
-            StrategyTree[] iConstantPotentialStrategyTrees = constantPotentials.get(i) instanceof StrategicTablePotential stp
+        for (TablePotential constantPotential : constantPotentials) {
+            sumConstantPotentials += constantPotential.getValues()[0];
+            StrategyTree[] iConstantPotentialStrategyTrees = constantPotential instanceof StrategicTablePotential stp
                     ? stp.strategyTrees : null;
             if (iConstantPotentialStrategyTrees != null) {
                 StrategyTree onlyStrategyTreeIConstantPotential = iConstantPotentialStrategyTrees[0];
@@ -325,7 +324,7 @@ final class TablePotentialArithmetic {
             result = new TablePotential(resultVariables, getRole(tablePotentials), resultValues);
         }
         if (!potentials.isEmpty()) {
-            result.setCriterion(potentials.get(0).getCriterion());
+            result.setCriterion(potentials.getFirst().getCriterion());
         }
 
         return result;
@@ -389,11 +388,7 @@ final class TablePotentialArithmetic {
     }
 
     private static int[] initializeCoordinates(int numVariables) {
-        int[] resultCoordinates = new int[Math.max(1, numVariables)];
-        if (numVariables == 0) {
-            resultCoordinates[0] = 0;
-        }
-        return resultCoordinates;
+        return new int[Math.max(1, numVariables)];
     }
 
     static TablePotential sum(TablePotential... tablePotentials) {
@@ -447,8 +442,7 @@ final class TablePotentialArithmetic {
         int numDenominatorVariables = denominatorVariables.size();
         denominatorVariables.removeAll(numeratorVariables);
         numeratorVariables.addAll(denominatorVariables);
-        List<Variable> quotientVariables = numeratorVariables;
-        TablePotential quotient = new TablePotential(quotientVariables, PotentialRole.CONDITIONAL_PROBABILITY);
+        TablePotential quotient = new TablePotential(numeratorVariables, PotentialRole.CONDITIONAL_PROBABILITY);
         if ((numNumeratorVariables == 0) || (numDenominatorVariables == 0)) {
             return divide(tNumerator, tDenominator, quotient, numNumeratorVariables, numDenominatorVariables);
         }
@@ -474,10 +468,7 @@ final class TablePotentialArithmetic {
         int[] quotientCoordinate = initializeCoordinates(numVariables);
 
         // Position in each table potential
-        int[] potentialsPositions = new int[2];
-        for (int i = 0; i < 2; i++) {
-            potentialsPositions[i] = 0;
-        }
+        int[] potentialsPositions = initializeToZero(2);
 
         // Divide
         int incrementedVariable = 0;
@@ -574,8 +565,8 @@ final class TablePotentialArithmetic {
      */
     static double sum(double[] values) {
         double result = 0.0;
-        for (int i = 0; i < values.length; i++) {
-            result += values[i];
+        for (double value : values) {
+            result += value;
         }
         return result;
     }
@@ -597,10 +588,8 @@ final class TablePotentialArithmetic {
         int[] potentialsPositions = initializeToZero(numPotentials);
         int incrementedVariable = 0;
 
-        int[] dimensions = TablePotential.calculateDimensions(resultVariables);
-
-        int[] offsets = thereAreVariables ? TablePotential.calculateOffsets(dimensions) : null;
-        int tableSize = thereAreVariables ? dimensions[numVariables - 1] * offsets[numVariables - 1] : 1;
+        int[] offsets = thereAreVariables ? TablePotential.calculateOffsets(resultDimension) : null;
+        int tableSize = thereAreVariables ? resultDimension[numVariables - 1] * offsets[numVariables - 1] : 1;
         double[] resultValues = new double[tableSize];
 
         StrategicTablePotential potentialWithInterventions = findFirstPotentialWithInterventions(potentials);

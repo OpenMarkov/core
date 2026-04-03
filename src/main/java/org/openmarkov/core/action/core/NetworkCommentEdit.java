@@ -19,9 +19,9 @@ import org.openmarkov.core.action.base.PNEdit;
  */
 @SuppressWarnings("serial") public class NetworkCommentEdit extends PNEdit {
     
-    private String currentComment;
-	private String newComment;
-	private boolean showCommentWhenOpening;
+    private final String currentComment;
+	private final String newComment;
+	private final boolean showCommentWhenOpening;
 
 	/**
 	 * Creates a new {@code NetworkCommentEdit} with the network and new

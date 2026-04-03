@@ -62,7 +62,7 @@ public class ProbNet implements PotentialNetwork, Cloneable, ClassLocalizable {
      * Nodes are stored in several HashMaps to accelerate the access. The type
      * of node determines the {@code HashMap} in which the node is stored.
      */
-    protected NodeTypeDepot nodeDepot;
+    protected final NodeTypeDepot nodeDepot;
     /**
      * Network type of this {@code ProbNet}.
      */
@@ -71,8 +71,8 @@ public class ProbNet implements PotentialNetwork, Cloneable, ClassLocalizable {
      * {@code ArrayList} of {@code Constraints} that defines this
      * {@code ProbNet}. This attribute is not frozen to allow conversions
      */
-    private TreeSet<PNConstraint> constraints;
-    private PNESupport pNESupport;
+    private final TreeSet<PNConstraint> constraints;
+    private final PNESupport pNESupport;
     
     /**
      * Potentials that have no associated variables (i.e. constant potentials).

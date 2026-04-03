@@ -11,15 +11,15 @@ public class DiscreteMultiplyAndMarginalize extends DiscreteMultiply implements 
 
 	private SharedDataMultiplyAndMarginalize sdm;
 
-	private int resultSize;
+	private final int resultSize;
 
 	private int[] currentPositions;
 
-	private int eliminationSize;
+	private final int eliminationSize;
 
-	private int[] unionCoordinate;
+	private final int[] unionCoordinate;
 
-	private int[] unionDimensions;
+	private final int[] unionDimensions;
 
 	public DiscreteMultiplyAndMarginalize(SharedDataMultiplyAndMarginalize sdm, int logicalProcessor) {
 		super(sdm, logicalProcessor);

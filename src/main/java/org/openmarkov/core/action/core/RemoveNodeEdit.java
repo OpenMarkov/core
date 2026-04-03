@@ -25,7 +25,7 @@ import org.openmarkov.core.action.base.UsesVariable;
 @SuppressWarnings("serial") public class RemoveNodeEdit extends PNEdit implements UsesVariable {
     
     // Attributes
-    protected Variable variable;
+    protected final Variable variable;
     /**
      * Node associated to variable
      */

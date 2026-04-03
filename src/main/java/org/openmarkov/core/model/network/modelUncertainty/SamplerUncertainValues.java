@@ -12,12 +12,12 @@ import java.util.List;
 
 class SamplerUncertainValues {
 
-	int[] indexesComplement;
-	int[] indexesDirichlet;
-	int[] indexesOther;
-	ComplementFamily complementFamily;
-	DirichletFamily dirFamily;
-	FamilyDistribution otherFamily;
+	final int[] indexesComplement;
+	final int[] indexesDirichlet;
+	final int[] indexesOther;
+	final ComplementFamily complementFamily;
+	final DirichletFamily dirFamily;
+	final FamilyDistribution otherFamily;
 
 	public SamplerUncertainValues(List<UncertainValue> uncertainValues,
 			List<Class<? extends ProbDensFunction>> functionTypes) {

@@ -13,14 +13,14 @@ public class DiscreteDivide implements Runnable {
 
 	int[] dimension;
 	int[] potentialsPositions;
-	private TablePotential quotient;
+	private final TablePotential quotient;
 	private int numVariables;
-	private int[] quotientCoordinate;
-	private int[] quotientDimension;
-	private TablePotential numerator;
-	private TablePotential denominator;
+	private final int[] quotientCoordinate;
+	private final int[] quotientDimension;
+	private final TablePotential numerator;
+	private final TablePotential denominator;
 	private int[] offset;
-	private int[][] offsetsAccumulate;
+	private final int[][] offsetsAccumulate;
 
 	public DiscreteDivide(SharedDataDivide sdd, int logicalProcessor) {
 		this.numerator = sdd.numerator;

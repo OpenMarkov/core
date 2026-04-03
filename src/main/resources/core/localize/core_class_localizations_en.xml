@@ -199,7 +199,7 @@
                   value="Potentials should be of the same type, while first potential is {firstPotential.getClass.getName} and the second if {secondPotential.getClass.getName}"/>
     <Localization
             class="org.openmarkov.core.exception.CostEffectivenessException$WrongNumberOfCostsEffectivitiesAndInterventions"
-            value="There are {costs.size} costs, {effectivities.size} effectivities and {strategyTrees.size} interventions, while they should both be the same"/>
+            value="There are {costs.size} costs, {effectiveness.size} effectiveness and {strategyTrees.size} interventions, while they should both be the same"/>
     <Localization class="org.openmarkov.core.exception.CostEffectivenessException$WrongNumberOfThresholds"
                   value="There are {costs.size} costs and {thresholds.size} thresholds, while there should be one threshold less than costs"/>
     <Localization class="org.openmarkov.core.exception.DoEditException$CannotDoEditException"

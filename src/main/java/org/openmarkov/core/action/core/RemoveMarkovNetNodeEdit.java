@@ -22,7 +22,7 @@ import java.util.List;
  */
 @SuppressWarnings("serial") public class RemoveMarkovNetNodeEdit extends PNEdit implements UsesVariable {
     
-    private Node node;
+    private final Node node;
     
     public RemoveMarkovNetNodeEdit(ProbNet probNet, Node node) {
         super(probNet);

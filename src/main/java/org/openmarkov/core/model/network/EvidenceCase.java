@@ -35,7 +35,7 @@ public class EvidenceCase implements ClassLocalizable {
      * List of findings {@code HashMap} of key={@code Variable} and
      * value={@code Finding}.
      */
-    protected HashMap<Variable, Finding> findings;
+    protected final HashMap<Variable, Finding> findings;
     
     // Constructors
     

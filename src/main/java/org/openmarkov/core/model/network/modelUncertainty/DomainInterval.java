@@ -13,8 +13,8 @@ package org.openmarkov.core.model.network.modelUncertainty;
  */
 public class DomainInterval {
 
-	private double a;
-	private double b;
+	private final double a;
+	private final double b;
 
 	public DomainInterval(double a, double b) {
 		super();

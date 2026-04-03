@@ -22,11 +22,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class IDFactory extends NetsFactory {
-	public static String decTestName = "Do test?";
-	public static String therapyName = "Therapy";
-	public static String healthStateName = "Health state";
-	public static String therapyCostName = "Cost of therapy";
-	public static String testCostName = "Cost of test";
+	public static final String decTestName = "Do test?";
+	public static final String therapyName = "Therapy";
+	public static final String healthStateName = "Health state";
+	public static final String therapyCostName = "Cost of therapy";
+	public static final String testCostName = "Cost of test";
 
 	/**
 	 * @return An influence diagram without decisions, with only two nodes: X (chance) and U (utility).

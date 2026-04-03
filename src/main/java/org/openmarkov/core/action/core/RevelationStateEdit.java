@@ -19,11 +19,11 @@ import org.openmarkov.core.model.network.State;
  */
 @SuppressWarnings("serial") public class RevelationStateEdit extends PNEdit {
 
-	private Link<Node> link;
+	private final Link<Node> link;
 
-	private State newState;
+	private final State newState;
 
-	private boolean selected;
+	private final boolean selected;
 
 	public RevelationStateEdit(Link<Node> link, State state, boolean selected) {
         super(link.getFrom().getProbNet());

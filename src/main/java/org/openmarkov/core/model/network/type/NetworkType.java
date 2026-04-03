@@ -15,7 +15,7 @@ import org.openmarkov.core.model.network.constraint.PNConstraint;
 import java.util.HashMap;
 
 public abstract class NetworkType implements ClassLocalizable {
-	protected HashMap<Class<? extends PNConstraint>, ConstraintBehavior> constraints;
+	protected final HashMap<Class<? extends PNConstraint>, ConstraintBehavior> constraints;
 
 	public NetworkType() {
 		constraints = new HashMap<>();

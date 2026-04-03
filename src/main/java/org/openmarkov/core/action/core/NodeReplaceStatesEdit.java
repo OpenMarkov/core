@@ -30,11 +30,11 @@ import java.util.Map;
 @SuppressWarnings("serial") public class NodeReplaceStatesEdit extends PNEdit {
     
     
-    private State[] lastStates;
+    private final State[] lastStates;
     
-    private State[] newStates;
+    private final State[] newStates;
 
-	private Node node;
+	private final Node node;
     
     public NodeReplaceStatesEdit(Node node, State[] newStates) {
 		super(node.getProbNet());

@@ -37,24 +37,24 @@ public abstract class EliminationHeuristic implements PNEditListener {
 	/**
 	 * A pointer to the received {@code ProbNet}.
 	 */
-	protected ProbNet probNet;
+	protected final ProbNet probNet;
 
 	/**
 	 * A set of nodes that points to variables that are nor query variables nor
 	 * observed variables.
 	 */
-	protected List<List<Variable>> variablesToEliminate;
+	protected final List<List<Variable>> variablesToEliminate;
 
 	/**
 	 * A set of nodes that points to variables that are nor query variables nor
 	 * observed variables.
 	 */
-	protected List<List<Node>> nodesToEliminate;
+	protected final List<List<Node>> nodesToEliminate;
 
 	/**
 	 * {@code Variable} that the heuristic propose to eliminate.
 	 */
-	protected Variable variableProposed;
+	protected final Variable variableProposed;
 
 	// Constructor
 

@@ -22,8 +22,8 @@ public class CycleLengthEdit extends PNEdit {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private CycleLength oldTemporalUnit;
-	private CycleLength newTemporalUnit;
+	private final CycleLength oldTemporalUnit;
+	private final CycleLength newTemporalUnit;
 
 	public CycleLengthEdit(ProbNet probNet, CycleLength newTemporalUnit) {
 		super(probNet);

@@ -19,7 +19,7 @@ import java.util.Set;
 
 public class Strategy {
 
-	Map<Variable, Policy> strategy;
+	final Map<Variable, Policy> strategy;
 
 	/**
 	 * @param stratUtil constructs a strategy by maximizing over the utility tables

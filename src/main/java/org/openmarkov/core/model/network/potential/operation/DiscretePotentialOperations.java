@@ -35,7 +35,7 @@ public final class DiscretePotentialOperations {
      * Round error used to compare two numbers. If they differ in less than
      * {@code maxRoundErrorAllowed} they will be considered equals.
      */
-    public static double maxRoundErrorAllowed = 1.0E-8;
+    public static final double maxRoundErrorAllowed = 1.0E-8;
     
     /**
      * @param tablePotentials {@code ArrayList} of extends {@code Potential}.

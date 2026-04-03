@@ -20,7 +20,7 @@ import org.openmarkov.core.localize.ClassLocalizable;
  */
 public class Threshold implements Cloneable, ClassLocalizable {
 
-	private double limit;
+	private final double limit;
 	private boolean belongsToLeft; // if true --&gt; ](; if false --&gt; )[;
 
 	public Threshold(double limit, boolean belongsToLeft) {

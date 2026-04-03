@@ -26,7 +26,7 @@ public class GTablePotential<E> extends AbstractIndexedPotential {
 	 * {@code GeneralizedTablePotential} are stored. This attribute is
 	 * public for the sake of efficiency.
 	 */
-	public List<E> elementTable;
+	public final List<E> elementTable;
 
 	// Constructors
 

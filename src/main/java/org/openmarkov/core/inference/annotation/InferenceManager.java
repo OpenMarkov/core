@@ -41,7 +41,7 @@ public class InferenceManager {
     /**
      * The list of plugins detected in the project
      */
-    private HashMap<String, Class<? extends InferenceAlgorithm>> inferenceAlgorithms;
+    private final HashMap<String, Class<? extends InferenceAlgorithm>> inferenceAlgorithms;
     
     /**
      * Constructor for InferenceManager.

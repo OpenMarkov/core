@@ -23,8 +23,8 @@ public class TemporalOptionsEdit extends PNEdit {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private TemporalOptions oldTemporalOptions;
-	private TemporalOptions newTemporalOptions;
+	private final TemporalOptions oldTemporalOptions;
+	private final TemporalOptions newTemporalOptions;
 
 	public TemporalOptionsEdit(ProbNet probNet, TemporalOptions options) {
 		super(probNet);

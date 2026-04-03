@@ -26,9 +26,9 @@ import java.util.List;
  */
 public class SharedDataDivide {
 
-	TablePotential numerator;
+	final TablePotential numerator;
 
-	TablePotential denominator;
+	final TablePotential denominator;
 
 	int numVariables;
 

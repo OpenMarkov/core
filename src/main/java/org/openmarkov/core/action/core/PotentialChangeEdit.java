@@ -27,7 +27,7 @@ public class PotentialChangeEdit extends PNEdit {
 
 	protected Potential oldPotential;
 
-	private Node node;
+	private final Node node;
 
 	// Constructor
 

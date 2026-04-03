@@ -56,7 +56,7 @@ public class Node implements Cloneable, ClassLocalizable {
     /**
      * Network
      */
-    protected transient ProbNet probNet;
+    protected final transient ProbNet probNet;
     
     /**
      * Potentials associated to this node (CPTs, utility functions, link restrictions).
@@ -67,7 +67,7 @@ public class Node implements Cloneable, ClassLocalizable {
      * {@link #getPotentials()} returns a defensive copy, so external iteration is safe.
      */
     @NotNull
-    protected List<Potential> potentials;
+    protected final List<Potential> potentials;
     
     /**
      * The variable associated

@@ -782,7 +782,7 @@ public class TreeADDPotential extends Potential {
     }
     
     // Attributes used in toString()
-    private static String DEFAULT_INDENT_STRING = "";
+    private static final String DEFAULT_INDENT_STRING = "";
     protected static int indentIncrement = 4;
     private String indent = DEFAULT_INDENT_STRING;
     private int indentLevel;

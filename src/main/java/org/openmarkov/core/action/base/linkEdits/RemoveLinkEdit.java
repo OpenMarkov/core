@@ -41,17 +41,17 @@ public final class RemoveLinkEdit extends BaseLinkEdit {
      * /**
      * parent node
      */
-    private Node node1;
+    private final Node node1;
     /**
      * child node
      */
-    private Node node2;
+    private final Node node2;
     /**
      * The new {@code Potential} of the second node
      */
-    private List<Potential> newPotentials = new ArrayList<>();
+    private final List<Potential> newPotentials = new ArrayList<>();
     private List<Potential> oldPotentials;
-    private boolean updatePotentials;
+    private final boolean updatePotentials;
     // Constructor
     
     /**

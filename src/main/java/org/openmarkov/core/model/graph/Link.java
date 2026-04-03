@@ -35,17 +35,17 @@ public class Link<T> implements ClassLocalizable {
     /**
      * The first node. If the link is directed, this node is the parent.
      */
-    private T from;
+    private final T from;
     
     /**
      * The second node. If the link is directed, this node is the child.
      */
-    private T to;
+    private final T to;
     
     /**
      * If true, the link is directed. Otherwise, it is an undirected link.
      */
-    private boolean directed;
+    private final boolean directed;
     
     /****
      * Potential that contains the value of compatibility for the combinations

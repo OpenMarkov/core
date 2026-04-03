@@ -26,18 +26,18 @@ import java.util.List;
  * @version 1 23/06/11
  */
 @SuppressWarnings("serial") public class UncertainValuesEdit extends PNEdit {
-	private List<Double> newValuesColumn;
-	private List<UncertainValue> newUncertainColumn;
-	private List<Double> oldValuesColumn;
-	private List<UncertainValue> oldUncertainColumn;
-	private int basePosition;
-	private Node node;
-	private boolean isChanceVariable;
-	private boolean wasNullOldUncertainValues;
+	private final List<Double> newValuesColumn;
+	private final List<UncertainValue> newUncertainColumn;
+	private final List<Double> oldValuesColumn;
+	private final List<UncertainValue> oldUncertainColumn;
+	private final int basePosition;
+	private final Node node;
+	private final boolean isChanceVariable;
+	private final boolean wasNullOldUncertainValues;
 	/**
 	 * Selected column in the values table
 	 */
-	private int selectedColumn;
+	private final int selectedColumn;
 
 	/**
 	 * Creates a new {@code AddNodeEdit} with the network where the new

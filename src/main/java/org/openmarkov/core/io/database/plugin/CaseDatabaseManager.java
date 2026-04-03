@@ -31,11 +31,11 @@ public class CaseDatabaseManager {
     /**
      * The list of case database reader plugins detected in the project
      */
-    private HashMap<String, Class<? extends CaseDatabaseReader>> readerPlugins;
+    private final HashMap<String, Class<? extends CaseDatabaseReader>> readerPlugins;
     /**
      * The list of case database writer plugins detected in the project
      */
-    private HashMap<String, Class<? extends CaseDatabaseWriter>> writerPlugins;
+    private final HashMap<String, Class<? extends CaseDatabaseWriter>> writerPlugins;
     
     public static CaseDatabaseFormat info(Class<?> readerPlugin){
         return readerPlugin.getAnnotation(CaseDatabaseFormat.class);

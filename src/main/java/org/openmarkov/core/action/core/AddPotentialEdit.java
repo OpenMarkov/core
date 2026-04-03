@@ -16,7 +16,7 @@ import org.openmarkov.core.action.base.PNEdit;
  */
 @SuppressWarnings("serial") public class AddPotentialEdit extends PNEdit {
 
-	protected Potential potential;
+	protected final Potential potential;
 
 	// Constructor
 

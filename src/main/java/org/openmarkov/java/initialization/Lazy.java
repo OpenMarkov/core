@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 
 public class Lazy<T> {
     private boolean isInitialized;
-    private @NotNull ThrowingSupplier<? extends T, Exception> initializer;
+    private final @NotNull ThrowingSupplier<? extends T, Exception> initializer;
     private @Nullable T value;
     
     private Lazy(@NotNull ThrowingSupplier<? extends T, Exception> initializer) {

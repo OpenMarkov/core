@@ -42,7 +42,7 @@ class StringFormatTest {
     }
     
     static class ProbNetWrapper{
-        ProbNet net;
+        final ProbNet net;
         
         public ProbNetWrapper(String probNetName) {
             this.net = new ProbNet();

@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class PartialOrderDAN {
 
-	ProbNet order;
+	final ProbNet order;
 
 	public PartialOrderDAN(ProbNet probNet) {
 

@@ -21,15 +21,15 @@ public class PrecisionEdit extends PNEdit {
 	/**
 	 * The last purpose before the edition
 	 */
-	private Double lastPrecision;
+	private final Double lastPrecision;
 	/**
 	 * The new purpose after the edition
 	 */
-	private double newPrecision;
+	private final double newPrecision;
 	/**
 	 * The edited node
 	 */
-    private Node node;
+    private final Node node;
 
 	/**
 	 * Creates a new {@code PurposeEdit} with the node and its new purpose.

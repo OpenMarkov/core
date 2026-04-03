@@ -17,7 +17,7 @@ import java.util.Set;
 public class StringsWithProperties {
 
 	// Attributes
-	private LinkedHashMap<String, Properties> stringsWithProperties;
+	private final LinkedHashMap<String, Properties> stringsWithProperties;
 
 	// Constructors
 	public StringsWithProperties() {

@@ -26,9 +26,9 @@ import org.openmarkov.core.action.base.PNEdit;
         permits AddLinkEdit, InvertLinkAndUpdatePotentialsEdit, InvertLinkEdit, OrientLinkEdit, RemoveLinkEdit {
 
 	// Attributes
-    protected Variable variableFrom;
+    protected final Variable variableFrom;
     
-    protected Variable variableTo;
+    protected final Variable variableTo;
 
 	protected boolean isDirected;
 

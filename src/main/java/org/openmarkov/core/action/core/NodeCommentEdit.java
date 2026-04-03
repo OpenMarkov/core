@@ -22,10 +22,10 @@ import java.util.List;
  */
 @SuppressWarnings("serial") public class NodeCommentEdit extends PNEdit {
     
-    private String currentComment;
-    private String newComment;
+    private final String currentComment;
+    private final String newComment;
     
-    private Node node;
+    private final Node node;
     
     /**
      * Creates a {@code NodeCommentEdit} with the node, new comment and

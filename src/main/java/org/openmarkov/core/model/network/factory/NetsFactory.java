@@ -28,13 +28,13 @@ import java.util.List;
  */
 public class NetsFactory {
 
-	public static String diseaseName = "Disease";
-	public static String testResultName = "Result of test";
-    public static String[] diseaseStates = {"present", "absent"};
+	public static final String diseaseName = "Disease";
+	public static final String testResultName = "Result of test";
+    public static final String[] diseaseStates = {"present", "absent"};
     
-    public static String[] testResultStates = {"positive", "negative"};
+    public static final String[] testResultStates = {"positive", "negative"};
     
-    public static String[] yesNoStates = {"yes", "no"};
+    public static final String[] yesNoStates = {"yes", "no"};
 
 	/**
 	 * @param variables the variables

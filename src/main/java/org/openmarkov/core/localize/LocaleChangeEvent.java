@@ -25,11 +25,11 @@ public class LocaleChangeEvent extends EventObject {
 	/**
 	 * the language of the locale
 	 */
-    private String language;
+    private final String language;
 	/**
 	 * the locale
 	 */
-    private Locale locale;
+    private final Locale locale;
 
 	/**
 	 * default LocaleChangeEvent constructor when the language is set. In this

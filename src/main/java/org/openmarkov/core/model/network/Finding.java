@@ -27,7 +27,7 @@ public class Finding implements ClassLocalizable {
     /**
      * The variable stored in this object.
      */
-    protected Variable variable;
+    protected final Variable variable;
     
     /**
      * This attribute is used only when the associated variable is discrete or

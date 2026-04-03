@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
      * Maximum error allowed in tests. It could be modified by subclasses
      * if it is necessary (for example, approximate inference methods).
      */
-    protected static double maxError = 0.0001;
+    protected static final double maxError = 0.0001;
     
     /**
      * @param network

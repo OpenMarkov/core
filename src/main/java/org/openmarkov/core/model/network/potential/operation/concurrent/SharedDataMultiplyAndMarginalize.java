@@ -15,9 +15,9 @@ import java.util.List;
 
 public class SharedDataMultiplyAndMarginalize extends SharedDataMultiply {
 
-	List<Variable> variablesToKeep;
+	final List<Variable> variablesToKeep;
 
-	List<Variable> variablesToEliminate;
+	final List<Variable> variablesToEliminate;
 
 	// Attributes related to the product potential that will be marginalized
 	List<Variable> unionVariables;

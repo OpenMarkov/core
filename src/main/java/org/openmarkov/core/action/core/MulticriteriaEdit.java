@@ -25,9 +25,9 @@ public class MulticriteriaEdit extends PNEdit {
 	 */
 	private static final long serialVersionUID = 1166925687725877620L;
 	private List<Criterion> oldDecisionCriteria;
-	private List<Criterion> newDecisionCriteria;
-	private MulticriteriaOptions oldMulticriteriaOptions;
-	private MulticriteriaOptions newMulticriteriaOptions;
+	private final List<Criterion> newDecisionCriteria;
+	private final MulticriteriaOptions oldMulticriteriaOptions;
+	private final MulticriteriaOptions newMulticriteriaOptions;
 
 	public MulticriteriaEdit(ProbNet probNet, List<Criterion> decisionCriteria, MulticriteriaOptions options) {
 		super(probNet);

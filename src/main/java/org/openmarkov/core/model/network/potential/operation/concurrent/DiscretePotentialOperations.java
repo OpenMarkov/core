@@ -22,7 +22,7 @@ public class DiscretePotentialOperations {
 	 * not always the physical ones. If the processors have a n
 	 * hyper threading then logical processors = n * physical processors.
 	 */
-	public static int numLogicalProcessors = java.lang.Runtime.getRuntime().availableProcessors();
+	public static final int numLogicalProcessors = java.lang.Runtime.getRuntime().availableProcessors();
 
 	// Constructor. Don't let anyone instantiate this class because in contains 
 	// only static methods.

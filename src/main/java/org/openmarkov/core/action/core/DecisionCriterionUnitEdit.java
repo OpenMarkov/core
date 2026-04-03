@@ -22,8 +22,8 @@ public class DecisionCriterionUnitEdit extends PNEdit {
 
 	private static final long serialVersionUID = 1L;
     
-    private String oldUnit;
-    private String newUnit;
+    private final String oldUnit;
+    private final String newUnit;
     private Criterion criterion;
 
 	public DecisionCriterionUnitEdit(ProbNet probnet, String criterionName, String newUnit) {

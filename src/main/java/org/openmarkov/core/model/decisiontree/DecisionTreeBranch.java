@@ -25,11 +25,11 @@ import java.util.List;
 public class DecisionTreeBranch implements DecisionTreeElement {
 
 	protected double scenarioProbability = Double.NEGATIVE_INFINITY;
-	private Variable branchVariable;
-	private State branchState;
+	private final Variable branchVariable;
+	private final State branchState;
 	private DecisionTreeNode parent;
 	private DecisionTreeNode child;
-	private ProbNet probNet;
+	private final ProbNet probNet;
 	private EvidenceCase scenarioEvidence = null;
 
 	/**

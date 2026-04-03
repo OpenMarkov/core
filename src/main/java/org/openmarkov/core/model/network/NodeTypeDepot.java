@@ -20,7 +20,7 @@ import java.util.List;
  * {@code NodesHashMapType}.
  */
 public class NodeTypeDepot {
-    private LinkedHashMap<NodeType, NodesHashMap> nodesHashMaps;
+    private final LinkedHashMap<NodeType, NodesHashMap> nodesHashMaps;
     
     public NodeTypeDepot() {
         nodesHashMaps = new LinkedHashMap<>();
@@ -175,7 +175,7 @@ public class NodeTypeDepot {
      * {@code Variable} to {@code Node}.
      */
     private static class NodesHashMap {
-        LinkedHashMap<Variable, Node> nodesHashMap;
+        final LinkedHashMap<Variable, Node> nodesHashMap;
         
         NodesHashMap() {
             nodesHashMap = new LinkedHashMap<>();

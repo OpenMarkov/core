@@ -26,7 +26,7 @@ import java.util.List;
  */
 public class MaxOutVariable {
 
-	private TablePotential utility;
+	private final TablePotential utility;
 
 	private TablePotential policy;
 

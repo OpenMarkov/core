@@ -22,7 +22,7 @@ import java.util.Set;
  */
 public class XMLResourceBundle extends ResourceBundle {
 	
-	private XMLProperties props;
+	private final XMLProperties props;
 
 	public XMLResourceBundle(InputStream stream) throws IOException {
 		props = new XMLProperties();

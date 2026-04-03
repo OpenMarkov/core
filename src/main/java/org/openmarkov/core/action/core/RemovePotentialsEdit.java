@@ -20,7 +20,7 @@ import java.util.ArrayList;
 @SuppressWarnings("serial")
 public class RemovePotentialsEdit extends PNEdit {
 
-	private ArrayList<Potential> potentialsToDelete;
+	private final ArrayList<Potential> potentialsToDelete;
 
 	/**
 	 * @param probNet    {@code ProbNet}

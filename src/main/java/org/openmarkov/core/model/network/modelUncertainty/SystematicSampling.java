@@ -485,8 +485,8 @@ public class SystematicSampling extends Sampler {
 
 	private static class SubPotentialAndPositionInTablePotential {
 
-		private Potential subPotential;
-		private int position;
+		private final Potential subPotential;
+		private final int position;
 
 		public SubPotentialAndPositionInTablePotential(Potential subPotential, int position) {
 			this.subPotential = subPotential;
@@ -504,10 +504,10 @@ public class SystematicSampling extends Sampler {
 	}
 
 	private static class ParameterAnalysisInformation {
-		UncertainParameter uncertainParameter;
-		double min;
-		double max;
-		String iterationVariableName;
+		final UncertainParameter uncertainParameter;
+		final double min;
+		final double max;
+		final String iterationVariableName;
 
 		public ParameterAnalysisInformation(UncertainParameter uncertainParameter, double min, double max,
 				String iterationVariableName) {

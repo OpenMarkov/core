@@ -29,11 +29,11 @@ import java.util.List;
     /**
      * parent node
      */
-    private Node parent;
+    private final Node parent;
     /**
      * child node
      */
-    private Node child;
+    private final Node child;
     
     /**
      * Parent node's old potentials

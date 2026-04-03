@@ -18,13 +18,13 @@ import org.openmarkov.core.action.base.PNEdit;
  */
 @SuppressWarnings("serial") public class ICIPotentialEdit extends PNEdit {
     
-    private ICIPotential potential;
+    private final ICIPotential potential;
 	private Variable variable = null;
 	private double[] noisyParameters = null;
 	private double[] oldNoisyParameters = null;
 	private double[] leakyParameters = null;
 	private double[] oldLeakyParameters = null;
-	private boolean isNoisyParameter;
+	private final boolean isNoisyParameter;
 
 	public ICIPotentialEdit(ProbNet probNet, ICIPotential potential, Variable variable, double[] noisyParameters) {
 		super(probNet);

@@ -112,7 +112,7 @@ import org.openmarkov.core.model.network.ProbNet;
     private boolean typicalRedo = true;
     
     //All simple edits are significant
-    private boolean significant = true;
+    private final boolean significant = true;
     
     // Constructor
     

@@ -21,7 +21,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
  * reconnecting grandparents and updating potentials accordingly.
  */
 @SuppressWarnings("serial") public class AbsorbParentsEdit extends CompoundPNEdit {
-    private Node node;
+    private final Node node;
     
     public AbsorbParentsEdit(ProbNet probNet, Node node) {
         super(probNet);

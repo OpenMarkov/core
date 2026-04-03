@@ -9,25 +9,25 @@ package org.openmarkov.core.model.network.potential.operation.concurrent;
 
 public class DiscreteMultiply implements Runnable {
     
-    volatile protected SharedDataMultiply sdm;
+    final protected SharedDataMultiply sdm;
     
-    protected int logicalProcessor;
+    protected final int logicalProcessor;
     
-    protected int[] resultDimension;
+    protected final int[] resultDimension;
     
-    protected int[] resultCoordinate;
+    protected final int[] resultCoordinate;
     
-    protected double[] resultTable;
+    protected final double[] resultTable;
     
-    protected int[] potentialsPositions;
+    protected final int[] potentialsPositions;
     
-    protected double[][] tables;
+    protected final double[][] tables;
     
-    protected int[][] offAccPotentials;
+    protected final int[][] offAccPotentials;
     
-    protected int numPotentials;
+    protected final int numPotentials;
     
-    protected double constantFactor;
+    protected final double constantFactor;
     
     public DiscreteMultiply(SharedDataMultiply sdm, int logicalProcessor) {
         this.sdm = sdm;

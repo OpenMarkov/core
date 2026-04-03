@@ -424,6 +424,32 @@ public class StrategyTree extends TreeADDPotential implements Cloneable {
     }
     
     /**
+     * Returns a concise string for display in a collapsed tree view.
+     * For leaf decisions (single branch), shows "Variable = state(s)".
+     * For inner nodes, shows the top variable name.
+     */
+    @Override
+    public String treeADDString() {
+        if (topVariable == null) {
+            return "";
+        }
+        if (branches != null && branches.size() == 1) {
+            TreeADDBranch branch = branches.get(0);
+            List<State> states = branch.getStates();
+            if (states != null && !states.isEmpty()) {
+                StringBuilder sb = new StringBuilder(topVariable.getName());
+                sb.append(" = ");
+                for (int i = 0; i < states.size(); i++) {
+                    if (i > 0) sb.append(", ");
+                    sb.append(states.get(i).getName());
+                }
+                return sb.toString();
+            }
+        }
+        return topVariable.getName();
+    }
+
+    /**
      * @param branch TreeADDBranch
      *
      * @return The intervention corresponding to 'branch'

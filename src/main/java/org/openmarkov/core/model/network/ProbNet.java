@@ -173,8 +173,9 @@ public class ProbNet implements PotentialNetwork, Cloneable, ClassLocalizable {
      * Condition: At least one potential depends on at least one variable
      * (otherwise the network would have no node, and it would be
      * impossible to assign constant potentials)
+     *
+     * <p>Delegates to {@link ProbNetPotentialQueries#buildMarkovDecisionNetwork(ProbNet, Collection)}.
      */
-    /** Delegates to {@link ProbNetPotentialQueries#buildMarkovDecisionNetwork(ProbNet, Collection)}. */
     public ProbNet buildMarkovDecisionNetwork(Collection<? extends Potential> projectedTablePotentials) {
         return ProbNetPotentialQueries.buildMarkovDecisionNetwork(this, projectedTablePotentials);
     }
@@ -313,7 +314,7 @@ public class ProbNet implements PotentialNetwork, Cloneable, ClassLocalizable {
         this.networkType = newNetworkType;
         List<PNConstraint> newConstraints = ConstraintManager.getUniqueInstance().buildConstraintList(newNetworkType);
         // Add new constraints implied by the network type
-        newConstraints.removeIf(newConstraint -> this.constraints.contains(newConstraint));
+        newConstraints.removeIf(this.constraints::contains);
         try {
             for (PNConstraint newConstraint : newConstraints) {
                 var checker = new ConstraintChecker(this);
@@ -365,12 +366,12 @@ public class ProbNet implements PotentialNetwork, Cloneable, ClassLocalizable {
         return ProbNetClassifier.isMultiagent(this);
     }
 
-    /** Delegates to {@link ProbNetClassifier#getNumCriteria(ProbNet)}. */
+    /** Delegates to {@link ProbNetClassifier#getNumCriteria(PotentialNetwork)}. */
     public int getNumCriteria() {
         return ProbNetClassifier.getNumCriteria(this);
     }
 
-    /** Delegates to {@link ProbNetClassifier#thereAreTemporalNodes(ProbNet)}. */
+    /** Delegates to {@link ProbNetClassifier#thereAreTemporalNodes(GraphNetwork)}. */
     public boolean thereAreTemporalNodes() {
         return ProbNetClassifier.thereAreTemporalNodes(this);
     }
@@ -458,13 +459,15 @@ public class ProbNet implements PotentialNetwork, Cloneable, ClassLocalizable {
     }
     
     /**
+     * Delegates to {@link ProbNetPotentialQueries#tableProjectPotentials(ProbNet, EvidenceCase)}.
+     *
      * @param evidenceCase Evidence in that the potentials will be projected
      *
      * @return The potentials of the network projected on the evidence
      *
      * @throws NonProjectablePotentialException NonProjectablePotentialException
+     *
      */
-    /** Delegates to {@link ProbNetPotentialQueries#tableProjectPotentials(ProbNet, EvidenceCase)}. */
     public List<TablePotential> tableProjectPotentials(EvidenceCase evidenceCase) throws NonProjectablePotentialException {
         return ProbNetPotentialQueries.tableProjectPotentials(this, evidenceCase);
     }
@@ -631,12 +634,13 @@ public class ProbNet implements PotentialNetwork, Cloneable, ClassLocalizable {
      * {@code Variable} received. The potentials that can contain that
      * variable are in the node associated to the variable and its neighbors.
      *
+     * <p>Delegates to {@link ProbNetPotentialQueries#getProbPotentials(GraphNetwork, Variable)}.
+     *
      * @param variable variable that belongs to this {@code ProbNet}
      *
      * @return {@code ArrayList} of potentials containing
      * {@code variable}.
      */
-    /** Delegates to {@link ProbNetPotentialQueries#getProbPotentials(ProbNet, Variable)}. */
     public List<Potential> getProbPotentials(Variable variable) {
         return ProbNetPotentialQueries.getProbPotentials(this, variable);
     }
@@ -648,13 +652,14 @@ public class ProbNet implements PotentialNetwork, Cloneable, ClassLocalizable {
      * The potentials that can contain that variable are in the node associated
      * to the variable and its neighbors.
      *
+     * <p>Delegates to {@link ProbNetPotentialQueries#getUtilityPotentials(GraphNetwork, Variable)}.
+     *
      * @param variable that belongs to this {@code ProbNet}
      *                 {@code Variable}.
      *
      * @return {@code ArrayList} of potentials containing
      * {@code variable}.
      */
-    /** Delegates to {@link ProbNetPotentialQueries#getUtilityPotentials(ProbNet, Variable)}. */
     public List<Potential> getUtilityPotentials(Variable variable) {
         return ProbNetPotentialQueries.getUtilityPotentials(this, variable);
     }
@@ -803,7 +808,7 @@ public class ProbNet implements PotentialNetwork, Cloneable, ClassLocalizable {
      * @return The node with {@code nameOfVariable} and
      * {@code kindOfNode} if exists otherwise null
      */
-    public Node getNode(String nameOfVariable, NodeType nodeType) {
+    public @Nullable Node getNode(String nameOfVariable, NodeType nodeType) {
         return nodeDepot.getNode(nameOfVariable, nodeType);
     }
     
@@ -998,10 +1003,6 @@ public class ProbNet implements PotentialNetwork, Cloneable, ClassLocalizable {
         return new ArrayList<>(getNodes(nodeType).stream().map(Node::getVariable).toList());
     }
     
-    /**
-     * @return All the variables. {@code ArrayList} of
-     * {@code Variable}
-     */
     /** @return all variables in this network */
     public ArrayList<Variable> getVariables() {
         return new ArrayList<>(getNodes().stream().map(Node::getVariable).toList());

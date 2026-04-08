@@ -266,7 +266,7 @@ public class Node implements Cloneable, ClassLocalizable {
      * @return An {@code ArrayList} cloned with all the potentials
      * associated to this {@code Node}
      */
-    public List<Potential> getPotentials() {
+    public @NotNull List<Potential> getPotentials() {
         return new ArrayList<>(potentials);
     }
     
@@ -312,12 +312,12 @@ public class Node implements Cloneable, ClassLocalizable {
     }
 
     /** @return the child nodes of this node (targets of outgoing directed links) */
-    public List<Node> getChildren() {
+    public @NotNull List<Node> getChildren() {
         return probNet.getChildren(this);
     }
 
     /** @return the parent nodes of this node (sources of incoming directed links) */
-    public List<Node> getParents() {
+    public @NotNull List<Node> getParents() {
         return probNet.getParents(this);
     }
 

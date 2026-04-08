@@ -54,15 +54,15 @@ public class Graph<T> {
     
     // Methods
     public List<T> getChildren(T node) {
-        return (nodeChildren.containsKey(node)) ? new ArrayList<>(nodeChildren.get(node)) : new ArrayList<T>();
+        return (nodeChildren.containsKey(node)) ? new ArrayList<>(nodeChildren.get(node)) : new ArrayList<>();
     }
     
     public List<T> getParents(T node) {
-        return (nodeParents.containsKey(node)) ? new ArrayList<>(nodeParents.get(node)) : new ArrayList<T>();
+        return (nodeParents.containsKey(node)) ? new ArrayList<>(nodeParents.get(node)) : new ArrayList<>();
     }
     
     public List<T> getSiblings(T node) {
-        return (nodeSiblings.containsKey(node)) ? new ArrayList<>(nodeSiblings.get(node)) : new ArrayList<T>();
+        return (nodeSiblings.containsKey(node)) ? new ArrayList<>(nodeSiblings.get(node)) : new ArrayList<>();
     }
     
     public int getNumChildren(T node) {
@@ -246,7 +246,7 @@ public class Graph<T> {
     public void makeLinksExplicit(boolean createLabelledLinks) {
         if (!explicitLinks) {
             for (T node : nodes) {
-                nodeLinks.put(node, new LinkedList<Link<T>>());
+                nodeLinks.put(node, new LinkedList<>());
             }
             for (T node : nodes) {
                 List<T> children = nodeChildren.get(node);
@@ -330,7 +330,7 @@ public class Graph<T> {
     
     public List<Link<T>> getLinks(T node) {
         makeLinksExplicit(false);
-        return nodeLinks.containsKey(node) ? new ArrayList<>(nodeLinks.get(node)) : new ArrayList<Link<T>>();
+        return nodeLinks.containsKey(node) ? new ArrayList<>(nodeLinks.get(node)) : new ArrayList<>();
     }
     
     public int getNumLinks(T node) {
@@ -454,20 +454,20 @@ public class Graph<T> {
         if (directed) {
             if (!isChild(node2, node1)) {
                 if (!nodeChildren.containsKey(node1))
-                    nodeChildren.put(node1, new LinkedList<T>());
+                    nodeChildren.put(node1, new LinkedList<>());
                 nodeChildren.get(node1).add(node2);
             }
             if (!isParent(node1, node2)) {
                 if (!nodeParents.containsKey(node2))
-                    nodeParents.put(node2, new LinkedList<T>());
+                    nodeParents.put(node2, new LinkedList<>());
                 nodeParents.get(node2).add(node1);
             }
         } else {
             if (!isSibling(node1, node2)) {
                 if (!nodeSiblings.containsKey(node1))
-                    nodeSiblings.put(node1, new LinkedList<T>());
+                    nodeSiblings.put(node1, new LinkedList<>());
                 if (!nodeSiblings.containsKey(node2))
-                    nodeSiblings.put(node2, new LinkedList<T>());
+                    nodeSiblings.put(node2, new LinkedList<>());
                 nodeSiblings.get(node1).add(node2);
                 nodeSiblings.get(node2).add(node1);
             }
@@ -502,7 +502,7 @@ public class Graph<T> {
     public void addNode(T node) {
         nodes.add(node);
         if (explicitLinks) {
-            nodeLinks.put(node, new LinkedList<Link<T>>());
+            nodeLinks.put(node, new LinkedList<>());
         }
     }
     

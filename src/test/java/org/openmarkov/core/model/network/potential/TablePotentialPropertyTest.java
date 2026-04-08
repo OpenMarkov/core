@@ -220,13 +220,11 @@ class TablePotentialPropertyTest {
      */
     @Property
     void setUniformProducesEqualValues(@ForAll("variableLists") List<Variable> variables) {
-        TablePotential tp = new TablePotential(variables, PotentialRole.CONDITIONAL_PROBABILITY);
-        // Constructor already calls setUniform(); create another to call it explicitly
-        TablePotential tp2 = new TablePotential(variables, PotentialRole.CONDITIONAL_PROBABILITY,
-                new double[variables.stream().mapToInt(Variable::getNumStates).reduce(1, (a, b) -> a * b)]);
-        tp2.setUniform();
+        int size = variables.stream().mapToInt(Variable::getNumStates).reduce(1, (a, b) -> a * b);
+        TablePotential tp = new TablePotential(variables, PotentialRole.CONDITIONAL_PROBABILITY, new double[size]);
+        tp.setUniform();
 
-        double[] values = tp2.getValues();
+        double[] values = tp.getValues();
         double first = values[0];
         for (double v : values) {
             assertThat(v).isCloseTo(first, within(1e-10));
@@ -242,6 +240,7 @@ class TablePotentialPropertyTest {
      * Kept small to avoid exponential blowup of tableSize.
      */
     @Provide
+    @SuppressWarnings("unused")
     Arbitrary<List<Variable>> variableLists() {
         return Arbitraries.integers().between(1, 4).flatMap(numVars ->
             Arbitraries.integers().between(2, 6)

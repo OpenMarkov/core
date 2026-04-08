@@ -49,7 +49,7 @@ class VariablePropertyTest {
     @Property
     void setTimeSliceUpdatesNameAndPreservesBaseName(
             @ForAll("alphaNames") String baseName,
-            @ForAll @IntRange(min = 0, max = 100) int timeSlice) {
+            @ForAll @IntRange(max = 100) int timeSlice) {
         Variable v = new Variable(baseName, 2);
         v.setTimeSlice(timeSlice);
 
@@ -203,12 +203,14 @@ class VariablePropertyTest {
 
     /** Alpha strings: safe base names that contain no " [" sequences. */
     @Provide
+    @SuppressWarnings("unused")
     Arbitrary<String> alphaNames() {
         return Arbitraries.strings().alpha().ofMinLength(1).ofMaxLength(20);
     }
 
     /** State arrays with distinct names (s0, s1, …, sN). */
     @Provide
+    @SuppressWarnings("unused")
     Arbitrary<State[]> stateArrays() {
         return Arbitraries.integers().between(1, 10).map(n -> {
             State[] states = new State[n];
@@ -221,6 +223,7 @@ class VariablePropertyTest {
 
     /** Discrete variables with an alpha name and between 1 and 10 states. */
     @Provide
+    @SuppressWarnings("unused")
     Arbitrary<Variable> discreteVariables() {
         return Arbitraries.integers().between(1, 10).flatMap(numStates ->
             Arbitraries.strings().alpha().ofMinLength(1).ofMaxLength(10)

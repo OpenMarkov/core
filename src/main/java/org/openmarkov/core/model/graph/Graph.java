@@ -21,7 +21,7 @@ import java.util.*;
  * Explicit links do not substitute implicit links. In fact, an explicit link
  * implies the existence of an implicit link.
  *
- * @author manuel
+ * @author Manuel Arias
  * @author fjdiez
  * @author ibermejo
  * @version 1.1

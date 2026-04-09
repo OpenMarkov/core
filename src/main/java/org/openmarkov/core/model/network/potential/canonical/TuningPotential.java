@@ -125,7 +125,7 @@ public class TuningPotential extends ICIPotential {
         TablePotential tablePotential = new TablePotential(tuningFunctionVariables, role);
         int numParents = tuningFunctionVariables.size() - 1;
         // Set the values for the deterministic tuning function
-        for (int i = 0; i < tablePotential.values.length; i += NUM_STATES) {
+        for (int i = 0; i < tablePotential.getValues().length; i += NUM_STATES) {
             int index = i / NUM_STATES;
             int netNumIncr = 0;
             for (int j = 0; j < numParents; ++j) {
@@ -135,9 +135,9 @@ public class TuningPotential extends ICIPotential {
                 index /= 3;
             }
             // tuning function
-            tablePotential.values[i] = (netNumIncr < 0) ? 1.0 : 0.0;
-            tablePotential.values[i + 1] = (netNumIncr == 0) ? 1.0 : 0.0;
-            tablePotential.values[i + 2] = (netNumIncr > 0) ? 1.0 : 0.0;
+            tablePotential.getValues()[i] = (netNumIncr < 0) ? 1.0 : 0.0;
+            tablePotential.getValues()[i + 1] = (netNumIncr == 0) ? 1.0 : 0.0;
+            tablePotential.getValues()[i + 2] = (netNumIncr > 0) ? 1.0 : 0.0;
         }
         return tablePotential;
     }
@@ -217,15 +217,5 @@ public class TuningPotential extends ICIPotential {
         return super.deepCopy(copyNet);
     }
     
-    @Override
-    public Potential reorder(List<Variable> newOrderOfVariables) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    @Override
-    public Potential reorder(Variable variable, State[] newOrder) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    // reorder(List<Variable>) and reorder(Variable, State[]) are inherited from ICIPotential
 }

@@ -7,6 +7,11 @@
 
 package org.openmarkov.core.model.network.potential.canonical;
 
+/**
+ * Enumerates the families of Independent Causal Influence (ICI) models:
+ * OR (includes OR, causal MAX, general MAX), AND (includes AND, causal MIN,
+ * general MIN), and TUNING.
+ */
 public enum ICIFamily {
     OR,
     AND,

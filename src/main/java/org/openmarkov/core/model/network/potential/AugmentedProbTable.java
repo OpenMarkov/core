@@ -13,14 +13,23 @@ import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 
 import java.util.Collections;
 import java.util.List;
 
-// TODO Add documentation
-public class AugmentedProbTable extends TablePotential {
+/**
+ * A table potential whose cells contain symbolic function expressions ({@link VariableExpression})
+ * rather than plain numeric values. Each cell can hold a formula referencing numeric parent
+ * variables, enabling conditional probability tables that depend on continuous parameters.
+ * Extends {@link UncertainTablePotential} and is used as the internal storage for
+ * {@link AugmentedProbTablePotential} and {@link UnivariateDistrPotential}.
+ *
+ * @author Manuel Arias
+ */
+public class AugmentedProbTable extends UncertainTablePotential {
     
     /**
      * The default function
@@ -48,7 +57,7 @@ public class AugmentedProbTable extends TablePotential {
             try {
                 functionValues = new VariableExpression[tableSize];
                 // Get  public int getPosition(int[] coordinates)
-                int increment = variables.get(0).getNumStates();
+                int increment = variables.getFirst().getNumStates();
                 for (int i = 0; i < tableSize; i++) {
                     functionValues[i] = COMPLEMENT_FUNCTION;
                 }
@@ -56,7 +65,7 @@ public class AugmentedProbTable extends TablePotential {
                     functionValues[i] = DEFAULT_FUNCTION;
                 }
             } catch (NegativeArraySizeException e) {
-                throw new OutOfMemoryError(e.getMessage());
+                throw new IllegalArgumentException("Negative table size: " + tableSize, e);
             }
         } else {// In this case the potential is a constant
             tableSize = 1;
@@ -84,7 +93,6 @@ public class AugmentedProbTable extends TablePotential {
     private AugmentedProbTable(List<Variable> stateVariables, PotentialRole role, VariableExpression[] table, int initialPosition,
                            int[] offsets, int[] dimensions) {
         super(stateVariables, role);
-        // this.originalVariables = this.variables;
         this.setFunctionValues(table);
         this.initialPosition = initialPosition;
         this.offsets = offsets;
@@ -93,16 +101,13 @@ public class AugmentedProbTable extends TablePotential {
     }
     
     public AugmentedProbTable(AugmentedProbTable potential) {
-        super(potential);
+        super(potential);  // UncertainTablePotential(UncertainTablePotential)
         this.initialPosition = potential.getInitialPosition();
         this.offsets = potential.getOffsets();
         this.dimensions = potential.getDimensions();
         tableSize = potential.tableSize;
         //UNCLEAR Clones??
         setFunctionValues(potential.getFunctionValues().clone());
-        
-        //UNCLEAR???
-        strategyTrees = potential.strategyTrees;
     }
     
     /**
@@ -130,9 +135,9 @@ public class AugmentedProbTable extends TablePotential {
      * Assigns a value at the table for the combination of a set of variables
      * and the corresponding state indices.
      *
-     * @param variables
+     * @param variables the variables
      *            . {@code ArrayList} of {@code Variable}
-     * @param statesIndexes
+     * @param statesIndexes the states indexes
      *            . {@code int[]}
      * @param function value to be assigned
      */
@@ -189,9 +194,10 @@ public class AugmentedProbTable extends TablePotential {
         boolean isEqual = super.equals(arg0) && arg0 instanceof TablePotential;
         if (isEqual) {
             double[] otherValues = ((TablePotential) arg0).getValues();
-            if (values.length == otherValues.length) {
-                for (int i = 0; i < values.length; i++) {
-                    isEqual &= values[i] == otherValues[i];
+            double[] myValues = getValues();
+            if (myValues.length == otherValues.length) {
+                for (int i = 0; i < myValues.length; i++) {
+                    isEqual &= myValues[i] == otherValues[i];
                 }
             } else {
                 isEqual = false;
@@ -246,6 +252,34 @@ public class AugmentedProbTable extends TablePotential {
         newPotential.properties = properties;
         return newPotential;
     }
-    
-    
+
+    @Override
+    public AugmentedProbTable reorder(Variable variable, State[] newOrder) {
+        AugmentedProbTable copyPotential = new AugmentedProbTable(this);
+        int variableIndex = variables.indexOf(variable);
+        if (variableIndex < 0) {
+            return copyPotential;
+        }
+        VariableExpression[] orig = functionValues;
+        VariableExpression[] copy = copyPotential.getFunctionValues();
+        int offset = offsets[variableIndex];
+        State[] oldOrder = variable.getStates();
+        int[] displacements = new int[newOrder.length];
+        for (int i = 0; i < newOrder.length; ++i) {
+            for (int j = 0; j < oldOrder.length; j++) {
+                if (oldOrder[i] == newOrder[j]) {
+                    displacements[i] = j - i;
+                    break;
+                }
+            }
+        }
+        for (int i = 0; i < orig.length; i++) {
+            int indexOfState = (i / offset) % variable.getNumStates();
+            int newIndex = i + (displacements[indexOfState] * offset);
+            copy[newIndex] = orig[i];
+        }
+        return copyPotential;
+    }
+
+
 }

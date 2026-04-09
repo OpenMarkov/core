@@ -22,15 +22,23 @@ import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Stream;
 
+/**
+ * @author Manuel Arias
+ */
 public class PotentialUtils {
     
     public static String getPotentialName(Class<?> clazz) {
-        PotentialType annotation = clazz.getAnnotation(PotentialType.class);
-        if (annotation == null) {
-            return "";
+        // Walk up the class hierarchy to find the @PotentialType annotation.
+        // Subclasses like UncertainTablePotential and StrategicTablePotential
+        // don't have their own annotation and should inherit their parent's name.
+        for (Class<?> c = clazz; c != null && c != Object.class; c = c.getSuperclass()) {
+            PotentialType annotation = c.getAnnotation(PotentialType.class);
+            if (annotation != null) {
+                String[] names = annotation.names();
+                return names[0] == null ? "" : names[0];
+            }
         }
-        String[] names = annotation.names();
-        return names[0] == null ? "" : names[0];
+        return "";
     }
     
     public static List<String> getNames(Class<?> clazz) {

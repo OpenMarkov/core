@@ -35,11 +35,11 @@ public final class AddLinkEdit extends BaseLinkEdit {
     /**
      * The new {@code Potential} of the second node
      */
-    private List<Potential> newPotentials = new ArrayList<>();
+    private final List<Potential> newPotentials = new ArrayList<>();
     /**
      * parent node
      */
-    private Node nodeFrom;
+    private final Node nodeFrom;
     /**
      * child node
      */

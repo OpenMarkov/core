@@ -12,7 +12,6 @@ import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.TablePotential;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -171,7 +170,7 @@ public abstract class DecisionTreeNode<T> implements DecisionTreeElement {
 		utility = node.utility;
 		scenarioProbability = node.scenarioProbability;
 		variable = node.variable;
-		nodeType = node.nodeType;
+		nodeType = node.getNodeType();
 		children = node.children;
 		parent = node.parent;
 		network = node.network;
@@ -190,7 +189,7 @@ public abstract class DecisionTreeNode<T> implements DecisionTreeElement {
 	 * 
 	 * @param tablePotential The potential containing utility values.
 	 */
-	public abstract void setOnlyValueForUtility(TablePotential tablePotential);
+	public abstract void setOnlyValueForUtility(Potential tablePotential);
 
 	/**
 	 * Formats the utility value as a string.

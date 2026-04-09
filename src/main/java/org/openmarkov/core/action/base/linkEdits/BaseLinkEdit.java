@@ -17,25 +17,28 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.action.base.PNEdit;
 
 /**
+ * Abstract base class for all link-related edits (add, remove, invert, orient).
+ * Holds the two endpoint variables and the link directionality.
+ *
  * @author Inigo
  */
 @SuppressWarnings("serial") public abstract sealed class BaseLinkEdit extends PNEdit
         permits AddLinkEdit, InvertLinkAndUpdatePotentialsEdit, InvertLinkEdit, OrientLinkEdit, RemoveLinkEdit {
 
 	// Attributes
-    protected Variable variableFrom;
+    protected final Variable variableFrom;
     
-    protected Variable variableTo;
+    protected final Variable variableTo;
 
 	protected boolean isDirected;
 
 	// Constructor
 
 	/**
-	 * @param probNet    {@code ProbNet}
-     * @param variableFrom  {@code Variable}
-     * @param variableTo  {@code Variable}
-	 * @param isDirected {@code boolean}
+	 * @param probNet      the probabilistic network
+	 * @param variableFrom the source variable of the link
+	 * @param variableTo   the destination variable of the link
+	 * @param isDirected   {@code true} for a directed link, {@code false} for undirected
 	 */
     public BaseLinkEdit(ProbNet probNet, Variable variableFrom, Variable variableTo, boolean isDirected) {
 		super(probNet);
@@ -45,19 +48,22 @@ import org.openmarkov.core.action.base.PNEdit;
 	}
 
 	/**
-	 * @return variable1 {@code Variable}
+	 * @return the source variable of the link
 	 */
     public Variable getVariableFrom() {
         return variableFrom;
 	}
 
 	/**
-	 * @return variable2 {@code Variable}
+	 * @return the destination variable of the link
 	 */
     public Variable getVariableTo() {
         return variableTo;
 	}
 
+	/**
+	 * @return {@code true} if this is a directed link
+	 */
 	public boolean isDirected() {
 		return isDirected;
 	}
@@ -102,6 +108,9 @@ import org.openmarkov.core.action.base.PNEdit;
 		return buffer.toString();
 	}
 
+	/**
+	 * @return a human-readable name for the link operation (e.g., "Add link")
+	 */
 	public abstract String getOperationName();
 
 	/**

@@ -52,7 +52,7 @@ public class MaxPotentialTest {
     @Test public void testGetCPT() {
         maxPotential.setLeakyParameters(new double[]{0.989, 0.01, 0.001});
         double[] cPTValues = null;
-        cPTValues = maxPotential.getCPT().values;
+        cPTValues = maxPotential.getCPT().getValues();
         assertEquals(0.989, cPTValues[0], admissibleError);
         assertEquals(0.01, cPTValues[1], admissibleError);
         assertEquals(0.2997, cPTValues[4], admissibleError);
@@ -63,7 +63,7 @@ public class MaxPotentialTest {
     
     @Test public void testGetCPTDefaultLeaky() {
         double[] cPTValues = null;
-        cPTValues = maxPotential.getCPT().values;
+        cPTValues = maxPotential.getCPT().getValues();
         assertEquals(1.0, cPTValues[0], admissibleError);
         assertEquals(0.0, cPTValues[1], admissibleError);
         assertEquals(0.3, cPTValues[4], admissibleError);

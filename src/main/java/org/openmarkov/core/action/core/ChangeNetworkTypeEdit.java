@@ -31,12 +31,12 @@ import java.util.ArrayList;
     /**
      * The current NetworkTypeConstraint associated with the network
      */
-    private NetworkType currentNetworkType;
+    private final NetworkType currentNetworkType;
     
     /**
      * The new NetworkTypeConstraint associated with the network
      */
-    private NetworkType newNetworkType;
+    private final NetworkType newNetworkType;
     
     /**
      * Creates a new {@code ChangeNetworkTypeEdit} that allow to change the

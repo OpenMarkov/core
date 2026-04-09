@@ -24,7 +24,9 @@ import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.StrategyTree;
+import org.openmarkov.core.model.network.potential.StrategicTablePotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.UncertainTablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.operation.AuxiliaryOperations;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -35,7 +37,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * A TreeADDPotential is a potential defined by a top variable and its branches.
@@ -476,7 +479,7 @@ public class TreeADDPotential extends Potential {
     
     public Map<String, TreeADDBranch> getLabeledBranches() {
         Map<String, TreeADDBranch> labeledBranches = new HashMap<>();
-        Stack<TreeADDPotential> subtrees = new Stack<>();
+        Deque<TreeADDPotential> subtrees = new ArrayDeque<>();
         subtrees.push(this);
         while (!subtrees.isEmpty()) {
             TreeADDPotential treeADD = subtrees.pop();
@@ -498,7 +501,7 @@ public class TreeADDPotential extends Potential {
      * @param labeledBranches Labeled branches
      */
     public void updateReferences(Map<String, TreeADDBranch> labeledBranches) {
-        Stack<TreeADDPotential> subtrees = new Stack<>();
+        Deque<TreeADDPotential> subtrees = new ArrayDeque<>();
         if (!labeledBranches.isEmpty()) {
             subtrees.push(this);
             while (!subtrees.isEmpty()) {
@@ -593,41 +596,51 @@ public class TreeADDPotential extends Potential {
             topVariableEvidenceStateIndex = evidence.getFinding(topVariable).getStateIndex();
         }
         
-        TablePotential resultPotential = new TablePotential(resultVariables, potentials.get(0).getPotentialRole());
-        resultPotential.setCriterion(criterion);
         // Number of variables
         int numVariables = resultVariables.size();
-        
-        // Gets the tables of each TablePotential
+
+        // Gets the tables of each TablePotential; also detect interventions/uncertainty
         double[][] tables = new double[numPotentials][];
         StrategyTree[][] interventionsTables = new StrategyTree[numPotentials][];
-        for (int i = 0; i < numPotentials; i++) {
-            tables[i] = potentials.get(i).values;
-            interventionsTables[i] = potentials.get(i).strategyTrees;
-        }
-        
-        // Gets the uncertain tables of each TablePotential
+        UncertainValue[][] uncertaintyTables = new UncertainValue[numPotentials][];
         boolean containsUncertainty = false;
         boolean containsInterventions = false;
-        UncertainValue[][] uncertaintyTables = new UncertainValue[numPotentials][];
         for (int i = 0; i < numPotentials; i++) {
-            uncertaintyTables[i] = potentials.get(i).uncertainValues;
+            TablePotential tp = potentials.get(i);
+            tables[i] = tp.getValues();
+            if (tp instanceof StrategicTablePotential stp) {
+                interventionsTables[i] = stp.strategyTrees;
+                containsInterventions = true;
+            }
+            uncertaintyTables[i] = tp.getUncertainValues();
             containsUncertainty |= uncertaintyTables[i] != null;
-            containsInterventions |= potentials.get(i).strategyTrees != null;
         }
-        if (containsUncertainty) {
-            resultPotential.uncertainValues = new UncertainValue[resultPotential.getTableSize()];
-        }
+
+        PotentialRole potentialRole = potentials.get(0).getPotentialRole();
+        TablePotential resultPotential;
+        StrategicTablePotential strategicResult = null;
+        UncertainTablePotential uncertainResult = null;
         if (containsInterventions) {
-            resultPotential.strategyTrees = new StrategyTree[resultPotential.getTableSize()];
+            strategicResult = new StrategicTablePotential(resultVariables, potentialRole);
+            strategicResult.strategyTrees = new StrategyTree[strategicResult.getTableSize()];
+            resultPotential = strategicResult;
+            // Note: if containsUncertainty is also true (rare mix of ID-solving + sensitivity),
+            // uncertain values are not propagated for now.
+        } else if (containsUncertainty) {
+            uncertainResult = new UncertainTablePotential(resultVariables, potentialRole);
+            uncertainResult.uncertainValues = new UncertainValue[uncertainResult.getTableSize()];
+            resultPotential = uncertainResult;
+        } else {
+            resultPotential = new TablePotential(resultVariables, potentialRole);
         }
-        
+        resultPotential.setCriterion(criterion);
+
         // Gets dimensions
         int[] resultDimensions = resultPotential.getDimensions();
-        
+
         // Gets accumulated offsets
         int[][] accumulatedOffsets = DiscretePotentialOperations.getAccumulatedOffsets(potentials, resultVariables);
-        
+
         // Gets coordinate
         int[] resultCoordinates;
         if (numVariables != 0) {
@@ -636,15 +649,15 @@ public class TreeADDPotential extends Potential {
             resultCoordinates = new int[1];
             resultCoordinates[0] = 0;
         }
-        
+
         // Position in each table potential
         int[] potentialPositions = new int[numPotentials];
-        
+
         int incrementedVariable = 0;
         int tableSize = resultPotential.getTableSize();
-        double[] resultValues = resultPotential.values;
-        StrategyTree[] resultStrategyTrees = resultPotential.strategyTrees;
-        UncertainValue[] uncertainValues = resultPotential.uncertainValues;
+        double[] resultValues = resultPotential.getValues();
+        StrategyTree[] resultStrategyTrees = containsInterventions ? strategicResult.strategyTrees : null;
+        UncertainValue[] uncertainValues = (uncertainResult != null) ? uncertainResult.uncertainValues : null;
         int topVariableStateIndex = (topVariableEvidenceStateIndex != -1) ?
                 topVariableEvidenceStateIndex :
                 resultCoordinates[topVariableIndex];
@@ -769,7 +782,7 @@ public class TreeADDPotential extends Potential {
     }
     
     // Attributes used in toString()
-    private static String DEFAULT_INDENT_STRING = "";
+    private static final String DEFAULT_INDENT_STRING = "";
     protected static int indentIncrement = 4;
     private String indent = DEFAULT_INDENT_STRING;
     private int indentLevel;
@@ -820,16 +833,30 @@ public class TreeADDPotential extends Potential {
         return strBuffer.toString();
     }
     
+    /**
+     * Expands the tree to a {@link TablePotential} and reorders its variables.
+     * The tree structure is not preserved, but the probability semantics are correct.
+     */
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
-        // TODO Auto-generated method stub
-        return null;
+        try {
+            return getCPT().reorder(newOrderOfVariables);
+        } catch (NonProjectablePotentialException e) {
+            return copy();
+        }
     }
-    
+
+    /**
+     * Expands the tree to a {@link TablePotential} and reorders the given variable's states.
+     * The tree structure is not preserved, but the probability semantics are correct.
+     */
     @Override
     public Potential reorder(Variable variable, State[] newOrder) {
-        // TODO Auto-generated method stub
-        return null;
+        try {
+            return getCPT().reorder(variable, newOrder);
+        } catch (NonProjectablePotentialException e) {
+            return copy();
+        }
     }
     
 }

@@ -18,6 +18,11 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * ICI potential implementing the OR/MAX family of canonical models (noisy-OR, causal MAX).
+ * The deterministic combination function returns the maximum state index among all
+ * auxiliary Z-variables and the leak variable.
+ */
 @PotentialType(names = "OR / MAX") public class MaxPotential extends MinMaxPotential {
     
     /**
@@ -76,7 +81,7 @@ import java.util.List;
         for (int i = 1; i < leakyParameters.length; ++i) {
             leakyParameters[0] = 0.0;
         }
-        tablePotential.values = leakyParameters;
+        tablePotential.setValues(leakyParameters);
         return tablePotential;
     }
     
@@ -96,11 +101,11 @@ import java.util.List;
         for (int i = 0; i < numStatesConditioned; i++) {
             for (int j = 0; j < numStatesPseudo; j++) {
                 if (i == j) {
-                    deltaPotential.values[actualConfiguration] = 1;
+                    deltaPotential.getValues()[actualConfiguration] = 1;
                 } else if (j == (i - 1)) {
-                    deltaPotential.values[actualConfiguration] = -1;
+                    deltaPotential.getValues()[actualConfiguration] = -1;
                 } else {
-                    deltaPotential.values[actualConfiguration] = 0;
+                    deltaPotential.getValues()[actualConfiguration] = 0;
                 }
                 actualConfiguration++;
             }
@@ -137,9 +142,9 @@ import java.util.List;
         int numStates = variables.get(0).getNumStates();
         
         double accumulator = 0;
-        for (int i = 0; i < subPotential.values.length; i++) {
-            accumulator += subPotential.values[i];
-            accruedPotential.values[i] = accumulator;
+        for (int i = 0; i < subPotential.getValues().length; i++) {
+            accumulator += subPotential.getValues()[i];
+            accruedPotential.getValues()[i] = accumulator;
             if ((i + 1) % numStates == 0) {
                 accumulator = 0;
             }
@@ -223,7 +228,7 @@ import java.util.List;
         int numParents = functionVariables.size() - 1;
         int numStates = variables.get(0).getNumStates();
         // Set the values for the deterministic f function
-        for (int i = 0; i < tablePotential.values.length; i += numStates) {
+        for (int i = 0; i < tablePotential.getValues().length; i += numStates) {
             int index = i / numStates;
             int max = 0;
             for (int j = 0; j < numParents; ++j) {
@@ -232,7 +237,7 @@ import java.util.List;
             }
             // max function
             for (int j = 0; j < numParents; ++j) {
-                tablePotential.values[j] = j == max ? 1.0 : 0.0;
+                tablePotential.getValues()[j] = j == max ? 1.0 : 0.0;
             }
         }
         return tablePotential;
@@ -246,15 +251,5 @@ import java.util.List;
         return super.deepCopy(copyNet);
     }
     
-    @Override
-    public Potential reorder(List<Variable> newOrderOfVariables) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-    
-    @Override
-    public Potential reorder(Variable variable, State[] newOrder) {
-        // TODO Auto-generated method stub
-        return null;
-    }
+    // reorder(List<Variable>) and reorder(Variable, State[]) are inherited from ICIPotential
 }

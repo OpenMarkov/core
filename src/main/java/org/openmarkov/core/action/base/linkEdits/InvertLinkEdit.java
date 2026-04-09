@@ -29,11 +29,11 @@ import java.util.List;
     /**
      * parent node
      */
-    private Node parent;
+    private final Node parent;
     /**
      * child node
      */
-    private Node child;
+    private final Node child;
     
     /**
      * Parent node's old potentials
@@ -47,10 +47,10 @@ import java.util.List;
     // Constructor
     
     /**
-     * @param probNet    {@code ProbNet}
-     * @param variable1  {@code Variable}
-     * @param variable2  {@code Variable}
-     * @param isDirected {@code boolean}
+     * @param probNet    the probabilistic network
+     * @param variable1  the current source variable of the link
+     * @param variable2  the current destination variable of the link
+     * @param isDirected whether the link is directed
      */
     public InvertLinkEdit(ProbNet probNet, Variable variable1, Variable variable2, boolean isDirected) {
         super(probNet, variable1, variable2, isDirected);
@@ -98,10 +98,6 @@ import java.util.List;
         }
     }
     
-    /**
-     *
-     * @throws DoEditException DoEditException
-     */
     @Override protected void doEdit() throws DoEditException.CannotInvertLink {
         // Remove links first
         probNet.removeLink(parent, child, isDirected);

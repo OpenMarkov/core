@@ -8,7 +8,6 @@
 package org.openmarkov.core.model.network;
 
 import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialRole;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +20,7 @@ import java.util.List;
  * {@code NodesHashMapType}.
  */
 public class NodeTypeDepot {
-    private LinkedHashMap<NodeType, NodesHashMap> nodesHashMaps;
+    private final LinkedHashMap<NodeType, NodesHashMap> nodesHashMaps;
     
     public NodeTypeDepot() {
         nodesHashMaps = new LinkedHashMap<>();
@@ -31,6 +30,7 @@ public class NodeTypeDepot {
         }
     }
     
+    /** @return the total number of nodes across all node types */
     public int getNumNodes() {
         int numNodes = 0;
         for (NodesHashMap hashMap : nodesHashMaps.values()) {
@@ -39,10 +39,12 @@ public class NodeTypeDepot {
         return numNodes;
     }
     
+    /** @return the number of nodes of the specified type */
     public int getNumNodes(NodeType nodeType) {
         return nodesHashMaps.get(nodeType).size();
     }
     
+    /** @return all nodes across all node types */
     public List<Node> getNodes() {
         List<Node> nodes = new ArrayList<>(getNumNodes());
         for (NodesHashMap hashMap : nodesHashMaps.values()) {
@@ -51,6 +53,10 @@ public class NodeTypeDepot {
         return nodes;
     }
     
+    /**
+     * @param nodeType the type of nodes whose potentials are returned
+     * @return all potentials from nodes of the given type
+     */
     public List<Potential> getPotentialsByType(NodeType nodeType) {
         NodesHashMap nodesType = nodesHashMaps.get(nodeType);
         List<Potential> potentials = new ArrayList<>();
@@ -69,24 +75,23 @@ public class NodeTypeDepot {
         return new ArrayList<>(nodesHashMaps.get(nodeType).values());
     }
     
-    public List<Potential> getPotentialsByRole(PotentialRole role) {
-        List<Potential> potentials = new ArrayList<>();
-        for (NodesHashMap nodesHashMap : nodesHashMaps.values()) {
-            for (Node auxNode : nodesHashMap.values()) {
-                for (Potential auxPot : auxNode.getPotentials()) {
-                    if (auxPot.getPotentialRole() == role) {
-                        potentials.add(auxPot);
-                    }
-                }
-            }
-        }
-        return potentials;
-    }
-    
+
+
+    /**
+     * @param nodeType the type of node to look up
+     * @param variable the variable associated with the node
+     * @return the node, or {@code null} if not found
+     */
     public Node getNode(NodeType nodeType, Variable variable) {
         return nodesHashMaps.get(nodeType).get(variable);
     }
     
+    /**
+     * Finds a node by variable name, searching across all node types.
+     *
+     * @param nameOfVariable the variable name to search for
+     * @return the matching node, or {@code null} if not found
+     */
     public Node getNode(String nameOfVariable) {
         for (NodeType nodeType : NodeType.values()) {
             Collection<Node> nodes = nodesHashMaps.get(nodeType).values();
@@ -99,6 +104,12 @@ public class NodeTypeDepot {
         return null;
     }
     
+    /**
+     * Finds a node by variable reference, searching across all node types.
+     *
+     * @param variable the variable to search for
+     * @return the matching node, or {@code null} if not found
+     */
     public Node getNode(Variable variable) {
         for (NodesHashMap nodesHashMap : this.nodesHashMaps.values()) {
             Node node = nodesHashMap.get(variable);
@@ -125,10 +136,12 @@ public class NodeTypeDepot {
         return null;
     }
     
+    /** Registers a node in the depot under its node type. */
     public void addNode(Node node) {
         nodesHashMaps.get(node.getNodeType()).put(node.getVariable(), node);
     }
     
+    /** Removes a node from the depot by its node type and variable. */
     public void removeNode(Node node) {
         NodeType nodeKindValue = node.getNodeType();
         Variable variable = node.getVariable();
@@ -136,6 +149,7 @@ public class NodeTypeDepot {
         nodesMap.remove(variable);
     }
     
+    /** Removes the node associated with the given variable, regardless of its type. */
     public void removeNode(Variable variable) {
         for (NodesHashMap nodes : nodesHashMaps.values()) {
             if (nodes.get(variable) != null) {
@@ -145,6 +159,7 @@ public class NodeTypeDepot {
         }
     }
     
+    /** @return the total number of potentials across all nodes */
     public int getNumPotentials() {
         int numPotentials = 0;
         for (NodesHashMap linkedHasMap : nodesHashMaps.values()) {
@@ -160,7 +175,7 @@ public class NodeTypeDepot {
      * {@code Variable} to {@code Node}.
      */
     private static class NodesHashMap {
-        LinkedHashMap<Variable, Node> nodesHashMap;
+        final LinkedHashMap<Variable, Node> nodesHashMap;
         
         NodesHashMap() {
             nodesHashMap = new LinkedHashMap<>();

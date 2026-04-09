@@ -22,7 +22,12 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import java.util.List;
 
 /**
- * @author marias
+ * A potential indicating that the distribution is identical to the previous temporal
+ * slice. Used in dynamic Bayesian networks where a variable at time t has the same
+ * CPT as at time t-1. Cannot be directly sampled or projected; the original potential
+ * must be retrieved via {@link #getOriginalPotential(ProbNet)}.
+ *
+ * @author Manuel Arias
  * @version 1.0
  */
 @PotentialType(names = "Same as previous") public class SameAsPrevious extends Potential {
@@ -34,17 +39,6 @@ import java.util.List;
     public SameAsPrevious(List<Variable> variables) {
         super(variables, PotentialRole.CONDITIONAL_PROBABILITY);
     }
-    
-    //    /**
-    //     * Utility constructor
-    //     * @param variable
-    //     * @throws NodeNotFoundException
-    //     * @throws NodeNotFoundException
-    //     */
-    //    public SameAsPrevious (Variable variable)
-    //     {
-    //         super (variable, new ArrayList<Variable>());
-    //     }
     
     /**
      * Copy constructor
@@ -96,7 +90,7 @@ import java.util.List;
         @Nullable Variable previousVariable = null;
         while (timeSlice > 0 && previousVariable == null) {
             previousVariable = probNet.getVariable(variable.getBaseName(), --timeSlice);
-            previousPotential = probNet.getNode(previousVariable).getPotentials().get(0);
+            previousPotential = probNet.getNode(previousVariable).getPotentials().getFirst();
             if (previousPotential instanceof SameAsPrevious) {
                 previousVariable = null;
             }
@@ -131,16 +125,16 @@ import java.util.List;
         return super.deepCopy(copyNet);
     }
     
+    /** No state-indexed data; returns a copy. */
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
-        // TODO Auto-generated method stub
-        return null;
+        return copy();
     }
-    
+
+    /** No state-indexed data; returns a copy. */
     @Override
     public Potential reorder(Variable variable, State[] newOrder) {
-        // TODO Auto-generated method stub
-        return null;
+        return copy();
     }
     
 }

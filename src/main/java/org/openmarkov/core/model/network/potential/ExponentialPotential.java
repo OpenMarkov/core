@@ -19,10 +19,14 @@ import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A GLM potential that applies the exponential link function: the conditioned
+ * variable's value is {@code exp(linear_combination)}. Used for modeling rates,
+ * counts, and other positive-valued quantities.
+ */
 @PotentialType(names = "Exponential") public class ExponentialPotential extends GLMPotential {
     
     public ExponentialPotential(List<Variable> variables, PotentialRole role) {
@@ -53,7 +57,7 @@ import java.util.Map;
      * @return True if it is valid
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-        return role == PotentialRole.UNSPECIFIED || (!variables.isEmpty() && variables.get(0).getVariableType()
+        return role == PotentialRole.UNSPECIFIED || (!variables.isEmpty() && variables.getFirst().getVariableType()
                 == VariableType.NUMERIC
         );
     }
@@ -70,14 +74,14 @@ import java.util.Map;
         int constantIndex = getConstantIndex(covariates);
         
         List<Variable> projectedPotentialVariables = new ArrayList<>(evidencelessVariables);
-        projectedPotentialVariables.add(0, variables.get(0));
+        projectedPotentialVariables.addFirst(variables.getFirst());
         TablePotential projectedPotential = new TablePotential(projectedPotentialVariables, role);
         Variable conditionedVariable = getConditionedVariable();
         int numStates = conditionedVariable.getNumStates();
-        int parentFirstIndex = (conditionedVariable == projectedPotentialVariables.get(0)) ? 1 : 0;
+        int parentFirstIndex = (conditionedVariable == projectedPotentialVariables.getFirst()) ? 1 : 0;
         int[] offsets = projectedPotential.getOffsets();
         int[] dimensions = projectedPotential.getDimensions();
-        for (int i = 0; i < projectedPotential.values.length; i += numStates) {
+        for (int i = 0; i < projectedPotential.getValues().length; i += numStates) {
             // Set the values of variables without evidence
             for (int j = parentFirstIndex; j < projectedPotentialVariables.size(); ++j) {
                 Variable variable = projectedPotentialVariables.get(j);
@@ -98,7 +102,7 @@ import java.util.Map;
                         regression += covariateValue * coefficients[j];
                 }
             }
-            projectedPotential.values[i] = Math.exp(regression);
+            projectedPotential.getValues()[i] = Math.exp(regression);
         }
         return projectedPotential;
     }
@@ -124,16 +128,16 @@ import java.util.Map;
         return super.deepCopy(copyNet);
     }
     
+    /** Expression-based potential; variable-name-based, not index-based; returns a copy. */
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
-        // TODO Auto-generated method stub
-        return null;
+        return copy();
     }
-    
+
+    /** Expression-based potential; variable-name-based, not index-based; returns a copy. */
     @Override
     public Potential reorder(Variable variable, State[] newOrder) {
-        // TODO Auto-generated method stub
-        return null;
+        return copy();
     }
     
 }

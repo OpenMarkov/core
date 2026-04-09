@@ -18,13 +18,13 @@ import java.util.List;
  * consists of multiple such cases.
  */
 public class CaseDatabase {
-	private List<Variable> variables;
+	private final List<Variable> variables;
 
 	/**
 	 * Cases in the database. First argument: case number. Second argument: variable.
 	 * The content is the state of the variable.
 	 */
-	private int[][] cases;
+	private final int[][] cases;
 
 	/**
 	 * Constructor for CaseDatabase.
@@ -45,7 +45,7 @@ public class CaseDatabase {
 		this.cases = new int[casesToCopy.length][variables.size()];
 
 		for (int i = 0; i < cases.length; ++i) {
-			for (int j = 0; j < cases[i].length; ++i) {
+			for (int j = 0; j < cases[i].length; ++j) {
 				cases[i][j] = casesToCopy[i][j];
 			}
 		}

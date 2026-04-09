@@ -13,21 +13,34 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 
 /**
+ * Maintains two stacks of {@link PNEdit}s (done and undone) to support
+ * undo and redo operations on a probabilistic network.
+ *
  * @author jrico
  */
-
 public class EditsHistory {
     private final ArrayDeque<PNEdit> doneEdits = new ArrayDeque<>();
     private final ArrayDeque<PNEdit> undoneEdits = new ArrayDeque<>();
     
+    /**
+     * @return {@code true} if there are edits that can be undone
+     */
     public boolean canUndo() {
         return !doneEdits.isEmpty();
     }
     
+    /**
+     * @return {@code true} if there are edits that can be redone
+     */
     public boolean canRedo() {
         return !undoneEdits.isEmpty();
     }
     
+    /**
+     * Returns the next edit that would be undone, without actually undoing it.
+     *
+     * @return the next edit to undo, or {@code null} if the done stack is empty
+     */
     public @Nullable PNEdit nextEditToUndo() {
         if (!canUndo()) {
             return null;
@@ -35,6 +48,11 @@ public class EditsHistory {
         return doneEdits.getFirst();
     }
     
+    /**
+     * Returns the next edit that would be redone, without actually redoing it.
+     *
+     * @return the next edit to redo, or {@code null} if the undone stack is empty
+     */
     public @Nullable PNEdit nextEditToRedo() {
         if (!canRedo()) {
             return null;
@@ -42,6 +60,11 @@ public class EditsHistory {
         return undoneEdits.getFirst();
     }
     
+    /**
+     * Undoes the most recent edit and moves it to the undone stack.
+     *
+     * @return the edit that was undone, or {@code null} if nothing to undo
+     */
     public @Nullable PNEdit undo() {
         if (!canUndo()) {
             return null;
@@ -66,6 +89,11 @@ public class EditsHistory {
         return doneEdits.removeFirst();
     }
     
+    /**
+     * Redoes the most recently undone edit and moves it back to the done stack.
+     *
+     * @return the edit that was redone, or {@code null} if nothing to redo
+     */
     public @Nullable PNEdit redo() {
         if (!canRedo()) {
             return null;
@@ -78,19 +106,33 @@ public class EditsHistory {
         return redoneEdit;
     }
     
+    /**
+     * Clears all undone edits, making them no longer available for redo.
+     */
     public void removeUndoneEdits() {
         undoneEdits.clear();
     }
     
+    /**
+     * Records a new edit, clearing any undone edits (redo is no longer possible).
+     *
+     * @param edit the edit to record
+     */
     public void addEdit(PNEdit edit) {
         removeUndoneEdits();
         doneEdits.addFirst(edit);
     }
     
+    /**
+     * @return a copy of the done edits list (most recent first)
+     */
     public ArrayList<PNEdit> getDoneEdits() {
         return new ArrayList<>(this.doneEdits);
     }
     
+    /**
+     * @return a copy of the undone edits list (most recently undone first)
+     */
     public ArrayList<PNEdit> getUndoneEdits() {
         return new ArrayList<>(this.undoneEdits);
     }

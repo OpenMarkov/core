@@ -21,12 +21,16 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
-@PotentialType(names = "Delta") public class DeltaPotential extends Potential {
+/**
+ * A deterministic potential that assigns probability 1 to a single state (for finite-states
+ * variables) or a single numeric value (for numeric/discretized variables). Represents a
+ * Dirac delta distribution.
+ *
+ * @author Manuel Arias
+ */
+@PotentialType(names = "Delta") public class DeltaPotential extends Potential implements Projectable, Scalable {
     
     // state and stateIndex are used for finite states variables
     private State state = null;
@@ -58,12 +62,6 @@ import java.util.List;
             initFiniteStates(conditionedVariable, conditionedVariable.getStates()[0]);
         }
     }
-    
-    //    public DeltaPotential(Variable utilityVariable, List<Variable> variables)
-    //    {
-    //    	this(variables, PotentialRole.UTILITY);
-    //    	this.utilityVariable = utilityVariable;
-    //    }
     
     public DeltaPotential(DeltaPotential potential) {
         super(potential);
@@ -109,19 +107,19 @@ import java.util.List;
         // numeric variable
         if (state == null) {
             TablePotential projectedPotential = new TablePotential(new ArrayList<>(), PotentialRole.CONDITIONAL_PROBABILITY);
-            projectedPotential.values[0] = numericValue;
+            projectedPotential.getValues()[0] = numericValue;
             return projectedPotential;
         }
         // finite states variable
         Variable conditionedVariable = getConditionedVariable();
         if (evidenceCase.contains(conditionedVariable)) {
             TablePotential projectedPotential = new TablePotential(new ArrayList<>(), PotentialRole.CONDITIONAL_PROBABILITY);
-            projectedPotential.values[0] = 1;
+            projectedPotential.getValues()[0] = 1;
             return projectedPotential;
         }
-        TablePotential projectedPotential = new TablePotential(Arrays.asList(conditionedVariable), PotentialRole.CONDITIONAL_PROBABILITY);
-        for (int i = 0; i < projectedPotential.values.length; ++i) {
-            projectedPotential.values[i] = (i == stateIndex) ? 1 : 0;
+        TablePotential projectedPotential = new TablePotential(Collections.singletonList(conditionedVariable), PotentialRole.CONDITIONAL_PROBABILITY);
+        for (int i = 0; i < projectedPotential.getValues().length; ++i) {
+            projectedPotential.getValues()[i] = (i == stateIndex) ? 1 : 0;
         }
         return projectedPotential;
     }
@@ -134,11 +132,7 @@ import java.util.List;
     @Override public Potential copy() {
         return new DeltaPotential(this);
     }
-    
-    @Override public boolean isUncertain() {
-        return false;
-    }
-    
+
     public State getState() {
         return state;
     }
@@ -161,7 +155,7 @@ import java.util.List;
     }
     
     @Override public String toString() {
-        return variables.get(0) + " = " + (state != null ? state.getName() : numericValue);
+        return variables.getFirst() + " = " + (state != null ? state.getName() : numericValue);
     }
     
     @Override public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase) {
@@ -171,11 +165,16 @@ import java.util.List;
         } else {
             inducedFinding = new Finding(getConditionedVariable(), numericValue);
         }
-        return Arrays.asList(inducedFinding);
+        return List.of(inducedFinding);
     }
     
     @Override public void scalePotential(double scale) {
         this.numericValue *= scale;
+    }
+
+    /** Implements {@link Scalable#scale(double)}; delegates to {@link #scalePotential(double)}. */
+    @Override public void scale(double factor) {
+        scalePotential(factor);
     }
     
     @Override public Potential deepCopy(ProbNet copyNet) {
@@ -192,16 +191,50 @@ import java.util.List;
         
     }
     
+    /**
+     * Returns a copy of this potential with the variables in the new order.
+     * The conditioned variable (first in the list) is always
+     * {@code variables.getFirst()} regardless of variable ordering, so the
+     * delta state/value is preserved unchanged.
+     */
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
-        // TODO Auto-generated method stub
-        return null;
+        DeltaPotential copy = new DeltaPotential(newOrderOfVariables, role);
+        copy.state = this.state;
+        copy.stateIndex = this.stateIndex;
+        copy.numericValue = this.numericValue;
+        copy.properties = this.properties;
+        return copy;
     }
-    
+
+    /**
+     * Returns a copy of this potential reflecting the new state order of
+     * {@code variable}. If {@code variable} is the conditioned variable (a
+     * finite-states variable), the stored {@code stateIndex} is remapped to
+     * point to the same {@link State} object in the new order. If
+     * {@code variable} is a parent, the delta value is independent of parent
+     * states, so a plain copy is returned.
+     */
     @Override
     public Potential reorder(Variable variable, State[] newOrder) {
-        // TODO Auto-generated method stub
-        return null;
+        Variable conditioned = getConditionedVariable();
+        if (variable == conditioned && state != null) {
+            // Find the new index of our state in the reordered array
+            int newIndex = -1;
+            for (int i = 0; i < newOrder.length; i++) {
+                if (newOrder[i] == state) {
+                    newIndex = i;
+                    break;
+                }
+            }
+            DeltaPotential copy = new DeltaPotential(variables, role);
+            copy.state = this.state;
+            copy.stateIndex = newIndex >= 0 ? newIndex : this.stateIndex;
+            copy.numericValue = this.numericValue;
+            copy.properties = this.properties;
+            return copy;
+        }
+        return copy();
     }
     
 }

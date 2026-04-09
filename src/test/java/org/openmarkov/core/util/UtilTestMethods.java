@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.AbstractIndexedPotential;
 import org.openmarkov.core.model.network.potential.GTablePotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
@@ -88,7 +89,7 @@ public class UtilTestMethods {
     public static double getConfiguration(ArrayList<Variable> variables, int[] coordinateVariables,
                                           TablePotential potential) {
         int position = getConfigurationPosition(variables, coordinateVariables, potential);
-        return potential.values[position];
+        return potential.getValues()[position];
     }
     
     /**
@@ -136,7 +137,7 @@ public class UtilTestMethods {
      * (an <code>double</code>).
      */
     private static int getConfigurationPosition(List<Variable> variables, int[] coordinateVariables,
-                                                TablePotential potential) {
+                                                AbstractIndexedPotential potential) {
         List<Variable> variablesPotential = potential.getVariables();
         int[] coordinate = new int[variablesPotential.size()];
         int i = 0;

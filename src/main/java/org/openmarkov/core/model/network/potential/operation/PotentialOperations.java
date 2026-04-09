@@ -8,7 +8,6 @@
 package org.openmarkov.core.model.network.potential.operation;
 
 import org.openmarkov.core.exception.NotSupportedOperationException;
-import org.openmarkov.core.exception.PotentialOperationException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
@@ -47,7 +46,6 @@ public class PotentialOperations {
      * @param potential           Potential
      * @param variablesOfInterest List of the variables of interest
      * @return Marginalized potential
-     * @throws PotentialOperationException PotentialOperationException
      */
     public static Potential marginalize(Potential potential, List<Variable> variablesOfInterest)
             {
@@ -86,7 +84,6 @@ public class PotentialOperations {
      * @param variablesToKeep      List of variables to keep
      * @param variablesToEliminate Listt of the variables to eliminate
      * @return Marginalized potential
-     * @throws PotentialOperationException PotentialOperationException
      *                                     Condition: variablesToKeep + variablesToEliminate =
      *                                     potential.getVariables()
      *                                     Condition: variablesToKeep
@@ -112,7 +109,6 @@ public class PotentialOperations {
      * @param potentials           List of table potentials
      * @param variablesToEliminate List of the variables to eliminate
      * @return Processed potential
-     * @throws PotentialOperationException PotentialOperationException
      */
     public static Potential multiplyAndEliminate(List<TablePotential> potentials, List<Variable> variablesToEliminate)
             {
@@ -132,7 +128,7 @@ public class PotentialOperations {
      * @param potentials          List of table potentials
      * @param variableToEliminate Variable to eliminate
      * @return Processed potential
-     * @throws PotentialOperationException PotentialOperationException
+
      */
     public static Potential multiplyAndEliminate(List<TablePotential> potentials, Variable variableToEliminate)
             {
@@ -142,7 +138,7 @@ public class PotentialOperations {
     /**
      * @param potentials potentials array to multiply
      * @return The multiplied potentials
-     * @throws PotentialOperationException PotentialOperationException
+
      */
     @SuppressWarnings("unchecked") public static Potential multiply(List<? extends Potential> potentials)
             {
@@ -159,7 +155,7 @@ public class PotentialOperations {
      *                            this set may contain some variables that are not in any potential)
      *                            {@code potentials}
      * @return The multiplied potentials
-     * @throws PotentialOperationException PotentialOperationException
+
      */
     public static Potential multiplyAndMarginalize(List<TablePotential> potentials, List<Variable> variablesOfInterest)
             {
@@ -198,7 +194,7 @@ public class PotentialOperations {
      *                            this set may contain some variables that are not in any potential)
      *                            {@code potentials}
      * @return The multiplied potentials
-     * @throws PotentialOperationException PotentialOperationException
+
      */
     public static Object[] multiplyAndMaximize(List<Potential> potentials, List<Variable> variablesOfInterest)
             {
@@ -238,7 +234,7 @@ public class PotentialOperations {
      * @param variablesToEliminate The set of variables eliminated by
      *                             marginalization (in general, by summing out or maximizing)
      * @return result the multiplied potentials
-     * @throws PotentialOperationException PotentialOperationException
+
      *                                     Condition: variablesToKeep and variablesToEliminate are a partition of
      *                                     the union of the variables of the potentials
      */

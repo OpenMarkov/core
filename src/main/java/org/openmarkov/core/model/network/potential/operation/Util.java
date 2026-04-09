@@ -8,7 +8,8 @@
 package org.openmarkov.core.model.network.potential.operation;
 
 import java.io.File;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * @author manuel
@@ -29,7 +30,7 @@ public class Util {
 	 */
 	public static String printInteger(long number) {
 		String numberString = "";
-		Stack<String> stack = new Stack<>();
+		Deque<String> stack = new ArrayDeque<>();
 		long remainder;
 		do {
 			remainder = number % 1000;

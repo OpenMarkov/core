@@ -154,7 +154,7 @@ public class UtilityOperations {
 	 * @param values        Array of values where each value represents the value of the cycle defined by the index in the array
 	 * @param lenghtOfCycle Number of cycles in a year (For example, with monthly cycles, n = 12)
 	 * @return result of applying the Composite Simpson’s 1/3rd Rule
-	 * @throws Exception Exception
+	 * @throws IntervalsAreNotEvenException if the intervals are not even
 	 */
 	public static double applyCompositeSimpsonsOneThirdRule(double[] values, int lenghtOfCycle) throws IntervalsAreNotEvenException {
 		if ((values.length * lenghtOfCycle) % 2 == 0 || (values.length * lenghtOfCycle) <= 1) {
@@ -177,7 +177,7 @@ public class UtilityOperations {
 	 * @param values        Array of values where each value represents the value of the cycle defined by the index in the array
 	 * @param lenghtOfCycle Number of cycles in a year (For example, with monthly cycles, n = 12)
 	 * @return result of applying the Composite Simpson’s 3/8th Rule
-	 * @throws Exception Exception
+	 * @throws IntervalsAreNotMultipleOf3Exception if the intervals are not a multiple of 3
 	 */
 	public static double applyCompositeSimpsonsThreeEighthsRule(double[] values, int lenghtOfCycle) throws IntervalsAreNotMultipleOf3Exception {
 		if ((values.length * lenghtOfCycle - 1) % 3 != 0) {

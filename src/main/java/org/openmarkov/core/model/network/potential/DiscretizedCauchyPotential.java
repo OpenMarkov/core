@@ -75,7 +75,7 @@ import java.util.List;
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
         // not a utility potential, only discrete or discretized conditioned variables
         return role != PotentialRole.UNSPECIFIED && !variables.isEmpty()
-                && variables.get(0).getVariableType() != VariableType.NUMERIC;
+                && variables.getFirst().getVariableType() != VariableType.NUMERIC;
     }
     
     public Potential getMedian() {
@@ -105,7 +105,7 @@ import java.util.List;
         // If there is no unobserved variables, the resulting potential is constant
         if (unobservedVariables.isEmpty()) {// Projection = constant potential
             // For the time being no utility potentials are supported
-            projectedPotential.values[0] = 1.0;
+            projectedPotential.getValues()[0] = 1.0;
         } else {
             // Project median and scale potentials
             TablePotential projectedMedianPotential = median
@@ -121,18 +121,18 @@ import java.util.List;
             // Copy configurations using the accumulated offsets algorithm
             for (int configuration = 0; configuration < numConfigurations; configuration++) {
                 int configurationIndex = configuration * numStates;
-                double median = projectedMedianPotential.values[configuration];
-                double scale = projectedScalePotential.values[configuration];
+                double median = projectedMedianPotential.getValues()[configuration];
+                double scale = projectedScalePotential.getValues()[configuration];
                 org.apache.commons.math3.distribution.CauchyDistribution dist = new org.apache.commons.math3.distribution.CauchyDistribution(
                         median, scale);
                 double lastCdf = 0;
                 for (int i = 0; i < numStates - 1; i++) {
                     double cdf = dist.cumulativeProbability(thresholds[i]);
-                    projectedPotential.values[configurationIndex + i] = cdf - lastCdf;
+                    projectedPotential.getValues()[configurationIndex + i] = cdf - lastCdf;
                     lastCdf = cdf;
                 }
                 // The remaining probability is assigned to the last state
-                projectedPotential.values[configurationIndex + (numStates - 1)] = 1 - lastCdf;
+                projectedPotential.getValues()[configurationIndex + (numStates - 1)] = 1 - lastCdf;
             }
         }
         return projectedPotential;
@@ -150,8 +150,7 @@ import java.util.List;
         if (conditionedVariable.getVariableType() == VariableType.DISCRETIZED) {
             double[] limits = conditionedVariable.getPartitionedInterval().getLimits();
             // Ignore first limit, as it is considered minus infinity
-            for (int i = 0; i < numStates; ++i)
-                thresholds[i] = limits[i + 1];
+            System.arraycopy(limits, 1, thresholds, 0, numStates);
         } else {
             // Default thresholds
             for (int i = 0; i < numStates; ++i)
@@ -163,34 +162,17 @@ import java.util.List;
     @Override public Potential copy() {
         return new DiscretizedCauchyPotential(this);
     }
-    
-    @Override public boolean isUncertain() {
-        return false;
-    }
-    
+
     private Potential getDefaultMedianPotential() {
-        Variable medianVariable = new Variable("Median");
         List<Variable> medianPotentialVariables = new ArrayList<>(variables);
-        // Remove conditioned variable
-        // medianPotentialVariables.remove(0);
-        // We create a utility potential because it is the only kind of
-        // potential assumed to have a numeric conditioned variable
         return new TablePotential(medianPotentialVariables, PotentialRole.CONDITIONAL_PROBABILITY);
-        //return new TablePotential(medianVariable, medianPotentialVariables);
     }
     
     private Potential getDefaultScalePotential() {
-        Variable scaleVariable = new Variable("Scale");
         List<Variable> scalePotentialVariables = new ArrayList<>(variables);
-        // Remove conditioned variable
-        // scalePotentialVariables.remove(0);
-        // We create a utility potential because it is the only kind of
-        // potential assumed to have a numeric conditioned variable
-        //TablePotential scalePotential = new TablePotential(scaleVariable, scalePotentialVariables);
         TablePotential scalePotential = new TablePotential(scalePotentialVariables,
                                                            PotentialRole.CONDITIONAL_PROBABILITY);
-        // Set variance to 1 for all configurations
-        Arrays.fill(scalePotential.values, 1);
+        Arrays.fill(scalePotential.getValues(), 1);
         return scalePotential;
     }
     
@@ -261,13 +243,22 @@ import java.util.List;
     
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
-        // TODO Auto-generated method stub
-        return null;
+        DiscretizedCauchyPotential copy = new DiscretizedCauchyPotential(this);
+        copy.variables = new ArrayList<>(newOrderOfVariables);
+        Potential reorderedMedian = this.median.reorder(newOrderOfVariables);
+        copy.median = (reorderedMedian != null) ? reorderedMedian : this.median.copy();
+        Potential reorderedScale = this.scale.reorder(newOrderOfVariables);
+        copy.scale = (reorderedScale != null) ? reorderedScale : this.scale.copy();
+        return copy;
     }
-    
+
     @Override
     public Potential reorder(Variable variable, State[] newOrder) {
-        // TODO Auto-generated method stub
-        return null;
+        DiscretizedCauchyPotential copy = new DiscretizedCauchyPotential(this);
+        Potential reorderedMedian = this.median.reorder(variable, newOrder);
+        copy.median = (reorderedMedian != null) ? reorderedMedian : this.median.copy();
+        Potential reorderedScale = this.scale.reorder(variable, newOrder);
+        copy.scale = (reorderedScale != null) ? reorderedScale : this.scale.copy();
+        return copy;
     }
 }

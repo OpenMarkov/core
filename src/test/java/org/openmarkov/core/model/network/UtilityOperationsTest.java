@@ -81,12 +81,12 @@ public class UtilityOperationsTest {
         // Potentials
         TablePotential potDisease = new TablePotential(Arrays.asList(varDisease),
                                                        PotentialRole.CONDITIONAL_PROBABILITY);
-        potDisease.values = new double[]{0.86, 0.14};
+        potDisease.setValues(new double[]{0.86, 0.14});
         nodeDisease.setPotential(potDisease);
         
         TablePotential potResult_of_test = new TablePotential(Arrays.asList(varResult_of_test, varDo_test_, varDisease),
                                                               PotentialRole.CONDITIONAL_PROBABILITY);
-        potResult_of_test.values = new double[]{1, 0, 0, 0, 0.97, 0.03, 1, 0, 0, 0, 0.09, 0.91};
+        potResult_of_test.setValues(new double[]{1, 0, 0, 0, 0.97, 0.03, 1, 0, 0, 0, 0.09, 0.91});
         nodeResult_of_test.setPotential(potResult_of_test);
         
         ExactDistrPotential potHealth_state = new ExactDistrPotential(

@@ -25,17 +25,17 @@ public class LocaleChangeEvent extends EventObject {
 	/**
 	 * the language of the locale
 	 */
-    private String language;
+    private final String language;
 	/**
 	 * the locale
 	 */
-    private Locale locale;
+    private final Locale locale;
 
 	/**
 	 * default LocaleChangeEvent constructor when the language is set. In this
 	 * case, the locale for the LocaleChangeEvent is internally set.
 	 *
-	 * @param language
+	 * @param language the language
 	 */
 	public LocaleChangeEvent(Object source, final String language) {
 
@@ -46,9 +46,6 @@ public class LocaleChangeEvent extends EventObject {
 		} else if (language.equals("es")) {
 			locale = new Locale("es");
 		} else {
-			//System.out.println("LocaleChangeEvent failure for locale " 
-			//                   + locale.toString() + ": not defined");
-			//System.out.println("Setting english as default locale...");
 			locale = Locale.ENGLISH;
 		}
 	}
@@ -57,7 +54,7 @@ public class LocaleChangeEvent extends EventObject {
 	 * default LocaleChangeEvent constructor when the locale is set. In this
 	 * case, the language for the LocaleChangeEvent is internally set.
 	 *
-	 * @param locale
+	 * @param locale the locale
 	 */
 	public LocaleChangeEvent(Object source, final Locale locale) {
 
@@ -68,9 +65,6 @@ public class LocaleChangeEvent extends EventObject {
 		} else if (locale.toString().equals("es")) {
 			language = "es";
 		} else {
-			//System.out.println("LocaleChangeEvent failure for locale " 
-			//                   + locale.toString() + ": not defined");
-			//System.out.println("Setting english as default locale...");
 			language = "en";
 		}
 

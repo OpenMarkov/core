@@ -64,8 +64,8 @@ public class Filter<PluginClass> {
     /**
      * Constructor for Filter.
      *
-     * @param aClass
-     * @param type
+     * @param aClass the a class
+     * @param type the type
      */
     private Filter(Class<?> aClass, String type) {
         super();

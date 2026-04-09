@@ -58,7 +58,7 @@ public abstract class OptimalStrategyTaskIDTest extends OptimalStrategyTaskDecTe
 					for (State state : auxBranch.getStates()) {
 						// Check that 'state' has non-zero probability in the
 						// CPN
-						assertTrue(probs.values[rootVariable.getStateIndex(state)] > 0);
+						assertTrue(probs.getValues()[rootVariable.getStateIndex(state)] > 0);
 						EvidenceCase newEvi = new EvidenceCase(parentEvi.getFindings());
 						Finding finding = new Finding(rootVariable, state);
 							newEvi.addFinding(finding);
@@ -89,7 +89,7 @@ public abstract class OptimalStrategyTaskIDTest extends OptimalStrategyTaskDecTe
 	// @return The number of values in the potential that are greater than zero
 	private int getNumProbsNotZero(TablePotential probs) {
 		int numNotZero = 0;
-		double[] values = probs.values;
+		double[] values = probs.getValues();
 		for (double value : values) {
 			if (value > 0.0) {
 				numNotZero = numNotZero + 1;
@@ -157,7 +157,7 @@ public abstract class OptimalStrategyTaskIDTest extends OptimalStrategyTaskDecTe
 	protected void testMEU(ProbNet diagram,double expectedMeu) throws IncompatibleEvidenceException{
 		OptimalStrategy algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(diagram);
 		// test max expected utility
-        Double meuEvaluation = algorithm.getGlobalUtility().values[0];
+        Double meuEvaluation = algorithm.getGlobalUtility().getValues()[0];
 		assertEquals(expectedMeu, meuEvaluation, maxError);
 	}
 

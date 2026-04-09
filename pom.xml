@@ -15,6 +15,18 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-maven</artifactId>
+                <configuration>
+                    <targetClasses>
+                        <param>org.openmarkov.core.*</param>
+                    </targetClasses>
+                    <targetTests>
+                        <param>org.openmarkov.core.*</param>
+                    </targetTests>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.4.2</version>

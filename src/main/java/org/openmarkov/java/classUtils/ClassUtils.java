@@ -59,8 +59,9 @@ public class ClassUtils {
     //Only usable on testing
     public static File getResourceAsFile(Class<?> sourceClass, String resource){
         var is = sourceClass.getResource(resource).getFile();
-        while(is.startsWith("/")){
-            is=is.replaceFirst("/","");
+        // On Windows, resource URLs start with /C:/ — strip only the leading slash before a drive letter
+        if (is.length() > 2 && is.charAt(0) == '/' && is.charAt(2) == ':') {
+            is = is.substring(1);
         }
         is=is.replaceFirst("target/test-classes/", "src/test/resources/")
              .replaceFirst("target/classes/", "src/main/resources/");

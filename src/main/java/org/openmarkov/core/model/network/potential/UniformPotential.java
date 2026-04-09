@@ -28,10 +28,11 @@ import java.util.Random;
 /**
  * Potential with discrete and/or continuous variables.
  *
- * @author marias
+ * @author Manuel Arias
  * @version 1.0
  */
-@PotentialType(names = "Uniform") public class UniformPotential extends Potential {
+@PotentialType(names = "Uniform") public class UniformPotential extends Potential implements Projectable {
+
     // Attributes
     /**
      * Value of a potential configuration when all the variables are discrete.
@@ -39,7 +40,6 @@ import java.util.Random;
     private double discreteValue = 0.0;
     
     // Constructors
-    
     /**
      * @param variables {@code ArrayList} of {@code Variable}
      * @param role      {@code PotentialRole}
@@ -50,19 +50,6 @@ import java.util.Random;
             discreteValue = calculateDiscreteValue(variables);
         }
     }
-    
-    //    /**
-    //     * @param variables <code>ArrayList</code> of <code>Variable</code>
-    //     * @param utilityVariable <code>Variable</code>
-    //     */
-    //    public UniformPotential (Variable utilityVariable, List<Variable> variables)
-    //    {
-    //        super (utilityVariable, variables);
-    //        if (allVariablesAreDiscrete (variables))
-    //        {
-    //            discreteValue = calculateDiscreteValue (variables);
-    //        }
-    //    }
     
     /**
      * @param role      {@code PotentialRole}
@@ -85,24 +72,6 @@ import java.util.Random;
     }
     
     // Methods
-    
-    /**
-     * Returns if an instance of a certain Potential type makes sense given the
-     * variables and the potential role
-     *
-     * @param node      {@code Node}
-     * @param variables {@code ArrayList} of {@code Variable}
-     * @param role      {@code PotentialRole}
-     *
-     * @return True if it is valid
-     */
-    public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-        // TODO
-        return true;
-    }
-    
-    // Methods
-    
     /**
      * @param evidenceCase        {@code evidenceCase}
      * @param projectedPotentials List of projected potentials
@@ -119,19 +88,17 @@ import java.util.Random;
     @Override
     public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
         switch (this.role) {
-            case LINK_RESTRICTION, UNSPECIFIED -> {
-                throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
-            }
+            case LINK_RESTRICTION, UNSPECIFIED -> throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
             case CONDITIONAL_PROBABILITY, JOINT_PROBABILITY, POLICY -> {
-                Variable conditionedVariable = variables.get(0);
+                Variable conditionedVariable = variables.getFirst();
                 boolean isNumeric = conditionedVariable.getVariableType() == VariableType.NUMERIC;
                 if (isNumeric) {
                     throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
                 }
                 if (evidenceCase != null && evidenceCase.contains(conditionedVariable)) {
                     // returns a constant
-                    TablePotential projectedPotential = new TablePotential(new ArrayList<Variable>(), role);
-                    projectedPotential.values[0] = 1.0 / conditionedVariable.getNumStates();
+                    TablePotential projectedPotential = new TablePotential(new ArrayList<>(), role);
+                    projectedPotential.getValues()[0] = 1.0 / conditionedVariable.getNumStates();
                     return projectedPotential;
                 }
                 return createUniformTablePotential(evidenceCase, variables);
@@ -204,17 +171,13 @@ import java.util.Random;
     }
     
     @Override public int sampleConditionedVariable(Random randomGenerator, Map<Variable, Integer> parentStateIndexes) {
-        return randomGenerator.nextInt(variables.get(0).getNumStates());
+        return randomGenerator.nextInt(variables.getFirst().getNumStates());
     }
     
     @Override public double getProbability(HashMap<Variable, Integer> sampledStateIndexes) {
-        return 1.0 / variables.get(0).getNumStates();
+        return 1.0 / variables.getFirst().getNumStates();
     }
-    
-    @Override public boolean isUncertain() {
-        return false;
-    }
-    
+
     @Override public String toString() {
         return super.toString() + " = Uniform";
     }
@@ -231,15 +194,15 @@ import java.util.Random;
         
     }
     
+    /** Uniform distribution is order-invariant; returns a copy. */
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
-        // TODO Auto-generated method stub
-        return null;
+        return copy();
     }
-    
+
+    /** Uniform distribution is order-invariant; returns a copy. */
     @Override
     public Potential reorder(Variable variable, State[] newOrder) {
-        // TODO Auto-generated method stub
-        return null;
+        return copy();
     }
 }

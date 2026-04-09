@@ -22,11 +22,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class IDFactory extends NetsFactory {
-	public static String decTestName = "Do test?";
-	public static String therapyName = "Therapy";
-	public static String healthStateName = "Health state";
-	public static String therapyCostName = "Cost of therapy";
-	public static String testCostName = "Cost of test";
+	public static final String decTestName = "Do test?";
+	public static final String therapyName = "Therapy";
+	public static final String healthStateName = "Health state";
+	public static final String therapyCostName = "Cost of therapy";
+	public static final String testCostName = "Cost of test";
 
 	/**
 	 * @return An influence diagram without decisions, with only two nodes: X (chance) and U (utility).
@@ -423,30 +423,30 @@ public class IDFactory extends NetsFactory {
 		// Potentials
 		TablePotential potDisease = new TablePotential(Arrays.asList(varDisease),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potDisease.values = new double[] { 0.98, 0.02 };
+		potDisease.setValues(new double[] { 0.98, 0.02 });
 		nodeDisease.setPotential(potDisease);
 
 		TablePotential potResult_of_test = new TablePotential(Arrays.asList(varResult_of_test, varDisease, varDo_test),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potResult_of_test.values = new double[] { 1, 0, 0, 1, 0, 0, 0, 0.97, 0.03, 0, 0.09, 0.91 };
+		potResult_of_test.setValues(new double[] { 1, 0, 0, 1, 0, 0, 0, 0.97, 0.03, 0, 0.09, 0.91 });
 		nodeResult_of_test.setPotential(potResult_of_test);
 
 		TablePotential potSymptom = new TablePotential(Arrays.asList(varSymptom, varDisease),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potSymptom.values = new double[] { 0.95, 0.05, 0.2, 0.8 };
+		potSymptom.setValues(new double[] { 0.95, 0.05, 0.2, 0.8 });
 		nodeSymptom.setPotential(potSymptom);
 
 		ExactDistrPotential potHealth_state = new ExactDistrPotential(
 				Arrays.asList(varHealth_state, varDisease, varTherapy));
-		potHealth_state.getTablePotential().values = new double[] { 10, 3, 9, 8 };
+		potHealth_state.getTablePotential().setValues(new double[] { 10, 3, 9, 8 });
 		nodeHealth_state.setPotential(potHealth_state);
 
 		ExactDistrPotential potCost_of_test = new ExactDistrPotential(Arrays.asList(varCost_of_test, varDo_test));
-		potCost_of_test.getTablePotential().values = new double[] { 0, -0.2 };
+		potCost_of_test.getTablePotential().setValues(new double[] { 0, -0.2 });
 		nodeCost_of_test.setPotential(potCost_of_test);
 
 		ExactDistrPotential potCost_of_therapy = new ExactDistrPotential(Arrays.asList(varCost_of_therapy, varTherapy));
-		potCost_of_therapy.getTablePotential().values = new double[] { 0, -0.25 };
+		potCost_of_therapy.getTablePotential().setValues(new double[] { 0, -0.25 });
 		nodeCost_of_therapy.setPotential(potCost_of_therapy);
 
 		// Link restrictions and revealing states
@@ -532,12 +532,12 @@ public class IDFactory extends NetsFactory {
 		// Potentials
 		TablePotential potDisease = new TablePotential(Arrays.asList(varDisease),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potDisease.values = new double[] { 0.86, 0.14 };
+		potDisease.setValues(new double[] { 0.86, 0.14 });
 		nodeDisease.setPotential(potDisease);
 
 		ExactDistrPotential potHealth_state = new ExactDistrPotential(
 				Arrays.asList(varHealth_state, varDisease, varTherapy));
-		potHealth_state.getTablePotential().values = new double[] { 10, 3, 9, 8 };
+		potHealth_state.getTablePotential().setValues(new double[] { 10, 3, 9, 8 });
 		nodeHealth_state.setPotential(potHealth_state);
 
 		// Link restrictions and revealing states
@@ -570,16 +570,16 @@ public class IDFactory extends NetsFactory {
 		// Potentials
 		TablePotential potDisease = new TablePotential(Arrays.asList(varDisease),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potDisease.values = new double[] { 0.86, 0.14 };
+		potDisease.setValues(new double[] { 0.86, 0.14 });
 		nodeDisease.setPotential(potDisease);
 
 		ExactDistrPotential potHealth_state = new ExactDistrPotential(
 				Arrays.asList(varHealth_state, varDisease, varTherapy));
-		potHealth_state.getTablePotential().values = new double[] { 10, 3, 9, 8 };
+		potHealth_state.getTablePotential().setValues(new double[] { 10, 3, 9, 8 });
 		nodeHealth_state.setPotential(potHealth_state);
 
 		ExactDistrPotential potCost_of_therapy = new ExactDistrPotential(Arrays.asList(varCost_of_therapy, varTherapy));
-		potCost_of_therapy.getTablePotential().values = new double[] { 0, -0.25 };
+		potCost_of_therapy.getTablePotential().setValues(new double[] { 0, -0.25 });
 		nodeCost_of_therapy.setPotential(potCost_of_therapy);
 
 		// Link restrictions and revealing states
@@ -705,23 +705,23 @@ public class IDFactory extends NetsFactory {
 
 		// Potentials
 		TablePotential potIMC = new TablePotential(Arrays.asList(varIMC), PotentialRole.CONDITIONAL_PROBABILITY);
-		potIMC.values = new double[] { 0.5, 0.5 };
+		potIMC.setValues(new double[] { 0.5, 0.5 });
 		nodeIMC.setPotential(potIMC);
 
 		TablePotential potDiabetes = new TablePotential(Arrays.asList(varDiabetes, varIMC),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potDiabetes.values = new double[] { 0.5, 0.5, 0.5, 0.5 };
+		potDiabetes.setValues(new double[] { 0.5, 0.5, 0.5, 0.5 });
 		nodeDiabetes.setPotential(potDiabetes);
 
 		TablePotential potAlergia_ATB = new TablePotential(Arrays.asList(varAlergia_ATB),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potAlergia_ATB.values = new double[] { 0.5, 0.5 };
+		potAlergia_ATB.setValues(new double[] { 0.5, 0.5 });
 		nodeAlergia_ATB.setPotential(potAlergia_ATB);
 
 		TablePotential potInfeccion_PTR = new TablePotential(
 				Arrays.asList(varInfeccion_PTR, varAlergia_ATB, varCC_Drenaje, varDiabetes, varIsquemia, varIMC,
 						varRealizar_Implante), PotentialRole.CONDITIONAL_PROBABILITY);
-		potInfeccion_PTR.values = new double[] { 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
+		potInfeccion_PTR.setValues(new double[] { 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
 				1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
 				0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0,
 				1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1,
@@ -733,59 +733,59 @@ public class IDFactory extends NetsFactory {
 				0, 1, 0, 1, 0, 0.95734, 0.04266, 0.81995, 0.18005, 0.81876, 0.18124, 0.47826, 0.52174, 1, 0, 1, 0,
 				0.89715, 0.10285, 0.63899, 0.36101, 0.63715, 0.36285, 0.2627, 0.7373, 1, 0, 1, 0, 0.39939, 0.60061,
 				0.11889, 0.88111, 0.11805, 0.88195, 0.02644, 0.97356, 1, 0, 1, 0, 0.20538, 0.79462, 0.04983, 0.95017,
-				0.04945, 0.95055, 0.01045, 0.98955 };
+				0.04945, 0.95055, 0.01045, 0.98955 });
 		nodeInfeccion_PTR.setPotential(potInfeccion_PTR);
 
 		TablePotential potVSG = new TablePotential(Arrays.asList(varVSG, varInfeccion_PTR),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potVSG.values = new double[] { 0.85, 0.15, 0.18, 0.82 };
+		potVSG.setValues(new double[] { 0.85, 0.15, 0.18, 0.82 });
 		nodeVSG.setPotential(potVSG);
 
 		TablePotential potPCR = new TablePotential(Arrays.asList(varPCR, varInfeccion_PTR),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potPCR.values = new double[] { 0.74, 0.26, 0.11, 0.89 };
+		potPCR.setValues(new double[] { 0.74, 0.26, 0.11, 0.89 });
 		nodePCR.setPotential(potPCR);
 
 		TablePotential potGa67_Tc99 = new TablePotential(
 				Arrays.asList(varGa67_Tc99, varInfeccion_PTR, varRealizar_Gammagrafias),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potGa67_Tc99.values = new double[] { 1, 0, 0, 1, 0, 0, 0, 0.86, 0.14, 0, 0.67, 0.33 };
+		potGa67_Tc99.setValues(new double[] { 1, 0, 0, 1, 0, 0, 0, 0.86, 0.14, 0, 0.67, 0.33 });
 		nodeGa67_Tc99.setPotential(potGa67_Tc99);
 
 		TablePotential potMovilidad = new TablePotential(Arrays.asList(varMovilidad, varInfeccion_PTR),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potMovilidad.values = new double[] { 0.15, 0.85, 0.3, 0.7 };
+		potMovilidad.setValues(new double[] { 0.15, 0.85, 0.3, 0.7 });
 		nodeMovilidad.setPotential(potMovilidad);
 
 		TablePotential potCortes_Congelados = new TablePotential(
 				Arrays.asList(varCortes_Congelados, varInfeccion_PTR, varRealizar_Biopsia_Sinovial),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potCortes_Congelados.values = new double[] { 1, 0, 0, 1, 0, 0, 0, 0.95, 0.05, 0, 0.16, 0.84 };
+		potCortes_Congelados.setValues(new double[] { 1, 0, 0, 1, 0, 0, 0, 0.95, 0.05, 0, 0.16, 0.84 });
 		nodeCortes_Congelados.setPotential(potCortes_Congelados);
 
 		TablePotential potIsquemia = new TablePotential(Arrays.asList(varIsquemia, varRealizar_Implante),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potIsquemia.values = new double[] { 1, 0, 0, 0, 0.37276, 0.62724 };
+		potIsquemia.setValues(new double[] { 1, 0, 0, 0, 0.37276, 0.62724 });
 		nodeIsquemia.setPotential(potIsquemia);
 
 		TablePotential potCC_Drenaje = new TablePotential(Arrays.asList(varCC_Drenaje, varRealizar_Implante),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potCC_Drenaje.values = new double[] { 1, 0, 0, 0, 0.15054, 0.84946 };
+		potCC_Drenaje.setValues(new double[] { 1, 0, 0, 0, 0.15054, 0.84946 });
 		nodeCC_Drenaje.setPotential(potCC_Drenaje);
 
 		ExactDistrPotential potEVAC_Implante = new ExactDistrPotential(
 				Arrays.asList(varEVAC_Implante, varRealizar_Implante));
-		potEVAC_Implante.getTablePotential().values = new double[] { 0, 4.64 };
+		potEVAC_Implante.getTablePotential().setValues(new double[] { 0, 4.64 });
 		nodeEVAC_Implante.setPotential(potEVAC_Implante);
 
 		ExactDistrPotential potMolestias_Gammagrafia = new ExactDistrPotential(
 				Arrays.asList(varMolestias_Gammagrafia, varRealizar_Gammagrafias));
-		potMolestias_Gammagrafia.getTablePotential().values = new double[] { 0, 0 };
+		potMolestias_Gammagrafia.getTablePotential().setValues(new double[] { 0, 0 });
 		nodeMolestias_Gammagrafia.setPotential(potMolestias_Gammagrafia);
 
 		ExactDistrPotential potMolestias_Biopsia_Sinovial = new ExactDistrPotential(
 				Arrays.asList(varMolestias_Biopsia_Sinovial, varRealizar_Biopsia_Sinovial));
-		potMolestias_Biopsia_Sinovial.getTablePotential().values = new double[] { 0, -0.00001 };
+		potMolestias_Biopsia_Sinovial.getTablePotential().setValues(new double[] { 0, -0.00001 });
 		nodeMolestias_Biopsia_Sinovial.setPotential(potMolestias_Biopsia_Sinovial);
 
 		SumPotential potEVAC_Total = new SumPotential(
@@ -795,22 +795,22 @@ public class IDFactory extends NetsFactory {
 
 		ExactDistrPotential potCoste_Implante = new ExactDistrPotential(
 				Arrays.asList(varCoste_Implante, varRealizar_Implante));
-		potCoste_Implante.getTablePotential().values = new double[] { 0, 6865.52 };
+		potCoste_Implante.getTablePotential().setValues(new double[] { 0, 6865.52 });
 		nodeCoste_Implante.setPotential(potCoste_Implante);
 
 		ExactDistrPotential potCoste_Tratamiento = new ExactDistrPotential(
 				Arrays.asList(varCoste_Tratamiento, varTratar_Infeccion_PTR));
-		potCoste_Tratamiento.getTablePotential().values = new double[] { 0, 39196.89 };
+		potCoste_Tratamiento.getTablePotential().setValues(new double[] { 0, 39196.89 });
 		nodeCoste_Tratamiento.setPotential(potCoste_Tratamiento);
 
 		ExactDistrPotential potCoste_Gammagrafia = new ExactDistrPotential(
 				Arrays.asList(varCoste_Gammagrafia, varRealizar_Gammagrafias));
-		potCoste_Gammagrafia.getTablePotential().values = new double[] { 0, 335.08 };
+		potCoste_Gammagrafia.getTablePotential().setValues(new double[] { 0, 335.08 });
 		nodeCoste_Gammagrafia.setPotential(potCoste_Gammagrafia);
 
 		ExactDistrPotential potCoste_Biopsia_Sinovial = new ExactDistrPotential(
 				Arrays.asList(varCoste_Biopsia_Sinovial, varRealizar_Biopsia_Sinovial));
-		potCoste_Biopsia_Sinovial.getTablePotential().values = new double[] { 0, 405.28 };
+		potCoste_Biopsia_Sinovial.getTablePotential().setValues(new double[] { 0, 405.28 });
 		nodeCoste_Biopsia_Sinovial.setPotential(potCoste_Biopsia_Sinovial);
 
 		SumPotential potCoste_total = new SumPotential(
@@ -828,12 +828,12 @@ public class IDFactory extends NetsFactory {
 		nodeBeneficio_neto.setPotential(potBeneficio_neto);
 
 		ExactDistrPotential potC2E = new ExactDistrPotential(Arrays.asList(varC2E));
-		potC2E.getTablePotential().values = new double[] { -0.0000333 };
+		potC2E.getTablePotential().setValues(new double[] { -0.0000333 });
 		nodeC2E.setPotential(potC2E);
 
 		ExactDistrPotential potMejora_Tratamiento = new ExactDistrPotential(
 				Arrays.asList(varMejora_Tratamiento, varInfeccion_PTR, varTratar_Infeccion_PTR));
-		potMejora_Tratamiento.getTablePotential().values = new double[] { 0, -14.4, -4.64, -4.64192 };
+		potMejora_Tratamiento.getTablePotential().setValues(new double[] { 0, -14.4, -4.64, -4.64192 });
 		nodeMejora_Tratamiento.setPotential(potMejora_Tratamiento);
 
 		// Link restrictions and revealing states
@@ -978,75 +978,75 @@ public class IDFactory extends NetsFactory {
 
 		// Potentials
 		TablePotential potN2_N3 = new TablePotential(Arrays.asList(varN2_N3), PotentialRole.CONDITIONAL_PROBABILITY);
-		potN2_N3.values = new double[] { 0.7193, 0.2807 };
+		potN2_N3.setValues(new double[] { 0.7193, 0.2807 });
 		nodeN2_N3.setPotential(potN2_N3);
 
 		TablePotential potCT_scan = new TablePotential(Arrays.asList(varCT_scan, varN2_N3),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potCT_scan.values = new double[] { 0.85676, 0.14324, 0.48966, 0.51034 };
+		potCT_scan.setValues(new double[] { 0.85676, 0.14324, 0.48966, 0.51034 });
 		nodeCT_scan.setPotential(potCT_scan);
 
 		TablePotential potTBNA = new TablePotential(Arrays.asList(varTBNA, varCT_scan, varN2_N3, varDecTBNA),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potTBNA.values = new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92143, 0.07857, 0, 0.90435, 0.09565, 0,
-				0.98, 0.02, 0, 0.54032, 0.45968 };
+		potTBNA.setValues(new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92143, 0.07857, 0, 0.90435, 0.09565, 0,
+				0.98, 0.02, 0, 0.54032, 0.45968 });
 		nodeTBNA.setPotential(potTBNA);
 
 		TablePotential potPET = new TablePotential(Arrays.asList(varPET, varCT_scan, varN2_N3, varDecPET),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potPET.values = new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92473, 0.07527, 0, 0.775, 0.225, 0,
-				0.25974, 0.74026, 0, 0.09524, 0.90476 };
+		potPET.setValues(new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92473, 0.07527, 0, 0.775, 0.225, 0,
+				0.25974, 0.74026, 0, 0.09524, 0.90476 });
 		nodePET.setPotential(potPET);
 
 		TablePotential potEBUS = new TablePotential(Arrays.asList(varEBUS, varPET, varCT_scan, varN2_N3, varDecEBUSEUS),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potEBUS.values = new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
+		potEBUS.setValues(new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
 				1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
 				0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.97778, 0.02222, 0, 0.975, 0.025, 0, 0.96667, 0.03333, 0, 0.97368,
 				0.02632, 0, 0.97561, 0.02439, 0, 0.96552, 0.03448, 0, 0.10811, 0.89189, 0, 0.11905, 0.88095, 0, 0.10811,
 				0.89189, 0, 0.08108, 0.91892, 0, 0.11111, 0.88889, 0, 0.12121, 0.87879, 0, 0.97778, 0.02222, 0, 0.975,
 				0.025, 0, 0.96667, 0.03333, 0, 0.97368, 0.02632, 0, 0.97561, 0.02439, 0, 0.96552, 0.03448, 0, 0.10811,
 				0.89189, 0, 0.11905, 0.88095, 0, 0.10811, 0.89189, 0, 0.08108, 0.91892, 0, 0.11111, 0.88889, 0, 0.12121,
-				0.87879 };
+				0.87879 });
 		nodeEBUS.setPotential(potEBUS);
 
 		TablePotential potEUS = new TablePotential(Arrays.asList(varEUS, varPET, varCT_scan, varN2_N3, varDecEBUSEUS),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potEUS.values = new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
+		potEUS.setValues(new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
 				1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92308, 0.07692, 0, 0.9375, 0.0625, 0, 0.92593, 0.07407, 0, 0.92857,
 				0.07143, 0, 0.93333, 0.06667, 0, 0.93548, 0.06452, 0, 0.2381, 0.7619, 0, 0.43333, 0.56667, 0, 0.41935,
 				0.58065, 0, 0.14286, 0.85714, 0, 0.13158, 0.86842, 0, 0.13889, 0.86111, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
 				0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92308, 0.07692, 0,
 				0.9375, 0.0625, 0, 0.92593, 0.07407, 0, 0.92857, 0.07143, 0, 0.93333, 0.06667, 0, 0.93548, 0.06452, 0,
 				0.2381, 0.7619, 0, 0.43333, 0.56667, 0, 0.41935, 0.58065, 0, 0.14286, 0.85714, 0, 0.13158, 0.86842, 0,
-				0.13889, 0.86111 };
+				0.13889, 0.86111 });
 		nodeEUS.setPotential(potEUS);
 
 		TablePotential potMED = new TablePotential(Arrays.asList(varMED, varPET, varCT_scan, varN2_N3, varDecMED),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potMED.values = new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
+		potMED.setValues(new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
 				1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.94444, 0.05556, 0, 0.9375, 0.0625, 0, 0.94737, 0.05263, 0, 0.92857,
 				0.07143, 0, 0.94118, 0.05882, 0, 0.95, 0.05, 0, 0.27273, 0.72727, 0, 0.2, 0.8, 0, 0.21429, 0.78571, 0,
-				0.1875, 0.8125, 0, 0.1875, 0.8125, 0, 0.2, 0.8 };
+				0.1875, 0.8125, 0, 0.1875, 0.8125, 0, 0.2, 0.8 });
 		nodeMED.setPotential(potMED);
 
 		TablePotential potMED_Sv = new TablePotential(Arrays.asList(varMED_Sv, varDecMED),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potMED_Sv.values = new double[] { 0, 1, 0.03704, 0.96296 };
+		potMED_Sv.setValues(new double[] { 0, 1, 0.03704, 0.96296 });
 		nodeMED_Sv.setPotential(potMED_Sv);
 
 		ExactDistrPotential potSurvivors_QALE = new ExactDistrPotential(
 				Arrays.asList(varSurvivors_QALE, varN2_N3, varTreatment));
-		potSurvivors_QALE.getTablePotential().values = new double[] { 1.25, 0.5, 2, 0.83, 3, 0.66 };
+		potSurvivors_QALE.getTablePotential().setValues(new double[] { 1.25, 0.5, 2, 0.83, 3, 0.66 });
 		nodeSurvivors_QALE.setPotential(potSurvivors_QALE);
 
 		ExactDistrPotential potInmediate_Survival = new ExactDistrPotential(
 				Arrays.asList(varInmediate_Survival, varTreatment));
-		potInmediate_Survival.getTablePotential().values = new double[] { 0.98113, 0.98039, 0.90909 };
+		potInmediate_Survival.getTablePotential().setValues(new double[] { 0.98113, 0.98039, 0.90909 });
 		nodeInmediate_Survival.setPotential(potInmediate_Survival);
 
 		ExactDistrPotential potMED_Survival = new ExactDistrPotential(Arrays.asList(varMED_Survival, varMED_Sv));
-		potMED_Survival.getTablePotential().values = new double[] { 0, 1 };
+		potMED_Survival.getTablePotential().setValues(new double[] { 0, 1 });
 		nodeMED_Survival.setPotential(potMED_Survival);
 
 		ProductPotential potNet_QALE = new ProductPotential(
@@ -1055,20 +1055,20 @@ public class IDFactory extends NetsFactory {
 		nodeNet_QALE.setPotential(potNet_QALE);
 
 		ExactDistrPotential potTBNA_Morbidity = new ExactDistrPotential(Arrays.asList(varTBNA_Morbidity, varDecTBNA));
-		potTBNA_Morbidity.getTablePotential().values = new double[] { 0, -0.0001 };
+		potTBNA_Morbidity.getTablePotential().setValues(new double[] { 0, -0.0001 });
 		nodeTBNA_Morbidity.setPotential(potTBNA_Morbidity);
 
 		ExactDistrPotential potMED_Morbidity = new ExactDistrPotential(Arrays.asList(varMED_Morbidity, varMED_Sv));
-		potMED_Morbidity.getTablePotential().values = new double[] { 0, -0.05 };
+		potMED_Morbidity.getTablePotential().setValues(new double[] { 0, -0.05 });
 		nodeMED_Morbidity.setPotential(potMED_Morbidity);
 
 		ExactDistrPotential potEUS_Morbidity = new ExactDistrPotential(Arrays.asList(varEUS_Morbidity, varDecEBUSEUS));
-		potEUS_Morbidity.getTablePotential().values = new double[] { 0, -0.03, 0, -0.03 };
+		potEUS_Morbidity.getTablePotential().setValues(new double[] { 0, -0.03, 0, -0.03 });
 		nodeEUS_Morbidity.setPotential(potEUS_Morbidity);
 
 		ExactDistrPotential potEBUS_Morbidity = new ExactDistrPotential(
 				Arrays.asList(varEBUS_Morbidity, varDecEBUSEUS));
-		potEBUS_Morbidity.getTablePotential().values = new double[] { 0, 0, -0.03, -0.03 };
+		potEBUS_Morbidity.getTablePotential().setValues(new double[] { 0, 0, -0.03, -0.03 });
 		nodeEBUS_Morbidity.setPotential(potEBUS_Morbidity);
 
 		SumPotential potTotal_QALE = new SumPotential(
@@ -1077,37 +1077,37 @@ public class IDFactory extends NetsFactory {
 		nodeTotal_QALE.setPotential(potTotal_QALE);
 
 		ExactDistrPotential potEconomic_Cost_CT_scan = new ExactDistrPotential(Arrays.asList(varEconomic_Cost_CT_scan));
-		potEconomic_Cost_CT_scan.getTablePotential().values = new double[] { 670 };
+		potEconomic_Cost_CT_scan.getTablePotential().setValues(new double[] { 670 });
 		nodeEconomic_Cost_CT_scan.setPotential(potEconomic_Cost_CT_scan);
 
 		ExactDistrPotential potEconomic_Cost_TBNA = new ExactDistrPotential(
 				Arrays.asList(varEconomic_Cost_TBNA, varDecTBNA));
-		potEconomic_Cost_TBNA.getTablePotential().values = new double[] { 0, 80 };
+		potEconomic_Cost_TBNA.getTablePotential().setValues(new double[] { 0, 80 });
 		nodeEconomic_Cost_TBNA.setPotential(potEconomic_Cost_TBNA);
 
 		ExactDistrPotential potEconomic_Cost_EBUS = new ExactDistrPotential(
 				Arrays.asList(varEconomic_Cost_EBUS, varDecEBUSEUS));
-		potEconomic_Cost_EBUS.getTablePotential().values = new double[] { 0, 0, 620, 620 };
+		potEconomic_Cost_EBUS.getTablePotential().setValues(new double[] { 0, 0, 620, 620 });
 		nodeEconomic_Cost_EBUS.setPotential(potEconomic_Cost_EBUS);
 
 		ExactDistrPotential potEconomic_Cost_EUS = new ExactDistrPotential(
 				Arrays.asList(varEconomic_Cost_EUS, varDecEBUSEUS));
-		potEconomic_Cost_EUS.getTablePotential().values = new double[] { 0, 620, 0, 620 };
+		potEconomic_Cost_EUS.getTablePotential().setValues(new double[] { 0, 620, 0, 620 });
 		nodeEconomic_Cost_EUS.setPotential(potEconomic_Cost_EUS);
 
 		ExactDistrPotential potEconomic_Cost_MED = new ExactDistrPotential(
 				Arrays.asList(varEconomic_Cost_MED, varDecMED));
-		potEconomic_Cost_MED.getTablePotential().values = new double[] { 0, 1620 };
+		potEconomic_Cost_MED.getTablePotential().setValues(new double[] { 0, 1620 });
 		nodeEconomic_Cost_MED.setPotential(potEconomic_Cost_MED);
 
 		ExactDistrPotential potEconomic_Cost_PET = new ExactDistrPotential(
 				Arrays.asList(varEconomic_Cost_PET, varDecPET));
-		potEconomic_Cost_PET.getTablePotential().values = new double[] { 0, 2250 };
+		potEconomic_Cost_PET.getTablePotential().setValues(new double[] { 0, 2250 });
 		nodeEconomic_Cost_PET.setPotential(potEconomic_Cost_PET);
 
 		ExactDistrPotential potEconomic_Cost_Treatment = new ExactDistrPotential(
 				Arrays.asList(varEconomic_Cost_Treatment, varTreatment));
-		potEconomic_Cost_Treatment.getTablePotential().values = new double[] { 3000, 11242, 19646 };
+		potEconomic_Cost_Treatment.getTablePotential().setValues(new double[] { 3000, 11242, 19646 });
 		nodeEconomic_Cost_Treatment.setPotential(potEconomic_Cost_Treatment);
 
 		SumPotential potTotal_Economic_Cost = new SumPotential(
@@ -1117,7 +1117,7 @@ public class IDFactory extends NetsFactory {
 		nodeTotal_Economic_Cost.setPotential(potTotal_Economic_Cost);
 
 		ExactDistrPotential potC2E = new ExactDistrPotential(Arrays.asList(varC2E));
-		potC2E.getTablePotential().values = new double[] { -0.000033333333333 };
+		potC2E.getTablePotential().setValues(new double[] { -0.000033333333333 });
 		nodeC2E.setPotential(potC2E);
 
 		ProductPotential potWeighted_Economic_Cost = new ProductPotential(
@@ -1236,75 +1236,75 @@ public class IDFactory extends NetsFactory {
 
 		// Potentials
 		TablePotential potN2_N3 = new TablePotential(Arrays.asList(varN2_N3), PotentialRole.CONDITIONAL_PROBABILITY);
-		potN2_N3.values = new double[] { 0.7193, 0.2807 };
+		potN2_N3.setValues(new double[] { 0.7193, 0.2807 });
 		nodeN2_N3.setPotential(potN2_N3);
 
 		TablePotential potCT_scan = new TablePotential(Arrays.asList(varCT_scan, varN2_N3),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potCT_scan.values = new double[] { 0.85676, 0.14324, 0.48966, 0.51034 };
+		potCT_scan.setValues(new double[] { 0.85676, 0.14324, 0.48966, 0.51034 });
 		nodeCT_scan.setPotential(potCT_scan);
 
 		TablePotential potTBNA = new TablePotential(Arrays.asList(varTBNA, varCT_scan, varN2_N3, varDecTBNA),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potTBNA.values = new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92143, 0.07857, 0, 0.90435, 0.09565, 0,
-				0.98, 0.02, 0, 0.54032, 0.45968 };
+		potTBNA.setValues(new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92143, 0.07857, 0, 0.90435, 0.09565, 0,
+				0.98, 0.02, 0, 0.54032, 0.45968 });
 		nodeTBNA.setPotential(potTBNA);
 
 		TablePotential potPET = new TablePotential(Arrays.asList(varPET, varCT_scan, varN2_N3, varDecPET),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potPET.values = new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92473, 0.07527, 0, 0.775, 0.225, 0,
-				0.25974, 0.74026, 0, 0.09524, 0.90476 };
+		potPET.setValues(new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92473, 0.07527, 0, 0.775, 0.225, 0,
+				0.25974, 0.74026, 0, 0.09524, 0.90476 });
 		nodePET.setPotential(potPET);
 
 		TablePotential potEBUS = new TablePotential(Arrays.asList(varEBUS, varPET, varCT_scan, varN2_N3, varDecEBUSEUS),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potEBUS.values = new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
+		potEBUS.setValues(new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
 				1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
 				0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.97778, 0.02222, 0, 0.975, 0.025, 0, 0.96667, 0.03333, 0, 0.97368,
 				0.02632, 0, 0.97561, 0.02439, 0, 0.96552, 0.03448, 0, 0.10811, 0.89189, 0, 0.11905, 0.88095, 0, 0.10811,
 				0.89189, 0, 0.08108, 0.91892, 0, 0.11111, 0.88889, 0, 0.12121, 0.87879, 0, 0.97778, 0.02222, 0, 0.975,
 				0.025, 0, 0.96667, 0.03333, 0, 0.97368, 0.02632, 0, 0.97561, 0.02439, 0, 0.96552, 0.03448, 0, 0.10811,
 				0.89189, 0, 0.11905, 0.88095, 0, 0.10811, 0.89189, 0, 0.08108, 0.91892, 0, 0.11111, 0.88889, 0, 0.12121,
-				0.87879 };
+				0.87879 });
 		nodeEBUS.setPotential(potEBUS);
 
 		TablePotential potEUS = new TablePotential(Arrays.asList(varEUS, varPET, varCT_scan, varN2_N3, varDecEBUSEUS),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potEUS.values = new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
+		potEUS.setValues(new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
 				1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92308, 0.07692, 0, 0.9375, 0.0625, 0, 0.92593, 0.07407, 0, 0.92857,
 				0.07143, 0, 0.93333, 0.06667, 0, 0.93548, 0.06452, 0, 0.2381, 0.7619, 0, 0.43333, 0.56667, 0, 0.41935,
 				0.58065, 0, 0.14286, 0.85714, 0, 0.13158, 0.86842, 0, 0.13889, 0.86111, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
 				0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92308, 0.07692, 0,
 				0.9375, 0.0625, 0, 0.92593, 0.07407, 0, 0.92857, 0.07143, 0, 0.93333, 0.06667, 0, 0.93548, 0.06452, 0,
 				0.2381, 0.7619, 0, 0.43333, 0.56667, 0, 0.41935, 0.58065, 0, 0.14286, 0.85714, 0, 0.13158, 0.86842, 0,
-				0.13889, 0.86111 };
+				0.13889, 0.86111 });
 		nodeEUS.setPotential(potEUS);
 
 		TablePotential potMED = new TablePotential(Arrays.asList(varMED, varPET, varCT_scan, varN2_N3, varDecMED),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potMED.values = new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
+		potMED.setValues(new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
 				1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.94444, 0.05556, 0, 0.9375, 0.0625, 0, 0.94737, 0.05263, 0, 0.92857,
 				0.07143, 0, 0.94118, 0.05882, 0, 0.95, 0.05, 0, 0.27273, 0.72727, 0, 0.2, 0.8, 0, 0.21429, 0.78571, 0,
-				0.1875, 0.8125, 0, 0.1875, 0.8125, 0, 0.2, 0.8 };
+				0.1875, 0.8125, 0, 0.1875, 0.8125, 0, 0.2, 0.8 });
 		nodeMED.setPotential(potMED);
 
 		TablePotential potMED_Sv = new TablePotential(Arrays.asList(varMED_Sv, varDecMED),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potMED_Sv.values = new double[] { 0, 1, 0.03704, 0.96296 };
+		potMED_Sv.setValues(new double[] { 0, 1, 0.03704, 0.96296 });
 		nodeMED_Sv.setPotential(potMED_Sv);
 
 		ExactDistrPotential potSurvivors_QALE = new ExactDistrPotential(
 				Arrays.asList(varSurvivors_QALE, varN2_N3, varTreatment));
-		potSurvivors_QALE.getTablePotential().values = new double[] { 1.25, 0.5, 2, 0.83, 3, 0.66 };
+		potSurvivors_QALE.getTablePotential().setValues(new double[] { 1.25, 0.5, 2, 0.83, 3, 0.66 });
 		nodeSurvivors_QALE.setPotential(potSurvivors_QALE);
 
 		ExactDistrPotential potInmediate_Survival = new ExactDistrPotential(
 				Arrays.asList(varInmediate_Survival, varTreatment));
-		potInmediate_Survival.getTablePotential().values = new double[] { 0.98113, 0.98039, 0.90909 };
+		potInmediate_Survival.getTablePotential().setValues(new double[] { 0.98113, 0.98039, 0.90909 });
 		nodeInmediate_Survival.setPotential(potInmediate_Survival);
 
 		ExactDistrPotential potMED_Survival = new ExactDistrPotential(Arrays.asList(varMED_Survival, varMED_Sv));
-		potMED_Survival.getTablePotential().values = new double[] { 0, 1 };
+		potMED_Survival.getTablePotential().setValues(new double[] { 0, 1 });
 		nodeMED_Survival.setPotential(potMED_Survival);
 
 		ProductPotential potNet_QALE = new ProductPotential(
@@ -1313,20 +1313,20 @@ public class IDFactory extends NetsFactory {
 		nodeNet_QALE.setPotential(potNet_QALE);
 
 		ExactDistrPotential potTBNA_Morbidity = new ExactDistrPotential(Arrays.asList(varTBNA_Morbidity, varDecTBNA));
-		potTBNA_Morbidity.getTablePotential().values = new double[] { 0, -0.0001 };
+		potTBNA_Morbidity.getTablePotential().setValues(new double[] { 0, -0.0001 });
 		nodeTBNA_Morbidity.setPotential(potTBNA_Morbidity);
 
 		ExactDistrPotential potMED_Morbidity = new ExactDistrPotential(Arrays.asList(varMED_Morbidity, varMED_Sv));
-		potMED_Morbidity.getTablePotential().values = new double[] { 0, -0.05 };
+		potMED_Morbidity.getTablePotential().setValues(new double[] { 0, -0.05 });
 		nodeMED_Morbidity.setPotential(potMED_Morbidity);
 
 		ExactDistrPotential potEUS_Morbidity = new ExactDistrPotential(Arrays.asList(varEUS_Morbidity, varDecEBUSEUS));
-		potEUS_Morbidity.getTablePotential().values = new double[] { 0, -0.03, 0, -0.03 };
+		potEUS_Morbidity.getTablePotential().setValues(new double[] { 0, -0.03, 0, -0.03 });
 		nodeEUS_Morbidity.setPotential(potEUS_Morbidity);
 
 		ExactDistrPotential potEBUS_Morbidity = new ExactDistrPotential(
 				Arrays.asList(varEBUS_Morbidity, varDecEBUSEUS));
-		potEBUS_Morbidity.getTablePotential().values = new double[] { 0, 0, -0.03, -0.03 };
+		potEBUS_Morbidity.getTablePotential().setValues(new double[] { 0, 0, -0.03, -0.03 });
 		nodeEBUS_Morbidity.setPotential(potEBUS_Morbidity);
 
 		SumPotential potTotal_QALE = new SumPotential(
@@ -1412,67 +1412,67 @@ public class IDFactory extends NetsFactory {
 
 		// Potentials
 		TablePotential potN2_N3 = new TablePotential(Arrays.asList(varN2_N3), PotentialRole.CONDITIONAL_PROBABILITY);
-		potN2_N3.values = new double[] { 0.7193, 0.2807 };
+		potN2_N3.setValues(new double[] { 0.7193, 0.2807 });
 		nodeN2_N3.setPotential(potN2_N3);
 
 		TablePotential potCT_scan = new TablePotential(Arrays.asList(varCT_scan, varN2_N3),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potCT_scan.values = new double[] { 0.85676, 0.14324, 0.48966, 0.51034 };
+		potCT_scan.setValues(new double[] { 0.85676, 0.14324, 0.48966, 0.51034 });
 		nodeCT_scan.setPotential(potCT_scan);
 
 		TablePotential potTBNA = new TablePotential(Arrays.asList(varTBNA, varCT_scan, varN2_N3, varDecTBNA),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potTBNA.values = new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92143, 0.07857, 0, 0.90435, 0.09565, 0,
-				0.98, 0.02, 0, 0.54032, 0.45968 };
+		potTBNA.setValues(new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92143, 0.07857, 0, 0.90435, 0.09565, 0,
+				0.98, 0.02, 0, 0.54032, 0.45968 });
 		nodeTBNA.setPotential(potTBNA);
 
 		TablePotential potPET = new TablePotential(Arrays.asList(varPET, varCT_scan, varN2_N3, varDecPET),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potPET.values = new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92473, 0.07527, 0, 0.775, 0.225, 0,
-				0.25974, 0.74026, 0, 0.09524, 0.90476 };
+		potPET.setValues(new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92473, 0.07527, 0, 0.775, 0.225, 0,
+				0.25974, 0.74026, 0, 0.09524, 0.90476 });
 		nodePET.setPotential(potPET);
 
 		TablePotential potEBUS = new TablePotential(Arrays.asList(varEBUS, varPET, varCT_scan, varN2_N3, varDecEBUSEUS),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potEBUS.values = new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
+		potEBUS.setValues(new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
 				1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
 				0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.97778, 0.02222, 0, 0.975, 0.025, 0, 0.96667, 0.03333, 0, 0.97368,
 				0.02632, 0, 0.97561, 0.02439, 0, 0.96552, 0.03448, 0, 0.10811, 0.89189, 0, 0.11905, 0.88095, 0, 0.10811,
 				0.89189, 0, 0.08108, 0.91892, 0, 0.11111, 0.88889, 0, 0.12121, 0.87879, 0, 0.97778, 0.02222, 0, 0.975,
 				0.025, 0, 0.96667, 0.03333, 0, 0.97368, 0.02632, 0, 0.97561, 0.02439, 0, 0.96552, 0.03448, 0, 0.10811,
 				0.89189, 0, 0.11905, 0.88095, 0, 0.10811, 0.89189, 0, 0.08108, 0.91892, 0, 0.11111, 0.88889, 0, 0.12121,
-				0.87879 };
+				0.87879 });
 		nodeEBUS.setPotential(potEBUS);
 
 		TablePotential potEUS = new TablePotential(Arrays.asList(varEUS, varPET, varCT_scan, varN2_N3, varDecEBUSEUS),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potEUS.values = new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
+		potEUS.setValues(new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
 				1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92308, 0.07692, 0, 0.9375, 0.0625, 0, 0.92593, 0.07407, 0, 0.92857,
 				0.07143, 0, 0.93333, 0.06667, 0, 0.93548, 0.06452, 0, 0.2381, 0.7619, 0, 0.43333, 0.56667, 0, 0.41935,
 				0.58065, 0, 0.14286, 0.85714, 0, 0.13158, 0.86842, 0, 0.13889, 0.86111, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
 				0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92308, 0.07692, 0,
 				0.9375, 0.0625, 0, 0.92593, 0.07407, 0, 0.92857, 0.07143, 0, 0.93333, 0.06667, 0, 0.93548, 0.06452, 0,
 				0.2381, 0.7619, 0, 0.43333, 0.56667, 0, 0.41935, 0.58065, 0, 0.14286, 0.85714, 0, 0.13158, 0.86842, 0,
-				0.13889, 0.86111 };
+				0.13889, 0.86111 });
 		nodeEUS.setPotential(potEUS);
 
 		TablePotential potMED = new TablePotential(Arrays.asList(varMED, varPET, varCT_scan, varN2_N3, varDecMED),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potMED.values = new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
+		potMED.setValues(new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
 				1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.94444, 0.05556, 0, 0.9375, 0.0625, 0, 0.94737, 0.05263, 0, 0.92857,
 				0.07143, 0, 0.94118, 0.05882, 0, 0.95, 0.05, 0, 0.27273, 0.72727, 0, 0.2, 0.8, 0, 0.21429, 0.78571, 0,
-				0.1875, 0.8125, 0, 0.1875, 0.8125, 0, 0.2, 0.8 };
+				0.1875, 0.8125, 0, 0.1875, 0.8125, 0, 0.2, 0.8 });
 		nodeMED.setPotential(potMED);
 
 		TablePotential potMED_Sv = new TablePotential(Arrays.asList(varMED_Sv, varDecMED),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potMED_Sv.values = new double[] { 0, 1, 0.03704, 0.96296 };
+		potMED_Sv.setValues(new double[] { 0, 1, 0.03704, 0.96296 });
 		nodeMED_Sv.setPotential(potMED_Sv);
 
 		ExactDistrPotential potNet_Effectiveness = new ExactDistrPotential(
 				Arrays.asList(varNet_Effectiveness, varTreatment, varMED_Sv, varDecTBNA, varDecMED, varDecEBUSEUS,
 						varDecPET, varN2_N3));
-		potNet_Effectiveness.getTablePotential().values = new double[] { -0.12233, -0.39707, -0.6772, 1.05408, 1.51372,
+		potNet_Effectiveness.getTablePotential().setValues(new double[] { -0.12233, -0.39707, -0.6772, 1.05408, 1.51372,
 				2.00007, -0.1251, -0.39983, -0.67997, 1.05132, 1.51095, 1.99731, -0.17633, -0.45107, -0.7312, 1.00008,
 				1.45972, 1.94607, -0.1791, -0.45383, -0.73397, 0.99732, 1.45695, 1.94331, -0.173, -0.44773, -0.72787,
 				1.00342, 1.46305, 1.94941, -0.17577, -0.4505, -0.73063, 1.00065, 1.46028, 1.94664, -0.227, -0.50173,
@@ -1507,7 +1507,7 @@ public class IDFactory extends NetsFactory {
 				0.23823, -0.25563, -0.302, -0.57673, -0.85687, 0.13857, 0.18699, -0.30687, -0.30477, -0.5795, -0.85963,
 				0.1358, 0.18423, -0.30963, -0.29867, -0.5734, -0.85353, 0.1419, 0.19033, -0.30353, -0.30143, -0.57617,
 				-0.8563, 0.13913, 0.18756, -0.3063, -0.35267, -0.6274, -0.90753, 0.0879, 0.13633, -0.35753, -0.35543,
-				-0.63017, -0.9103, 0.08513, 0.13356, -0.3603 };
+				-0.63017, -0.9103, 0.08513, 0.13356, -0.3603 });
 		nodeNet_Effectiveness.setPotential(potNet_Effectiveness);
 
 		// Link restrictions and revealing states
@@ -1628,58 +1628,58 @@ public class IDFactory extends NetsFactory {
 
 		// Potentials
 		TablePotential potN2_N3 = new TablePotential(Arrays.asList(varN2_N3), PotentialRole.CONDITIONAL_PROBABILITY);
-		potN2_N3.values = new double[] { 0.7193, 0.2807 };
+		potN2_N3.setValues(new double[] { 0.7193, 0.2807 });
 		nodeN2_N3.setPotential(potN2_N3);
 
 		TablePotential potCT_scan = new TablePotential(Arrays.asList(varCT_scan, varN2_N3),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potCT_scan.values = new double[] { 0.85676, 0.14324, 0.48966, 0.51034 };
+		potCT_scan.setValues(new double[] { 0.85676, 0.14324, 0.48966, 0.51034 });
 		nodeCT_scan.setPotential(potCT_scan);
 
 		TablePotential potTBNA = new TablePotential(Arrays.asList(varTBNA, varCT_scan, varN2_N3, varDecTBNA),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potTBNA.values = new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92143, 0.07857, 0, 0.90435, 0.09565, 0,
-				0.98, 0.02, 0, 0.54032, 0.45968 };
+		potTBNA.setValues(new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92143, 0.07857, 0, 0.90435, 0.09565, 0,
+				0.98, 0.02, 0, 0.54032, 0.45968 });
 		nodeTBNA.setPotential(potTBNA);
 
 		TablePotential potPET = new TablePotential(Arrays.asList(varPET, varCT_scan, varN2_N3, varDecPET),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potPET.values = new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92473, 0.07527, 0, 0.775, 0.225, 0,
-				0.25974, 0.74026, 0, 0.09524, 0.90476 };
+		potPET.setValues(new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92473, 0.07527, 0, 0.775, 0.225, 0,
+				0.25974, 0.74026, 0, 0.09524, 0.90476 });
 		nodePET.setPotential(potPET);
 
 		TablePotential potEBUS = new TablePotential(Arrays.asList(varEBUS, varPET, varCT_scan, varN2_N3, varDecEBUSEUS),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potEBUS.values = new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
+		potEBUS.setValues(new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
 				1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
 				0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.97778, 0.02222, 0, 0.975, 0.025, 0, 0.96667, 0.03333, 0, 0.97368,
 				0.02632, 0, 0.97561, 0.02439, 0, 0.96552, 0.03448, 0, 0.10811, 0.89189, 0, 0.11905, 0.88095, 0, 0.10811,
 				0.89189, 0, 0.08108, 0.91892, 0, 0.11111, 0.88889, 0, 0.12121, 0.87879, 0, 0.97778, 0.02222, 0, 0.975,
 				0.025, 0, 0.96667, 0.03333, 0, 0.97368, 0.02632, 0, 0.97561, 0.02439, 0, 0.96552, 0.03448, 0, 0.10811,
 				0.89189, 0, 0.11905, 0.88095, 0, 0.10811, 0.89189, 0, 0.08108, 0.91892, 0, 0.11111, 0.88889, 0, 0.12121,
-				0.87879 };
+				0.87879 });
 		nodeEBUS.setPotential(potEBUS);
 
 		TablePotential potEUS = new TablePotential(Arrays.asList(varEUS, varPET, varCT_scan, varN2_N3, varDecEBUSEUS),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potEUS.values = new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
+		potEUS.setValues(new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
 				1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92308, 0.07692, 0, 0.9375, 0.0625, 0, 0.92593, 0.07407, 0, 0.92857,
 				0.07143, 0, 0.93333, 0.06667, 0, 0.93548, 0.06452, 0, 0.2381, 0.7619, 0, 0.43333, 0.56667, 0, 0.41935,
 				0.58065, 0, 0.14286, 0.85714, 0, 0.13158, 0.86842, 0, 0.13889, 0.86111, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0,
 				0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92308, 0.07692, 0,
 				0.9375, 0.0625, 0, 0.92593, 0.07407, 0, 0.92857, 0.07143, 0, 0.93333, 0.06667, 0, 0.93548, 0.06452, 0,
 				0.2381, 0.7619, 0, 0.43333, 0.56667, 0, 0.41935, 0.58065, 0, 0.14286, 0.85714, 0, 0.13158, 0.86842, 0,
-				0.13889, 0.86111 };
+				0.13889, 0.86111 });
 		nodeEUS.setPotential(potEUS);
 
 		ExactDistrPotential potSurvivors_QALE = new ExactDistrPotential(
 				Arrays.asList(varSurvivors_QALE, varN2_N3, varTreatment));
-		potSurvivors_QALE.getTablePotential().values = new double[] { 1.25, 0.5, 2, 0.83, 3, 0.66 };
+		potSurvivors_QALE.getTablePotential().setValues(new double[] { 1.25, 0.5, 2, 0.83, 3, 0.66 });
 		nodeSurvivors_QALE.setPotential(potSurvivors_QALE);
 
 		ExactDistrPotential potInmediate_Survival = new ExactDistrPotential(
 				Arrays.asList(varInmediate_Survival, varTreatment));
-		potInmediate_Survival.getTablePotential().values = new double[] { 0.98113, 0.98039, 0.90909 };
+		potInmediate_Survival.getTablePotential().setValues(new double[] { 0.98113, 0.98039, 0.90909 });
 		nodeInmediate_Survival.setPotential(potInmediate_Survival);
 
 		ProductPotential potNet_QALE = new ProductPotential(
@@ -1688,16 +1688,16 @@ public class IDFactory extends NetsFactory {
 		nodeNet_QALE.setPotential(potNet_QALE);
 
 		ExactDistrPotential potTBNA_Morbidity = new ExactDistrPotential(Arrays.asList(varTBNA_Morbidity, varDecTBNA));
-		potTBNA_Morbidity.getTablePotential().values = new double[] { 0, -0.0001 };
+		potTBNA_Morbidity.getTablePotential().setValues(new double[] { 0, -0.0001 });
 		nodeTBNA_Morbidity.setPotential(potTBNA_Morbidity);
 
 		ExactDistrPotential potEUS_Morbidity = new ExactDistrPotential(Arrays.asList(varEUS_Morbidity, varDecEBUSEUS));
-		potEUS_Morbidity.getTablePotential().values = new double[] { 0, -0.03, 0, -0.03 };
+		potEUS_Morbidity.getTablePotential().setValues(new double[] { 0, -0.03, 0, -0.03 });
 		nodeEUS_Morbidity.setPotential(potEUS_Morbidity);
 
 		ExactDistrPotential potEBUS_Morbidity = new ExactDistrPotential(
 				Arrays.asList(varEBUS_Morbidity, varDecEBUSEUS));
-		potEBUS_Morbidity.getTablePotential().values = new double[] { 0, 0, -0.03, -0.03 };
+		potEBUS_Morbidity.getTablePotential().setValues(new double[] { 0, 0, -0.03, -0.03 });
 		nodeEBUS_Morbidity.setPotential(potEBUS_Morbidity);
 
 		SumPotential potTotal_QALE = new SumPotential(
@@ -1706,32 +1706,32 @@ public class IDFactory extends NetsFactory {
 		nodeTotal_QALE.setPotential(potTotal_QALE);
 
 		ExactDistrPotential potEconomic_Cost_CT_scan = new ExactDistrPotential(Arrays.asList(varEconomic_Cost_CT_scan));
-		potEconomic_Cost_CT_scan.getTablePotential().values = new double[] { 670 };
+		potEconomic_Cost_CT_scan.getTablePotential().setValues(new double[] { 670 });
 		nodeEconomic_Cost_CT_scan.setPotential(potEconomic_Cost_CT_scan);
 
 		ExactDistrPotential potEconomic_Cost_TBNA = new ExactDistrPotential(
 				Arrays.asList(varEconomic_Cost_TBNA, varDecTBNA));
-		potEconomic_Cost_TBNA.getTablePotential().values = new double[] { 0, 80 };
+		potEconomic_Cost_TBNA.getTablePotential().setValues(new double[] { 0, 80 });
 		nodeEconomic_Cost_TBNA.setPotential(potEconomic_Cost_TBNA);
 
 		ExactDistrPotential potEconomic_Cost_EBUS = new ExactDistrPotential(
 				Arrays.asList(varEconomic_Cost_EBUS, varDecEBUSEUS));
-		potEconomic_Cost_EBUS.getTablePotential().values = new double[] { 0, 0, 620, 620 };
+		potEconomic_Cost_EBUS.getTablePotential().setValues(new double[] { 0, 0, 620, 620 });
 		nodeEconomic_Cost_EBUS.setPotential(potEconomic_Cost_EBUS);
 
 		ExactDistrPotential potEconomic_Cost_EUS = new ExactDistrPotential(
 				Arrays.asList(varEconomic_Cost_EUS, varDecEBUSEUS));
-		potEconomic_Cost_EUS.getTablePotential().values = new double[] { 0, 620, 0, 620 };
+		potEconomic_Cost_EUS.getTablePotential().setValues(new double[] { 0, 620, 0, 620 });
 		nodeEconomic_Cost_EUS.setPotential(potEconomic_Cost_EUS);
 
 		ExactDistrPotential potEconomic_Cost_PET = new ExactDistrPotential(
 				Arrays.asList(varEconomic_Cost_PET, varDecPET));
-		potEconomic_Cost_PET.getTablePotential().values = new double[] { 0, 2250 };
+		potEconomic_Cost_PET.getTablePotential().setValues(new double[] { 0, 2250 });
 		nodeEconomic_Cost_PET.setPotential(potEconomic_Cost_PET);
 
 		ExactDistrPotential potEconomic_Cost_Treatment = new ExactDistrPotential(
 				Arrays.asList(varEconomic_Cost_Treatment, varTreatment));
-		potEconomic_Cost_Treatment.getTablePotential().values = new double[] { 3000, 11242, 19646 };
+		potEconomic_Cost_Treatment.getTablePotential().setValues(new double[] { 3000, 11242, 19646 });
 		nodeEconomic_Cost_Treatment.setPotential(potEconomic_Cost_Treatment);
 
 		SumPotential potTotal_Economic_Cost = new SumPotential(
@@ -1741,7 +1741,7 @@ public class IDFactory extends NetsFactory {
 		nodeTotal_Economic_Cost.setPotential(potTotal_Economic_Cost);
 
 		ExactDistrPotential potC2E = new ExactDistrPotential(Arrays.asList(varC2E));
-		potC2E.getTablePotential().values = new double[] { -0.00003333333333 };
+		potC2E.getTablePotential().setValues(new double[] { -0.00003333333333 });
 		nodeC2E.setPotential(potC2E);
 
 		ProductPotential potWeighted_Economic_Cost = new ProductPotential(
@@ -1785,15 +1785,15 @@ public class IDFactory extends NetsFactory {
 
 		// Potentials
 		ExactDistrPotential potU = new ExactDistrPotential(Arrays.asList(varU, varD));
-		potU.getTablePotential().values = new double[] { 1, 2 };
+		potU.getTablePotential().setValues(new double[] { 1, 2 });
 		nodeU.setPotential(potU);
 
 		ExactDistrPotential potU1 = new ExactDistrPotential(Arrays.asList(varU1, varE));
-		potU1.getTablePotential().values = new double[] { 112, 234 };
+		potU1.getTablePotential().setValues(new double[] { 112, 234 });
 		nodeU1.setPotential(potU1);
 
 		TablePotential potE = new TablePotential(Arrays.asList(varE), PotentialRole.CONDITIONAL_PROBABILITY);
-		potE.values = new double[] { 0.5, 0.5 };
+		potE.setValues(new double[] { 0.5, 0.5 });
 		nodeE.setPotential(potE);
 
 		// Link restrictions and revealing states
@@ -1827,11 +1827,11 @@ public class IDFactory extends NetsFactory {
 
 		// Potentials
 		ExactDistrPotential potU = new ExactDistrPotential(Arrays.asList(varU, varD1));
-		potU.getTablePotential().values = new double[] { 2, 3 };
+		potU.getTablePotential().setValues(new double[] { 2, 3 });
 		nodeU.setPotential(potU);
 
 		ExactDistrPotential potU1 = new ExactDistrPotential(Arrays.asList(varU1, varD));
-		potU1.getTablePotential().values = new double[] { 1, 0 };
+		potU1.getTablePotential().setValues(new double[] { 1, 0 });
 		nodeU1.setPotential(potU1);
 
 		// Link restrictions and revealing states
@@ -1876,23 +1876,23 @@ public class IDFactory extends NetsFactory {
 
 		// Potentials
 		ExactDistrPotential potU1 = new ExactDistrPotential(Arrays.asList(varU1, varD1, varA));
-		potU1.getTablePotential().values = new double[] { 2, 0, 0, 2 };
+		potU1.getTablePotential().setValues(new double[] { 2, 0, 0, 2 });
 		nodeU1.setPotential(potU1);
 
 		ExactDistrPotential potU2 = new ExactDistrPotential(Arrays.asList(varU2, varD2, varB));
-		potU2.getTablePotential().values = new double[] { 1, 8, 3, 4 };
+		potU2.getTablePotential().setValues(new double[] { 1, 8, 3, 4 });
 		nodeU2.setPotential(potU2);
 
 		TablePotential potB = new TablePotential(Arrays.asList(varB), PotentialRole.CONDITIONAL_PROBABILITY);
-		potB.values = new double[] { 0.4, 0.6 };
+		potB.setValues(new double[] { 0.4, 0.6 });
 		nodeB.setPotential(potB);
 
 		TablePotential potA = new TablePotential(Arrays.asList(varA), PotentialRole.CONDITIONAL_PROBABILITY);
-		potA.values = new double[] { 0.7, 0.3 };
+		potA.setValues(new double[] { 0.7, 0.3 });
 		nodeA.setPotential(potA);
 
 		ExactDistrPotential potU3 = new ExactDistrPotential(Arrays.asList(varU3, varD3));
-		potU3.getTablePotential().values = new double[] { 12, 30.03 };
+		potU3.getTablePotential().setValues(new double[] { 12, 30.03 });
 		nodeU3.setPotential(potU3);
 
 		// Link restrictions and revealing states
@@ -1927,15 +1927,15 @@ public class IDFactory extends NetsFactory {
 
 		// Potentials
 		ExactDistrPotential potU = new ExactDistrPotential(Arrays.asList(varU, varD1));
-		potU.getTablePotential().values = new double[] { 0.65, 1.35 };
+		potU.getTablePotential().setValues(new double[] { 0.65, 1.35 });
 		nodeU.setPotential(potU);
 
 		ExactDistrPotential potU1 = new ExactDistrPotential(Arrays.asList(varU1, varD, varB));
-		potU1.getTablePotential().values = new double[] { 1, 8, 6, 4 };
+		potU1.getTablePotential().setValues(new double[] { 1, 8, 6, 4 });
 		nodeU1.setPotential(potU1);
 
 		TablePotential potB = new TablePotential(Arrays.asList(varB), PotentialRole.CONDITIONAL_PROBABILITY);
-		potB.values = new double[] { 0.4, 0.6 };
+		potB.setValues(new double[] { 0.4, 0.6 });
 		nodeB.setPotential(potB);
 
 		// Link restrictions and revealing states
@@ -1961,7 +1961,7 @@ public class IDFactory extends NetsFactory {
 
 		// Potentials
 		ExactDistrPotential potU = new ExactDistrPotential(Arrays.asList(varU, varD));
-		potU.getTablePotential().values = new double[] { 11.4, 11.4, 13.7, 11.4, 13.7 };
+		potU.getTablePotential().setValues(new double[] { 11.4, 11.4, 13.7, 11.4, 13.7 });
 		nodeU.setPotential(potU);
 
 		// Link restrictions and revealing states
@@ -1990,11 +1990,11 @@ public class IDFactory extends NetsFactory {
 
 		// Potentials
 		TablePotential potA = new TablePotential(Arrays.asList(varA), PotentialRole.CONDITIONAL_PROBABILITY);
-		potA.values = new double[] { 0.5, 0.5 };
+		potA.setValues(new double[] { 0.5, 0.5 });
 		nodeA.setPotential(potA);
 
 		ExactDistrPotential potU = new ExactDistrPotential(Arrays.asList(varU, varD, varA));
-		potU.getTablePotential().values = new double[] { -1, 0, 0, 1, 2, 3 };
+		potU.getTablePotential().setValues(new double[] { -1, 0, 0, 1, 2, 3 });
 		nodeU.setPotential(potU);
 
 		// Link restrictions and revealing states
@@ -2026,11 +2026,11 @@ public class IDFactory extends NetsFactory {
 
 		// Potentials
 		TablePotential potX0 = new TablePotential(Arrays.asList(varX0), PotentialRole.CONDITIONAL_PROBABILITY);
-		potX0.values = new double[] { 0.21249053, 0.78750947 };
+		potX0.setValues(new double[] { 0.21249053, 0.78750947 });
 		nodeX0.setPotential(potX0);
 
 		ExactDistrPotential potU = new ExactDistrPotential(Arrays.asList(varU, varD3, varX0));
-		potU.getTablePotential().values = new double[] { 0.4, 3, 5, 4.8 };
+		potU.getTablePotential().setValues(new double[] { 0.4, 3, 5, 4.8 });
 		nodeU.setPotential(potU);
 
 		// Link restrictions and revealing states

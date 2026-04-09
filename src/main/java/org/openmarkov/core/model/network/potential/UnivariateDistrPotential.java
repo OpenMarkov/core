@@ -28,6 +28,13 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * A potential defined by a univariate probability density function (e.g., Normal, Beta,
+ * Gamma) whose parameters may depend on the parent variables. The distribution type
+ * is specified by a {@link org.openmarkov.core.model.network.modelUncertainty.ProbDensFunction}
+ * class, and its parameters are stored in an {@link AugmentedProbTable}. Used for numeric
+ * conditioned variables.
+ */
 @PotentialType(names = "UnivariateDistr") public class UnivariateDistrPotential extends Potential {
     
     public static final String PSEUDO_VARIABLE = "pseudoVariableDistributionName";
@@ -65,8 +72,8 @@ import java.util.List;
         if (this.role == null) {
             this.role = PotentialRole.CONDITIONAL_PROBABILITY;
         }
-        finiteStatesVariables = new ArrayList<Variable>();
-        parameterVariables = new ArrayList<Variable>();
+        finiteStatesVariables = new ArrayList<>();
+        parameterVariables = new ArrayList<>();
         
         for (Variable variable : variables.subList(1, variables.size())) {
             if ((variable.getVariableType() == VariableType.FINITE_STATES) || (
@@ -314,8 +321,8 @@ import java.util.List;
     }
     
     public void setDistributionTable() {
-        List<Variable> vDistributionTable = new ArrayList<Variable>(finiteStatesVariables);
-        vDistributionTable.add(0, pseudoVariableDistribution);
+        List<Variable> vDistributionTable = new ArrayList<>(finiteStatesVariables);
+        vDistributionTable.addFirst(pseudoVariableDistribution);
         setDistributionTable(new AugmentedProbTable(vDistributionTable, role));
         initializeAugmentedProbTable();
     }
@@ -347,15 +354,7 @@ import java.util.List;
     @Override public Potential copy() {
         return new UnivariateDistrPotential(this);
     }
-    
-    @Override public boolean isUncertain() {
-        return false;
-    }
-    
-    /**
-     * UNCLEAR -- Makes sense??
-     */
-    
+
     @Override public void scalePotential(double scale) {
         this.getDistributionTable().scalePotential(scale);
     }
@@ -381,12 +380,12 @@ import java.util.List;
     }
     
     public void setValues(double[] values) {
-        this.getDistributionTable().values = values;
+        this.getDistributionTable().setValues(values);
     }
     
     @Override public String toString() {
         StringBuilder buffer = new StringBuilder();
-        buffer.append(variables.get(0).getName());
+        buffer.append(variables.getFirst().getName());
         if (variables.size() == 1) {
             buffer.append(" = ");
         } else if (variables.size() > 1) {
@@ -396,19 +395,18 @@ import java.util.List;
                 buffer.append(variables.get(i));
                 buffer.append(", ");
             }
-            buffer.append(variables.get(variables.size() - 1));
+            buffer.append(variables.getLast());
             buffer.append(" = ");
         }
-        buffer.append("UnivariteName" + probDensFunctionUnivariateName + " " + "Parametrization"
-                              + probDensFunctionParametrizationName + " ");
+        buffer.append("UnivariateName").append(probDensFunctionUnivariateName).append(" ").append("Parametrization").append(probDensFunctionParametrizationName).append(" ");
         
-        if (getDistributionTable().values.length == 1) {
-            buffer.append(getDistributionTable().values[0]);
-        } else if (getDistributionTable().values.length > 1) {
+        if (getDistributionTable().getValues().length == 1) {
+            buffer.append(getDistributionTable().getValues()[0]);
+        } else if (getDistributionTable().getValues().length > 1) {
             buffer.append("{");
-            for (int i = 0; i < getDistributionTable().values.length; i++) {
-                buffer.append(getDistributionTable().values[i]);
-                if (i != getDistributionTable().values.length - 1) {
+            for (int i = 0; i < getDistributionTable().getValues().length; i++) {
+                buffer.append(getDistributionTable().getValues()[i]);
+                if (i != getDistributionTable().getValues().length - 1) {
                     buffer.append(",");
                 }
             }
@@ -425,10 +423,10 @@ import java.util.List;
         newOrderOfVariables.addAll(getParameterVariables());
         UnivariateDistrPotential newPotential = new UnivariateDistrPotential(newOrderOfVariables,
                                                                              getProbDensFunctionClass(), getPotentialRole());
-        newOrderOfVariables.remove(0);
+        newOrderOfVariables.removeFirst();
         // I do use getVariable(0) for be compliant with the comparison in int[]
         // accOffsets = potential.getAccumulatedOffsets(orderVariables);
-        newOrderOfVariables.add(0, getAugmentedProbTable().getVariable(0));
+        newOrderOfVariables.addFirst(getAugmentedProbTable().getVariable(0));
         AugmentedProbTable newDistributionTable = (AugmentedProbTable) getAugmentedProbTable()
                 .reorder(newOrderOfVariables.subList(0, size));
         newPotential.setDistributionTable(newDistributionTable);
@@ -437,8 +435,10 @@ import java.util.List;
     
     @Override
     public Potential reorder(Variable variable, State[] newOrder) {
-        // TODO Auto-generated method stub
-        return null;
+        UnivariateDistrPotential copy = new UnivariateDistrPotential(this);
+        AugmentedProbTable reorderedTable = distributionTable.reorder(variable, newOrder);
+        copy.setDistributionTable(reorderedTable);
+        return copy;
     }
     
 }

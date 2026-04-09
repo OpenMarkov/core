@@ -20,8 +20,8 @@ import org.openmarkov.core.action.base.PNEdit;
  */
 @SuppressWarnings("serial") public class NetworkDefaultStatesEdit extends PNEdit {
 
-	private State[] currentDefaultStates;
-	private State[] newDefaultStates;
+	private final State[] currentDefaultStates;
+	private final State[] newDefaultStates;
 
 	/**
 	 * Creates a {@code NetworkDefaultStatesEdit} with the network and new

@@ -34,7 +34,7 @@ import java.util.ArrayList;
     
     protected final Node node;
 
-	protected NodeType nodeType;
+	protected final NodeType nodeType;
 
 	protected List<Node> parents;
 

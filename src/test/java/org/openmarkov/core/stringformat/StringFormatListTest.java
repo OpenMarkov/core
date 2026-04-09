@@ -1,16 +1,8 @@
 package org.openmarkov.core.stringformat;
 
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.type.BayesianNetworkType;
-import org.openmarkov.core.testTags.TestConfig;
 
-import java.time.Instant;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**

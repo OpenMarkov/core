@@ -26,7 +26,7 @@ public abstract class InferenceResolutionTaskDecTest extends InferenceTaskTest {
     // of values in 'x' is 1.
     protected void checkUtility(TablePotential x, double v) {
         assertEquals(1, x.getTableSize());
-        assertEquals(v, x.values[0], maxError);
+        assertEquals(v, x.getValues()[0], maxError);
     }
     
     public void checkUtilityPotential(Map<Variable, TablePotential> aPrioriProbabilities, Variable variableU,
@@ -41,7 +41,7 @@ public abstract class InferenceResolutionTaskDecTest extends InferenceTaskTest {
         Task algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(iD_DecisionTestProblemWithoutSV);
         
         // test max expected utility
-        Double meuEvaluation = algorithm.getGlobalUtility().values[0];
+        Double meuEvaluation = algorithm.getGlobalUtility().getValues()[0];
         assertEquals(96.006, meuEvaluation, maxError);
         
         // Test optimal policy

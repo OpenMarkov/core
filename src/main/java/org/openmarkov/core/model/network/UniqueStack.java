@@ -7,18 +7,19 @@
 
 package org.openmarkov.core.model.network;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Stack;
 
 /**
  * This class stack ensures that each element is stored only once.
  *
- * @author marias
+ * @author Manuel Arias
  */
 public class UniqueStack<T> {
-	private final Stack<T> stack = new Stack<>();
+	private final Deque<T> stack = new ArrayDeque<>();
 	private final HashSet<T> set = new HashSet<>();
 
 	/**

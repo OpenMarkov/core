@@ -12,6 +12,7 @@ import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 import org.openmarkov.core.model.network.ProbNet;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * This class is used over a {@code openmarkov.inference.ProbNet} where
@@ -22,9 +23,11 @@ import java.util.*;
  * listener it does the edition.
  * </ol>
  *
- * @author marias
+ * @author Manuel Arias
  */
 public class PNESupport /*extends UndoableEditSupport*/ {
+
+    // Attributes
     /**
      * If {@code true} stores editions in
      * {@code openmarkov.undo#EditsHistory} for undo/redo.
@@ -47,7 +50,6 @@ public class PNESupport /*extends UndoableEditSupport*/ {
 
     
     // Constructor
-    
     /**
      *
      */
@@ -57,16 +59,38 @@ public class PNESupport /*extends UndoableEditSupport*/ {
         this.withUndo = false;
         this.editsHistoryStacker = new EditsHistoryStacker();
     }
-    
-    public HashSet<PNEditListener> getListeners() {
-        return listeners;
-    }
-    
-    private HashSet<PNEditListener> listeners = new HashSet<>();
-    
+
     // Methods
+
+    /**
+     * Set of listeners notified on edit events (undo, redo, execute).
+     * Uses a concurrent set to allow safe addition and removal of listeners
+     * from any thread while {@link #redo()}, {@link #undo()} or
+     * {@link PNEdit#executeEdit()} iterate over it.
+     */
+    private final Set<PNEditListener> listeners = ConcurrentHashMap.newKeySet();
+
+    /**
+     * Returns an unmodifiable view of the current listener set.
+     * Use {@link #addListener(PNEditListener)} and
+     * {@link #removeListener(PNEditListener)} to mutate it.
+     *
+     * @return unmodifiable view of registered {@link PNEditListener}s
+     */
+    public Set<PNEditListener> getListeners() {
+        return Collections.unmodifiableSet(listeners);
+    }
+
+    /**
+     * Replaces the entire listener set with the given collection.
+     * The replacement is performed atomically relative to other
+     * {@code addListener}/{@code removeListener} calls.
+     *
+     * @param listeners new set of listeners; must not be {@code null}
+     */
     public void setListeners(Collection<? extends PNEditListener> listeners) {
-        this.listeners = new HashSet<>(listeners);
+        this.listeners.clear();
+        this.listeners.addAll(listeners);
     }
     
     @ToCheck(reasonDescription = "This does not produce the expected events in PNEditEventListener", reasonKind = ToCheck.ReasonKind.PROBABLE_BUG)
@@ -118,18 +142,32 @@ public class PNESupport /*extends UndoableEditSupport*/ {
         return undoneEdits;
     }
     
+    /**
+     * Removes all undone edits from the current history, making redo unavailable.
+     */
     public void removeUndoneEdits() {
         editsHistoryStacker.getCurrentUndoManager().removeUndoneEdits();
     }
     
+    /**
+     * Returns the currently active {@link EditsHistory} (may be a sub-history).
+     *
+     * @return the current edit history
+     */
     public EditsHistory getCurrentEditHistory() {
         return editsHistoryStacker.getCurrentUndoManager();
     }
     
+    /**
+     * @return {@code true} if there are edits that can be undone
+     */
     public boolean getCanUndo() {
         return editsHistoryStacker.getCurrentUndoManager().canUndo();
     }
     
+    /**
+     * @return {@code true} if there are edits that can be redone
+     */
     public boolean getCanRedo() {
         return editsHistoryStacker.getCurrentUndoManager().canRedo();
     }
@@ -154,6 +192,9 @@ public class PNESupport /*extends UndoableEditSupport*/ {
         }
     }
     
+    /**
+     * Cancels the current sub-edit history by undoing all its edits and discarding them.
+     */
     public void cancelLastSubEditHistory() {
         closeSubEditHistory(CloseEditStackOptions.FORGET, CloseEditStackOptions.UNDO);
     }
@@ -195,10 +236,22 @@ public class PNESupport /*extends UndoableEditSupport*/ {
     
     private final ProbNet probNet;
     
+    /**
+     * Registers a listener to be notified of edit events on this network.
+     * Safe to call from any thread.
+     *
+     * @param listener the listener to add; no-op if already registered
+     */
     public void addListener(PNEditListener listener) {
         this.listeners.add(listener);
     }
-    
+
+    /**
+     * Unregisters a previously added listener.
+     * Safe to call from any thread, including from within a listener callback.
+     *
+     * @param listener the listener to remove; no-op if not registered
+     */
     public void removeListener(PNEditListener listener) {
         this.listeners.remove(listener);
     }

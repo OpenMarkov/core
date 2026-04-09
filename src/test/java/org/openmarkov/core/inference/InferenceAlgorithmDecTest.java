@@ -26,7 +26,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
     
     protected void testMEUAndStrategy(ProbNet net, double expectedMEU, StrategyTree expectedStrategy) throws IncompatibleEvidenceException {
         InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(net);
-        Double meuEvaluation = algorithm.getGlobalUtility().values[0];
+        Double meuEvaluation = algorithm.getGlobalUtility().getValues()[0];
         assertEquals(expectedMEU, meuEvaluation, maxError);
         testScenariosIntervention(net, algorithm);
     }
@@ -69,7 +69,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
                     for (State state : auxBranch.getStates()) {
                         // Check that 'state' has non-zero probability in the
                         // CPN
-                        assertTrue(probs.values[rootVariable.getStateIndex(state)] > 0);
+                        assertTrue(probs.getValues()[rootVariable.getStateIndex(state)] > 0);
                         EvidenceCase newEvi = new EvidenceCase(parentEvi.getFindings());
                         
                         Finding finding = new Finding(rootVariable, state);
@@ -90,7 +90,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
         
         InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(iD_DecisionTestProblemWithoutSV);
         // test max expected utility
-        Double meuEvaluation = algorithm.getGlobalUtility().values[0];
+        Double meuEvaluation = algorithm.getGlobalUtility().getValues()[0];
         assertEquals(96.006, meuEvaluation, maxError);
         
         // Test optimal policy
@@ -137,7 +137,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
         
         // test max expected utility
         
-        Double meuEvaluation = algorithm.getGlobalUtility().values[0];
+        Double meuEvaluation = algorithm.getGlobalUtility().getValues()[0];
         assertEquals(96.006, meuEvaluation, maxError);
         
         // Test optimal policy
@@ -188,7 +188,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
     protected void testMEU(ProbNet diagram, double expectedMeu) throws IncompatibleEvidenceException {
         InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(diagram);
         // test max expected utility
-        Double meuEvaluation = algorithm.getGlobalUtility().values[0];
+        Double meuEvaluation = algorithm.getGlobalUtility().getValues()[0];
         assertEquals(expectedMeu, meuEvaluation, maxError);
     }
     
@@ -224,7 +224,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
     // @return The number of values in the potential that are greater than zero
     private int getNumProbsNotZero(TablePotential probs) {
         int numNotZero = 0;
-        double[] values = probs.values;
+        double[] values = probs.getValues();
         for (int i = 0; i < values.length; i++) {
             if (values[i] > 0.0) {
                 numNotZero = numNotZero + 1;
@@ -309,7 +309,7 @@ public abstract class InferenceAlgorithmDecTest extends InferenceAlgorithmTest {
     protected void checkUtility(TablePotential x, double v) {
         
         assertEquals(1, x.getTableSize());
-        assertEquals(v, x.values[0], maxError);
+        assertEquals(v, x.getValues()[0], maxError);
         
     }
     

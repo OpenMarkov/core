@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.model.network.potential.treeADD;
 
-import net.sourceforge.jeval.EvaluationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -113,14 +112,14 @@ public class TreeADDTableProjectTest {
         TablePotential tablePotential = treeADD.tableProject(null, null);
         List<Variable> variables = tablePotential.getVariables();
         Assertions.assertEquals(3, variables.size());
-        Assertions.assertEquals(16, tablePotential.values.length);
+        Assertions.assertEquals(16, tablePotential.getValues().length);
         List<Variable> expectedVariables = Arrays.asList(variableC, variableB, variableA);
         TablePotential expectedTablePotential = new TablePotential(expectedVariables,
                                                                    PotentialRole.CONDITIONAL_PROBABILITY);
-        expectedTablePotential.values = new double[]{0.7, 0.3, 0.8, 0.2, 0.7, 0.3, 0.8, 0.2, 0.7, 0.3, 0.1, 0.9, 0.6,
-                0.4, 0.6, 0.4};
+        expectedTablePotential.setValues(new double[]{0.7, 0.3, 0.8, 0.2, 0.7, 0.3, 0.8, 0.2, 0.7, 0.3, 0.1, 0.9, 0.6,
+                0.4, 0.6, 0.4});
         expectedTablePotential = (TablePotential) expectedTablePotential.reorder(tablePotential.getVariables());
         
-        Assertions.assertArrayEquals(expectedTablePotential.values, tablePotential.values, 0.001);
+        Assertions.assertArrayEquals(expectedTablePotential.getValues(), tablePotential.getValues(), 0.001);
     }
 }

@@ -8,24 +8,17 @@
 package org.openmarkov.core.model.network;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
 import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.graph.Link;
-import org.openmarkov.core.model.network.modelUncertainty.Tools;
-import org.openmarkov.core.model.network.potential.*;
-import org.openmarkov.core.model.network.potential.operation.AuxiliaryOperations;
-import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
-import org.openmarkov.core.model.network.potential.operation.LinkRestrictionPotentialOperations;
-import org.openmarkov.core.model.network.potential.operation.Util;
+import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.java.cloneUtils.CloneUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.openmarkov.core.model.network.VariableType.*;
 
@@ -34,7 +27,7 @@ import static org.openmarkov.core.model.network.VariableType.*;
  * etc. The structural aspect of the underlying  graph is in the node
  * associated.
  *
- * @author marias
+ * @author Manuel Arias
  * @author fjdiez
  * @version 1.0
  * @see Node
@@ -44,31 +37,37 @@ import static org.openmarkov.core.model.network.VariableType.*;
 public class Node implements Cloneable, ClassLocalizable {
     
     // Constants
-    public final static double DEFAULT_RELEVANCE = 5.0;
+    public static final double DEFAULT_RELEVANCE = 5.0;
     /**
-     * This object contains all the information that the parser reads from
-     * disk that does not have a direct connection with the attributes stored
-     * in the {@code Node} object.
+     * Additional properties read from disk that have no direct mapping to
+     * fields of this object (e.g. format-specific metadata).
+     * Exposed as an unmodifiable view via {@link #getAdditionalProperties()};
+     * mutated through {@link #setAdditionalProperties(Map)} and
+     * {@link #putAdditionalProperty(String, String)}.
      */
-    public LinkedHashMap<String, String> additionalProperties;    // changed by agoni
-    // public Map<String, String> additionalProperties;
+    private final Map<String, String> additionalProperties;
     
     // Attributes/
     /**
      * Node type
      */
-    protected NodeType nodeType;
+    private NodeType nodeType;
     
     /**
      * Network
      */
-    protected transient ProbNet probNet;
+    protected final transient ProbNet probNet;
     
     /**
-     * Each {@code Node} has a list of potentials
+     * Potentials associated to this node (CPTs, utility functions, link restrictions).
+     * Wrapped in a synchronized list so that individual operations ({@link #addPotential},
+     * {@link #removePotential}, {@link #clearPotentials}) are thread-safe.
+     * Compound operations ({@link #setPotential}, {@link #setPotentials}) use an explicit
+     * {@code synchronized(potentials)} block to guarantee atomicity.
+     * {@link #getPotentials()} returns a defensive copy, so external iteration is safe.
      */
     @NotNull
-    protected List<Potential> potentials;
+    protected final List<Potential> potentials;
     
     /**
      * The variable associated
@@ -113,8 +112,8 @@ public class Node implements Cloneable, ClassLocalizable {
             this.variable.setVariableType(NUMERIC);
         }
         this.nodeType = nodeType;
-        potentials = new ArrayList<>();
-        additionalProperties = new LinkedHashMap<>();
+        potentials = Collections.synchronizedList(new ArrayList<>());
+        additionalProperties = new LinkedHashMap<>();  // mutable backing map
         hashCode = 31 * variable.hashCode() + 17 * nodeType.hashCode();
     }
     
@@ -127,8 +126,8 @@ public class Node implements Cloneable, ClassLocalizable {
         this.probNet = node.getProbNet();
         this.variable = node.getVariable();
         this.nodeType = node.getNodeType();
-        potentials = new ArrayList<>(node.getPotentials());
-        additionalProperties = new LinkedHashMap<>(node.additionalProperties);
+        potentials = Collections.synchronizedList(new ArrayList<>(node.getPotentials()));
+        additionalProperties = new LinkedHashMap<>(node.getAdditionalProperties());
         alwaysObserved = node.isAlwaysObserved();
         hashCode = 31 * variable.hashCode() + 17 * nodeType.hashCode();
     }
@@ -155,12 +154,25 @@ public class Node implements Cloneable, ClassLocalizable {
     }
     
     /**
-     * Sets the additional properties
+     * Replaces all additional properties with the entries from the given map.
      *
-     * @param additionalProperties New additional properties
+     * @param additionalProperties new properties; {@code null} is treated as empty
      */
-    public void setOtherProperties(LinkedHashMap<String, String> additionalProperties) {
-        this.additionalProperties = additionalProperties;
+    public void setAdditionalProperties(Map<String, String> additionalProperties) {
+        this.additionalProperties.clear();
+        if (additionalProperties != null) {
+            this.additionalProperties.putAll(additionalProperties);
+        }
+    }
+
+    /**
+     * Adds or replaces a single additional property.
+     *
+     * @param key   property name; must not be {@code null}
+     * @param value property value
+     */
+    public void putAdditionalProperty(String key, String value) {
+        this.additionalProperties.put(key, value);
     }
     
     /**
@@ -170,18 +182,28 @@ public class Node implements Cloneable, ClassLocalizable {
         return getVariable().getName();
     }
 
+    /**
+     * @return The base name of the variable (without temporal index).
+     */
     public String getBaseName() {
         return getVariable().getBaseName();
     }
     
     /**
-     * @param potential {@code Potential}
+     * Replaces all potentials of this node with a single one.
+     * The clear and add are performed atomically to prevent other threads
+     * from observing an intermediate empty state.
+     *
+     * @param potential the new potential; must not be {@code null}
      */
     public void setPotential(Potential potential) {
-        this.potentials.clear();
-        addPotential(potential);
+        synchronized (potentials) {
+            this.potentials.clear();
+            addPotential(potential);
+        }
     }
 
+    /** Removes all potentials from this node. */
     public void clearPotentials(){
         this.potentials.clear();
     }
@@ -194,12 +216,18 @@ public class Node implements Cloneable, ClassLocalizable {
     }
     
     /**
-     * @param potentials {@code Potential}
+     * Replaces all potentials of this node with the given list.
+     * The clear and addAll are performed atomically to prevent other threads
+     * from observing an intermediate empty state.
+     *
+     * @param potentials new list of potentials; {@code null} is treated as empty
      */
     public void setPotentials(List<Potential> potentials) {
-        this.potentials.clear();
-        if (potentials != null) {
-            this.potentials.addAll(potentials);
+        synchronized (this.potentials) {
+            this.potentials.clear();
+            if (potentials != null) {
+                this.potentials.addAll(potentials);
+            }
         }
     }
     
@@ -220,6 +248,11 @@ public class Node implements Cloneable, ClassLocalizable {
         return nodeType;
     }
     
+    /**
+     * Changes the type of this node and updates the internal depot index.
+     *
+     * @param nodeType the new node type
+     */
     public void setNodeType(NodeType nodeType) {
         // Remove node from NodeTypeDepot HashMap
         this.probNet.nodeDepot.removeNode(this);
@@ -233,10 +266,14 @@ public class Node implements Cloneable, ClassLocalizable {
      * @return An {@code ArrayList} cloned with all the potentials
      * associated to this {@code Node}
      */
-    public List<Potential> getPotentials() {
+    public @NotNull List<Potential> getPotentials() {
         return new ArrayList<>(potentials);
     }
     
+    /**
+     * @return the first potential in this node's list
+     * @throws ThereIsNoPotentialsInNodeException if the node has no potentials
+     */
     public Potential getFirstPotential() throws ThereIsNoPotentialsInNodeException {
         if (this.potentials.isEmpty()) {
             throw new ThereIsNoPotentialsInNodeException(this);
@@ -252,10 +289,14 @@ public class Node implements Cloneable, ClassLocalizable {
     }
     
     /**
-     * @return additionalProperties. {@code LinkedHashMap<String, String>}
+     * Returns an unmodifiable view of the additional properties.
+     * Use {@link #setAdditionalProperties(Map)} to bulk-replace or
+     * {@link #putAdditionalProperty(String, String)} to add a single entry.
+     *
+     * @return unmodifiable map; never {@code null}
      */
-    public LinkedHashMap<String, String> getOtherProperties() {
-        return additionalProperties;
+    public Map<String, String> getAdditionalProperties() {
+        return Collections.unmodifiableMap(additionalProperties);
     }
     
     /**
@@ -265,38 +306,47 @@ public class Node implements Cloneable, ClassLocalizable {
         return probNet;
     }
     
+    /** @return all links (directed and undirected) incident to this node */
     public List<Link<Node>> getLinks() {
         return probNet.getLinks(this);
     }
-    
-    public List<Node> getChildren() {
+
+    /** @return the child nodes of this node (targets of outgoing directed links) */
+    public @NotNull List<Node> getChildren() {
         return probNet.getChildren(this);
     }
-    
-    public List<Node> getParents() {
+
+    /** @return the parent nodes of this node (sources of incoming directed links) */
+    public @NotNull List<Node> getParents() {
         return probNet.getParents(this);
     }
-    
+
+    /** @return the sibling nodes of this node (connected by undirected links) */
     public List<Node> getSiblings() {
         return probNet.getSiblings(this);
     }
-    
+
+    /** @return all neighbor nodes (parents, children, and siblings) */
     public List<Node> getNeighbors() {
         return probNet.getNeighbors(this);
     }
-    
+
+    /** @return the number of child nodes */
     public int getNumChildren() {
         return probNet.getNumChildren(this);
     }
-    
+
+    /** @return the number of parent nodes */
     public int getNumParents() {
         return probNet.getNumParents(this);
     }
-    
+
+    /** @return the number of sibling nodes */
     public int getNumSiblings() {
         return probNet.getNumSiblings(this);
     }
-    
+
+    /** @return the number of neighbor nodes */
     public int getNumNeighbors() {
         return probNet.getNumNeighbors(this);
     }
@@ -356,7 +406,7 @@ public class Node implements Cloneable, ClassLocalizable {
     
     public String toString() {
         StringBuilder out = new StringBuilder();
-        out.append(variable.getName() + " (");
+        out.append(variable.getName()).append(" (");
         switch (nodeType) {
             case CHANCE:
                 out.append("Chance");
@@ -367,11 +417,6 @@ public class Node implements Cloneable, ClassLocalizable {
             case UTILITY:
                 out.append("Utility");
                 break;
-            /*
-             * case COST: out.append("Utility, Cost node"); break; case
-             * EFFECTIVENESS: out.append("Utility, Effectiveness node"); break; case
-             * CE: out.append("Utility, Cost-Effectiveness"); break;
-             */
             default:
                 break;
         }
@@ -384,7 +429,7 @@ public class Node implements Cloneable, ClassLocalizable {
             out.append("No neighbors - ");
         } else {
             if (!parents.isEmpty()) {
-                out.append(((parents.size() == 1) ? "Parent" : "Parents") + ": {");
+                out.append((parents.size() == 1) ? "Parent" : "Parents").append(": {");
                 for (int i = 0; i < parents.size(); i++) {
                     Node parent = parents.get(i);
                     out.append(parent.getVariable());
@@ -395,7 +440,7 @@ public class Node implements Cloneable, ClassLocalizable {
                 out.append("} - ");
             }
             if (!children.isEmpty()) {
-                out.append(((children.size() == 1) ? "Child" : "Children") + ": {");
+                out.append((children.size() == 1) ? "Child" : "Children").append(": {");
                 for (int i = 0; i < children.size(); i++) {
                     Node child = children.get(i);
                     out.append(child.getVariable());
@@ -406,7 +451,7 @@ public class Node implements Cloneable, ClassLocalizable {
                 out.append("} - ");
             }
             if (!siblings.isEmpty()) {
-                out.append(((siblings.size() == 1) ? "Sibling" : "Siblings") + ": {");
+                out.append((siblings.size() == 1) ? "Sibling" : "Siblings").append(": {");
                 for (int i = 0; i < siblings.size(); i++) {
                     Node sibling = siblings.get(i);
                     out.append(sibling.getVariable());
@@ -435,41 +480,6 @@ public class Node implements Cloneable, ClassLocalizable {
         return out.toString();
     }
     
-    // TODO Comentar
-    public void setUniformPotential() {
-        
-        // first, this variable. The potentials is not null
-        Variable thisVariable = potentials.get(0).getVariable(0);
-        List<Variable> variables = new ArrayList<>();
-        variables.add(thisVariable);
-        
-        int numOfCellsInTable = thisVariable.getNumStates();
-        double initialValue = Util.round(1 / ((double) numOfCellsInTable), "0.01");
-        // add now all the parents
-        
-        for (Node parent : getParents()) {
-            //TODO Revisar, ¿Solo se agrega/elimina un padre a la vez?
-            //mpalacios
-            //the set of variables could be changed, so , have to be updated.
-            variables.add(parent.getVariable());
-            numOfCellsInTable *= parent.getVariable().
-                                       getNumStates();
-        }
-        // sets a new table with new columns and with all the same values
-        double[] table = new double[numOfCellsInTable];
-        for (int i = 0; i < numOfCellsInTable; i++) {
-            table[i] = initialValue;
-        }
-        // and finally, create the potential and the list of potentials
-        
-        // TODO Comprobar que efectivamente es un CONDITIONAL_PROBABILITY
-        TablePotential tablePotential = new TablePotential(variables, PotentialRole.CONDITIONAL_PROBABILITY, table);
-        List<Potential> newListPotentials = new ArrayList<>();
-        newListPotentials.add(tablePotential);
-        
-        potentials = newListPotentials;
-        
-    }
     
     /**
      * @return {@code String}
@@ -535,102 +545,6 @@ public class Node implements Cloneable, ClassLocalizable {
         return nodeType == NodeType.DECISION && !potentials.isEmpty();
     }
     
-    public void samplePotentials() {
-        for (int i = 0; i < potentials.size(); i++) {
-            Potential originalPotential = potentials.get(i);
-            potentials.set(i, originalPotential.sample());
-        }
-    }
-    
-    /**
-     * @return Approximates the maximum or the minimum of the utility function of the Node. It is computed recursively by using the utility function
-     * of parent nodes. If 'computeMax' is true then it computes the maximum; otherwise it computes the minimum.
-     * For an exact computation of the maximum or the minimum of the utility function then it is required to use
-     * method 'getUtilityFunction' and computes the maximum or the minimum over the resulting potential.
-     *
-     * @throws NonProjectablePotentialException NonProjectablePotentialException
-     */
-    private double getApproximateMaxOrMinUtilityFunction(boolean computeMax) throws NonProjectablePotentialException {
-        List<Potential> potentials = this.getPotentials();
-        if (potentials == null || potentials.isEmpty()) {
-            return 0.0;
-        }
-        Potential firstPotential = potentials.getFirst();
-        if (!this.isSuperValueNode()) {
-            TablePotential tableProject = firstPotential.tableProject(null, null);
-            double[] values = tableProject != null ? tableProject.values : new double[1];
-            return computeMax ? Tools.max(values) : Tools.min(values);
-        }
-        List<Node> parents = this.getParents();
-        double[] parentValues = new double[parents.size()];
-        for (int i = 0; i < parents.size(); i++) {
-            parentValues[i] = parents.get(i).getApproximateMaxOrMinUtilityFunction(computeMax);
-        }
-        return switch (firstPotential) {
-            case SumPotential ignored -> Tools.sum(parentValues);
-            case ProductPotential ignored -> Tools.multiply(parentValues);
-            //This was checked before already, so this line cannot happen.
-            default -> throw new NonProjectablePotentialException.SuperValueMustBeSumOrProduct(firstPotential);
-        };
-    }
-    
-    /**
-     * @return Approximates the maximum of the utility function of the Node. It is computed recursively by using the utility function
-     * of parent nodes. For an exact computation of the maximum of the utility function then it is required to use
-     * method 'getUtilityFunction' and computes the maximum over the resulting potential.
-     *
-     * @throws NonProjectablePotentialException NonProjectablePotentialException
-     */
-    public double getApproximateMaximumUtilityFunction() throws NonProjectablePotentialException {
-        return getApproximateMaxOrMinUtilityFunction(true);
-    }
-    
-    /**
-     * @return Approximates the maximum of the utility function of the Node. It is computed recursively by using the utility function
-     * of parent nodes. For an exact computation of the maximum of the utility function then it is required to use
-     * method 'getUtilityFunction' and computes the maximum over the resulting potential.
-     *
-     * @throws NonProjectablePotentialException NonProjectablePotentialException
-     */
-    public double getApproximateMinimumUtilityFunction() throws NonProjectablePotentialException {
-        return getApproximateMaxOrMinUtilityFunction(false);
-    }
-    
-    /**
-     * @return The utility function of a utility variable. If it is a super-value node
-     * then it operates their parent's utility functions recursively.
-     *
-     * @throws NonProjectablePotentialException NonProjectablePotentialException
-     */
-    public @Nullable TablePotential getUtilityFunction() throws NonProjectablePotentialException {
-        TablePotential result;
-        List<Potential> potentials = this.getPotentials();
-        if (potentials == null || potentials.isEmpty()) {
-            return null;
-        }
-        Potential firstPotential = potentials.getFirst();
-        switch (firstPotential) {
-            case SumPotential ignored -> {
-            }
-            case ProductPotential ignored -> {
-            }
-            default -> throw new NonProjectablePotentialException.SuperValueMustBeSumOrProduct(firstPotential);
-        }
-        ;
-        if (!this.isSuperValueNode()) {
-            return firstPotential.tableProject(null, null);
-        }
-        List<TablePotential> utilityFunctionsParents = new ArrayList<>();
-        for (Node node : this.getParents()) {
-            utilityFunctionsParents.add(node.getUtilityFunction());
-        }
-        return switch (firstPotential) {
-            case SumPotential ignored -> DiscretePotentialOperations.sum(utilityFunctionsParents);
-            case ProductPotential ignored -> DiscretePotentialOperations.multiply(utilityFunctionsParents);
-            //This was checked before already, so this line cannot happen.
-            default -> throw new NonProjectablePotentialException.SuperValueMustBeSumOrProduct(firstPotential);
-        };
-    }
     
     /**
      * @return true if the variable is a supervalue node. False if does not
@@ -651,7 +565,7 @@ public class Node implements Cloneable, ClassLocalizable {
     }
     
     /**
-     * This method is used to
+     * Returns the subset of this node's parents that are utility nodes.
      *
      * @return a list with utility parents
      */
@@ -738,6 +652,13 @@ public class Node implements Cloneable, ClassLocalizable {
         this.coordinateY = coordinateY;
     }
     
+    /**
+     * Creates a clone of this node bound to the given {@code ProbNet}, copying
+     * all metadata (coordinates, purpose, relevance, etc.) but not potentials.
+     *
+     * @param probNet the target network for the cloned node
+     * @return a new {@code Node} with cloned variable and copied properties
+     */
     public Node clone(ProbNet probNet) {
         Variable newVariable = CloneUtils.safeClone(this.variable);
         if (this.getNodeType() == NodeType.UTILITY) {
@@ -755,18 +676,24 @@ public class Node implements Cloneable, ClassLocalizable {
         newNode.setPurpose(this.getPurpose());
         newNode.setRelevance(this.getRelevance());
         newNode.setComment(this.getComment());
-        newNode.additionalProperties = CloneUtils.safeClone(this.additionalProperties);
+        newNode.setAdditionalProperties(this.additionalProperties);
         newNode.setAlwaysObserved(this.isAlwaysObserved());
         return newNode;
     }
     
+    /**
+     * @return the first potential, or {@code null} if no potentials are assigned
+     */
     public Potential getPotential() {
         if(potentials.isEmpty()){
             return null;
         }else{
-            return getPotentials().get(0);
+            return getPotentials().getFirst();
         }
     }
+    /**
+     * @return the last potential in this node's list
+     */
     //TODO: very possibly removal
     public Potential getPreviousPotential() {
         int x = getPotentials().size() - 1;
@@ -774,257 +701,5 @@ public class Node implements Cloneable, ClassLocalizable {
     }
 
 
-    public void setPotentialConsistently(Potential newPotential){
-        List<Potential> potentials = new ArrayList<>();
-        potentials.add(newPotential);
-        setPotentials(potentials);
-        // update potential with link restriction
-        if (newPotential instanceof TablePotential && getNodeType() != NodeType.DECISION) {
-            newPotential = LinkRestrictionPotentialOperations.updatePotentialByLinkRestrictions(this);
-            potentials = new ArrayList<>();
-            potentials.add(newPotential);
-            setPotentials(potentials);
-        }
-    }
-
-    public void absorbNodeConsistently(Variable absorbedVariable) throws DoEditException.CannotDoEditException {
-        Node absorbedNode = probNet.getNode(absorbedVariable);
-        Node child = absorbedNode.getChildren().get(0);
-        List<Link<Node>> newParentLinks = new ArrayList<>();;
-        List<Potential> oldUtilityPotentials = child.getPotentials();
-        List<Potential> newPotentials = new ArrayList<>();
-
-        /* Chance parent */
-        if (absorbedNode.getNodeType() == NodeType.CHANCE) {
-            for (Potential potential : oldUtilityPotentials) {
-
-                // Potentials to multiply
-                List<TablePotential> utilityAndChance = new ArrayList<>();
-                utilityAndChance.add(potential.getCPT()); //Utility
-                utilityAndChance.add(absorbedNode.getPotentials().get(0).getCPT()); //Chance
-
-                /* Obtain parameters to invoke multiplyAndMarginalize */
-                // All variables from chance parent and utility child potentials
-                List<Variable> unionVariables = AuxiliaryOperations.getUnionVariables(utilityAndChance);
-
-                List<Variable> variablesToKeep = new ArrayList<>(unionVariables);
-                variablesToKeep.remove(absorbedVariable);
-
-                List<Variable> variablesToEliminate = new ArrayList<>();
-                variablesToEliminate.add(absorbedVariable);
-
-                // Discrete operation is valid because all parents are discrete
-                TablePotential marginalizedPotential = DiscretePotentialOperations.
-                        multiplyAndMarginalize(utilityAndChance, variablesToKeep, variablesToEliminate);
-
-                // Convert to utility potential
-                ExactDistrPotential exactDistrPotential = new ExactDistrPotential(variablesToKeep);
-                exactDistrPotential.setValues(marginalizedPotential.values);
-
-                newPotentials.add(exactDistrPotential);
-            }
-
-            // Parents of chance node are now parents of utility node
-            for (Node parent : absorbedNode.getParents() ) {
-                Link<Node> link = probNet.getLink(parent, child, true);
-                if (link == null) {
-                    // creating the Link saves it in the graph
-                    newParentLinks.add(probNet.addLink(parent, child, true));
-
-                }
-            }
-
-            /* Decision parent */
-        } else if (absorbedNode.getNodeType() == NodeType.DECISION) {
-            for (Potential potential : oldUtilityPotentials) {
-                TablePotential utilityPotential;
-
-                utilityPotential = potential.getCPT();
-
-                // Discrete operation is valid because all parents are discrete
-                TablePotential maximizedPotential = (TablePotential) DiscretePotentialOperations.
-                        maximize(utilityPotential, absorbedVariable)[0];
-                List<Variable> newVariables = new ArrayList<>(potential.getVariables());
-                newVariables.remove(absorbedVariable);
-
-
-                // Convert to utility potential
-                ExactDistrPotential exactDistrPotential = new ExactDistrPotential(newVariables);
-                exactDistrPotential.setValues(maximizedPotential.values);
-
-                newPotentials.add(exactDistrPotential);
-            }
-            // Parents of decision node don't turn into parents of utility node
-        }
-        child.setPotentials(newPotentials);
-    }
-
-    public void setVariableTypeConsistently(VariableType newType){
-        VariableType currentType = getVariable().variableType;
-
-        // Set the new variable type
-        getVariable().setVariableType(newType);
-
-
-        boolean needsUniformPotential = false;
-
-        switch (currentType) {
-            case FINITE_STATES:
-            case DISCRETIZED:
-                if (newType == NUMERIC) {
-                    setPotentialsNodeAndChildren();
-                }
-                break;
-
-            case NUMERIC:
-                setPotentialsNodeAndChildren();
-
-                if (newType == DISCRETIZED
-                        && getVariable().getPartitionedInterval().getNumSubintervals() == 1) {
-
-                    // If there is only one interval, set default partitioned interval
-                    PartitionedInterval interval = new PartitionedInterval(
-                            getVariable().getDefaultInterval(getVariable().getNumStates()),
-                            Variable.getDefaultBelongs(getVariable().getNumStates())
-                    );
-                    getVariable().setPartitionedInterval(interval);
-                }
-
-                // Mark to set uniform potential later
-                needsUniformPotential = true;
-                break;
-
-            default:
-                break;
-        }
-
-        if (needsUniformPotential) {
-            // Build the list of variables (node and its parents)
-            List<Variable> variables = new ArrayList<>();
-            if (getNodeType() != NodeType.UTILITY) {
-                variables.add(getVariable());
-            }
-            for (Node parent : probNet.getParents(this)) {
-                variables.add(parent.getVariable());
-            }
-
-            // Create and assign uniform potential
-            UniformPotential uniformPotential = new UniformPotential(
-                    variables,
-                    getPotentials().get(0).getPotentialRole()
-            );
-
-            List<Potential> potentials = new ArrayList<>(1);
-            potentials.add(uniformPotential);
-            setPotentials(potentials);
-            setUniformPotential();
-        }
-    }
-
-    public void resetLink() {
-
-        List<Node> children = probNet.getChildren(this);
-        for (Node child : children) {
-            Link<Node> link = probNet.getLink(this, child, true);
-            if (link.hasRevealingConditions()) {
-                link.setRevealingIntervals(new ArrayList<PartitionedInterval>());
-                link.setRevealingStates(new ArrayList<State>());
-            }
-        }
-
-        for (Link<Node> link : probNet.getLinks(this)) {
-            if (link.hasRestrictions()) {
-                link.setRestrictionsPotential(null);
-            }
-
-        }
-    }
-
-    private void setPotentialsNodeAndChildren() {
-        // from numeric to finite states or discretized or vice versa
-        // if child is utility to potential to be set depends on the
-        // type of the other parents
-        // it is not always uniform
-        setUniformPotential2Node(this);
-        for (Node child : probNet.getChildren(this)) {
-            if (child.getNodeType() == NodeType.UTILITY) {
-                List<Potential> newPotentials = new ArrayList<>();
-                if (child.onlyNumericalParents()) {// utility and
-                    // numerical parents
-                    // sum
-                    for (Potential oldPotential : child.getPotentials()) {
-                        // Update potential
-                        Potential newPotential = new SumPotential(oldPotential.getVariables(),
-                                oldPotential.getPotentialRole());
-                        newPotentials.add(newPotential);
-                    }
-                } else if (!child.onlyNumericalParents()) {// mixture of
-                    // finite
-                    // states
-                    // and
-                    // numerical
-                    // Uniform
-                    for (Potential oldPotential : child.getPotentials()) {
-                        // Update potential
-                        Potential newPotential = new UniformPotential(oldPotential.getVariables(),
-                                oldPotential.getPotentialRole());
-                        newPotentials.add(newPotential);
-                    }
-                }
-                child.setPotentials(newPotentials);
-            } else {
-                // if child is not utility always change potential to Uniform
-                // 25/11/2014
-                // If there are any potentials in the child
-                // Example. In the "ID-decide-test" network, if you change the Domain of Result of test variable,
-                // no potential should be set to Therapy
-                if (child.getPotentials() != null) {
-                    if (!child.getPotentials().isEmpty()) {
-                        setUniformPotential2Node(child);
-                    }
-                }
-            }
-        }
-    }
-
-    public void setUniformPotential2Node(Node node) {
-
-        List<Potential> newListPotentials = new ArrayList<>();
-        List<Variable> variables = new ArrayList<>();
-        List<Potential> potentials = node.getPotentials();
-        PotentialRole role = potentials.get(0).getPotentialRole();
-        // first, this variable. The potentials is not null
-        Variable thisVariable = potentials.get(0).getVariable(0);
-        variables.add(thisVariable);
-
-        int numOfCellsInTable = thisVariable.getNumStates();
-        double initialValue = Util.round(1 / ((double) numOfCellsInTable), "0.01");
-        // add now all the parents
-
-        for (Node parent : node.getParents()) {
-            // TODO Revisar, ¿Solo se agrega/elimina un padre a la vez?
-            // mpalacios
-            // the set of variables could be changed, so , have to be updated.
-            variables.add(parent.getVariable());
-            numOfCellsInTable *= parent.getVariable().getNumStates();
-        }
-
-        //TODO: This array is never used. Why is it created then?
-        // sets a new table with new columns and with all the same values
-        double[] table = new double[numOfCellsInTable];
-        for (int i = 0; i < numOfCellsInTable; i++) {
-            table[i] = initialValue;
-        }
-
-        // and finally, create the potential and the list of potentials
-
-        // TODO Comprobar que efectivamente es un CONDITIONAL_PROBABILITY
-        UniformPotential uniformPotential = new UniformPotential(variables, role);
-
-        newListPotentials.add(uniformPotential);
-
-        node.setPotentials(newListPotentials);
-
-    }
 
 }

@@ -75,32 +75,14 @@ public class TaskUtilities {
 	}
 
 	public static ProbNet scaleUtilitiesUnicriterion(ProbNet probNet) {
-		// if
-		// (probNet.getInferenceOptions().getMultiCriteriaOptions().getMulticriteriaType().
-		// equals(MulticriteriaOptions.Type.UNICRITERION)) {
 		UtilityOperations.transformToUnicriterion(probNet);
-		// }
 		return probNet;
 	}
 
 	public static ProbNet scaleUtilitiesCostEffectiveness(ProbNet probNet) {
-		// if
-		// (probNet.getInferenceOptions().getMultiCriteriaOptions().getMulticriteriaType().
-		// equals(MulticriteriaOptions.Type.COST_EFFECTIVENESS)) {
 		UtilityOperations.applyCEUtilityScaling(probNet);
-		// }
 		return probNet;
 	}
-
-	// public static ProbNet unscaleUtilitiesUnicriterion(ProbNet probNet) {
-	// UtilityOperations.unicriterionUtilityUnscaling(probNet);
-	// return probNet;
-	// }
-	//
-	// public static ProbNet unscaleUtilitiesCostEffectiveness(ProbNet probNet) {
-	// UtilityOperations.ceUtilityUnscaling(probNet);
-	// return probNet;
-	// }
     
     public static ProbNet discretizeNonObservedNumericVariables(ProbNet probNet, EvidenceCase preResolutionEvidence) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
 		return ProbNetOperations.convertNumericalVariablesToFS(probNet, preResolutionEvidence);
@@ -115,8 +97,8 @@ public class TaskUtilities {
 
 	//TODO Do not delete next commented code as we are still debugging the transition from super-value nodes' concepts to numeric concepts
 	/*
-	 * @param probNet
-	 * @param evidenceCase
+	 * @param probNet the prob net
+	 * @param evidenceCase the evidence case
 	 * @return Remove super value nodes from probNet
 	 *//*
 		 * public static ProbNet removeSuperValueNodes(ProbNet probNet, EvidenceCase
@@ -258,7 +240,6 @@ public class TaskUtilities {
 	 * @param network Network
 	 * @param evidence Evidence
 	 * @return Projected network
-	 * @throws IncompatibleEvidenceException IncompatibleEvidenceException
 	 */
 	public static ProbNet projectTablesAndBuildMarkovDecisionNetwork(ProbNet network, EvidenceCase evidence)
 			throws NonProjectablePotentialException {
@@ -271,12 +252,12 @@ public class TaskUtilities {
 			} else {
 				if (potential.isAdditive()) {
 					// It is a utility potential
-					if (potential.values[0] != 0) {
+					if (potential.getValues()[0] != 0) {
 						projectedPotentials.add(potential);
 					}
 				} else {
 					// It is a probability potential
-					if (potential.values[0] != 1) {
+					if (potential.getValues()[0] != 1) {
 						projectedPotentials.add(potential);
 					}
 				}

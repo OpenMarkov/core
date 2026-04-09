@@ -24,6 +24,8 @@ import java.util.List;
 
 /**
  * Wrapper for TablePotential
+ *
+ * @author Manuel Arias
  */
 @PotentialType(names = "Exact") public class ExactDistrPotential extends Potential {
     
@@ -37,7 +39,8 @@ import java.util.List;
         if (this.role == null) {
             this.role = PotentialRole.CONDITIONAL_PROBABILITY;
         }
-        tablePotential = new TablePotential(variables.subList(1, variables.size()), PotentialRole.UNSPECIFIED);
+        // Use UncertainTablePotential so that setUncertainValues() works on this potential
+        tablePotential = new UncertainTablePotential(variables.subList(1, variables.size()), PotentialRole.UNSPECIFIED);
     }
     
     public ExactDistrPotential(List<Variable> variables) {
@@ -51,7 +54,7 @@ import java.util.List;
     
     public ExactDistrPotential(ExactDistrPotential potential) {
         super(potential);
-        this.tablePotential = new TablePotential(potential.getTablePotential());
+        this.tablePotential = (TablePotential) potential.getTablePotential().copy();
     }
     
     // Methods
@@ -131,7 +134,7 @@ import java.util.List;
     }
     
     public void setValues(double[] values) {
-        this.tablePotential.values = values;
+        this.tablePotential.setValues(values);
     }
     
     @Override public List<Variable> getVariables() {
@@ -164,13 +167,13 @@ import java.util.List;
             buffer.append(" = ");
         }
         
-        if (tablePotential.values.length == 1) {
-            buffer.append(tablePotential.values[0]);
-        } else if (tablePotential.values.length > 1) {
+        if (tablePotential.getValues().length == 1) {
+            buffer.append(tablePotential.getValues()[0]);
+        } else if (tablePotential.getValues().length > 1) {
             buffer.append("{");
-            for (int i = 0; i < tablePotential.values.length; i++) {
-                buffer.append(tablePotential.values[i]);
-                if (i != tablePotential.values.length - 1) {
+            for (int i = 0; i < tablePotential.getValues().length; i++) {
+                buffer.append(tablePotential.getValues()[i]);
+                if (i != tablePotential.getValues().length - 1) {
                     buffer.append(",");
                 }
             }

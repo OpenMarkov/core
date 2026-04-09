@@ -22,6 +22,12 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.*;
 
+/**
+ * Weibull hazard potential for survival analysis. Models the probability of a binary
+ * event (e.g., death/survival) as a function of time using the Weibull hazard function,
+ * parameterized by a shape parameter (gamma) and covariates. Used in cost-effectiveness
+ * and temporal Bayesian network models.
+ */
 @PotentialType(names = "Hazard (Weibull)") public class WeibullHazardPotential extends GLMPotential {
     
     protected static final VariableExpression GAMMA = new VariableExpression(Collections.emptyList(), "Gamma");
@@ -184,9 +190,9 @@ import java.util.*;
                     probability = 1 - Math.exp(lambda * diff);
                 }
                 // p
-                projectedPotential.values[configBaseIndex + 1] = probability;
+                projectedPotential.getValues()[configBaseIndex + 1] = probability;
                 // Complement (1-p)
-                projectedPotential.values[configBaseIndex] = 1 - probability;
+                projectedPotential.getValues()[configBaseIndex] = 1 - probability;
             }
         }
         
@@ -259,15 +265,15 @@ import java.util.*;
         return potential;
     }
     
+    /** Expression-based potential; variable-name-based, not index-based; returns a copy. */
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
-        // TODO Auto-generated method stub
-        return null;
+        return copy();
     }
-    
+
+    /** Expression-based potential; variable-name-based, not index-based; returns a copy. */
     @Override
     public Potential reorder(Variable variable, State[] newOrder) {
-        // TODO Auto-generated method stub
-        return null;
+        return copy();
     }
 }

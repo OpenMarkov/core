@@ -14,6 +14,7 @@ import org.openmarkov.core.developmentStaticAnalysis.requirements.Implementation
 import org.openmarkov.core.developmentStaticAnalysis.requirements.RequiredConstructor;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.localize.ClassLocalizable;
+import org.openmarkov.core.model.network.GraphNetwork;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.developmentStaticAnalysis.mutability.Immutable;
 
@@ -30,10 +31,9 @@ public abstract class PNConstraint implements PNEditListener, ClassLocalizable, 
     
     /**
      * @param probNet {@code ProbNet}
-     * @return {@code true} if the {@code probNet} fulfills the
-     * constraint.
+     * @param constraintChecker {@code ConstraintChecker}
      */
-    public abstract void checkProbNet(ProbNet probNet, ConstraintChecker constraintChecker);
+    public abstract void checkProbNet(GraphNetwork probNet, ConstraintChecker constraintChecker);
     
     public final boolean isMetBy(ProbNet probNet) {
         ConstraintChecker constraintChecker = new ConstraintChecker(probNet);

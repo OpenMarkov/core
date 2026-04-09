@@ -8,7 +8,6 @@
 package org.openmarkov.core.model.graph;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * This class implements the minimal set of methods for creating
@@ -22,7 +21,7 @@ import java.util.stream.Collectors;
  * Explicit links do not substitute implicit links. In fact, an explicit link
  * implies the existence of an implicit link.
  *
- * @author manuel
+ * @author Manuel Arias
  * @author fjdiez
  * @author ibermejo
  * @version 1.1
@@ -36,13 +35,13 @@ public class Graph<T> {
     // Attributes
     private boolean explicitLinks = false;
     
-    private List<T> nodes;
+    private final List<T> nodes;
     
-    private Map<T, List<Link<T>>> nodeLinks;
+    private final Map<T, List<Link<T>>> nodeLinks;
     
-    private Map<T, List<T>> nodeChildren;
-    private Map<T, List<T>> nodeParents;
-    private Map<T, List<T>> nodeSiblings;
+    private final Map<T, List<T>> nodeChildren;
+    private final Map<T, List<T>> nodeParents;
+    private final Map<T, List<T>> nodeSiblings;
     
     // Constructor
     public Graph() {
@@ -55,15 +54,15 @@ public class Graph<T> {
     
     // Methods
     public List<T> getChildren(T node) {
-        return (nodeChildren.containsKey(node)) ? new ArrayList<>(nodeChildren.get(node)) : new ArrayList<T>();
+        return (nodeChildren.containsKey(node)) ? new ArrayList<>(nodeChildren.get(node)) : new ArrayList<>();
     }
     
     public List<T> getParents(T node) {
-        return (nodeParents.containsKey(node)) ? new ArrayList<>(nodeParents.get(node)) : new ArrayList<T>();
+        return (nodeParents.containsKey(node)) ? new ArrayList<>(nodeParents.get(node)) : new ArrayList<>();
     }
     
     public List<T> getSiblings(T node) {
-        return (nodeSiblings.containsKey(node)) ? new ArrayList<>(nodeSiblings.get(node)) : new ArrayList<T>();
+        return (nodeSiblings.containsKey(node)) ? new ArrayList<>(nodeSiblings.get(node)) : new ArrayList<>();
     }
     
     public int getNumChildren(T node) {
@@ -247,7 +246,7 @@ public class Graph<T> {
     public void makeLinksExplicit(boolean createLabelledLinks) {
         if (!explicitLinks) {
             for (T node : nodes) {
-                nodeLinks.put(node, new LinkedList<Link<T>>());
+                nodeLinks.put(node, new LinkedList<>());
             }
             for (T node : nodes) {
                 List<T> children = nodeChildren.get(node);
@@ -331,7 +330,7 @@ public class Graph<T> {
     
     public List<Link<T>> getLinks(T node) {
         makeLinksExplicit(false);
-        return nodeLinks.containsKey(node) ? new ArrayList<>(nodeLinks.get(node)) : new ArrayList<Link<T>>();
+        return nodeLinks.containsKey(node) ? new ArrayList<>(nodeLinks.get(node)) : new ArrayList<>();
     }
     
     public int getNumLinks(T node) {
@@ -367,7 +366,7 @@ public class Graph<T> {
      * @param directed      {@code boolean}. If this parameter is true, this
      *                      method returns {@code true} only if there is a directed path;
      *                      otherwise, this method returns {@code true} if there is any path.
-     * @param linksToIgnore
+     * @param linksToIgnore the links to ignore
      *
      * @return {@code true} if it exists a path between node1 and node2
      * with a criterion to go from a node to another.
@@ -380,7 +379,7 @@ public class Graph<T> {
             return true;
         }
         HashMap<T, Collection<T>> parentsToIgnoredChildren = new HashMap<>();
-        for(var linkToIgnore : linksToIgnore){
+        for(var linkToIgnore : linksToIgnore) {
             if(!parentsToIgnoredChildren.containsKey(linkToIgnore.getFrom())){
                 parentsToIgnoredChildren.put(linkToIgnore.getFrom(), new HashSet<>());
             }
@@ -389,13 +388,13 @@ public class Graph<T> {
         
         int numNodes = nodes.size();
         boolean[] markedNodes = new boolean[numNodes];
-        Stack<T> nodesToExpand = new Stack<>();
-        
+        Deque<T> nodesToExpand = new ArrayDeque<>();
+
         // Mark node1 and put it in the list of nodes to be expanded
         nodesToExpand.push(node1);
         markedNodes[nodes.indexOf(node1)] = true;
-        
-        while (!nodesToExpand.empty()) {
+
+        while (!nodesToExpand.isEmpty()) {
             T expandingNode = nodesToExpand.pop(); // the top of the stack
             ArrayList<T> neighbors = new ArrayList<>((directed) ? getChildren(expandingNode) : getNeighbors(expandingNode));
             var nodeLinksToIgnore = parentsToIgnoredChildren.get(expandingNode);
@@ -455,20 +454,20 @@ public class Graph<T> {
         if (directed) {
             if (!isChild(node2, node1)) {
                 if (!nodeChildren.containsKey(node1))
-                    nodeChildren.put(node1, new LinkedList<T>());
+                    nodeChildren.put(node1, new LinkedList<>());
                 nodeChildren.get(node1).add(node2);
             }
             if (!isParent(node1, node2)) {
                 if (!nodeParents.containsKey(node2))
-                    nodeParents.put(node2, new LinkedList<T>());
+                    nodeParents.put(node2, new LinkedList<>());
                 nodeParents.get(node2).add(node1);
             }
         } else {
             if (!isSibling(node1, node2)) {
                 if (!nodeSiblings.containsKey(node1))
-                    nodeSiblings.put(node1, new LinkedList<T>());
+                    nodeSiblings.put(node1, new LinkedList<>());
                 if (!nodeSiblings.containsKey(node2))
-                    nodeSiblings.put(node2, new LinkedList<T>());
+                    nodeSiblings.put(node2, new LinkedList<>());
                 nodeSiblings.get(node1).add(node2);
                 nodeSiblings.get(node2).add(node1);
             }
@@ -503,7 +502,7 @@ public class Graph<T> {
     public void addNode(T node) {
         nodes.add(node);
         if (explicitLinks) {
-            nodeLinks.put(node, new LinkedList<Link<T>>());
+            nodeLinks.put(node, new LinkedList<>());
         }
     }
     
@@ -519,7 +518,7 @@ public class Graph<T> {
     public String toString() {
         StringBuilder buffer = new StringBuilder("Nodes (" + nodes.size() + "): \n");
         for (T node : nodes) {
-            buffer.append(node.toString() + "\n");
+            buffer.append(node.toString()).append("\n");
         }
         buffer.append("Links: \n");
         if (explicitLinks) {
@@ -527,20 +526,20 @@ public class Graph<T> {
                 List<Link<T>> links = nodeLinks.get(node);
                 for (Link<T> link : links) {
                     if (node.equals(link.getFrom()))
-                        buffer.append(link.toString() + "\n");
+                        buffer.append(link).append("\n");
                 }
             }
         } else {
             for (T node : nodeChildren.keySet()) {
                 for (T child : nodeChildren.get(node)) {
-                    buffer.append(node.toString() + " --> " + child.toString() + "\n");
+                    buffer.append(node).append(" --> ").append(child).append("\n");
                 }
             }
             for (T node : nodeSiblings.keySet()) {
                 int indexNode = nodes.indexOf(node);
                 for (T sibling : nodeSiblings.get(node)) {
                     if (indexNode < nodes.indexOf(sibling))
-                        buffer.append(node.toString() + " --- " + sibling.toString() + "\n");
+                        buffer.append(node).append(" --- ").append(sibling).append("\n");
                 }
             }
         }

@@ -18,9 +18,9 @@ import org.openmarkov.core.action.base.PNEdit;
  */
 @SuppressWarnings("serial") public class UnitEdit extends PNEdit {
 
-	private Node node;
-	private StringWithProperties lastUnit;
-	private StringWithProperties newUnit;
+	private final Node node;
+	private final StringWithProperties lastUnit;
+	private final StringWithProperties newUnit;
 
 	public UnitEdit(Node node, String newUnit) {
 		super(node.getProbNet());

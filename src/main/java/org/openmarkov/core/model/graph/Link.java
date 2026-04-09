@@ -35,17 +35,17 @@ public class Link<T> implements ClassLocalizable {
     /**
      * The first node. If the link is directed, this node is the parent.
      */
-    private T from;
+    private final T from;
     
     /**
      * The second node. If the link is directed, this node is the child.
      */
-    private T to;
+    private final T to;
     
     /**
      * If true, the link is directed. Otherwise, it is an undirected link.
      */
-    private boolean directed;
+    private final boolean directed;
     
     /****
      * Potential that contains the value of compatibility for the combinations
@@ -223,11 +223,11 @@ public class Link<T> implements ClassLocalizable {
      * Assigns the value of the parameter compatibility to the combination of
      * the variables state1 and state2.
      *
-     * @param state1
+     * @param state1 the state1
      *            state of the variable of node1
-     * @param state2
+     * @param state2 the state2
      *            state of the variable of node2
-     * @param compatibility
+     * @param compatibility the compatibility
      *            value of compatibility
      */
     public void setCompatibilityValue(State state1, State state2, int compatibility) {
@@ -244,9 +244,9 @@ public class Link<T> implements ClassLocalizable {
     /******
      * Returns the compatibility value of the combination of state1 and state2.
      *
-     * @param state1
+     * @param state1 the state1
      *            state of the variable of node1.
-     * @param state2
+     * @param state2 the state2
      *            state of the variable of node2.
      * @return the value 1 for compatibility and 0 for incompatibility.
      */

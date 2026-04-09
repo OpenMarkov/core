@@ -13,7 +13,6 @@ import org.openmarkov.core.developmentStaticAnalysis.requirements.RequiredConstr
 import org.openmarkov.core.developmentStaticAnalysis.requirements.RequiredMethod;
 import org.openmarkov.core.developmentStaticAnalysis.requirements.SelfClass;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.localize.Localizable;
@@ -26,7 +25,20 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
- * @author marias
+ * Abstract base class for all potentials in OpenMarkov. A potential represents a
+ * conditional probability table (CPT), a utility function, or any parametric
+ * distribution associated with a node in a probabilistic graphical model.
+ * <p>
+ * Subclasses must implement {@link #project} and {@link #copy}.
+ * The methods {@link #tableProject}, {@link #isUncertain}, {@link #scalePotential},
+ * and {@link #reorder} have default implementations in this class that either return
+ * a safe default ({@link #isUncertain}) or throw {@link UnsupportedOperationException}
+ * / {@link NonProjectablePotentialException}. Subclasses should override them as needed.
+ * <p>
+ * Potentials are discovered at runtime via the {@code @PotentialType} annotation
+ * and the plugin system.
+ *
+ * @author Manuel Arias
  * @author fjdiez
  * @version 1.0
  * @since OpenMarkov 1.0
@@ -124,12 +136,25 @@ public abstract class Potential implements Localizable {
         return true;
     }
     
+    /**
+     * Converts a variable array to a list.
+     *
+     * @param variables array of variables
+     * @return a new {@code List} containing the given variables
+     */
     protected static List<Variable> toList(Variable[] variables) {
         List<Variable> variablesArrayList = new ArrayList<>();
         Collections.addAll(variablesArrayList, variables);
         return variablesArrayList;
     }
     
+    /**
+     * Finds the first potential in the list whose conditioned variable matches the given variable.
+     *
+     * @param variable   the variable to search for
+     * @param potentials list of table potentials to search
+     * @return the matching potential, or {@code null} if not found
+     */
     protected static TablePotential findPotentialByVariable(Variable variable, List<TablePotential> potentials) {
         int i = 0;
         TablePotential potential = null;
@@ -211,6 +236,12 @@ public abstract class Potential implements Localizable {
         return variables.get(position);
     }
     
+    /**
+     * Replaces one variable with another in this potential's variable list.
+     *
+     * @param variableToReplace the variable to be replaced
+     * @param variable          the replacement variable
+     */
     public void replaceVariable(Variable variableToReplace, Variable variable) {
         // TODO - Check if OOPN and ConditionalGaussian potential are still running
         //        if (variableToReplace.equals (utilityVariable))
@@ -224,8 +255,12 @@ public abstract class Potential implements Localizable {
         }
     }
     
-    // TODO documentar
-    
+    /**
+     * Replaces the variable at the given position with a new variable.
+     *
+     * @param position index of the variable to replace
+     * @param variable the replacement variable
+     */
     public void replaceVariable(int position, Variable variable) {
         variables.remove(position);
         variables.add(position, variable);
@@ -249,9 +284,11 @@ public abstract class Potential implements Localizable {
      *
      * @throws NonProjectablePotentialException NonProjectablePotentialException
      */
-    public abstract @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
-                                                         List<TablePotential> alreadyProjectedPotentials)
-            throws NonProjectablePotentialException;
+    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
+                                                List<TablePotential> alreadyProjectedPotentials)
+            throws NonProjectablePotentialException {
+        throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
+    }
     
     //    /** @return isUtility <code>boolean</code> */
     //    public boolean isUtility ()
@@ -259,11 +296,28 @@ public abstract class Potential implements Localizable {
     //        return role == PotentialRole.UTILITY;
     //    }
     
+    /**
+     * Projects this potential onto the given evidence, returning a single table potential.
+     * Convenience overload that delegates to the three-argument version with an empty list.
+     *
+     * @param evidenceCase     evidence to project onto
+     * @param inferenceOptions inference options
+     * @return the projected table potential
+     * @throws NonProjectablePotentialException if the potential cannot be projected
+     */
     public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions)
             throws NonProjectablePotentialException {
         return tableProject(evidenceCase, inferenceOptions, new ArrayList<TablePotential>());
     }
     
+    /**
+     * Projects this potential onto the given evidence, returning a potential
+     * (not necessarily a {@link TablePotential}).
+     *
+     * @param evidenceCase evidence to project onto
+     * @return the projected potential
+     * @throws NonProjectablePotentialException if the potential cannot be projected
+     */
     public abstract Potential project(EvidenceCase evidenceCase) throws NonProjectablePotentialException;
     
     /**
@@ -284,7 +338,7 @@ public abstract class Potential implements Localizable {
     }
     
     public Variable getConditionedVariable() {
-        return variables.isEmpty() ? null : variables.get(0);
+        return variables.isEmpty() ? null : variables.getFirst();
     }
     
     /**
@@ -356,7 +410,7 @@ public abstract class Potential implements Localizable {
     public void createDirectedLinks(ProbNet probNet) {
         int numVariables = variables.size();
         if (numVariables > 1) {
-            Variable childVariable = variables.get(0);
+            Variable childVariable = variables.getFirst();
             for (int i = 1; i < numVariables; i++) {
                 probNet.addLink(variables.get(i), childVariable, true);
                 
@@ -376,7 +430,7 @@ public abstract class Potential implements Localizable {
      * Condition: The network must contain the shifted variables.
      */
     public List<Variable> getShiftedVariables(ProbNet probNet, int timeDifference) {
-        List<Variable> shiftedVariables = new ArrayList<Variable>(variables.size());
+        List<Variable> shiftedVariables = new ArrayList<>(variables.size());
         
         // also shift variables within the tree
         for (Variable variable : variables) {
@@ -397,13 +451,19 @@ public abstract class Potential implements Localizable {
         return toShortString();
     }
     
+    /**
+     * Returns a compact string representation of this potential, showing variables
+     * and role (e.g., "P(X | Y, Z)" for conditional probability).
+     *
+     * @return short string representation
+     */
     public String toShortString() {
         StringBuilder buffer = new StringBuilder();
         int numVariables = (variables != null) ? variables.size() : 0;
         if (numVariables != 0) { // Constant potential
             switch (role) {
                 case CONDITIONAL_PROBABILITY:
-                    buffer.append("P(" + variables.get(0));
+                    buffer.append("P(").append(variables.getFirst());
                     if (numVariables > 1) {
                         buffer.append(" | ");
                         printVariables(buffer, 1);
@@ -416,13 +476,13 @@ public abstract class Potential implements Localizable {
                     buffer.append(")");
                     break;
                 default:
-                    buffer.append(numVariables + " Variables: ");
-                    buffer.append(variables.get(0).getName());
+                    buffer.append(numVariables).append(" Variables: ");
+                    buffer.append(variables.getFirst().getName());
                     for (int i = 1; i < numVariables - 1; i++) {
-                        buffer.append(", " + variables.get(i).getName());
+                        buffer.append(", ").append(variables.get(i).getName());
                     }
                     if (numVariables > 1) {
-                        buffer.append(", " + variables.get(numVariables - 1).getName());
+                        buffer.append(", ").append(variables.get(numVariables - 1).getName());
                     }
             }
         }
@@ -445,12 +505,17 @@ public abstract class Potential implements Localizable {
     private StringBuilder printVariables(StringBuilder buffer, int firstVariable) {
         // Print variables
         for (int i = firstVariable; i < variables.size() - 1; i++) {
-            buffer.append(variables.get(i) + ", ");
+            buffer.append(variables.get(i)).append(", ");
         }
-        buffer.append(variables.get(variables.size() - 1));
+        buffer.append(variables.getLast());
         return buffer;
     }
     
+    /**
+     * Returns a string representation suitable for display in a Tree/ADD potential.
+     *
+     * @return tree ADD string representation
+     */
     public String treeADDString() {
         return toString();
     }
@@ -500,7 +565,9 @@ public abstract class Potential implements Localizable {
      *
      * @return whether the potential has uncertainty or not
      */
-    public abstract boolean isUncertain();
+    public boolean isUncertain() {
+        return false;
+    }
     
     /**
      * Adds variable to a potential implemented in each child class
@@ -512,7 +579,7 @@ public abstract class Potential implements Localizable {
     public Potential addVariable(Variable variable) {
         Potential newPotential;
         if (!variables.contains(variable)) {
-            List<Variable> newVariables = new ArrayList<Variable>(variables);
+            List<Variable> newVariables = new ArrayList<>(variables);
             newVariables.add(variable);
             newPotential = new UniformPotential(newVariables, role);
         } else {
@@ -531,7 +598,7 @@ public abstract class Potential implements Localizable {
     public Potential removeVariable(Variable variable) {
         Potential newPotential;
         if (variables.contains(variable)) {
-            List<Variable> newVariables = new ArrayList<Variable>(variables);
+            List<Variable> newVariables = new ArrayList<>(variables);
             newVariables.remove(variable);
             newPotential = new UniformPotential(newVariables, role);
         } else {
@@ -540,10 +607,24 @@ public abstract class Potential implements Localizable {
         return newPotential;
     }
     
+    /**
+     * Returns the probability for the given configuration of state indices.
+     *
+     * @param sampledStateIndexes map from each variable to its state index
+     * @return the probability value for the configuration
+     * @throws NonProjectablePotentialException if the potential cannot compute the probability
+     */
     public double getProbability(HashMap<Variable, Integer> sampledStateIndexes) throws NonProjectablePotentialException {
         return 0;
     }
     
+    /**
+     * Returns the probability for the configuration specified by the evidence case.
+     *
+     * @param evidenceCase evidence case defining the variable-state configuration
+     * @return the probability value for the configuration
+     * @throws NonProjectablePotentialException if the potential cannot compute the probability
+     */
     public double getProbability(EvidenceCase evidenceCase) throws NonProjectablePotentialException {
         HashMap<Variable, Integer> configuration = new HashMap<>();
         for (Finding finding : evidenceCase.getFindings()) {
@@ -552,6 +633,11 @@ public abstract class Potential implements Localizable {
         return getProbability(configuration);
     }
     
+    /**
+     * Replaces a numeric variable with its discretized counterpart, matching by name.
+     *
+     * @param convertedParentVariable the discretized version of a previously numeric variable
+     */
     public void replaceNumericVariable(Variable convertedParentVariable) {
         int varIndex = -1;
         for (int i = 0; i < variables.size(); ++i) {
@@ -569,7 +655,9 @@ public abstract class Potential implements Localizable {
      *
      * @param scale Scale
      */
-    public abstract void scalePotential(double scale);
+    public void scalePotential(double scale) {
+        throw new UnsupportedOperationException(getClass().getSimpleName() + " is not scalable");
+    }
     
     /**
      * Copy this potential attributes to the newPotential potential of the copyNet
@@ -579,7 +667,7 @@ public abstract class Potential implements Localizable {
      * @return A deep copy of the potential
      */
     public Potential deepCopy(ProbNet copyNet) {
-        Potential potential = null;
+        Potential potential;
         try {
             //this creates an instance of the subclass
             potential = this.getClass().getConstructor(this.getClass()).newInstance(this);
@@ -618,7 +706,9 @@ public abstract class Potential implements Localizable {
      * @return The {@code Potential} generated Condition:
      * {@code newOrderOfVariables} are the same variables than the variables of this potential
      */
-    public abstract Potential reorder(List<Variable> newOrderOfVariables);
+    public Potential reorder(List<Variable> newOrderOfVariables) {
+        throw new UnsupportedOperationException(getClass().getSimpleName() + " is not reorderable");
+    }
     
     /**
      * Copy this potential to another potential with the same variables but
@@ -629,5 +719,7 @@ public abstract class Potential implements Localizable {
      *
      * @return The {@code Potential} generated
      */
-    public abstract Potential reorder(Variable variable, State[] newOrder);
+    public Potential reorder(Variable variable, State[] newOrder) {
+        throw new UnsupportedOperationException(getClass().getSimpleName() + " is not reorderable");
+    }
 }

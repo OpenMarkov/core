@@ -9,13 +9,8 @@ package org.openmarkov.core.action.core;
 
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.action.base.PNEdit;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Changes an old potential for a new potential
@@ -27,7 +22,7 @@ public class PotentialChangeEdit extends PNEdit {
 
 	protected Potential oldPotential;
 
-	private Node node;
+	private final Node node;
 
 	// Constructor
 

@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import net.sourceforge.jeval.EvaluationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,16 +24,13 @@ import java.util.List;
 public class LinearRegressionPotentialTest {
     
     private LinearCombinationPotential potential = null;
-    private Variable ageAtStateEntryVar = null;
-    private Variable timeInStateVar = null;
-    private Variable ageVar = null;
-    
+
     @BeforeEach public void setUp() {
         
         // Revision Risk
-        ageAtStateEntryVar = new Variable("Age at state entry", "3.4", "4.4");
-        timeInStateVar = new Variable("Time in state", "0", "1");
-        ageVar = new Variable("Age", "4.4");
+        Variable ageAtStateEntryVar = new Variable("Age at state entry", "3.4", "4.4");
+        Variable timeInStateVar = new Variable("Time in state", "0", "1");
+        Variable ageVar = new Variable("Age", "4.4");
         
         List<Variable> variables = Arrays.asList(ageAtStateEntryVar, ageVar, timeInStateVar);
         double[] coefficients = new double[]{0, 1, -1};
@@ -50,7 +46,7 @@ public class LinearRegressionPotentialTest {
         EvidenceCase evidence = new EvidenceCase();
         TablePotential projectedPotential = potential.tableProject(evidence, null);
         double[] expectedValues = new double[]{0, 1, 1, 0};
-        Assertions.assertArrayEquals(expectedValues, projectedPotential.values, 0.00001);
+        Assertions.assertArrayEquals(expectedValues, projectedPotential.getValues(), 0.00001);
     }
     
 }

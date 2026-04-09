@@ -175,4 +175,5 @@ buildNumber.properties
 .settings/
 bin/
 target/
+.jqwik-database
 CLAUDE.md

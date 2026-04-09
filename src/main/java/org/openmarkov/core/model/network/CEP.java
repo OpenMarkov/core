@@ -28,10 +28,10 @@ public class CEP implements Cloneable {
         private double minThreshold = CEP.DEFAULT_MINIMAL_THRESHOLD;
         private double maxThreshold = CEP.DEFAULT_MAXIMAL_THRESHOLD;
         
-        private ArrayList<StrategyTree> strategyTrees = new ArrayList<>();
-        private ArrayList<Double> costs = new ArrayList<>();
-        private ArrayList<Double> effectivities = new ArrayList<>();
-        private ArrayList<Double> thresholds = new ArrayList<>();
+        private final ArrayList<StrategyTree> strategyTrees = new ArrayList<>();
+        private final ArrayList<Double> costs = new ArrayList<>();
+        private final ArrayList<Double> effectiveness = new ArrayList<>();
+        private final ArrayList<Double> thresholds = new ArrayList<>();
         
         public CEPBuilder thresholdBounds(double minThreshold, double maxThreshold) {
             this.minThreshold = minThreshold;
@@ -42,7 +42,7 @@ public class CEP implements Cloneable {
         public CEPBuilder addRow(StrategyTree strategyTree, double cost, double effectivity, double thresholds) {
             this.strategyTrees.add(strategyTree);
             this.costs.add(cost);
-            this.effectivities.add(effectivity);
+            this.effectiveness.add(effectivity);
             this.thresholds.add(thresholds);
             return this;
         }
@@ -50,12 +50,12 @@ public class CEP implements Cloneable {
         public CEP build(StrategyTree strategyTree, double cost, double effectivity) {
             this.strategyTrees.add(strategyTree);
             this.costs.add(cost);
-            this.effectivities.add(effectivity);
+            this.effectiveness.add(effectivity);
             try {
                 return new CEP(
                         this.strategyTrees.toArray(StrategyTree[]::new),
                         this.costs.stream().mapToDouble(Double::doubleValue).toArray(),
-                        this.effectivities.stream().mapToDouble(Double::doubleValue).toArray(),
+                        this.effectiveness.stream().mapToDouble(Double::doubleValue).toArray(),
                         this.thresholds.stream().mapToDouble(Double::doubleValue).toArray(),
                         this.minThreshold,
                         this.maxThreshold
@@ -73,14 +73,14 @@ public class CEP implements Cloneable {
     private static final CEP ZERO_PARTITION = new CEP();
     private static final double DEFAULT_MINIMAL_THRESHOLD = 0.0;
     private static final double DEFAULT_MAXIMAL_THRESHOLD = Double.POSITIVE_INFINITY;
-    DecimalFormat decimalFormat3afterComa = new DecimalFormat("#.###");
-    DecimalFormat decimalFormat2afterComa = new DecimalFormat("#.##");
-    DecimalFormat decimalFormat1afterComa = new DecimalFormat("#.#");
-    DecimalFormat decimalFormatNoDecimalsAfterComa = new DecimalFormat("#");
+    final DecimalFormat decimalFormat3afterComa = new DecimalFormat("#.###");
+    final DecimalFormat decimalFormat2afterComa = new DecimalFormat("#.##");
+    final DecimalFormat decimalFormat1afterComa = new DecimalFormat("#.#");
+    final DecimalFormat decimalFormatNoDecimalsAfterComa = new DecimalFormat("#");
     
     // Attributes
     private double[] costs;
-    private double[] effectivities;
+    private double[] effectiveness;
     /**
      * An intervention is a potential. If it is a decision, its value is a {@code DeltaPotential}, otherwise,
      * a {@code TreeADDPotential}
@@ -116,21 +116,20 @@ public class CEP implements Cloneable {
     /**
      * @param strategyTrees {@code Potential[]}
      * @param costs         {@code double[]}
-     * @param effectivities {@code double[]}
+     * @param effectiveness {@code double[]}
      * @param thresholds    {@code double[]}
      * @param minThreshold  {@code double}
      * @param maxThreshold  {@code double}
      *
-     * @throws CostEffectivenessException CostEffectivenessException
      */
     public CEP(
-            StrategyTree[] strategyTrees, double[] costs, double[] effectivities, double[] thresholds,
+            StrategyTree[] strategyTrees, double[] costs, double[] effectiveness, double[] thresholds,
             double minThreshold, double maxThreshold)
             throws CostEffectivenessException.WrongNumberOfThresholds, CostEffectivenessException.WrongNumberOfCostsEffectivitiesAndInterventions {
         this.minThreshold = minThreshold;
         this.maxThreshold = maxThreshold;
-        if (!(costs.length == effectivities.length && costs.length == strategyTrees.length)) {
-            throw new CostEffectivenessException.WrongNumberOfCostsEffectivitiesAndInterventions(costs, effectivities, strategyTrees);
+        if (!(costs.length == effectiveness.length && costs.length == strategyTrees.length)) {
+            throw new CostEffectivenessException.WrongNumberOfCostsEffectivitiesAndInterventions(costs, effectiveness, strategyTrees);
         }
         if (!(costs.length == 1 && thresholds == null) && (thresholds.length != (costs.length - 1))) {
             throw new CostEffectivenessException.WrongNumberOfThresholds(costs, thresholds);
@@ -140,7 +139,7 @@ public class CEP implements Cloneable {
         }
         this.thresholds = thresholds;
         this.costs = costs;
-        this.effectivities = effectivities;
+        this.effectiveness = effectiveness;
         this.strategyTrees = strategyTrees;
     }
     
@@ -174,7 +173,7 @@ public class CEP implements Cloneable {
     }
     
     /**
-     * Multiplies costs and effectivities per factor.
+     * Multiplies costs and effectiveness per factor.
      *
      * @param factor {@code double}
      */
@@ -182,13 +181,13 @@ public class CEP implements Cloneable {
         if (!zeroProbability) {
             for (int i = 0; i < costs.length; i++) {
                 costs[i] *= factor;
-                effectivities[i] *= factor;
+                effectiveness[i] *= factor;
             }
         }
     }
     
     /**
-     * Divides costs and effectivities per factor.
+     * Divides costs and effectiveness per factor.
      *
      * @param factor {@code double}
      */
@@ -196,7 +195,7 @@ public class CEP implements Cloneable {
         if (!zeroProbability) {
             for (int i = 0; i < costs.length; i++) {
                 costs[i] /= factor;
-                effectivities[i] /= factor;
+                effectiveness[i] /= factor;
             }
         }
     }
@@ -229,6 +228,10 @@ public class CEP implements Cloneable {
         return strategyTrees.length;
     }
     
+    public boolean hasStrategyTrees(){
+        return strategyTrees != null && strategyTrees.length > 0;
+    }
+    
     /**
      * @param lambda {@code double}
      *
@@ -253,7 +256,7 @@ public class CEP implements Cloneable {
      * @return Effectiveness corresponding to lambda. {@code double}
      */
     public double getEffectiveness(double lambda) {
-        return effectivities[index(lambda)];
+        return effectiveness[index(lambda)];
     }
     
     /**
@@ -262,7 +265,7 @@ public class CEP implements Cloneable {
      * @return Effectiveness corresponding to interval. {@code double}
      */
     public double getEffectiveness(int interval) {
-        return effectivities[interval];
+        return effectiveness[interval];
     }
     
     /**
@@ -330,7 +333,7 @@ public class CEP implements Cloneable {
      * @param interval {@code int}
      */
     public void setEffectiveness(double eff, int interval) {
-        effectivities[interval] = eff;
+        effectiveness[interval] = eff;
     }
     
     /**
@@ -348,10 +351,10 @@ public class CEP implements Cloneable {
     }
     
     /**
-     * @return effectivities. {@code double[]}
+     * @return effectiveness. {@code double[]}
      */
     public double[] getEffectivities() {
-        return effectivities;
+        return effectiveness;
     }
     
     /**
@@ -400,7 +403,7 @@ public class CEP implements Cloneable {
             } else {
                 stateName = stateName + thresholds[i];
             }
-            stateName = stateName + ") Cost = " + costs[i] + " Effectiveness = " + effectivities[i];
+            stateName = stateName + ") Cost = " + costs[i] + " Effectiveness = " + effectiveness[i];
             states[i] = new State(stateName);
         }
         limits[limits.length - 1] = maxThreshold;
@@ -444,7 +447,7 @@ public class CEP implements Cloneable {
                 strBuffer.append("  ");
                 
                 strBuffer.append(" Eff: ");
-                appendNumberToStrBuffer(strBuffer, effectivities[i]);
+                appendNumberToStrBuffer(strBuffer, effectiveness[i]);
                 strBuffer.append("\n");
                 
                 strBuffer.append(indent);
@@ -487,7 +490,7 @@ public class CEP implements Cloneable {
     public boolean equals(CEP cep) {
         if (cep != null) {
             boolean areEquals = Arrays.equals(this.thresholds, cep.thresholds) && Arrays.equals(this.costs, cep.costs) && Arrays
-                    .equals(this.effectivities, cep.effectivities);
+                    .equals(this.effectiveness, cep.effectiveness);
             return areEquals;
         }
         return false;
@@ -496,7 +499,7 @@ public class CEP implements Cloneable {
     @Override public CEP clone() {
         var newCEP = new CEP();
         newCEP.costs = Arrays.stream(this.costs).toArray();
-        newCEP.effectivities = Arrays.stream(this.effectivities).toArray();
+        newCEP.effectiveness = Arrays.stream(this.effectiveness).toArray();
         newCEP.strategyTrees = Arrays.stream(this.strategyTrees).toArray(StrategyTree[]::new);
         newCEP.thresholds = Arrays.stream(this.thresholds).toArray();
         newCEP.minThreshold = this.minThreshold;

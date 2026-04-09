@@ -9,7 +9,6 @@ package org.openmarkov.core.model.network.potential;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
@@ -116,7 +115,7 @@ public class PotentialTest {
                                                                                                                .get(0)
                                                                                                                .getParentVariables()),
                                                                   PotentialRole.CONDITIONAL_PROBABILITY);
-        tablePotentialBranch1.values = new double[]{5};
+        tablePotentialBranch1.setValues(new double[]{5});
         potTreeAddUtility.getBranches().get(0).setPotential(tablePotentialBranch1);
         
         LinearCombinationPotential lcPotentialBranch2 = new LinearCombinationPotential(UtilTestMethods
@@ -249,12 +248,8 @@ public class PotentialTest {
         
         compareBasicCopiedAttributesPotential(potential, potentialCopy);
         assertNotSame(potential.getValues(), potentialCopy.getValues());
-        
-        if (potential.strategyTrees != null) {
-            for (int i = 0; i < potential.strategyTrees.length; i++) {
-                assertNotSame(potential.strategyTrees[i], potentialCopy.strategyTrees[i]);
-            }
-        }
+        // Plain TablePotential never has strategyTrees; StrategicTablePotential carries them.
+        assertFalse(potential.hasInterventions());
     }
     
     @Test

@@ -21,15 +21,15 @@ import org.openmarkov.core.action.base.PNEdit;
 	/**
 	 * The last relevance before the edition
 	 */
-	private double lastRelevance;
+	private final double lastRelevance;
 	/**
 	 * The new relevance after the edition
 	 */
-	private double newRelevance;
+	private final double newRelevance;
 	/**
 	 * The edited node
 	 */
-    private Node node;
+    private final Node node;
 
 	/**
 	 * Creates a new {@code RelevanceEdit} with the node and new relevance

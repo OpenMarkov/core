@@ -66,8 +66,8 @@ public class AuxiliaryOperationsTest {
         TablePotential auxTablePotential;
         for (int i = 0; i < numNormalPotentials; i++) {
             auxTablePotential = normalPotentials.get(i);
-            for (int j = 0; j < auxTablePotential.values.length; j++) {
-                auxTablePotential.values[j] = auxTablePotential.values.length * i + j + 1;
+            for (int j = 0; j < auxTablePotential.getValues().length; j++) {
+                auxTablePotential.getValues()[j] = auxTablePotential.getValues().length * i + j + 1;
             }
         }
     }

@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import net.sourceforge.jeval.EvaluationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -41,7 +40,7 @@ public class ConditionalGaussianPotentialTest {
         List<Variable> meanPotentialVariables = asList(meanVariable, predictedAudiometry, processorTypeChanged, micAge,
                                                        electrodeChanged);
         List<Variable> potentialVariables = new ArrayList<>(parentVariables);
-        potentialVariables.add(0, audiometry);
+        potentialVariables.addFirst(audiometry);
         LinearCombinationPotential meanPotential = new LinearCombinationPotential(meanPotentialVariables,
                                                                                   PotentialRole.CONDITIONAL_PROBABILITY);
         meanPotential.setCoefficients(new double[]{0, 1, 0.1, -0.2, 0.05});
@@ -60,18 +59,18 @@ public class ConditionalGaussianPotentialTest {
         TablePotential projectedPotential = gaussianPotential.tableProject(new EvidenceCase(), null);
         
         Assertions.assertEquals(288, projectedPotential.tableSize);
-        Assertions.assertEquals(0.6914, projectedPotential.values[0], 10E-4);
-        Assertions.assertEquals(0.2417, projectedPotential.values[1], 10E-4);
-        Assertions.assertEquals(0.0668, projectedPotential.values[2], 10E-4);
-        Assertions.assertEquals(0.3085, projectedPotential.values[3], 10E-4);
-        Assertions.assertEquals(0.3829, projectedPotential.values[4], 10E-4);
-        Assertions.assertEquals(0.3085, projectedPotential.values[5], 10E-4);
-        Assertions.assertEquals(0.0668, projectedPotential.values[6], 10E-4);
-        Assertions.assertEquals(0.2417, projectedPotential.values[7], 10E-4);
-        Assertions.assertEquals(0.6914, projectedPotential.values[8], 10E-4);
-        Assertions.assertEquals(0.6305, projectedPotential.values[9], 10E-4);
-        Assertions.assertEquals(0.2477, projectedPotential.values[10], 10E-4);
-        Assertions.assertEquals(0.1216, projectedPotential.values[11], 10E-4);
+        Assertions.assertEquals(0.6914, projectedPotential.getValues()[0], 10E-4);
+        Assertions.assertEquals(0.2417, projectedPotential.getValues()[1], 10E-4);
+        Assertions.assertEquals(0.0668, projectedPotential.getValues()[2], 10E-4);
+        Assertions.assertEquals(0.3085, projectedPotential.getValues()[3], 10E-4);
+        Assertions.assertEquals(0.3829, projectedPotential.getValues()[4], 10E-4);
+        Assertions.assertEquals(0.3085, projectedPotential.getValues()[5], 10E-4);
+        Assertions.assertEquals(0.0668, projectedPotential.getValues()[6], 10E-4);
+        Assertions.assertEquals(0.2417, projectedPotential.getValues()[7], 10E-4);
+        Assertions.assertEquals(0.6914, projectedPotential.getValues()[8], 10E-4);
+        Assertions.assertEquals(0.6305, projectedPotential.getValues()[9], 10E-4);
+        Assertions.assertEquals(0.2477, projectedPotential.getValues()[10], 10E-4);
+        Assertions.assertEquals(0.1216, projectedPotential.getValues()[11], 10E-4);
     }
     
     @Test public void testTableProjectWithEvidence()
@@ -84,15 +83,15 @@ public class ConditionalGaussianPotentialTest {
         TablePotential projectedPotential = gaussianPotential.tableProject(evidence, null);
         
         Assertions.assertEquals(24, projectedPotential.tableSize);
-        Assertions.assertEquals(0.2160, projectedPotential.values[0], 10E-4);
-        Assertions.assertEquals(0.2555, projectedPotential.values[1], 10E-4);
-        Assertions.assertEquals(0.5284, projectedPotential.values[2], 10E-4);
-        Assertions.assertEquals(0.2266, projectedPotential.values[3], 10E-4);
-        Assertions.assertEquals(0.2236, projectedPotential.values[4], 10E-4);
-        Assertions.assertEquals(0.5497, projectedPotential.values[5], 10E-4);
-        Assertions.assertEquals(0.2216, projectedPotential.values[6], 10E-4);
-        Assertions.assertEquals(0.2385, projectedPotential.values[7], 10E-4);
-        Assertions.assertEquals(0.5398, projectedPotential.values[8], 10E-4);
+        Assertions.assertEquals(0.2160, projectedPotential.getValues()[0], 10E-4);
+        Assertions.assertEquals(0.2555, projectedPotential.getValues()[1], 10E-4);
+        Assertions.assertEquals(0.5284, projectedPotential.getValues()[2], 10E-4);
+        Assertions.assertEquals(0.2266, projectedPotential.getValues()[3], 10E-4);
+        Assertions.assertEquals(0.2236, projectedPotential.getValues()[4], 10E-4);
+        Assertions.assertEquals(0.5497, projectedPotential.getValues()[5], 10E-4);
+        Assertions.assertEquals(0.2216, projectedPotential.getValues()[6], 10E-4);
+        Assertions.assertEquals(0.2385, projectedPotential.getValues()[7], 10E-4);
+        Assertions.assertEquals(0.5398, projectedPotential.getValues()[8], 10E-4);
         
     }
     

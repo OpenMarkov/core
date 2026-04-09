@@ -20,17 +20,17 @@ import java.util.List;
  * @author myebra
  */
 @SuppressWarnings("serial") public class TimeSliceEdit extends PNEdit {
-    private int lastTimeSlice;
-    private int newTimeSlice;
+    private final int lastTimeSlice;
+    private final int newTimeSlice;
     
     // TODO node is not used, check why
     // Answer: It uses Variable, instead of Node.
     //private Node node = null;
     
 
-    private String lastBaseName;
-    private String lastName;
-    private Variable variable;
+    private final String lastBaseName;
+    private final String lastName;
+    private final Variable variable;
     
     /**
      * @param node      Node

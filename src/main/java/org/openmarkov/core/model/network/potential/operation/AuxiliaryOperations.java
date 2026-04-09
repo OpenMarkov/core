@@ -48,7 +48,7 @@ public class AuxiliaryOperations {
 	public static List<TablePotential> getNonConstantPotentials(Collection<TablePotential> potentials) {
 		List<TablePotential> properPotentials = new ArrayList<>();
 		for (TablePotential potential : potentials) {
-			if (potential.values.length > 1) {
+			if (potential.getValues().length > 1) {
 				properPotentials.add(potential);
 			}
 		}
@@ -118,5 +118,78 @@ public class AuxiliaryOperations {
 			}
 		}
 		return variables;
+	}
+
+	/**
+	 * Advances a multi-dimensional coordinate array to the next configuration
+	 * and returns the index of the variable that was incremented (i.e., the
+	 * least-significant dimension that did not overflow).
+	 *
+	 * @param dimension         sizes of each dimension
+	 * @param coordinate        current coordinate (mutated in place)
+	 * @param increasedVariable last incremented variable index (returned unchanged on overflow)
+	 * @return index of the dimension that was incremented
+	 */
+	public static int findNextConfigurationAndIndexIncreasedVariable(int[] dimension, int[] coordinate,
+	                                                                  int increasedVariable) {
+		boolean isCoordinateJLessThanDimensionJ = false;
+		for (int j = 0; j < dimension.length && !isCoordinateJLessThanDimensionJ; j++) {
+			coordinate[j]++;
+			if (coordinate[j] < dimension[j]) {
+				increasedVariable = j;
+				isCoordinateJLessThanDimensionJ = true;
+			} else {
+				coordinate[j] = 0;
+			}
+		}
+		return increasedVariable;
+	}
+
+	/**
+	 * @param potentials list of {@code TablePotential}s
+	 * @return the product of all constant potentials (those with a single value)
+	 */
+	public static double getConstantFactor(List<TablePotential> potentials) {
+		double constantFactor = 1.0;
+		for (TablePotential potential : potentials) {
+			if (potential.getValues().length == 1) {
+				constantFactor *= potential.getValues()[0];
+			}
+		}
+		return constantFactor;
+	}
+
+	/**
+	 * Computes accumulated offsets of each potential in {@code potentials}
+	 * using the variable order of {@code potentialResult}.
+	 *
+	 * @param potentials      list of potentials
+	 * @param potentialResult reference potential that defines variable order
+	 * @return array of accumulated-offset arrays, one per potential
+	 */
+	public static int[][] getAccumulatedOffsets(List<TablePotential> potentials, TablePotential potentialResult) {
+		int numPotentials = potentials.size();
+		int[][] accumulatedOffsets = new int[numPotentials][];
+		for (int i = 0; i < numPotentials; i++) {
+			accumulatedOffsets[i] = potentialResult.getAccumulatedOffsets(potentials.get(i).getVariables());
+		}
+		return accumulatedOffsets;
+	}
+
+	/**
+	 * Computes accumulated offsets of each potential in {@code potentials}
+	 * using the given variable order.
+	 *
+	 * @param potentials list of potentials
+	 * @param variables  reference variable order
+	 * @return array of accumulated-offset arrays, one per potential
+	 */
+	public static int[][] getAccumulatedOffsets(List<? extends Potential> potentials, List<Variable> variables) {
+		int numPotentials = potentials.size();
+		int[][] accumulatedOffsets = new int[numPotentials][];
+		for (int i = 0; i < numPotentials; i++) {
+			accumulatedOffsets[i] = TablePotential.getAccumulatedOffsets(variables, potentials.get(i).getVariables());
+		}
+		return accumulatedOffsets;
 	}
 }

@@ -16,7 +16,7 @@ import java.util.ArrayList;
  * A compound edit is a complex edition composed of several editions. This is an
  * abstract class.
  */
-@SuppressWarnings("serial") public abstract class CompoundPNEdit extends PNEdit {
+public abstract class CompoundPNEdit extends PNEdit {
 
     // Attribute
     private boolean generatedEdits;
@@ -58,8 +58,20 @@ import java.util.ArrayList;
         }
     }
     
+    /**
+     * Generates the list of sub-edits that compose this compound edit.
+     * Called lazily on first access via {@link #getEdits()}.
+     *
+     * @return the list of sub-edits
+     */
     protected abstract ArrayList<PNEdit> generateEdits();
     
+    /**
+     * Returns the sub-edits, generating them on first call. All sub-edits are
+     * marked as belonging to this compound edit.
+     *
+     * @return the list of sub-edits
+     */
     public ArrayList<PNEdit> getEdits() {
         if (!this.generatedEdits) {
             this.edits = this.generateEdits();
@@ -68,15 +80,7 @@ import java.util.ArrayList;
         }
         return this.edits;
     }
-    
-    @Override public ProbNet getProbNet() {
-        return this.probNet;
-    }
-    
-    @Override public void setProbNet(ProbNet probNet) {
-        this.probNet = probNet;
-    }
-    
+
     @Override public void redo() {
         this.getEdits().forEach(PNEdit::redo);
         this.setTypicalRedo(false);

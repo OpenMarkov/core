@@ -28,10 +28,15 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 import org.openmarkov.core.model.network.type.DecisionAnalysisNetworkType;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class BasicOperations {
+
+    private static final Logger logger = LogManager.getLogger(BasicOperations.class);
 
     public static Potential absorbParentPotentials(Variable variable,
                                                    Potential nodePotential,
@@ -203,7 +208,15 @@ public class BasicOperations {
         List<Potential> newPotentials = new ArrayList<>();
         newPotentials.add(potential);
         network.getNode(nodeVariable).setPotentials(newPotentials);
-        parents.forEach(network::removeNode);
+        // Only remove parent nodes that have no remaining children in the network.
+        // In non-tree super-value structures, a parent may be shared by multiple
+        // super-value nodes, so it should only be removed after all its children
+        // have absorbed it.
+        for (Node parent : parents) {
+            if (parent.getChildren().isEmpty()) {
+                network.removeNode(parent);
+            }
+        }
     }
     
     
@@ -232,9 +245,9 @@ public class BasicOperations {
      */
     private static boolean thereAreSumNodesInTheList(ProbNet sourceProbNet, List<Variable> nodesToKeep) {
         boolean thereAre = false;
-        for (int i = 0; (i < nodesToKeep.size()) && !thereAre; i++) {
-            Variable auxVar = nodesToKeep.get(i);
-            thereAre = (isSumSuperValueNode(sourceProbNet, auxVar));
+        for (Variable auxVar : nodesToKeep) {
+            thereAre = isSumSuperValueNode(sourceProbNet, auxVar);
+            if (thereAre) break;
         }
         return thereAre;
     }
@@ -289,8 +302,9 @@ public class BasicOperations {
     private static boolean areAllVariablesOfType(List<Node> nodes, VariableType type) {
         boolean areAll = true;
         
-        for (int i = 0; i < nodes.size() && areAll; i++) {
-            areAll = getVariableType(nodes.get(i)) == type;
+        for (Node node : nodes) {
+            areAll = getVariableType(node) == type;
+            if (!areAll) break;
         }
         return areAll;
     }
@@ -338,7 +352,7 @@ public class BasicOperations {
         /* A partial order is a list of lists of variables. */
         
         // Get decisions (only) in elimination order
-        Stack<Variable> decisions = getSequenceOfDecisions(idCopy);
+        Deque<Variable> decisions = getSequenceOfDecisions(idCopy);
         
         // Create elimination order adding chance nodes
         List<List<Variable>> partialOrder = new ArrayList<>();
@@ -415,15 +429,15 @@ public class BasicOperations {
         return revealed;
     }
     
-    public static Stack<Variable> getSequenceOfDecisions(ProbNet idCopy) {
+    public static Deque<Variable> getSequenceOfDecisions(ProbNet idCopy) {
         int numDecisions = idCopy.getNumNodes(NodeType.DECISION);
-        Stack<Variable> decisions = new Stack<>();
+        Deque<Variable> decisions = new ArrayDeque<>();
         do {
             List<Node> nodes = idCopy.getNodes();
             for (Node node : nodes) {
                 if (idCopy.getNumChildren(node) == 0) {
                     if (node.getNodeType() == NodeType.DECISION) {
-                        decisions.push(node.getVariable());
+                        decisions.addLast(node.getVariable());
                         numDecisions--;
                     }
                     idCopy.removeNode(node);
@@ -537,7 +551,6 @@ public class BasicOperations {
         List<List<Variable>> variablesOrder = new ArrayList<>();
         variablesOrder.add(variables);
         List<List<Variable>> partialOrder = new ArrayList<>(variablesOrder);
-        // partialOrder.setOrder(variablesOrder);
         return partialOrder;
     }
     
@@ -630,8 +643,7 @@ public class BasicOperations {
             }
             
             if (numberOfDecisions > 1) {
-                // throw new NotEvaluableNetworkException("There are more than one decision");
-                System.out.println("BAD NET");
+                logger.warn("BAD NET");
             }
             
             nodes.clear();
@@ -712,7 +724,6 @@ public class BasicOperations {
             Variable utilityVariable = utilityNode.getVariable();
             if ((areAllItsParentsAbsorbable(utilityNode) && utilityVariableToKeep == null)
                     || utilityVariable == utilityVariableToKeep) {
-                //absorbIntermediateParentNode(network, utilityNode, evidence);
             }
         }
         if (!keepComponents) {

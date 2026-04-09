@@ -26,6 +26,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Removes a directed or undirected link between two nodes and optionally
+ * updates the destination node's potentials to no longer reference the removed parent.
+ */
 public final class RemoveLinkEdit extends BaseLinkEdit {
     
     /**
@@ -37,25 +41,25 @@ public final class RemoveLinkEdit extends BaseLinkEdit {
      * /**
      * parent node
      */
-    private Node node1;
+    private final Node node1;
     /**
      * child node
      */
-    private Node node2;
+    private final Node node2;
     /**
      * The new {@code Potential} of the second node
      */
-    private List<Potential> newPotentials = new ArrayList<>();
+    private final List<Potential> newPotentials = new ArrayList<>();
     private List<Potential> oldPotentials;
-    private boolean updatePotentials;
+    private final boolean updatePotentials;
     // Constructor
     
     /**
-     * @param probNet          {@code ProbNet}
-     * @param variable1        {@code Variable}
-     * @param variable2        {@code Variable}
-     * @param isDirected       {@code boolean}
-     * @param updatePotentials {@code boolean}
+     * @param probNet          the probabilistic network
+     * @param variable1        the source variable of the link
+     * @param variable2        the destination variable of the link
+     * @param isDirected       {@code true} for a directed link
+     * @param updatePotentials whether to update potentials after removal
      */
     public RemoveLinkEdit(ProbNet probNet, Variable variable1, Variable variable2, boolean isDirected,
                           boolean updatePotentials) {
@@ -120,7 +124,7 @@ public final class RemoveLinkEdit extends BaseLinkEdit {
 					 */
                     
                     // Temporal patch to be removed when the above TO-DO is implemented
-                    if (Arrays.stream(newPotential.getCPT().values).sum() == 0) {
+                    if (Arrays.stream(newPotential.getCPT().getValues()).sum() == 0) {
                         newPotential = new UniformPotential(newPotential.getVariables(), newPotential.getPotentialRole());
                     }
                     

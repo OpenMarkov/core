@@ -1,5 +1,7 @@
 package org.openmarkov.plugin;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.java.classUtils.ClassUtils;
@@ -10,7 +12,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class ExtensionTree<T> {
-    
+
+    private static final Logger logger = LogManager.getLogger(ExtensionTree.class);
+
     private final ExtensionTree<?> parent;
     private final Class<T> currentClass;
     private final TreeMap<Class<? extends T>, ExtensionTree<? extends T>> subClasses;
@@ -92,7 +96,7 @@ public final class ExtensionTree<T> {
         if (!exclusiveInterfacesString.isBlank()) {
             message += ": " + exclusiveInterfacesString;
         }
-        System.out.println(message);
+        logger.info(message);
         var parentsThisFar = new ArrayList<>(parentsShown);
         parentsThisFar.add(this.currentClass);
         for (var subclass : this.subClasses.values()) {

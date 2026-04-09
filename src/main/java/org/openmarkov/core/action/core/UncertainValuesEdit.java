@@ -19,25 +19,25 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * {@code AddNodeEdit} is a edit that allow add a node to
- * {@code ProbNet} object.
+ * Edit that modifies the uncertain values and numeric values of a single column in a
+ * node's potential table. Used for sensitivity analysis parameters.
  *
  * @author mluque
  * @version 1 23/06/11
  */
 @SuppressWarnings("serial") public class UncertainValuesEdit extends PNEdit {
-	private List<Double> newValuesColumn;
-	private List<UncertainValue> newUncertainColumn;
-	private List<Double> oldValuesColumn;
-	private List<UncertainValue> oldUncertainColumn;
-	private int basePosition;
-	private Node node;
-	private boolean isChanceVariable;
-	private boolean wasNullOldUncertainValues;
+	private final List<Double> newValuesColumn;
+	private final List<UncertainValue> newUncertainColumn;
+	private final List<Double> oldValuesColumn;
+	private final List<UncertainValue> oldUncertainColumn;
+	private final int basePosition;
+	private final Node node;
+	private final boolean isChanceVariable;
+	private final boolean wasNullOldUncertainValues;
 	/**
 	 * Selected column in the values table
 	 */
-	private int selectedColumn;
+	private final int selectedColumn;
 
 	/**
 	 * Creates a new {@code AddNodeEdit} with the network where the new
@@ -62,20 +62,9 @@ import java.util.List;
 		UncertainValue[] oldUncertainValues = getPotential().getUncertainValues();
 		wasNullOldUncertainValues = oldUncertainValues == null;
 		oldUncertainColumn = wasNullOldUncertainValues ? null : getColumn(oldUncertainValues, variable, basePosition);
-		oldValuesColumn = getColumn(getPotential().values, variable, basePosition);
+		oldValuesColumn = getColumn(getPotential().getValues(), variable, basePosition);
 		this.selectedColumn = selectedColumn;
 	}
-
-	/**
-	 * It replaces a column in the uncertain values table. If parameter 'column'
-	 * is null then all the replaced cells are set to null.
-	 *
-	 * @param potential Potential
-	 * @param column Column
-     * @param variable Variable
-	 * @param basePosition Base position
-	 */
-
 
 	public int getBasePosition() {
 		return basePosition;

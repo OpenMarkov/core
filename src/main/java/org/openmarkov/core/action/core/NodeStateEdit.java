@@ -37,7 +37,7 @@ public class NodeStateEdit extends PNEdit {
     /**
      * The new state
      */
-    private State newState;
+    private final State newState;
     /**
      * The last state before the edition
      */
@@ -50,44 +50,44 @@ public class NodeStateEdit extends PNEdit {
     /**
      * The node that the stats belongs to
      */
-    private Node node;
+    private final Node node;
     /**
      * The action to carry out
      */
-    private StateAction stateAction;
+    private final StateAction stateAction;
     /**
      * The last partitioned interval before the edition
      */
-    private PartitionedInterval currentPartitionedInterval;
+    private final PartitionedInterval currentPartitionedInterval;
     /**
      * The last states before the edition
      */
-    private State[] oldStates;
+    private final State[] oldStates;
     /***
      * Map with the link restriction potential for each link.
      */
-    private Map<Link<Node>, double[]> linkRestrictionMap;
+    private final Map<Link<Node>, double[]> linkRestrictionMap;
     /***
      * Map with the revelation condition list for each link.
      */
-    private Map<Link<Node>, List> revelationConditionMap;
+    private final Map<Link<Node>, List> revelationConditionMap;
     
     /**
      * Map with the list of potentials of each neighbour of the node
      */
-    private HashMap<Variable, List<Potential>> listOldPotentials;
+    private final HashMap<Variable, List<Potential>> listOldPotentials;
     
     /**
      * List of potentials of the node
      */
-    private List<Potential> oldPotentials;
+    private final List<Potential> oldPotentials;
     
     /**
      * the index (in the table) associated to the state to edit
      */
-    private int indexState;
+    private final int indexState;
     
-    private String newName;
+    private final String newName;
     
     private String oldName;
     
@@ -242,7 +242,7 @@ public class NodeStateEdit extends PNEdit {
         
         for (Link<Node> link : node.getLinks()) {
             if (link.hasRestrictions()) {
-                double[] lastPotential = ((TablePotential) link.getRestrictionsPotential()).values.clone();
+                double[] lastPotential = ((TablePotential) link.getRestrictionsPotential()).getValues().clone();
                 linkRestrictionMap.put(link, lastPotential);
                 link.setRestrictionsPotential(null);
                 

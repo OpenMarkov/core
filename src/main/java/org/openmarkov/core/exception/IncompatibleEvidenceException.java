@@ -13,7 +13,7 @@ import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Variable;
 
 /**
- * @author marias
+ * @author Manuel Arias
  * @version 1.0
  */
 public abstract class IncompatibleEvidenceException extends UserInputException {

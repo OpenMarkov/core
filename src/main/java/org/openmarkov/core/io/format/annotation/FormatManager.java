@@ -10,6 +10,7 @@ package org.openmarkov.core.io.format.annotation;
 import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.ParserException;
 import org.openmarkov.core.exception.UnreachableException;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.io.ProbNetReader;
 import org.openmarkov.core.io.ProbNetWriter;
 import org.openmarkov.plugin.PluginSearch;
@@ -113,8 +114,6 @@ public class FormatManager {
      * @param url URL of the resource
      *
      * @return a ProbNetReader object
-     *
-     * @throws Exception when an exception is raised is thrown to be caught by the gui
      */
     public ProbNetReader getProbNetReader(URL url) throws NoReaderForFileException, ParserException.BadlyStructuredFile {
         //checkVersion(url);
@@ -166,8 +165,6 @@ public class FormatManager {
      * @param version   - the version of the ProbModel required
      *
      * @return a probNetReader object
-     *
-     * @throws Exception when an exception is raised is thrown to be caught by the gui
      */
     public ProbNetReader getProbNetReaderInstanceFor(String extension, String version) {
         return this.readerInstances
@@ -251,10 +248,8 @@ public class FormatManager {
         }
         try {
             schema.newValidator().validate(new StreamSource(url.openStream()));
-        } catch (SAXParseException e) {
-            throw new ParserException.BadlyStructuredFile(url, e);
         } catch (SAXException e) {
-            throw new UnreachableException("Unexpected SAX error validating " + url, e);
+            throw new UnrecoverableException(new ParserException.CannotParseFile(e, url));
         } catch (IOException e) {
             throw new ParserException.BadlyStructuredFile(url, e);
         }

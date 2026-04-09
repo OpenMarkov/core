@@ -8,12 +8,12 @@
 package org.openmarkov.core.action.base.linkEdits;
 
 import org.openmarkov.core.exception.DoEditException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
 
@@ -46,7 +46,6 @@ import java.util.Set;
  *
  * 5. Calculate P(x|a, b, c, y) through P(x|a, b, c, y) = P(x, y|a, b, c) / P(y|a, b, c) and assign to node X this probability.
  */
-@SuppressWarnings("serial")
 public final class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
     
     
@@ -55,7 +54,7 @@ public final class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 	// y (child) node
     private final Node child;
 	// In case of undo, this list will keep the links created so they can be deleted
-	private final List<Link> linksToUndo = new ArrayList<>();
+	private final List<Link<Node>> linksToUndo = new ArrayList<>();
 	// Parent node's old potentials
 	private List<Potential> parentsOldPotentials;
 	// Child node's old potentials
@@ -68,9 +67,9 @@ public final class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 	// Constructor
 
 	/**
-	 * @param probNet   {@code ProbNet}
-     * @param variableFrom {@code Variable}
-     * @param variableTo {@code Variable}
+	 * @param probNet      the probabilistic network
+	 * @param variableFrom the current parent variable
+	 * @param variableTo   the current child variable
 	 */
     public InvertLinkAndUpdatePotentialsEdit(ProbNet probNet, Variable variableFrom, Variable variableTo) {
         super(probNet, variableFrom, variableTo, true);
@@ -81,8 +80,6 @@ public final class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 	// Methods
 
 	/**
-	 *
-	 * @throws DoEditException DoEditException
 	 */
 	@Override protected void doEdit() throws DoEditException.CannotDoEditException {
 		// The parents of x are retrieved
@@ -100,32 +97,19 @@ public final class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 		// 2. Share parents between the nodes.
 		// The list of created links is emptied
 		linksToUndo.clear();
-		// {C(x) \ C(y)} must be parents of y
-		// The new parents of y will be those nodes that are parents of x,
-        List<Node> newParents = parentParents;
-		// and weren't already parents of y
-        newParents.removeAll(childParents);
-
-		// The new links are created
-		for (Node newParent : newParents) {
-			// creating the Link is creating a Link in the node and thus in the graph
-            linksToUndo.add(new Link(newParent, child, true));
-			//probNet.addLink(probNet.getNode(newParent), y, true);
+		// {C(x) \ C(y)}: parents of X that were not parents of Y must become parents of Y
+        List<Node> newParentsOfY = new ArrayList<>(parentParents);
+        newParentsOfY.removeAll(childParents);
+		for (Node newParent : newParentsOfY) {
+            linksToUndo.add(new Link<>(newParent, child, true));
 		}
 
-		// {C(y) \ C(x) \ x}
-		// The new parents of x will be those nodes that are parents of y,
-        newParents = childParents;
-		// and weren't already parents of i
-        newParents.removeAll(parentParents);
-		// excluding also the i node itself
-        newParents.remove(parent);
-
-		// The new links are created
-		for (Node newParent : newParents) {
-			// creating the Link is creating a Link in the node and thus in the graph
-            linksToUndo.add(new Link(newParent, parent, true));
-			//probNet.addLink(probNet.getNode(newParent), x, true);
+		// {C(y) \ C(x) \ {x}}: parents of Y (except X) that were not parents of X must become parents of X
+        List<Node> newParentsOfX = new ArrayList<>(childParents);
+        newParentsOfX.removeAll(parentParents);
+        newParentsOfX.remove(parent);
+		for (Node newParent : newParentsOfX) {
+            linksToUndo.add(new Link<>(newParent, parent, true));
 		}
 
 		List<TablePotential> xyPotentials = new ArrayList<>();
@@ -168,15 +152,17 @@ public final class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 
 		// 4. Calculate P(y|a, b, c) through P(y|a, b, c) = Σ(x) P(x, y|a, b, c) and assign to node Y this probability.
         childNewPotential = DiscretePotentialOperations.marginalize(xyPotentialMultiplied, parent.getVariable());
+        childNewPotential.setPotentialRole(PotentialRole.CONDITIONAL_PROBABILITY);
         child.setPotential(childNewPotential);
 
 		// 5. Calculate P(x|a, b, c, y) through P(x|a, b, c, y) = P(x, y|a, b, c) / P(y|a, b, c) and assign to node X this probability.
         parentNewPotential = DiscretePotentialOperations.divide(xyPotentialMultiplied, childNewPotential);
         parentNewPotential = DiscretePotentialOperations.imposeOtherDistributionWhenDistributionIsZero(parentNewPotential);
+        parentNewPotential.setPotentialRole(PotentialRole.CONDITIONAL_PROBABILITY);
         parent.setPotential(parentNewPotential);
 
-		for (Link link : linksToUndo) {
-            probNet.addLink((Node) link.getFrom(), (Node) link.getTo(), true);
+		for (Link<Node> link : linksToUndo) {
+            probNet.addLink(link.getFrom(), link.getTo(), true);
 		}
 	}
 	
@@ -216,7 +202,7 @@ public final class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
         parent.setPotentials(xNewPotentials);
         // The potentials of Y are restored to the original ones
         List<Potential> yNewPotentials= new ArrayList<>();
-        xNewPotentials.add(childNewPotential);
+        yNewPotentials.add(childNewPotential);
         child.setPotentials(yNewPotentials);
         
     }

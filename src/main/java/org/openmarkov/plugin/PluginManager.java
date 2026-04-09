@@ -25,7 +25,7 @@ import java.util.List;
  * (#)PluginsManager.java 1.0    15/09/2011 19:08:10
  */
 public class PluginManager {
-	private List<Class<?>> plugins;
+	private final List<Class<?>> plugins;
 
 	/**
 	 * Constructor for PluginsManager.

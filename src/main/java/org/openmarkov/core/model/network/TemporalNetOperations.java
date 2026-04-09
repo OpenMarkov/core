@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openmarkov.core.exception.*;
 import org.openmarkov.core.inference.TemporalOptions;
 import org.openmarkov.core.inference.tasks.TaskUtilities;
@@ -23,6 +25,8 @@ import java.util.Map;
 
 public class TemporalNetOperations {
     
+    private static final Logger logger = LogManager.getLogger(TemporalNetOperations.class);
+
     // Attributes
     /**
      * Vertical separation in pixels between slices.
@@ -203,7 +207,7 @@ public class TemporalNetOperations {
             
             // Use the blueprint to create the new links
             blueprint.createDirectedLinks(probNet);
-            System.out.println("End of decision links copied");
+            logger.debug("End of decision links copied");
         }
     }
     
@@ -309,8 +313,8 @@ public class TemporalNetOperations {
                             
                             TablePotential sumPotential = DiscretePotentialOperations
                                     .sum(Arrays.asList(currentCyclePotential, previousCyclePotential));
-                            for (int j = 0; j < sumPotential.values.length; ++j)
-                                sumPotential.values[j] /= 2;
+                            for (int j = 0; j < sumPotential.getValues().length; ++j)
+                                sumPotential.getValues()[j] /= 2;
                             newPotentials.add(sumPotential);
                         }
                         
@@ -416,7 +420,7 @@ public class TemporalNetOperations {
     //				e.printStackTrace();
     //			}
     //			TablePotential decisionCEPotential = new TablePotential(newPotentialVariables, PotentialRole.UTILITY);
-    //			double newValues [] = new double[decisionCEPotential.values.length];
+    //			double newValues [] = new double[decisionCEPotential.getValues().length];
     //
     //			int startPosition = 0;
     //			if(utilityNode.getVariable().getDecisionCriterion().getCECriterion() == CECriterion.Cost){

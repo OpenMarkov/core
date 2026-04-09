@@ -15,6 +15,7 @@ import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.UncertainTablePotential;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -29,13 +30,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * This class performs prune on {@code ProbNet}
  *
- * @author marias
+ * @author Manuel Arias
  */
 public class ProbNetOperations {
     
@@ -103,7 +105,7 @@ public class ProbNetOperations {
      * @return {@code true} if {@code node} has at least a neighbor
      * other than those in {@code nodeList}
      */
-    public static boolean hasNeighborsOutside(ProbNet probNet, Node node, Collection<Node> nodes) {
+    public static boolean hasNeighborsOutside(GraphNetwork probNet, Node node, Collection<Node> nodes) {
         boolean hasNeighborsOutside = false;
         boolean neighborIsInList; // aux for the for-loop
         for (Node neighbor : probNet.getNeighbors(node)) {
@@ -339,10 +341,10 @@ public class ProbNetOperations {
     private static Set<Node> getNodesAndAncestors(Collection<Node> nodes) {
         Set<Node> ancestors = new HashSet<>(nodes);
         
-        Stack<Node> noExploredNodes = new Stack<>();
+        Deque<Node> noExploredNodes = new ArrayDeque<>();
         noExploredNodes.addAll(nodes);
-        
-        while (!noExploredNodes.empty()) {
+
+        while (!noExploredNodes.isEmpty()) {
             Node node = noExploredNodes.pop();
             List<Node> parents = node.getParents();
             for (Node parent : parents) {
@@ -384,7 +386,7 @@ public class ProbNetOperations {
         ProbNet graph = probNet.copy();
         
         // Empty list that will contain the sorted elements
-        Stack<Node> stackOrderedNodes = new Stack<>();
+        Deque<Node> stackOrderedNodes = new ArrayDeque<>();
         // Set of all nodes with no incoming edges
         List<Node> noEdgesListOfNodes = new ArrayList<>();
         // Look for variables/nodes with no parents
@@ -452,7 +454,7 @@ public class ProbNetOperations {
                         convertedNodes.add(node);
                         TablePotential potential = new TablePotential(Arrays.asList(newVariable),
                                                                       oldPotential.getPotentialRole());
-                        potential.values[0] = 1;
+                        potential.getValues()[0] = 1;
                         node.setPotential(potential);
                     }
                 } else {
@@ -486,7 +488,7 @@ public class ProbNetOperations {
                         
                         // Calculate scalar value projecting configuration
                         double scalarValue = Double.NEGATIVE_INFINITY;
-                        scalarValue = oldPotential.tableProject(configuration, inferenceOptions).values[0];
+                        scalarValue = oldPotential.tableProject(configuration, inferenceOptions).getValues()[0];
                         scalarValue = oldVariable.round(scalarValue);
                         projectedValues[index++] = scalarValue;
                         if (!newStates.contains(scalarValue)) {
@@ -543,7 +545,7 @@ public class ProbNetOperations {
                     
                     TablePotential newPotential = new TablePotential(newPotentialVariables,
                                                                      oldPotential.getPotentialRole());
-                    double[] values = newPotential.values;
+                    double[] values = newPotential.getValues();
                     int newVariableNumStates = newVariable.getNumStates();
                     for (int i = 0; i < numConfigurations; i++) {
                         int stateIndex = stateIndices.get(projectedValues[i]);
@@ -611,10 +613,12 @@ public class ProbNetOperations {
             }
         }
         // Add uncertain values if projected potential has them
-        if (projectedPotential.isUncertain() && !potential.isUncertain()) {
-            potential.uncertainValues = new UncertainValue[potential.getTableSize()];
+        UncertainTablePotential uncertainPotential = (potential instanceof UncertainTablePotential utp) ? utp : null;
+        UncertainValue[] projUV = projectedPotential.getUncertainValues();
+        if (projUV != null && uncertainPotential != null && uncertainPotential.uncertainValues == null) {
+            uncertainPotential.uncertainValues = new UncertainValue[potential.getTableSize()];
         }
-        
+
         Variable conditionedVariable = potential.getConditionedVariable();
         // Index of the current configuration in the projected potential
         int projectedConfigIndex = 0;
@@ -625,10 +629,9 @@ public class ProbNetOperations {
             configIndex = potential.getPosition(potentialVariableIndices);
             // TODO update potentialVariableIndices
             for (int i = 0; i < conditionedVariable.getNumStates(); ++i) {
-                potential.values[configIndex + i] = projectedPotential.values[projectedConfigIndex + i];
-                if (projectedPotential.isUncertain()) {
-                    potential.uncertainValues[configIndex + i] = projectedPotential.uncertainValues[projectedConfigIndex
-                            + i];
+                potential.getValues()[configIndex + i] = projectedPotential.getValues()[projectedConfigIndex + i];
+                if (projUV != null && uncertainPotential != null && uncertainPotential.uncertainValues != null) {
+                    uncertainPotential.uncertainValues[configIndex + i] = projUV[projectedConfigIndex + i];
                 }
             }
             // TODO update projectedConfigIndex
@@ -744,7 +747,7 @@ public class ProbNetOperations {
                 parentlessDecisions.clear();
                 for (Node decisionNode : decisionNodes) {
                     boolean hasParentDecisions = false;
-                    Stack<Node> parentNodes = new Stack<>();
+                    Deque<Node> parentNodes = new ArrayDeque<>();
                     parentNodes.push(decisionNode);
                     while (!hasParentDecisions && !parentNodes.isEmpty()) {
                         Node node = parentNodes.pop();
@@ -853,7 +856,7 @@ public class ProbNetOperations {
         List<Node> parentlessDecisions = new ArrayList<>();
         for (Node parent : probNet.getNodes(NodeType.DECISION)) {
             boolean hasParentDecisions = false;
-            Stack<Node> parentNodes = new Stack<>();
+            Deque<Node> parentNodes = new ArrayDeque<>();
             parentNodes.push(parent);
             while (!hasParentDecisions && !parentNodes.isEmpty()) {
                 Node node = parentNodes.pop();
@@ -898,7 +901,7 @@ public class ProbNetOperations {
      * @return True if the node has a predecessor decision
      */
     public static boolean hasPredecessorDecision(Node node, ProbNet probNet) {
-        Stack<Node> predecessors = new Stack<>();
+        Deque<Node> predecessors = new ArrayDeque<>();
         predecessors.add(node);
         boolean found = false;
         while (!found && !predecessors.isEmpty()) {
@@ -921,7 +924,7 @@ public class ProbNetOperations {
      */
     public static List<Node> getPredecessorDecisions(Node node, ProbNet probNet) {
         List<Node> predecessorDecisions = new ArrayList<>();
-        Stack<Node> predecessors = new Stack<>();
+        Deque<Node> predecessors = new ArrayDeque<>();
         // push first the parents of node
         for (Node parent : node.getParents()) {
             predecessors.push(parent);
@@ -1044,10 +1047,10 @@ public class ProbNetOperations {
     public static Set<Node> getNodeAncestors(Node node) {
         Set<Node> ancestors = new HashSet<>();
         
-        Stack<Node> noExploredNodes = new Stack<>();
+        Deque<Node> noExploredNodes = new ArrayDeque<>();
         noExploredNodes.add(node);
-        
-        while (!noExploredNodes.empty()) {
+
+        while (!noExploredNodes.isEmpty()) {
             Node noExploredNode = noExploredNodes.pop();
             List<Node> parents = noExploredNode.getParents();
             for (Node parent : parents) {

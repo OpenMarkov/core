@@ -7,12 +7,11 @@
 
 package org.openmarkov.core.exception;
 
-import org.openmarkov.core.exception.IBundledOpenMarkovException;
-
 
 import org.jdom2.JDOMException;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 import java.io.IOException;
@@ -196,5 +195,16 @@ public abstract class ParserException extends UserInputException {
 
         public final URL url;
         public final @Nullable SAXParseException saxParseException;
+    }
+    
+    public static final class CannotParseFile extends ParserException {
+        public CannotParseFile(SAXException originException, URL url) {
+            initCause(originException);
+            this.originException = originException;
+            this.url = url;
+        }
+        
+        public final SAXException originException;
+        public final URL url;
     }
 }

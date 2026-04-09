@@ -10,14 +10,11 @@ package org.openmarkov.core.model.network.constraint;
 import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.action.base.StateAction;
 import org.openmarkov.core.exception.ConstraintViolatedException;
+import org.openmarkov.core.model.network.GraphNetwork;
 import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
 
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Checks that the state field is filled and there isn't any node with the same
@@ -29,8 +26,10 @@ public class ValidState extends PNConstraint {
      * This method checks that the state field is filled and there isn't any
      * node with the same name.
      *
-     * @return true, if the state field isn't empty and there isn't any node with
-     * this name; otherwise, false.
+     * @param constraintChecker the constraint checker to add exceptions to
+     * @param newState the new state name to check
+     * @param node the node to check
+     * @param stateAction the state action being performed
      */
     public void checkState(ConstraintChecker constraintChecker, String newState, Node node, StateAction stateAction) {
         switch (stateAction) {
@@ -64,7 +63,7 @@ public class ValidState extends PNConstraint {
         return false;
     }
     
-    @Override public void checkProbNet(ProbNet probNet, ConstraintChecker constraintChecker) {
+    @Override public void checkProbNet(GraphNetwork probNet, ConstraintChecker constraintChecker) {
         for (Node node : probNet.getNodes()) {
             for (State state : node.getVariable().getStates()) {
                 if ((state.getName() == null) || (state.getName().contentEquals(""))) {

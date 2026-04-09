@@ -32,13 +32,13 @@ import java.util.List;
 
 @SuppressWarnings("serial") public class UncertainValuesRemoveEdit extends PNEdit {
 
-	private List<UncertainValue> oldUncertainColumn;
+	private final List<UncertainValue> oldUncertainColumn;
 
-	private int basePosition;
+	private final int basePosition;
 
-	private Node node;
+	private final Node node;
 
-	private boolean wasNullOldUncertainColumn;
+	private final boolean wasNullOldUncertainColumn;
 
 	/**
 	 * Creates a new {@code AddNodeEdit} with the network where the new

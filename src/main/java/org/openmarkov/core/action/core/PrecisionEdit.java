@@ -10,26 +10,26 @@ package org.openmarkov.core.action.core;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.model.network.Node;
 
-@SuppressWarnings("serial")
-
-/*
-  This is a simple edit that allows modify the node precision property.
-  @version 1.0 21/12/10
+/**
+ * Edit that modifies the precision property of a node.
+ *
  * @author Miguel Palacios
+ * @version 1.0 21/12/10
  */
+@SuppressWarnings("serial")
 public class PrecisionEdit extends PNEdit {
 	/**
 	 * The last purpose before the edition
 	 */
-	private Double lastPrecision;
+	private final Double lastPrecision;
 	/**
 	 * The new purpose after the edition
 	 */
-	private double newPrecision;
+	private final double newPrecision;
 	/**
 	 * The edited node
 	 */
-    private Node node;
+    private final Node node;
 
 	/**
 	 * Creates a new {@code PurposeEdit} with the node and its new purpose.

@@ -11,11 +11,7 @@
 package org.openmarkov.core.inference;
 
 import org.junit.jupiter.api.Disabled;
-import org.openmarkov.core.exception.*;
 import org.openmarkov.core.model.network.ProbNet;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
 
 
 /**
@@ -508,7 +504,7 @@ public abstract class InferenceResolutionTaskBNTest extends InferenceTaskTest {
         Task algorithm = buildInferenceTaskAndSkipTestIfNotEvaluable(iD_DiagnosisProblem);
         
         // test max expected utility
-        Double meuEvaluation = algorithm.getGlobalUtility().values[0];
+        Double meuEvaluation = algorithm.getGlobalUtility().getValues()[0];
         assertEquals(96.006, meuEvaluation, maxError);
         
         // Test optimal policy

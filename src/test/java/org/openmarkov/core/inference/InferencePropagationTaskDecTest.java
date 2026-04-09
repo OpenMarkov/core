@@ -51,7 +51,7 @@ public abstract class InferencePropagationTaskDecTest extends InferenceTaskTest 
     //          of values in 'x' is 1.
     protected void checkUtility(TablePotential x, double v) {
         assertEquals(1, x.getTableSize());
-        assertEquals(v, x.values[0], maxError);
+        assertEquals(v, x.getValues()[0], maxError);
     }
     
     /*TODO: Many of the code written in this test class reference code no longer existing
@@ -65,7 +65,7 @@ public abstract class InferencePropagationTaskDecTest extends InferenceTaskTest 
         Task algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(iD_DecisionTestProblemWithoutSV);
         
         // test max expected utility
-        Double meuEvaluation = algorithm.getGlobalUtility().values[0];
+        Double meuEvaluation = algorithm.getGlobalUtility().getValues()[0];
         assertEquals(96.006, meuEvaluation, maxError);
         
         // Test optimal policy

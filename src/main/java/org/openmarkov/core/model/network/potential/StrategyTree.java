@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.sdag.SDAGStrategyTree;
 import org.openmarkov.core.model.network.potential.treeadd.Threshold;
@@ -16,7 +15,12 @@ import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 import java.util.*;
 
-// TODO Documentar la clase
+/**
+ * Represents a decision strategy as a tree structure. Each node in the tree corresponds
+ * to a decision or chance variable, and branches represent the chosen actions or observed
+ * states. Used during influence diagram solving to record and represent optimal policies.
+ * Extends {@link TreeADDPotential} and implements {@link Cloneable}.
+ */
 public class StrategyTree extends TreeADDPotential implements Cloneable {
     
     // Constructors
@@ -59,7 +63,7 @@ public class StrategyTree extends TreeADDPotential implements Cloneable {
             // Check if there is any intervention equal to "intervention" in "distinctInterventions"
             for (int j = 0; j < numDistinctInterventions && noMatch; j++) {
                 distinctStrategyTree = distinctStrategyTrees.get(j);
-                noMatch &= !(distinctStrategyTree == strategyTree || distinctStrategyTree.equals(strategyTree));
+                noMatch &= !(distinctStrategyTree == strategyTree || (distinctStrategyTree != null && distinctStrategyTree.equals(strategyTree)));
                 correspondingState = (!noMatch) ? states.get(i) : correspondingState;
             }
             if (noMatch) { // If no, add it to distinctInterventions and create a set of states in corresponding states
@@ -420,6 +424,32 @@ public class StrategyTree extends TreeADDPotential implements Cloneable {
     }
     
     /**
+     * Returns a concise string for display in a collapsed tree view.
+     * For leaf decisions (single branch), shows "Variable = state(s)".
+     * For inner nodes, shows the top variable name.
+     */
+    @Override
+    public String treeADDString() {
+        if (topVariable == null) {
+            return "";
+        }
+        if (branches != null && branches.size() == 1) {
+            TreeADDBranch branch = branches.get(0);
+            List<State> states = branch.getStates();
+            if (states != null && !states.isEmpty()) {
+                StringBuilder sb = new StringBuilder(topVariable.getName());
+                sb.append(" = ");
+                for (int i = 0; i < states.size(); i++) {
+                    if (i > 0) sb.append(", ");
+                    sb.append(states.get(i).getName());
+                }
+                return sb.toString();
+            }
+        }
+        return topVariable.getName();
+    }
+
+    /**
      * @param branch TreeADDBranch
      *
      * @return The intervention corresponding to 'branch'
@@ -590,12 +620,8 @@ public class StrategyTree extends TreeADDPotential implements Cloneable {
     
     public String toString() {
         StringBuilder strBuffer = new StringBuilder();
-        //		strBuffer.append(indent);
-        //		strBuffer.append(topVariable.getName());
         // Print variables
         if (branches != null && !branches.isEmpty()) {
-            //strBuffer.append("\n");
-            //strBuffer.append(" = ");
             for (TreeADDBranch branch : branches) {
                 strBuffer.append(branch);
             }
@@ -607,7 +633,7 @@ public class StrategyTree extends TreeADDPotential implements Cloneable {
         
         String content = "digraph G {\n";
         
-        Map<StrategyTree, Integer> idNode = new Hashtable<>();
+        Map<StrategyTree, Integer> idNode = new HashMap<>();
         
         Set<StrategyTree> nodes = this.getInterventions();
         Set<StrategyTree> leaves = this.getInterventionsLeaves();
@@ -830,7 +856,7 @@ public class StrategyTree extends TreeADDPotential implements Cloneable {
     
     private static void fillCompatibleConfigurations(TablePotential tablePotential, EvidenceCase evidenceCase) {
         if (tablePotential.getNumVariables() == evidenceCase.getNumberOfFindings()) {
-            tablePotential.values[tablePotential.getPosition(evidenceCase)] = 1.0;
+            tablePotential.getValues()[tablePotential.getPosition(evidenceCase)] = 1.0;
         } else {
             List<Variable> variables = tablePotential.getVariables();
             variables.removeAll(evidenceCase.getVariables());

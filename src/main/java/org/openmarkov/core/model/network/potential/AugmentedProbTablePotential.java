@@ -17,8 +17,14 @@ import org.openmarkov.core.model.network.potential.operation.AugmentedProbTableI
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
+/**
+ * A potential for nodes with both finite-state and numeric parents. The finite-state
+ * parents define a table structure, while numeric parents are referenced via symbolic
+ * expressions in an {@link AugmentedProbTable}. During inference, the expressions are
+ * evaluated with the evidence values of the numeric parents to produce a standard
+ * {@link TablePotential}.
+ */
 @PotentialType(names = "AugmentedProbTable")
 public class AugmentedProbTablePotential extends Potential {
     
@@ -29,9 +35,9 @@ public class AugmentedProbTablePotential extends Potential {
     /*Note should be discrete variables*/
     public AugmentedProbTablePotential(List<Variable> variables, PotentialRole role) {
         super(variables, role);
-        setFiniteStatesVariables(new ArrayList<Variable>());
-        setParameterVariables(new ArrayList<Variable>());
-        getFiniteStatesVariables().add(variables.get(0));
+        setFiniteStatesVariables(new ArrayList<>());
+        setParameterVariables(new ArrayList<>());
+        getFiniteStatesVariables().add(variables.getFirst());
         for (Variable variable : variables.subList(1, variables.size())) {
             if ((variable.getVariableType() == VariableType.FINITE_STATES) || (
                     variable.getVariableType() == VariableType.DISCRETIZED
@@ -93,12 +99,12 @@ public class AugmentedProbTablePotential extends Potential {
         var resolvedTablePotential = new TablePotential(this.finiteStatesVariables, role);
         var variableOfPotential = variables.getFirst();
         int numStates = variableOfPotential.getNumStates();
-        int divisions = resolvedTablePotential.values.length / numStates;
+        int divisions = resolvedTablePotential.getValues().length / numStates;
         for (int columnIndex = 0; columnIndex < divisions; columnIndex++){
             var unresolvedValues = Arrays.copyOfRange(expressions, columnIndex*numStates, (1+columnIndex)*numStates);
             var resolvedValues = AugmentedProbTableInference.resolveColumn(unresolvedValues, findingsMap, AugmentedProbTableInference.Operation.values());
             for(int rowIndex = 0; rowIndex < numStates; rowIndex++){
-                resolvedTablePotential.values[columnIndex*numStates + rowIndex] = resolvedValues[rowIndex];
+                resolvedTablePotential.getValues()[columnIndex*numStates + rowIndex] = resolvedValues[rowIndex];
             }
         }
         return resolvedTablePotential;
@@ -136,8 +142,10 @@ public class AugmentedProbTablePotential extends Potential {
     
     @Override
     public Potential reorder(Variable variable, State[] newOrder) {
-        // TODO Auto-generated method stub
-        return null;
+        AugmentedProbTablePotential copy = new AugmentedProbTablePotential(this);
+        AugmentedProbTable reorderedTable = (AugmentedProbTable) augmentedProbTable.reorder(variable, newOrder);
+        copy.setAugmentedProbTable(reorderedTable);
+        return copy;
     }
     
 }

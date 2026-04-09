@@ -16,8 +16,10 @@ import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.Projectable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOperations;
@@ -25,8 +27,22 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.*;
 
+/**
+ * Abstract base class for Independent Causal Influence (ICI) potentials.
+ * ICI models decompose a joint conditional probability into independent
+ * noisy contributions from each parent, combined via a deterministic function
+ * (e.g., OR/MAX, AND/MIN, or Tuning). Each parent has its own noisy parameter
+ * table, and there is a leak parameter for background causes.
+ * <p>
+ * Concrete subclasses include {@link MaxPotential} (OR/MAX family),
+ * {@link MinPotential} (AND/MIN family), and {@link TuningPotential}.
+ *
+ * @author Manuel Arias
+ * @see ICIFamily
+ * @see ICIModelType
+ */
 @PotentialType(names = "ICIModel")
-public abstract class ICIPotential extends Potential {
+public abstract class ICIPotential extends Potential implements Projectable {
     
     /* Model type may be OR, causal MAX, AND, etc. */
     protected ICIModelType modelType;
@@ -77,6 +93,12 @@ public abstract class ICIPotential extends Potential {
         
     }
     
+    /**
+     * Copy constructor. Copies the model type, noisy parameters, and leaky parameters
+     * from the given potential.
+     *
+     * @param potential the ICI potential to copy
+     */
     public ICIPotential(ICIPotential potential) {
         super(potential);
         this.modelType = potential.modelType;
@@ -108,12 +130,18 @@ public abstract class ICIPotential extends Potential {
         return variables.size() > 1;
     }
     
+    /**
+     * Computes default noisy parameters for all parent variables. Each parent's parameters
+     * are initialized so that the identity mapping holds (state i of parent maps to state i of child).
+     *
+     * @return a 2D array where each row corresponds to a parent variable's noisy parameters
+     */
     public double[][] getDefaultNoisyParameters() {
         double[][] noisyParameters = new double[variables.size() - 1][];
         
         for (int i = 1; i < variables.size(); ++i) {
             Variable parent = variables.get(i);
-            noisyParameters[i - 1] = initializeNoisyParameters(variables.get(0), parent);
+            noisyParameters[i - 1] = initializeNoisyParameters(variables.getFirst(), parent);
         }
         return noisyParameters;
     }
@@ -136,6 +164,13 @@ public abstract class ICIPotential extends Potential {
         return probabilities;
     }
     
+    /**
+     * Returns the default leak parameters for the ICI model. The leak represents
+     * background causes not explicitly modeled.
+     *
+     * @param numStates number of states of the conditioned variable
+     * @return default leak parameter array
+     */
     public abstract double[] getDefaultLeakyParameters(int numStates);
     
     // Methods
@@ -180,8 +215,8 @@ public abstract class ICIPotential extends Potential {
         List<Variable> allVariables = new ArrayList<>(variables);
         allVariables.addAll(variablesToEliminate);
         while (allVariables.size() > variables.size()) {
-            Variable variableToEliminate = allVariables.get(allVariables.size() - 1);
-            allVariables.remove(allVariables.size() - 1);
+            Variable variableToEliminate = allVariables.getLast();
+            allVariables.removeLast();
             List<TablePotential> relatedPotentials = new ArrayList<>();
             int i = 0;
             while (i < potentials.size()) {
@@ -194,11 +229,17 @@ public abstract class ICIPotential extends Potential {
                 }
             }
             //add resulting potential
-            potentials.add(0, DiscretePotentialOperations.multiplyAndMarginalize(relatedPotentials, allVariables));
+            potentials.addFirst(DiscretePotentialOperations.multiplyAndMarginalize(relatedPotentials, allVariables));
         }
         return DiscretePotentialOperations.multiplyAndMarginalize(potentials, variables);
     }
     
+    /**
+     * Returns the noisy parameters for the given parent variable.
+     *
+     * @param variable the parent variable
+     * @return the noisy parameter array for that parent
+     */
     public double[] getNoisyParameters(Variable variable) {
         return noisyParameters[variables.indexOf(variable) - 1];
     }
@@ -210,12 +251,11 @@ public abstract class ICIPotential extends Potential {
      * @param parameters the noisy parameters. The length of the array must be the multiplication of the parent's and child's state number
      */
     public void setNoisyParameters(Variable parent, double[] parameters) {
-        if (parameters.length != variables.get(0).getNumStates() * parent.getNumStates()) {
+        if (parameters.length != variables.getFirst().getNumStates() * parent.getNumStates()) {
             throw new UnrecoverableException(new InvalidArgumentException(Arrays.stream(parameters)
-                                                                                .boxed()
-                                                                                .toList(), "parameters", "The length of the array must be the multiplication" + " of the parent's and child's state number "
-                                                                                  + variables.get(0)
-                                                                                             .getNumStates() * parent.getNumStates() + " and is " + parameters.length));
+                    .boxed()
+                    .toList(), "parameters", "The length of the array must be the multiplication of the parent's and child's state number "
+                    + variables.getFirst().getNumStates() * parent.getNumStates() + " and is " + parameters.length));
         }
         if (!getVariables().contains(parent)) {
             throw new UnrecoverableException(new InvalidArgumentException(this, "potential", "There is no variable " + parent + " in this ICI family."));
@@ -265,10 +305,14 @@ public abstract class ICIPotential extends Potential {
         return noisyPotentials;
     }
     
+    /**
+     * Updates the noisy parameters from a list of table potentials, one per parent variable.
+     *
+     * @param noisyPotentials list of table potentials whose values replace the noisy parameters
+     */
     public void setNoisyPotentials(List<TablePotential> noisyPotentials) {
-        for (int i = 0; i < noisyPotentials.size(); ++i) {
-            TablePotential noisyPotential = noisyPotentials.get(i);
-            noisyParameters[variables.indexOf(noisyPotential.getVariable(0)) - 1] = noisyPotential.values;
+        for (TablePotential noisyPotential : noisyPotentials) {
+            noisyParameters[variables.indexOf(noisyPotential.getVariable(0)) - 1] = noisyPotential.getValues();
         }
     }
     
@@ -285,17 +329,22 @@ public abstract class ICIPotential extends Potential {
      * @param leakyParameters Array of leaky parameters
      */
     public void setLeakyParameters(double[] leakyParameters) {
-        if (leakyParameters.length != variables.get(0).getNumStates()) {
+        if (leakyParameters.length != variables.getFirst().getNumStates()) {
             throw new UnrecoverableException(new InvalidArgumentException(Arrays.stream(leakyParameters)
-                                                                                .boxed()
-                                                                                .toList(), "parameters",
-                                                                          "The length of the array must be the conditioned variable's state number " + variables.get(0)
+                       .boxed()
+                       .toList(), "parameters",
+                       "The length of the array must be the conditioned variable's state number " + variables.getFirst()
                                                                                                                                                                 .getNumStates() + " and is " + leakyParameters.length));
         }
         expandedPotential = null;
         this.leakyParameters = leakyParameters;
     }
     
+    /**
+     * Returns the leak potential as a table potential with a single variable (the leak variable).
+     *
+     * @return the leak potential, or {@code null} if no leak parameters are set
+     */
     public TablePotential getLeakyPotential() {
         TablePotential leakyPotential = null;
         if (this.leakyParameters != null) {
@@ -338,14 +387,14 @@ public abstract class ICIPotential extends Potential {
     
     public String toString() {
         StringBuilder buffer = new StringBuilder(super.toString());
-        buffer.append("\nFamily: " + family + ". Model: " + modelType);
-        buffer.append("\nNumber of variables: " + variables.size());
+        buffer.append("\nFamily: ").append(family).append(". Model: ").append(modelType);
+        buffer.append("\nNumber of variables: ").append(variables.size());
         buffer.append("\nVariables: ");
         buffer.append("[");
         for (int i = 0; i < variables.size() - 1; i++) {
-            buffer.append(variables.get(i) + ", ");
+            buffer.append(variables.get(i)).append(", ");
         }
-        buffer.append(variables.get(variables.size() - 1) + "] ");
+        buffer.append(variables.getLast()).append("] ");
         buffer.append("\n");
         return buffer.toString();
     }
@@ -395,7 +444,7 @@ public abstract class ICIPotential extends Potential {
         // if position == 0, it is the conditioned variable, not a noisy one
         if (position > 0) {
             zVariables.remove(oldVariable);
-            zVariables.put(variable, createZVariable(variables.get(0), variable));
+            zVariables.put(variable, createZVariable(variables.getFirst(), variable));
         }
         
     }
@@ -414,7 +463,7 @@ public abstract class ICIPotential extends Potential {
     
     @Override public int sampleConditionedVariable(Random randomGenerator, Map<Variable, Integer> sampledParents) {
         int[] iciSampledStates = new int[noisyParameters.length + 1];
-        int childNumStates = variables.get(0).getNumStates();
+        int childNumStates = variables.getFirst().getNumStates();
         
         // Sample noisy
         for (int i = 1; i < variables.size(); ++i) {
@@ -443,6 +492,13 @@ public abstract class ICIPotential extends Potential {
         return computeFFunction(iciSampledStates);
     }
     
+    /**
+     * Computes the deterministic combination function (e.g., MAX, MIN) applied to the
+     * sampled states of all ICI auxiliary variables plus the leak.
+     *
+     * @param iciSampledStates sampled state indices for each parent's Z-variable and the leak
+     * @return the resulting state index for the conditioned variable
+     */
     protected abstract int computeFFunction(int[] iciSampledStates);
     
     @Override
@@ -453,6 +509,106 @@ public abstract class ICIPotential extends Potential {
         return expandedPotential.getProbability(sampledStateIndexes);
     }
     
+    /**
+     * Reorders the variable list and the corresponding noisy-parameter arrays.
+     * The noisyParameters entry for each parent is moved to the new parent index.
+     * The expandedPotential cache is invalidated.
+     */
+    @Override
+    public Potential reorder(List<Variable> newOrderOfVariables) {
+        ICIPotential copy = (ICIPotential) copy();
+        // Build new noisyParameters in the order of the new parent list
+        double[][] newNoisyParams = new double[newOrderOfVariables.size() - 1][];
+        for (int i = 1; i < newOrderOfVariables.size(); i++) {
+            Variable parent = newOrderOfVariables.get(i);
+            // getNoisyParameters uses this.variables (old order)
+            newNoisyParams[i - 1] = this.getNoisyParameters(parent).clone();
+        }
+        // Rebuild zVariables in new parent order
+        copy.zVariables = new LinkedHashMap<>();
+        for (int i = 1; i < newOrderOfVariables.size(); i++) {
+            Variable parent = newOrderOfVariables.get(i);
+            copy.zVariables.put(parent, this.zVariables.get(parent));
+        }
+        copy.variables = new ArrayList<>(newOrderOfVariables);
+        copy.noisyParameters = newNoisyParams;
+        copy.expandedPotential = null;
+        return copy;
+    }
+
+    /**
+     * Reorders state entries within the noisy-parameter arrays and leaky parameters
+     * when a variable's states are permuted.
+     *
+     * <p>If the reordered variable is the conditioned variable, the {@code k} (conditioned-state)
+     * dimension of every noisy-parameter row and of leakyParameters is permuted.
+     * If it is a parent variable, the {@code j} (parent-state) dimension of that parent's
+     * noisy-parameter entry is permuted.
+     */
+    @Override
+    public Potential reorder(Variable variable, State[] newOrder) {
+        ICIPotential copy = (ICIPotential) copy();
+        Variable conditioned = variables.getFirst();
+        int numCondStates = conditioned.getNumStates();
+        if (variable == conditioned) {
+            // Build old-index map: oldIndex[newPos] = position of newOrder[newPos] in old state array
+            State[] oldStates = conditioned.getStates();
+            int[] oldIndex = buildOldIndex(oldStates, newOrder);
+            // Reorder k-dimension of each noisy-parameter entry
+            double[][] newNoisyParams = new double[noisyParameters.length][];
+            for (int p = 0; p < noisyParameters.length; p++) {
+                int numParentStates = variables.get(p + 1).getNumStates();
+                double[] oldParams = noisyParameters[p];
+                double[] newParams = new double[numParentStates * numCondStates];
+                for (int j = 0; j < numParentStates; j++) {
+                    for (int newK = 0; newK < numCondStates; newK++) {
+                        newParams[j * numCondStates + newK] = oldParams[j * numCondStates + oldIndex[newK]];
+                    }
+                }
+                newNoisyParams[p] = newParams;
+            }
+            copy.noisyParameters = newNoisyParams;
+            // Reorder leakyParameters (indexed by conditioned state)
+            double[] newLeaky = new double[numCondStates];
+            for (int newK = 0; newK < numCondStates; newK++) {
+                newLeaky[newK] = leakyParameters[oldIndex[newK]];
+            }
+            copy.leakyParameters = newLeaky;
+        } else {
+            int parentIdx = variables.indexOf(variable) - 1;
+            if (parentIdx >= 0) {
+                State[] oldStates = variable.getStates();
+                int[] oldIndex = buildOldIndex(oldStates, newOrder);
+                int numParentStates = variable.getNumStates();
+                double[] oldParams = noisyParameters[parentIdx];
+                double[] newParams = new double[numParentStates * numCondStates];
+                for (int newJ = 0; newJ < numParentStates; newJ++) {
+                    for (int k = 0; k < numCondStates; k++) {
+                        newParams[newJ * numCondStates + k] = oldParams[oldIndex[newJ] * numCondStates + k];
+                    }
+                }
+                copy.noisyParameters = copy.noisyParameters.clone();
+                copy.noisyParameters[parentIdx] = newParams;
+            }
+        }
+        copy.expandedPotential = null;
+        return copy;
+    }
+
+    /** Returns the displacement array: oldIndex[newPos] = where newOrder[newPos] sat in oldStates. */
+    private static int[] buildOldIndex(State[] oldStates, State[] newOrder) {
+        int[] oldIndex = new int[newOrder.length];
+        for (int newPos = 0; newPos < newOrder.length; newPos++) {
+            for (int oldPos = 0; oldPos < oldStates.length; oldPos++) {
+                if (oldStates[oldPos] == newOrder[newPos]) {
+                    oldIndex[newPos] = oldPos;
+                    break;
+                }
+            }
+        }
+        return oldIndex;
+    }
+
     @Override public Potential deepCopy(ProbNet copyNet) {
         ICIPotential potential = (ICIPotential) super.deepCopy(copyNet);
         potential.expandedPotential = this.expandedPotential == null ? null : (TablePotential) this.expandedPotential.deepCopy(copyNet);

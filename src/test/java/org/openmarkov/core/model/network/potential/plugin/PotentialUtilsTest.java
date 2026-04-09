@@ -15,7 +15,6 @@ import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class PotentialUtilsTest {

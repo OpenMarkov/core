@@ -16,8 +16,8 @@ import java.util.List;
  * Contains a ProbNet and a list of Evidence Cases
  */
 public class ProbNetInfo {
-	private ProbNet probNet;
-	private List<EvidenceCase> evidence;
+	private final ProbNet probNet;
+	private final List<EvidenceCase> evidence;
 
 	/**
 	 * Constructor for ProbNetInfo.

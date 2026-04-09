@@ -69,12 +69,12 @@ public class LinkRestrictionPotentialOperationsTest {
         
         TablePotential potE = new TablePotential(Arrays.asList(varE, varA, varB, varC, varF, varG),
                                                  PotentialRole.CONDITIONAL_PROBABILITY);
-        potE.values = new double[]{0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0,
+        potE.setValues(new double[]{0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0,
                 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0,
                 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0,
                 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0,
                 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25,
-                0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25};
+                0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25, 0, 0, 0, 0, 0.25, 0.25, 0.25, 0.25});
         nodeE.setPotential(potE);
         
         UniformPotential potF = new UniformPotential(Arrays.asList(varF), PotentialRole.CONDITIONAL_PROBABILITY);
@@ -87,7 +87,7 @@ public class LinkRestrictionPotentialOperationsTest {
         Link link_nodeA_nodeE = probNet.getLink(nodeA, nodeE, true);
         link_nodeA_nodeE.initializesRestrictionsPotential();
         TablePotential restrictions_nodeA_nodeE = (TablePotential) link_nodeA_nodeE.getRestrictionsPotential();
-        restrictions_nodeA_nodeE.values = new double[]{0, 1, 0, 1, 0, 1, 0, 1};
+        restrictions_nodeA_nodeE.setValues(new double[]{0, 1, 0, 1, 0, 1, 0, 1});
         
         // Always observed nodes
         

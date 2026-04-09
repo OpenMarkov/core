@@ -9,6 +9,7 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.UncertainTablePotential;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ public class TablePotentialSampler extends Sampler {
 	 * @return A sampled potential table
 	 */
 	public TablePotential sample(TablePotential inputTablePotential, boolean isInsideOfExactDistrPotential) {
-        TablePotential sampledTablePotential;
+        UncertainTablePotential sampledTablePotential;
 		int inputTableSize;
 		List<Class<? extends ProbDensFunction>> functionTypes = initializeTypeFunctions();
         List<UncertainValue> uncertainValues;
@@ -46,9 +47,9 @@ public class TablePotentialSampler extends Sampler {
         if (inputTablePotential.getUncertainValues() != null) {
 			List<Variable> inputPotentialVariables = inputTablePotential.getVariables();
 			List<Variable> sampledPotentialVariables = new ArrayList<>(inputPotentialVariables);
-			sampledTablePotential = new TablePotential(sampledPotentialVariables,
+			sampledTablePotential = new UncertainTablePotential(sampledPotentialVariables,
 					inputTablePotential.getPotentialRole());
-			double[] sampledValues = sampledTablePotential.values;
+			double[] sampledValues = sampledTablePotential.getValues();
 			sampledTablePotential.setUncertainValues(inputTablePotential.getUncertainValues());
 			numStates = numElementsInColumn(inputTablePotential, isInsideOfExactDistrPotential);
             // Number of configurations of the conditioning variables

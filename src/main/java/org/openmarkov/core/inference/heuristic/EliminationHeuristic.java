@@ -37,24 +37,24 @@ public abstract class EliminationHeuristic implements PNEditListener {
 	/**
 	 * A pointer to the received {@code ProbNet}.
 	 */
-	protected ProbNet probNet;
+	protected final ProbNet probNet;
 
 	/**
 	 * A set of nodes that points to variables that are nor query variables nor
 	 * observed variables.
 	 */
-	protected List<List<Variable>> variablesToEliminate;
+	protected final List<List<Variable>> variablesToEliminate;
 
 	/**
 	 * A set of nodes that points to variables that are nor query variables nor
 	 * observed variables.
 	 */
-	protected List<List<Node>> nodesToEliminate;
+	protected final List<List<Node>> nodesToEliminate;
 
 	/**
 	 * {@code Variable} that the heuristic propose to eliminate.
 	 */
-	protected Variable variableProposed;
+	protected final Variable variableProposed;
 
 	// Constructor
 
@@ -68,7 +68,6 @@ public abstract class EliminationHeuristic implements PNEditListener {
 		// TODO Revisar todas las heuristicas que suponian que trabajaban con una copia
 		this.probNet = probNet;
 
-		// this.variablesToEliminate = variablesToEliminate;
 		// Make a deep copy of variablesToEliminate
 		this.variablesToEliminate = new ArrayList<>(variablesToEliminate.size());
 		for (List<Variable> list : variablesToEliminate) {
@@ -133,7 +132,7 @@ public abstract class EliminationHeuristic implements PNEditListener {
 	}
 
 	/**
-	 * @param event {@code UndoableEditEvent}
+	 * @param edit {@code PNEdit}
 	 * @return node ({@code Node}) in the heuristic
 	 * {@code ProbNet} that will be removed
 	 */

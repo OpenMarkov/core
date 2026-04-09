@@ -23,7 +23,7 @@ public class InferenceOptions {
 	public Variable simulationIndexVariable;
 
 	/** */
-	public double discountRate = 1.0;
+	public final double discountRate = 1.0;
 
 	public ProbNet probNet;
 

@@ -12,6 +12,11 @@ import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.localize.Localizable;
 import org.openmarkov.core.stringformat.LocalizationFormatter;
 
+/**
+ * Represents the duration of a single cycle in temporal models, expressed
+ * as a numeric value and a time unit (e.g. 1 YEAR, 6 MONTH).
+ * Also provides discount-rate conversion between yearly and per-cycle rates.
+ */
 public class CycleLength implements ClassLocalizable {
     
     /**

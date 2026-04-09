@@ -23,15 +23,15 @@ public class PurposeEdit extends PNEdit {
 	/**
 	 * The last purpose before the edition
 	 */
-	private String lastPurpose;
+	private final String lastPurpose;
 	/**
 	 * The new purpose after the edition
 	 */
-	private String newPurpose;
+	private final String newPurpose;
 	/**
 	 * The edited node
 	 */
-    private Node node;
+    private final Node node;
 
 	/**
 	 * Creates a new {@code PurposeEdit} with the node and its new purpose.

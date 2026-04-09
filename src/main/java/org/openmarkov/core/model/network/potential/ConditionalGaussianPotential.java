@@ -26,8 +26,11 @@ import java.util.List;
  * This class represents a conditional Gaussian potential for discrete variables.
  * It is defined by two potentials, namely the mean and the variance potentials
  * In the case of discrete variables it uses each state index
+ *
+ * @author Manuel Arias
  */
-@PotentialType(names = "Conditional Gaussian") public class ConditionalGaussianPotential extends Potential {
+@PotentialType(names = "Conditional Gaussian") public class ConditionalGaussianPotential extends Potential
+        implements Projectable {
     
     private Potential mean;
     private Potential variance;
@@ -65,16 +68,15 @@ import java.util.List;
      * Returns if an instance of a certain Potential type makes sense given the
      * variables and the potential role.
      *
-     * @param node      {@code Node}
      * @param variables {@code ArrayList} of {@code Variable}.
      * @param role      {@code PotentialRole}.
      *
      * @return True if valid
      */
-    public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+    public static boolean validate(List<Variable> variables, PotentialRole role) {
         // not a utility potential, only discrete or discretized conditioned variables
         return role != PotentialRole.UNSPECIFIED && !variables.isEmpty()
-                && variables.get(0).getVariableType() != VariableType.NUMERIC;
+                && variables.getFirst().getVariableType() != VariableType.NUMERIC;
     }
     
     public Potential getMean() {
@@ -104,7 +106,7 @@ import java.util.List;
         // If there is no unobserved variables, the resulting potential is constant
         if (unobservedVariables.isEmpty()) {// Projection = constant potential
             // For the time being no utility potentials are supported
-            projectedPotential.values[0] = 1.0;
+            projectedPotential.getValues()[0] = 1.0;
         } else {
             // Project mean and variance potentials
             TablePotential projectedMeanPotential = mean.tableProject(evidenceCase, inferenceOptions, projectedPotentials);
@@ -118,17 +120,17 @@ import java.util.List;
             // Copy configurations using the accumulated offsets algorithm
             for (int configuration = 0; configuration < numConfigurations; configuration++) {
                 int configurationIndex = configuration * numStates;
-                double mean = projectedMeanPotential.values[configuration];
-                double variance = projectedVariancePotential.values[configuration];
+                double mean = projectedMeanPotential.getValues()[configuration];
+                double variance = projectedVariancePotential.getValues()[configuration];
                 cern.jet.random.Normal dist = new cern.jet.random.Normal(mean, variance, new MersenneTwister());
                 double lastCdf = 0;
                 for (int i = 0; i < numStates - 1; i++) {
                     double cdf = dist.cdf(thresholds[i]);
-                    projectedPotential.values[configurationIndex + i] = cdf - lastCdf;
+                    projectedPotential.getValues()[configurationIndex + i] = cdf - lastCdf;
                     lastCdf = cdf;
                 }
                 // The remaining probability is assigned to the last state
-                projectedPotential.values[configurationIndex + (numStates - 1)] = 1 - lastCdf;
+                projectedPotential.getValues()[configurationIndex + (numStates - 1)] = 1 - lastCdf;
             }
         }
         return projectedPotential;
@@ -146,9 +148,7 @@ import java.util.List;
         if (conditionedVariable.getVariableType() == VariableType.DISCRETIZED) {
             double[] limits = conditionedVariable.getPartitionedInterval().getLimits();
             // Ignore first limit, as it is considered minus infinity
-            for (int i = 0; i < numStates; ++i) {
-                thresholds[i] = limits[i + 1];
-            }
+            System.arraycopy(limits, 1, thresholds, 0, numStates);
         } else {
             // Default thresholds
             for (int i = 0; i < numStates; ++i) {
@@ -161,11 +161,7 @@ import java.util.List;
     @Override public Potential copy() {
         return new ConditionalGaussianPotential(this);
     }
-    
-    @Override public boolean isUncertain() {
-        return false;
-    }
-    
+
     private Potential getDefaultMeanPotential() {
         // TODO use next line for something or remove it
         // Variable meanVariable = new Variable("Mean");
@@ -192,9 +188,9 @@ import java.util.List;
                                                               PotentialRole.CONDITIONAL_PROBABILITY);
         // Set variance to 1 for all configurations (except for the first one; previously, when
         // using a utility potential, the first variable was removed)
-        //for(int i=0;i<variancePotential.values.length;++i) {
-        for (int i = 1; i < variancePotential.values.length; ++i) {
-            variancePotential.values[i] = 1;
+        //for(int i=0;i<variancePotential.getValues().length;++i) {
+        for (int i = 1; i < variancePotential.getValues().length; ++i) {
+            variancePotential.getValues()[i] = 1;
         }
         return variancePotential;
     }
@@ -250,14 +246,23 @@ import java.util.List;
     
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
-        // TODO Auto-generated method stub
-        return null;
+        ConditionalGaussianPotential copy = new ConditionalGaussianPotential(this);
+        copy.variables = new ArrayList<>(newOrderOfVariables);
+        Potential reorderedMean = this.mean.reorder(newOrderOfVariables);
+        copy.mean = (reorderedMean != null) ? reorderedMean : this.mean.copy();
+        Potential reorderedVariance = this.variance.reorder(newOrderOfVariables);
+        copy.variance = (reorderedVariance != null) ? reorderedVariance : this.variance.copy();
+        return copy;
     }
-    
+
     @Override
     public Potential reorder(Variable variable, State[] newOrder) {
-        // TODO Auto-generated method stub
-        return null;
+        ConditionalGaussianPotential copy = new ConditionalGaussianPotential(this);
+        Potential reorderedMean = this.mean.reorder(variable, newOrder);
+        copy.mean = (reorderedMean != null) ? reorderedMean : this.mean.copy();
+        Potential reorderedVariance = this.variance.reorder(variable, newOrder);
+        copy.variance = (reorderedVariance != null) ? reorderedVariance : this.variance.copy();
+        return copy;
     }
     
 }

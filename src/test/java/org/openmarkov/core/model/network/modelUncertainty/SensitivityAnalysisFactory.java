@@ -14,7 +14,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.factory.IDFactory;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.UncertainTablePotential;
 import org.openmarkov.core.model.network.type.InfluenceDiagramType;
 
 import java.util.Arrays;
@@ -52,16 +52,16 @@ public class SensitivityAnalysisFactory extends IDFactory {
         probNet.addLink(nodeDo_test_, nodeResult_of_test, true);
         
         // Potentials
-        TablePotential potDisease = new TablePotential(Arrays.asList(varDisease),
+        UncertainTablePotential potDisease = new UncertainTablePotential(Arrays.asList(varDisease),
                                                        PotentialRole.CONDITIONAL_PROBABILITY);
-        potDisease.values = new double[]{0.86, 0.14};
+        potDisease.setValues(new double[]{0.86, 0.14});
         potDisease.uncertainValues = new UncertainValue[]{new UncertainValue(new ComplementFunction(1), ""),
                 new UncertainValue(new BetaFunction(14, 86), "prevalence")};
         nodeDisease.setPotential(potDisease);
-        
-        TablePotential potResult_of_test = new TablePotential(Arrays.asList(varResult_of_test, varDo_test_, varDisease),
+
+        UncertainTablePotential potResult_of_test = new UncertainTablePotential(Arrays.asList(varResult_of_test, varDo_test_, varDisease),
                                                               PotentialRole.CONDITIONAL_PROBABILITY);
-        potResult_of_test.values = new double[]{1, 0, 0, 0, 0.97, 0.03, 1, 0, 0, 0, 0.09, 0.91};
+        potResult_of_test.setValues(new double[]{1, 0, 0, 0, 0.97, 0.03, 1, 0, 0, 0, 0.09, 0.91});
         potResult_of_test.uncertainValues = new UncertainValue[]{null, null, null,
                 new UncertainValue(new ExactFunction(0), ""),
                 new UncertainValue(new BetaFunction(97, 3), "specificity"),
@@ -124,23 +124,23 @@ public class SensitivityAnalysisFactory extends IDFactory {
         probNet.addLink(nodeAlive, nodeHealth_state, true);
         
         // Potentials
-        TablePotential potAlive = new TablePotential(Arrays.asList(variableX), PotentialRole.CONDITIONAL_PROBABILITY);
-        potAlive.values = new double[]{0.14, 0.86};
+        UncertainTablePotential potAlive = new UncertainTablePotential(Arrays.asList(variableX), PotentialRole.CONDITIONAL_PROBABILITY);
+        potAlive.setValues(new double[]{0.14, 0.86});
         potAlive.uncertainValues = new UncertainValue[]{new UncertainValue(prevalenceProbFunction, "prevalence"),
                 new UncertainValue(new ComplementFunction(1), "")};
         nodeAlive.setPotential(potAlive);
-        
+
         ExactDistrPotential potHealth_state = new ExactDistrPotential(Arrays.asList(variableU, variableX));
         potHealth_state.setValues(new double[]{0, 1});
         nodeHealth_state.setPotential(potHealth_state);
-        
+
         // Link restrictions and revealing states
         // Always observed nodes
-        
+
         return probNet;
-        
+
     }
-    
+
     /**
      * @return An influence diagram without decisions, with only two nodes: X (chance) and U (utility).
      */
@@ -160,8 +160,8 @@ public class SensitivityAnalysisFactory extends IDFactory {
         probNet.addLink(nodeAlive, nodeHealth_state, true);
         
         // Potentials
-        TablePotential potAlive = new TablePotential(Arrays.asList(variableX), PotentialRole.CONDITIONAL_PROBABILITY);
-        potAlive.values = new double[]{0.2, 0.35, 0.15, 0.3};
+        UncertainTablePotential potAlive = new UncertainTablePotential(Arrays.asList(variableX), PotentialRole.CONDITIONAL_PROBABILITY);
+        potAlive.setValues(new double[]{0.2, 0.35, 0.15, 0.3});
         potAlive.uncertainValues = new UncertainValue[]{
                 new UncertainValue(new RangeFunction(0.1, 0.3), "prevalence1"),
                 new UncertainValue(new RangeFunction(0.2, 0.5), "prevalence2"),
@@ -197,8 +197,8 @@ public class SensitivityAnalysisFactory extends IDFactory {
         probNet.addLink(nodeAlive, nodeHealth_state, true);
         
         // Potentials
-        TablePotential potAlive = new TablePotential(Arrays.asList(variableX), PotentialRole.CONDITIONAL_PROBABILITY);
-        potAlive.values = new double[]{0.14, 0.86};
+        UncertainTablePotential potAlive = new UncertainTablePotential(Arrays.asList(variableX), PotentialRole.CONDITIONAL_PROBABILITY);
+        potAlive.setValues(new double[]{0.14, 0.86});
         potAlive.uncertainValues = new UncertainValue[]{new UncertainValue(new BetaFunction(14, 86), "prevalence"),
                 new UncertainValue(new ComplementFunction(1), "")};
         nodeAlive.setPotential(potAlive);

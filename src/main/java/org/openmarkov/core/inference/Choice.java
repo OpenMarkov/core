@@ -20,7 +20,7 @@ import java.util.List;
 public class Choice {
 
 	// Attributes
-	private Variable variable;
+	private final Variable variable;
 
 	/**
 	 * Value(s) assignment; if there is no draws only the first one.
@@ -47,7 +47,7 @@ public class Choice {
 	 */
 	public Choice(Variable variable, int[] values) {
 		this.variable = variable;
-		this.values = values;
+		this.setValues(values);
 		numValues = values.length;
 	}
 
@@ -96,21 +96,10 @@ public class Choice {
 	 * @param value {@code int}.
 	 */
 	public void addValue(int value) {
-		if (!initialized) {
-			if (numValues > values.length) {
-				values[numValues++] = value;
-			} else {
-				int[] newValues = new int[numValues + 1];
-				newValues[numValues++] = value;
-				for (int i = 0; i < newValues.length - 1; i++) {
-					newValues[i] = values[i];
-				}
-				values = newValues;
-			}
-		} else {
-			initialized = true;
-			values[0] = value;
-		}
+		int[] newValues = new int[numValues + 1];
+        if (numValues >= 0) System.arraycopy(values, 0, newValues, 0, numValues);
+		newValues[numValues++] = value;
+		values = newValues;
 	}
 
 	/**
@@ -142,9 +131,7 @@ public class Choice {
 	 */
 	public Choice copy() {
 		int[] copyValues = new int[numValues];
-		for (int i = 0; i < numValues; i++) {
-			copyValues[i] = values[i];
-		}
+        System.arraycopy(values, 0, copyValues, 0, numValues);
 		return new Choice(variable, copyValues);
 	}
 

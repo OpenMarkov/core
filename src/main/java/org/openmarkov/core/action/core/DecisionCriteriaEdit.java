@@ -20,10 +20,13 @@ import org.openmarkov.core.model.network.constraint.ValidCriterionName;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Edit that adds, removes, or renames a decision criterion in a multicriteria network.
+ */
 @SuppressWarnings("serial") public class DecisionCriteriaEdit extends PNEdit {
-    private StateAction stateAction;
-    private List<Criterion> lastCriteria;
-    private Criterion modifiedCriterion;
+    private final StateAction stateAction;
+    private final List<Criterion> lastCriteria;
+    private final Criterion modifiedCriterion;
     private final @Nullable String newName;
     
     public DecisionCriteriaEdit(ProbNet probnet, StateAction stateAction, Criterion modifiedCriterion, String newName) {

@@ -97,9 +97,9 @@ public class StandardNormalFunction extends ProbDensFunctionWithKnownInverseCDF 
     
     public static class Polynomial {
 		// Coefficients
-		double[] coeff;
+        final double[] coeff;
 		// Degree
-		int deg;
+        final int deg;
 
 		public Polynomial(double[] p, int i) {
 			coeff = p;

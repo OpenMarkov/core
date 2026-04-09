@@ -7,8 +7,6 @@
 
 package org.openmarkov.core.model.network.potential;
 
-//import java.lang.Thread.State;
-
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Variable;
 
@@ -17,6 +15,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
+/**
+ * Utility class for creating evidence potentials. An evidence potential is a
+ * single-variable {@link TablePotential} where only the observed state has
+ * probability 1.0 and all other states have probability 0.0.
+ */
 public class EvidencePotentials {
 
 	/**
@@ -51,7 +54,7 @@ public class EvidencePotentials {
 					int indexStateEvidence = evidence.getState(variable);
 					for (int indexState = 0; indexState < variable.getStates().length; indexState++) {
 						// Sets potential table configurations
-						potential.values[indexState] = (indexState == indexStateEvidence) ? 1.0 : 0.0;
+						potential.getValues()[indexState] = (indexState == indexStateEvidence) ? 1.0 : 0.0;
 					}
 					// Inserts potential in individualProbabilities
 					individualProbabilities.put(variable, potential);

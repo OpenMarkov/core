@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class PartialOrderDAN {
 
-	ProbNet order;
+	final ProbNet order;
 
 	public PartialOrderDAN(ProbNet probNet) {
 
@@ -30,9 +30,7 @@ public class PartialOrderDAN {
 
 		//Only keep decision nodes
 		for (Node auxNode : probNet.getNodes()) {
-			//order.getGraph().removeLinks(auxNode.getNode());
 			NodeType auxType = auxNode.getNodeType();
-			//if ((auxType!=NodeType.CHANCE)&&(auxType!=NodeType.DECISION)){
 			if (auxType == NodeType.DECISION) {
 				order.addNode(auxNode.getVariable(), auxType);
 			}

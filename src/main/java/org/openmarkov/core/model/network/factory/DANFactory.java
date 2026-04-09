@@ -41,11 +41,11 @@ public class DANFactory extends NetsFactory {
 		oneChanceDAN.addLink(variableX, variableU, true);
 
 		TablePotential potentialX = new TablePotential(Arrays.asList(variableX), PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialX.values = new double[] { 0.86, 0.14 };
+		potentialX.setValues(new double[] { 0.86, 0.14 });
 		nodeX.setPotential(potentialX);
 
 		ExactDistrPotential potentialU = new ExactDistrPotential(Arrays.asList(variableU, variableX));
-		potentialU.getTablePotential().values = new double[] { 100, 30 };
+		potentialU.getTablePotential().setValues(new double[] { 100, 30 });
 		nodeU.setPotential(potentialU);
 
 		return oneChanceDAN;
@@ -71,12 +71,12 @@ public class DANFactory extends NetsFactory {
 		// Potentials
 		TablePotential potDisease = new TablePotential(Arrays.asList(varDisease),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potDisease.values = new double[] { 0.86, 0.14 };
+		potDisease.setValues(new double[] { 0.86, 0.14 });
 		nodeDisease.setPotential(potDisease);
 
 		ExactDistrPotential potHealth_state = new ExactDistrPotential(
 				Arrays.asList(varHealth_state, varDisease, varTherapy));
-		potHealth_state.getTablePotential().values = new double[] { 10, 3, 9, 8 };
+		potHealth_state.getTablePotential().setValues(new double[] { 10, 3, 9, 8 });
 		nodeHealth_state.setPotential(potHealth_state);
 
 		// Link restrictions and revealing states
@@ -107,12 +107,12 @@ public class DANFactory extends NetsFactory {
 		// Potentials
 		TablePotential potDisease = new TablePotential(Arrays.asList(varDisease),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potDisease.values = new double[] { 0.86, 0.14 };
+		potDisease.setValues(new double[] { 0.86, 0.14 });
 		nodeDisease.setPotential(potDisease);
 
 		ExactDistrPotential potHealth_state = new ExactDistrPotential(
 				Arrays.asList(varHealth_state, varDisease, varTherapy));
-		potHealth_state.getTablePotential().values = new double[] { 10, 3, 9, 8 };
+		potHealth_state.getTablePotential().setValues(new double[] { 10, 3, 9, 8 });
 		nodeHealth_state.setPotential(potHealth_state);
 
 		// Link restrictions and revealing states
@@ -149,21 +149,21 @@ public class DANFactory extends NetsFactory {
 		// Potentials
 		TablePotential potDisease = new TablePotential(Arrays.asList(varDisease),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potDisease.values = new double[] { 0.86, 0.14 };
+		potDisease.setValues(new double[] { 0.86, 0.14 });
 		nodeDisease.setPotential(potDisease);
 
 		TablePotential potResult_of_test = new TablePotential(Arrays.asList(varResult_of_test, varDisease),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potResult_of_test.values = new double[] { 0.97, 0.03, 0.09, 0.91 };
+		potResult_of_test.setValues(new double[] { 0.97, 0.03, 0.09, 0.91 });
 		nodeResult_of_test.setPotential(potResult_of_test);
 
 		ExactDistrPotential potHealth_state = new ExactDistrPotential(
 				Arrays.asList(varHealth_state, varDisease, varTherapy));
-		potHealth_state.getTablePotential().values = new double[] { 9.8, 2.8, 8.8, 7.8 };
+		potHealth_state.getTablePotential().setValues(new double[] { 9.8, 2.8, 8.8, 7.8 });
 		nodeHealth_state.setPotential(potHealth_state);
 
 		ExactDistrPotential potCost_of_therapy = new ExactDistrPotential(Arrays.asList(varCost_of_therapy, varTherapy));
-		potCost_of_therapy.getTablePotential().values = new double[] { 0, -0.25 };
+		potCost_of_therapy.getTablePotential().setValues(new double[] { 0, -0.25 });
 		nodeCost_of_therapy.setPotential(potCost_of_therapy);
 
 		// Link restrictions and revealing states
@@ -190,11 +190,11 @@ public class DANFactory extends NetsFactory {
 		dan.addLink(variableX, variableT, true);
 
 		TablePotential potentialX = new TablePotential(Arrays.asList(variableX), PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialX.values = new double[] { 0.86, 0.14 };
+		potentialX.setValues(new double[] { 0.86, 0.14 });
 		nodeX.setPotential(potentialX);
 
 		ExactDistrPotential potentialU = new ExactDistrPotential(Arrays.asList(variableU, variableX, variableT));
-		potentialU.getTablePotential().values = new double[] { 100, 30, 90, 80 };
+		potentialU.getTablePotential().setValues(new double[] { 100, 30, 90, 80 });
 		nodeU.setPotential(potentialU);
 
 		nodeX.setAlwaysObserved(true);
@@ -202,7 +202,7 @@ public class DANFactory extends NetsFactory {
 		Link<Node> link = dan.getLink(nodeX, nodeT, true);
 		link.initializesRestrictionsPotential();
 		TablePotential restrictionsPotential = (TablePotential) link.getRestrictionsPotential();
-		restrictionsPotential.values = new double[] { 0, 1, 1, 1 };
+		restrictionsPotential.setValues(new double[] { 0, 1, 1, 1 });
 
 		return dan;
 	}
@@ -240,25 +240,25 @@ public class DANFactory extends NetsFactory {
 		// Potentials
 		TablePotential potDisease = new TablePotential(Arrays.asList(varDisease),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potDisease.values = new double[] { 0.86, 0.14 };
+		potDisease.setValues(new double[] { 0.86, 0.14 });
 		nodeDisease.setPotential(potDisease);
 
 		TablePotential potResult_of_test = new TablePotential(Arrays.asList(varResult_of_test, varDisease, varDo_test_),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potResult_of_test.values = new double[] { 0, 0, 0, 0, 0.97, 0.03, 0.09, 0.91 };
+		potResult_of_test.setValues(new double[] { 0, 0, 0, 0, 0.97, 0.03, 0.09, 0.91 });
 		nodeResult_of_test.setPotential(potResult_of_test);
 
 		ExactDistrPotential potHealth_state = new ExactDistrPotential(
 				Arrays.asList(varHealth_state, varDisease, varTherapy));
-		potHealth_state.getTablePotential().values = new double[] { 10, 3, 9, 8 };
+		potHealth_state.getTablePotential().setValues(new double[] { 10, 3, 9, 8 });
 		nodeHealth_state.setPotential(potHealth_state);
 
 		ExactDistrPotential potCost_of_test = new ExactDistrPotential(Arrays.asList(varCost_of_test, varDo_test_));
-		potCost_of_test.getTablePotential().values = new double[] { 0, -0.2 };
+		potCost_of_test.getTablePotential().setValues(new double[] { 0, -0.2 });
 		nodeCost_of_test.setPotential(potCost_of_test);
 
 		ExactDistrPotential potCost_of_Therapy = new ExactDistrPotential(Arrays.asList(varCost_of_Therapy, varTherapy));
-		potCost_of_Therapy.getTablePotential().values = new double[] { 0, -0.25 };
+		potCost_of_Therapy.getTablePotential().setValues(new double[] { 0, -0.25 });
 		nodeCost_of_Therapy.setPotential(potCost_of_Therapy);
 
 		// Link restrictions and revealing states
@@ -266,7 +266,7 @@ public class DANFactory extends NetsFactory {
 		link_nodeDo_test__nodeResult_of_test.initializesRestrictionsPotential();
 		TablePotential restrictions_nodeDo_test__nodeResult_of_test = (TablePotential) link_nodeDo_test__nodeResult_of_test
 				.getRestrictionsPotential();
-		restrictions_nodeDo_test__nodeResult_of_test.values = new double[] { 0, 1, 0, 1 };
+		restrictions_nodeDo_test__nodeResult_of_test.setValues(new double[] { 0, 1, 0, 1 });
 		link_nodeDo_test__nodeResult_of_test.setRevealingStates(Arrays.asList(varDo_test_.getStates()[1]));
 
 		// Always observed nodes
@@ -346,7 +346,7 @@ public class DANFactory extends NetsFactory {
 
 		TablePotential potentialAccept = new TablePotential(Arrays.asList(variableAccept, variableAsk, variableLikesMe),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialAccept.values = new double[] { 1, 0, 0.99, 0.01, 1, 0, 0.25, 0.75 };
+		potentialAccept.setValues(new double[] { 1, 0, 0.99, 0.01, 1, 0, 0.25, 0.75 });
 		nodeAccept.setPotential(potentialAccept);
 
 		UniformPotential potentialLikesMe = new UniformPotential(Arrays.asList(variableLikesMe),
@@ -355,55 +355,55 @@ public class DANFactory extends NetsFactory {
 
 		TablePotential potentialToDo = new TablePotential(Arrays.asList(variableToDo, variableAccept, variableLikesMe),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialToDo.values = new double[] { 0, 0, 0.65, 0.35, 0, 0, 0.15, 0.85 };
+		potentialToDo.setValues(new double[] { 0, 0, 0.65, 0.35, 0, 0, 0.15, 0.85 });
 		nodeToDo.setPotential(potentialToDo);
 
 		TablePotential potentialMMood = new TablePotential(Arrays.asList(variableMMood, variableMovie),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialMMood.values = new double[] { 0.25, 0.75, 0.88, 0.12 };
+		potentialMMood.setValues(new double[] { 0.25, 0.75, 0.88, 0.12 });
 		nodeMMood.setPotential(potentialMMood);
 
 		TablePotential potentialMExp = new TablePotential(Arrays.asList(variableMExp, variableMovie, variableMMood),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialMExp.values = new double[] { 0.99, 0.01, 0.95, 0.05, 0.15, 0.85, 0.01, 0.99 };
+		potentialMExp.setValues(new double[] { 0.99, 0.01, 0.95, 0.05, 0.15, 0.85, 0.01, 0.99 });
 		nodeMExp.setPotential(potentialMExp);
 
 		ExactDistrPotential potentialUmExp = new ExactDistrPotential(Arrays.asList(variableUmExp, variableMExp));
-		potentialUmExp.getTablePotential().values = new double[] { -10, 10 };
+		potentialUmExp.getTablePotential().setValues(new double[] { -10, 10 });
 		nodeUmExp.setPotential(potentialUmExp);
 
 		TablePotential potentialRMood = new TablePotential(Arrays.asList(variableRMood, variableRest),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialRMood.values = new double[] { 0.5, 0.5, 0.2, 0.8 };
+		potentialRMood.setValues(new double[] { 0.5, 0.5, 0.2, 0.8 });
 		nodeRMood.setPotential(potentialRMood);
 
 		TablePotential potentialRExp = new TablePotential(Arrays.asList(variableRExp, variableRest, variableRMood),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialRExp.values = new double[] { 0.95, 0.05, 1, 0, 0.01, 0.99, 0.08, 0.92 };
+		potentialRExp.setValues(new double[] { 0.95, 0.05, 1, 0, 0.01, 0.99, 0.08, 0.92 });
 		nodeRExp.setPotential(potentialRExp);
 
 		ExactDistrPotential potentialUrExp = new ExactDistrPotential(Arrays.asList(variableUrExp, variableRExp));
-		potentialUrExp.getTablePotential().values = new double[] { -10, 10 };
+		potentialUrExp.getTablePotential().setValues(new double[] { -10, 10 });
 		nodeUrExp.setPotential(potentialUrExp);
 
 		TablePotential potentialTV = new TablePotential(Arrays.asList(variableTV),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialTV.values = new double[] { 0.15, 0.85 };
+		potentialTV.setValues(new double[] { 0.15, 0.85 });
 		nodeTV.setPotential(potentialTV);
 
 		TablePotential potentialTVExp = new TablePotential(Arrays.asList(variableTVExp, variableNClub, variableTV),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialTVExp.values = new double[] { 0, 1, 0, 0, 1, 0, 0, 0 };
+		potentialTVExp.setValues(new double[] { 0, 1, 0, 0, 1, 0, 0, 0 });
 		nodeTVExp.setPotential(potentialTVExp);
 
 		TablePotential potentialClub = new TablePotential(Arrays.asList(variableClub, variableNClub),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialClub.values = new double[] { 0, 0, 0.22, 0.78 };
+		potentialClub.setValues(new double[] { 0, 0, 0.22, 0.78 });
 		nodeClub.setPotential(potentialClub);
 
 		TablePotential potentialMeetFr = new TablePotential(Arrays.asList(variableMeetFr, variableNClub),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialMeetFr.values = new double[] { 0, 0, 0.16, 0.84 };
+		potentialMeetFr.setValues(new double[] { 0, 0, 0.16, 0.84 });
 		nodeMeetFr.setPotential(potentialMeetFr);
 
 		ICIPotential potentialNCExp = new MaxPotential(Arrays.asList(variableNCExp, variableMeetFr, variableClub));
@@ -411,39 +411,39 @@ public class DANFactory extends NetsFactory {
 		nodeNCExp.setPotential(potentialNCExp);
 
 		ExactDistrPotential potentialUTVExp = new ExactDistrPotential(Arrays.asList(variableUTVExp, variableTVExp));
-		potentialUTVExp.getTablePotential().values = new double[] { -10, 10 };
+		potentialUTVExp.getTablePotential().setValues(new double[] { -10, 10 });
 		nodeUTVExp.setPotential(potentialUTVExp);
 
 		ExactDistrPotential potentialUNCExp = new ExactDistrPotential(Arrays.asList(variableUNCExp, variableNCExp));
-		potentialUNCExp.getTablePotential().values = new double[] { -10, 10 };
+		potentialUNCExp.getTablePotential().setValues(new double[] { -10, 10 });
 		nodeUNCExp.setPotential(potentialUNCExp);
 
 		Link<Node> linkAskAccept = datingDAN.getLink(nodeAsk, nodeAccept, true);
 		linkAskAccept.initializesRestrictionsPotential();
 		TablePotential restrictionsAskAccept = (TablePotential) linkAskAccept.getRestrictionsPotential();
-		restrictionsAskAccept.values = new double[] { 1, 1, 0, 1 };
+		restrictionsAskAccept.setValues(new double[] { 1, 1, 0, 1 });
 		linkAskAccept.setRevealingStates(Arrays.asList(variableAsk.getStates()[0], variableAsk.getStates()[1]));
 
 		Link<Node> linkAcceptNClub = datingDAN.getLink(nodeAccept, nodeNClub, true);
 		linkAcceptNClub.initializesRestrictionsPotential();
 		TablePotential restrictionsAcceptNClub = (TablePotential) linkAcceptNClub.getRestrictionsPotential();
-		restrictionsAcceptNClub.values = new double[] { 1, 0, 1, 0 };
+		restrictionsAcceptNClub.setValues(new double[] { 1, 0, 1, 0 });
 
 		Link<Node> linkAcceptToDo = datingDAN.getLink(nodeAccept, nodeToDo, true);
 		linkAcceptToDo.initializesRestrictionsPotential();
 		TablePotential restrictionsAcceptToDo = (TablePotential) linkAcceptToDo.getRestrictionsPotential();
-		restrictionsAcceptToDo.values = new double[] { 0, 1, 0, 1 };
+		restrictionsAcceptToDo.setValues(new double[] { 0, 1, 0, 1 });
 		linkAcceptToDo.setRevealingStates(Arrays.asList(variableAccept.getStates()[1]));
 
 		Link<Node> linkToDoMovie = datingDAN.getLink(nodeToDo, nodeMovie, true);
 		linkToDoMovie.initializesRestrictionsPotential();
 		TablePotential restrictionsToDoMovie = (TablePotential) linkToDoMovie.getRestrictionsPotential();
-		restrictionsToDoMovie.values = new double[] { 0, 1, 0, 1 };
+		restrictionsToDoMovie.setValues(new double[] { 0, 1, 0, 1 });
 
 		Link<Node> linkToDoRest = datingDAN.getLink(nodeToDo, nodeRest, true);
 		linkToDoRest.initializesRestrictionsPotential();
 		TablePotential restrictionsToDoRest = (TablePotential) linkToDoRest.getRestrictionsPotential();
-		restrictionsToDoRest.values = new double[] { 1, 0, 1, 0 };
+		restrictionsToDoRest.setValues(new double[] { 1, 0, 1, 0 });
 
 		Link<Node> linkMovieMEXp = datingDAN.getLink(nodeMovie, nodeMExp, true);
 		linkMovieMEXp.setRevealingStates(Arrays.asList(variableMovie.getStates()[0], variableMovie.getStates()[1]));
@@ -454,19 +454,19 @@ public class DANFactory extends NetsFactory {
 		Link<Node> linkNClubTVExp = datingDAN.getLink(nodeNClub, nodeTVExp, true);
 		linkNClubTVExp.initializesRestrictionsPotential();
 		TablePotential restrictionsNClubTVExp = (TablePotential) linkNClubTVExp.getRestrictionsPotential();
-		restrictionsNClubTVExp.values = new double[] { 1, 0, 1, 0 };
+		restrictionsNClubTVExp.setValues(new double[] { 1, 0, 1, 0 });
 		linkNClubTVExp.setRevealingStates(Arrays.asList(variableNClub.getStates()[0]));
 
 		Link<Node> linkNClubClub = datingDAN.getLink(nodeNClub, nodeClub, true);
 		linkNClubClub.initializesRestrictionsPotential();
 		TablePotential restrictionsNClubClub = (TablePotential) linkNClubClub.getRestrictionsPotential();
-		restrictionsNClubClub.values = new double[] { 0, 1, 0, 1 };
+		restrictionsNClubClub.setValues(new double[] { 0, 1, 0, 1 });
 		linkNClubClub.setRevealingStates(Arrays.asList(variableNClub.getStates()[1]));
 
 		Link<Node> linkNClubMeetFr = datingDAN.getLink(nodeNClub, nodeMeetFr, true);
 		linkNClubMeetFr.initializesRestrictionsPotential();
 		TablePotential restrictionsNClubMeetFr = (TablePotential) linkNClubMeetFr.getRestrictionsPotential();
-		restrictionsNClubMeetFr.values = new double[] { 0, 1, 0, 1 };
+		restrictionsNClubMeetFr.setValues(new double[] { 0, 1, 0, 1 });
 		linkNClubMeetFr.setRevealingStates(Arrays.asList(variableNClub.getStates()[1]));
 
 		nodeTV.setAlwaysObserved(true);
@@ -507,22 +507,22 @@ public class DANFactory extends NetsFactory {
 
 		TablePotential potentialTV = new TablePotential(Arrays.asList(variableTV),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialTV.values = new double[] { 0.15, 0.85 };
+		potentialTV.setValues(new double[] { 0.15, 0.85 });
 		nodeTV.setPotential(potentialTV);
 
 		TablePotential potentialTVExp = new TablePotential(Arrays.asList(variableTVExp, variableNClub, variableTV),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialTVExp.values = new double[] { 0, 1, 0, 0, 1, 0, 0, 0 };
+		potentialTVExp.setValues(new double[] { 0, 1, 0, 0, 1, 0, 0, 0 });
 		nodeTVExp.setPotential(potentialTVExp);
 
 		TablePotential potentialClub = new TablePotential(Arrays.asList(variableClub, variableNClub),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialClub.values = new double[] { 0, 0, 0.22, 0.78 };
+		potentialClub.setValues(new double[] { 0, 0, 0.22, 0.78 });
 		nodeClub.setPotential(potentialClub);
 
 		TablePotential potentialMeetFr = new TablePotential(Arrays.asList(variableMeetFr, variableNClub),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialMeetFr.values = new double[] { 0, 0, 0.16, 0.84 };
+		potentialMeetFr.setValues(new double[] { 0, 0, 0.16, 0.84 });
 		nodeMeetFr.setPotential(potentialMeetFr);
 
 		ICIPotential potentialNCExp = new MaxPotential(Arrays.asList(variableNCExp, variableMeetFr, variableClub));
@@ -530,29 +530,29 @@ public class DANFactory extends NetsFactory {
 		nodeNCExp.setPotential(potentialNCExp);
 
 		ExactDistrPotential potentialUTVExp = new ExactDistrPotential(Arrays.asList(variableUTVExp, variableTVExp));
-		potentialUTVExp.getTablePotential().values = new double[] { -10, 10 };
+		potentialUTVExp.getTablePotential().setValues(new double[] { -10, 10 });
 		nodeUTVExp.setPotential(potentialUTVExp);
 
 		ExactDistrPotential potentialUNCExp = new ExactDistrPotential(Arrays.asList(variableUNCExp, variableNCExp));
-		potentialUNCExp.getTablePotential().values = new double[] { -10, 10 };
+		potentialUNCExp.getTablePotential().setValues(new double[] { -10, 10 });
 		nodeUNCExp.setPotential(potentialUNCExp);
 
 		Link<Node> linkNClubTVExp = datingDAN.getLink(nodeNClub, nodeTVExp, true);
 		linkNClubTVExp.initializesRestrictionsPotential();
 		TablePotential restrictionsNClubTVExp = (TablePotential) linkNClubTVExp.getRestrictionsPotential();
-		restrictionsNClubTVExp.values = new double[] { 1, 0, 1, 0 };
+		restrictionsNClubTVExp.setValues(new double[] { 1, 0, 1, 0 });
 		linkNClubTVExp.setRevealingStates(Arrays.asList(variableNClub.getStates()[0]));
 
 		Link<Node> linkNClubClub = datingDAN.getLink(nodeNClub, nodeClub, true);
 		linkNClubClub.initializesRestrictionsPotential();
 		TablePotential restrictionsNClubClub = (TablePotential) linkNClubClub.getRestrictionsPotential();
-		restrictionsNClubClub.values = new double[] { 0, 1, 0, 1 };
+		restrictionsNClubClub.setValues(new double[] { 0, 1, 0, 1 });
 		linkNClubClub.setRevealingStates(Arrays.asList(variableNClub.getStates()[1]));
 
 		Link<Node> linkNClubMeetFr = datingDAN.getLink(nodeNClub, nodeMeetFr, true);
 		linkNClubMeetFr.initializesRestrictionsPotential();
 		TablePotential restrictionsNClubMeetFr = (TablePotential) linkNClubMeetFr.getRestrictionsPotential();
-		restrictionsNClubMeetFr.values = new double[] { 0, 1, 0, 1 };
+		restrictionsNClubMeetFr.setValues(new double[] { 0, 1, 0, 1 });
 		linkNClubMeetFr.setRevealingStates(Arrays.asList(variableNClub.getStates()[1]));
 
 		nodeTV.setAlwaysObserved(true);
@@ -632,7 +632,7 @@ public class DANFactory extends NetsFactory {
 
 		TablePotential potentialAccept = new TablePotential(Arrays.asList(variableAccept, variableAsk, variableLikesMe),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialAccept.values = new double[] { 1, 0, 0.99, 0.01, 1, 0, 0.25, 0.75 };
+		potentialAccept.setValues(new double[] { 1, 0, 0.99, 0.01, 1, 0, 0.25, 0.75 });
 		nodeAccept.setPotential(potentialAccept);
 
 		UniformPotential potentialLikesMe = new UniformPotential(Arrays.asList(variableLikesMe),
@@ -641,50 +641,50 @@ public class DANFactory extends NetsFactory {
 
 		TablePotential potentialToDo = new TablePotential(Arrays.asList(variableToDo, variableAccept, variableLikesMe),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialToDo.values = new double[] { 0, 0, 0.65, 0.35, 0, 0, 0.15, 0.85 };
+		potentialToDo.setValues(new double[] { 0, 0, 0.65, 0.35, 0, 0, 0.15, 0.85 });
 		nodeToDo.setPotential(potentialToDo);
 
 		TablePotential potentialMMood = new TablePotential(Arrays.asList(variableMMood, variableMovie),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialMMood.values = new double[] { 0.25, 0.75, 0.88, 0.12 };
+		potentialMMood.setValues(new double[] { 0.25, 0.75, 0.88, 0.12 });
 		nodeMMood.setPotential(potentialMMood);
 
 		TablePotential potentialMExp = new TablePotential(Arrays.asList(variableMExp, variableMovie, variableMMood),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialMExp.values = new double[] { 0.99, 0.01, 0.95, 0.05, 0.15, 0.85, 0.01, 0.99 };
+		potentialMExp.setValues(new double[] { 0.99, 0.01, 0.95, 0.05, 0.15, 0.85, 0.01, 0.99 });
 		nodeMExp.setPotential(potentialMExp);
 
 		ExactDistrPotential potentialUmExp = new ExactDistrPotential(Arrays.asList(variableUmExp, variableMExp));
-		potentialUmExp.getTablePotential().values = new double[] { -10, 10 };
+		potentialUmExp.getTablePotential().setValues(new double[] { -10, 10 });
 		nodeUmExp.setPotential(potentialUmExp);
 
 		TablePotential potentialRMood = new TablePotential(Arrays.asList(variableRMood, variableRest),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialRMood.values = new double[] { 0.5, 0.5, 0.2, 0.8 };
+		potentialRMood.setValues(new double[] { 0.5, 0.5, 0.2, 0.8 });
 		nodeRMood.setPotential(potentialRMood);
 
 		TablePotential potentialRExp = new TablePotential(Arrays.asList(variableRExp, variableRest, variableRMood),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialRExp.values = new double[] { 0.95, 0.05, 1, 0, 0.01, 0.99, 0.08, 0.92 };
+		potentialRExp.setValues(new double[] { 0.95, 0.05, 1, 0, 0.01, 0.99, 0.08, 0.92 });
 		nodeRExp.setPotential(potentialRExp);
 
 		ExactDistrPotential potentialUrExp = new ExactDistrPotential(Arrays.asList(variableUrExp, variableRExp));
-		potentialUrExp.getTablePotential().values = new double[] { -10, 10 };
+		potentialUrExp.getTablePotential().setValues(new double[] { -10, 10 });
 		nodeUrExp.setPotential(potentialUrExp);
 
 		TablePotential potentialTVExp = new TablePotential(Arrays.asList(variableTVExp, variableNClub),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialTVExp.values = new double[] { 1.0, 0.0, 0.0, 0.0 };
+		potentialTVExp.setValues(new double[] { 1.0, 0.0, 0.0, 0.0 });
 		nodeTVExp.setPotential(potentialTVExp);
 
 		TablePotential potentialClub = new TablePotential(Arrays.asList(variableClub, variableNClub),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialClub.values = new double[] { 0, 0, 0.22, 0.78 };
+		potentialClub.setValues(new double[] { 0, 0, 0.22, 0.78 });
 		nodeClub.setPotential(potentialClub);
 
 		TablePotential potentialMeetFr = new TablePotential(Arrays.asList(variableMeetFr, variableNClub),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialMeetFr.values = new double[] { 0, 0, 0.16, 0.84 };
+		potentialMeetFr.setValues(new double[] { 0, 0, 0.16, 0.84 });
 		nodeMeetFr.setPotential(potentialMeetFr);
 
 		ICIPotential potentialNCExp = new MaxPotential(Arrays.asList(variableNCExp, variableMeetFr, variableClub));
@@ -692,39 +692,39 @@ public class DANFactory extends NetsFactory {
 		nodeNCExp.setPotential(potentialNCExp);
 
 		ExactDistrPotential potentialUTVExp = new ExactDistrPotential(Arrays.asList(variableUTVExp, variableTVExp));
-		potentialUTVExp.getTablePotential().values = new double[] { -10, 10 };
+		potentialUTVExp.getTablePotential().setValues(new double[] { -10, 10 });
 		nodeUTVExp.setPotential(potentialUTVExp);
 
 		ExactDistrPotential potentialUNCExp = new ExactDistrPotential(Arrays.asList(variableUNCExp, variableNCExp));
-		potentialUNCExp.getTablePotential().values = new double[] { -10, 10 };
+		potentialUNCExp.getTablePotential().setValues(new double[] { -10, 10 });
 		nodeUNCExp.setPotential(potentialUNCExp);
 
 		Link<Node> linkAskAccept = datingDAN.getLink(nodeAsk, nodeAccept, true);
 		linkAskAccept.initializesRestrictionsPotential();
 		TablePotential restrictionsAskAccept = (TablePotential) linkAskAccept.getRestrictionsPotential();
-		restrictionsAskAccept.values = new double[] { 1, 1, 0, 1 };
+		restrictionsAskAccept.setValues(new double[] { 1, 1, 0, 1 });
 		linkAskAccept.setRevealingStates(Arrays.asList(variableAsk.getStates()[0], variableAsk.getStates()[1]));
 
 		Link<Node> linkAcceptNClub = datingDAN.getLink(nodeAccept, nodeNClub, true);
 		linkAcceptNClub.initializesRestrictionsPotential();
 		TablePotential restrictionsAcceptNClub = (TablePotential) linkAcceptNClub.getRestrictionsPotential();
-		restrictionsAcceptNClub.values = new double[] { 1, 0, 1, 0 };
+		restrictionsAcceptNClub.setValues(new double[] { 1, 0, 1, 0 });
 
 		Link<Node> linkAcceptToDo = datingDAN.getLink(nodeAccept, nodeToDo, true);
 		linkAcceptToDo.initializesRestrictionsPotential();
 		TablePotential restrictionsAcceptToDo = (TablePotential) linkAcceptToDo.getRestrictionsPotential();
-		restrictionsAcceptToDo.values = new double[] { 0, 1, 0, 1 };
+		restrictionsAcceptToDo.setValues(new double[] { 0, 1, 0, 1 });
 		linkAcceptToDo.setRevealingStates(Arrays.asList(variableAccept.getStates()[1]));
 
 		Link<Node> linkToDoMovie = datingDAN.getLink(nodeToDo, nodeMovie, true);
 		linkToDoMovie.initializesRestrictionsPotential();
 		TablePotential restrictionsToDoMovie = (TablePotential) linkToDoMovie.getRestrictionsPotential();
-		restrictionsToDoMovie.values = new double[] { 0, 1, 0, 1 };
+		restrictionsToDoMovie.setValues(new double[] { 0, 1, 0, 1 });
 
 		Link<Node> linkToDoRest = datingDAN.getLink(nodeToDo, nodeRest, true);
 		linkToDoRest.initializesRestrictionsPotential();
 		TablePotential restrictionsToDoRest = (TablePotential) linkToDoRest.getRestrictionsPotential();
-		restrictionsToDoRest.values = new double[] { 1, 0, 1, 0 };
+		restrictionsToDoRest.setValues(new double[] { 1, 0, 1, 0 });
 
 		Link<Node> linkMovieMEXp = datingDAN.getLink(nodeMovie, nodeMExp, true);
 		linkMovieMEXp.setRevealingStates(Arrays.asList(variableMovie.getStates()[0], variableMovie.getStates()[1]));
@@ -735,19 +735,19 @@ public class DANFactory extends NetsFactory {
 		Link<Node> linkNClubTVExp = datingDAN.getLink(nodeNClub, nodeTVExp, true);
 		linkNClubTVExp.initializesRestrictionsPotential();
 		TablePotential restrictionsNClubTVExp = (TablePotential) linkNClubTVExp.getRestrictionsPotential();
-		restrictionsNClubTVExp.values = new double[] { 1, 0, 1, 0 };
+		restrictionsNClubTVExp.setValues(new double[] { 1, 0, 1, 0 });
 		linkNClubTVExp.setRevealingStates(Arrays.asList(variableNClub.getStates()[0]));
 
 		Link<Node> linkNClubClub = datingDAN.getLink(nodeNClub, nodeClub, true);
 		linkNClubClub.initializesRestrictionsPotential();
 		TablePotential restrictionsNClubClub = (TablePotential) linkNClubClub.getRestrictionsPotential();
-		restrictionsNClubClub.values = new double[] { 0, 1, 0, 1 };
+		restrictionsNClubClub.setValues(new double[] { 0, 1, 0, 1 });
 		linkNClubClub.setRevealingStates(Arrays.asList(variableNClub.getStates()[1]));
 
 		Link<Node> linkNClubMeetFr = datingDAN.getLink(nodeNClub, nodeMeetFr, true);
 		linkNClubMeetFr.initializesRestrictionsPotential();
 		TablePotential restrictionsNClubMeetFr = (TablePotential) linkNClubMeetFr.getRestrictionsPotential();
-		restrictionsNClubMeetFr.values = new double[] { 0, 1, 0, 1 };
+		restrictionsNClubMeetFr.setValues(new double[] { 0, 1, 0, 1 });
 		linkNClubMeetFr.setRevealingStates(Arrays.asList(variableNClub.getStates()[1]));
 
 		return datingDAN;
@@ -789,36 +789,36 @@ public class DANFactory extends NetsFactory {
 
 		TablePotential potentialToDo = new TablePotential(Arrays.asList(variableToDo, variableLikesMe),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialToDo.values = new double[] { 0.65, 0.35, 0.15, 0.85 };
+		potentialToDo.setValues(new double[] { 0.65, 0.35, 0.15, 0.85 });
 		nodeToDo.setPotential(potentialToDo);
 
 		TablePotential potentialMExp = new TablePotential(Arrays.asList(variableMExp, variableMovie),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialMExp.values = new double[] { 0.01, 0.99, 0.95, 0.05 };
+		potentialMExp.setValues(new double[] { 0.01, 0.99, 0.95, 0.05 });
 		nodeMExp.setPotential(potentialMExp);
 
 		ExactDistrPotential potentialUmExp = new ExactDistrPotential(Arrays.asList(variableUmExp, variableMExp));
-		potentialUmExp.getTablePotential().values = new double[] { -10, 10 };
+		potentialUmExp.getTablePotential().setValues(new double[] { -10, 10 });
 		nodeUmExp.setPotential(potentialUmExp);
 
 		TablePotential potentialRExp = new TablePotential(Arrays.asList(variableRExp, variableRest),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potentialRExp.values = new double[] { 0.95, 0.05, 0.0, 1.0 };
+		potentialRExp.setValues(new double[] { 0.95, 0.05, 0.0, 1.0 });
 		nodeRExp.setPotential(potentialRExp);
 
 		ExactDistrPotential potentialUrExp = new ExactDistrPotential(Arrays.asList(variableUrExp, variableRExp));
-		potentialUrExp.getTablePotential().values = new double[] { -10, 10 };
+		potentialUrExp.getTablePotential().setValues(new double[] { -10, 10 });
 		nodeUrExp.setPotential(potentialUrExp);
 
 		Link<Node> linkToDoMovie = datingDAN.getLink(nodeToDo, nodeMovie, true);
 		linkToDoMovie.initializesRestrictionsPotential();
 		TablePotential restrictionsToDoMovie = (TablePotential) linkToDoMovie.getRestrictionsPotential();
-		restrictionsToDoMovie.values = new double[] { 0, 1, 0, 1 };
+		restrictionsToDoMovie.setValues(new double[] { 0, 1, 0, 1 });
 
 		Link<Node> linkToDoRest = datingDAN.getLink(nodeToDo, nodeRest, true);
 		linkToDoRest.initializesRestrictionsPotential();
 		TablePotential restrictionsToDoRest = (TablePotential) linkToDoRest.getRestrictionsPotential();
-		restrictionsToDoRest.values = new double[] { 1, 0, 1, 0 };
+		restrictionsToDoRest.setValues(new double[] { 1, 0, 1, 0 });
 
 		Link<Node> linkMovieMEXp = datingDAN.getLink(nodeMovie, nodeMExp, true);
 		linkMovieMEXp.setRevealingStates(Arrays.asList(variableMovie.getStates()[0], variableMovie.getStates()[1]));
@@ -850,7 +850,7 @@ public class DANFactory extends NetsFactory {
 
 		// Potentials
 		ExactDistrPotential potU = new ExactDistrPotential(Arrays.asList(varU, varD, varE));
-		potU.getTablePotential().values = new double[] { 1, 2, 3, 4 };
+		potU.getTablePotential().setValues(new double[] { 1, 2, 3, 4 });
 		nodeU.setPotential(potU);
 
 		// Link restrictions and revealing states
@@ -886,15 +886,15 @@ public class DANFactory extends NetsFactory {
 
 		// Potentials
 		TablePotential potY = new TablePotential(Arrays.asList(varY, varE), PotentialRole.CONDITIONAL_PROBABILITY);
-		potY.values = new double[] { 0.9, 0.1, 0.1, 0.9 };
+		potY.setValues(new double[] { 0.9, 0.1, 0.1, 0.9 });
 		nodeY.setPotential(potY);
 
 		TablePotential potX = new TablePotential(Arrays.asList(varX, varD), PotentialRole.CONDITIONAL_PROBABILITY);
-		potX.values = new double[] { 0.6, 0.4, 0.4, 0.6 };
+		potX.setValues(new double[] { 0.6, 0.4, 0.4, 0.6 });
 		nodeX.setPotential(potX);
 
 		ExactDistrPotential potU = new ExactDistrPotential(Arrays.asList(varU, varE, varD, varY, varX));
-		potU.getTablePotential().values = new double[] { 0, 10, 10, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10, 10 };
+		potU.getTablePotential().setValues(new double[] { 0, 10, 10, 10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 10, 10 });
 		nodeU.setPotential(potU);
 
 		// Link restrictions and revealing states
@@ -957,40 +957,40 @@ public class DANFactory extends NetsFactory {
 		TablePotential potResult_of_advanced_reactor = new TablePotential(
 				Arrays.asList(varResult_of_advanced_reactor, varBuild_decision, varAdvanced_reactor_reliability),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potResult_of_advanced_reactor.values = new double[] { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
-				0, 1, 0, 0, 0, 0, 0, 0 };
+		potResult_of_advanced_reactor.setValues(new double[] { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0,
+				0, 1, 0, 0, 0, 0, 0, 0 });
 		nodeResult_of_advanced_reactor.setPotential(potResult_of_advanced_reactor);
 
 		TablePotential potResult_of_test = new TablePotential(
 				Arrays.asList(varResult_of_test, varTest_decision, varAdvanced_reactor_reliability),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potResult_of_test.values = new double[] { 0.05, 0.6, 0.35, 0, 0, 0, 0.85, 0.1, 0.05, 0, 0, 0, 0.9, 0.08, 0.02,
-				0, 0, 0 };
+		potResult_of_test.setValues(new double[] { 0.05, 0.6, 0.35, 0, 0, 0, 0.85, 0.1, 0.05, 0, 0, 0, 0.9, 0.08, 0.02,
+				0, 0, 0 });
 		nodeResult_of_test.setPotential(potResult_of_test);
 
 		TablePotential potResult_of_conventional_reactor = new TablePotential(
 				Arrays.asList(varResult_of_conventional_reactor, varBuild_decision),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potResult_of_conventional_reactor.values = new double[] { 0, 0, 0.98, 0.02, 0, 0 };
+		potResult_of_conventional_reactor.setValues(new double[] { 0, 0, 0.98, 0.02, 0, 0 });
 		nodeResult_of_conventional_reactor.setPotential(potResult_of_conventional_reactor);
 
 		TablePotential potAdvanced_reactor_reliability = new TablePotential(
 				Arrays.asList(varAdvanced_reactor_reliability), PotentialRole.CONDITIONAL_PROBABILITY);
-		potAdvanced_reactor_reliability.values = new double[] { 0.88, 0.1, 0.02 };
+		potAdvanced_reactor_reliability.setValues(new double[] { 0.88, 0.1, 0.02 });
 		nodeAdvanced_reactor_reliability.setPotential(potAdvanced_reactor_reliability);
 
 		ExactDistrPotential potCost_of_test = new ExactDistrPotential(Arrays.asList(varCost_of_test, varTest_decision));
-		potCost_of_test.getTablePotential().values = new double[] { -1, 0 };
+		potCost_of_test.getTablePotential().setValues(new double[] { -1, 0 });
 		nodeCost_of_test.setPotential(potCost_of_test);
 
 		ExactDistrPotential potBenefit_of_advanced_reactor = new ExactDistrPotential(
 				Arrays.asList(varBenefit_of_advanced_reactor, varResult_of_advanced_reactor));
-		potBenefit_of_advanced_reactor.getTablePotential().values = new double[] { 12, -6, -10 };
+		potBenefit_of_advanced_reactor.getTablePotential().setValues(new double[] { 12, -6, -10 });
 		nodeBenefit_of_advanced_reactor.setPotential(potBenefit_of_advanced_reactor);
 
 		ExactDistrPotential potBenefit_of_conventional_reactor = new ExactDistrPotential(
 				Arrays.asList(varBenefit_of_conventional_reactor, varResult_of_conventional_reactor));
-		potBenefit_of_conventional_reactor.getTablePotential().values = new double[] { 8, -4 };
+		potBenefit_of_conventional_reactor.getTablePotential().setValues(new double[] { 8, -4 });
 		nodeBenefit_of_conventional_reactor.setPotential(potBenefit_of_conventional_reactor);
 
 		// Link<Node> restrictions and revealing states
@@ -999,14 +999,14 @@ public class DANFactory extends NetsFactory {
 		link_nodeResult_of_test_nodeBuild_decision.initializesRestrictionsPotential();
 		TablePotential restrictions_nodeResult_of_test_nodeBuild_decision = (TablePotential) link_nodeResult_of_test_nodeBuild_decision
 				.getRestrictionsPotential();
-		restrictions_nodeResult_of_test_nodeBuild_decision.values = new double[] { 0, 1, 1, 1, 1, 1, 1, 1, 1 };
+		restrictions_nodeResult_of_test_nodeBuild_decision.setValues(new double[] { 0, 1, 1, 1, 1, 1, 1, 1, 1 });
 
 		Link<Node> link_nodeTest_decision_nodeResult_of_test = probNet
 				.getLink(nodeTest_decision, nodeResult_of_test, true);
 		link_nodeTest_decision_nodeResult_of_test.initializesRestrictionsPotential();
 		TablePotential restrictions_nodeTest_decision_nodeResult_of_test = (TablePotential) link_nodeTest_decision_nodeResult_of_test
 				.getRestrictionsPotential();
-		restrictions_nodeTest_decision_nodeResult_of_test.values = new double[] { 1, 0, 1, 0, 1, 0 };
+		restrictions_nodeTest_decision_nodeResult_of_test.setValues(new double[] { 1, 0, 1, 0, 1, 0 });
 		link_nodeTest_decision_nodeResult_of_test.setRevealingStates(Arrays.asList(varTest_decision.getStates()[0]));
 
 		Link<Node> link_nodeBuild_decision_nodeResult_of_advanced_reactor = probNet
@@ -1014,8 +1014,8 @@ public class DANFactory extends NetsFactory {
 		link_nodeBuild_decision_nodeResult_of_advanced_reactor.initializesRestrictionsPotential();
 		TablePotential restrictions_nodeBuild_decision_nodeResult_of_advanced_reactor = (TablePotential) link_nodeBuild_decision_nodeResult_of_advanced_reactor
 				.getRestrictionsPotential();
-		restrictions_nodeBuild_decision_nodeResult_of_advanced_reactor.values = new double[] { 1, 0, 0, 1, 0, 0, 1, 0,
-				0 };
+		restrictions_nodeBuild_decision_nodeResult_of_advanced_reactor.setValues(new double[] { 1, 0, 0, 1, 0, 0, 1, 0,
+				0 });
 		link_nodeBuild_decision_nodeResult_of_advanced_reactor
 				.setRevealingStates(Arrays.asList(varBuild_decision.getStates()[0]));
 
@@ -1024,7 +1024,7 @@ public class DANFactory extends NetsFactory {
 		link_nodeBuild_decision_nodeResult_of_conventional_reactor.initializesRestrictionsPotential();
 		TablePotential restrictions_nodeBuild_decision_nodeResult_of_conventional_reactor = (TablePotential) link_nodeBuild_decision_nodeResult_of_conventional_reactor
 				.getRestrictionsPotential();
-		restrictions_nodeBuild_decision_nodeResult_of_conventional_reactor.values = new double[] { 0, 1, 0, 0, 1, 0 };
+		restrictions_nodeBuild_decision_nodeResult_of_conventional_reactor.setValues(new double[] { 0, 1, 0, 0, 1, 0 });
 		link_nodeBuild_decision_nodeResult_of_conventional_reactor
 				.setRevealingStates(Arrays.asList(varBuild_decision.getStates()[1]));
 
@@ -1124,17 +1124,17 @@ public class DANFactory extends NetsFactory {
 		// Potentials
 		TablePotential potResult_1 = new TablePotential(Arrays.asList(varResult_1, varQuality_of_wooer, varTask_1),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potResult_1.values = new double[] { 0.97, 0.03, 0.75, 0.25, 0.75, 0.25, 0.25, 0.75 };
+		potResult_1.setValues(new double[] { 0.97, 0.03, 0.75, 0.25, 0.75, 0.25, 0.25, 0.75 });
 		nodeResult_1.setPotential(potResult_1);
 
 		TablePotential potResult_2 = new TablePotential(Arrays.asList(varResult_2, varQuality_of_wooer, varTask_2),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potResult_2.values = new double[] { 0.9, 0.1, 0.2, 0.8, 0.75, 0.25, 0.25, 0.75 };
+		potResult_2.setValues(new double[] { 0.9, 0.1, 0.2, 0.8, 0.75, 0.25, 0.25, 0.75 });
 		nodeResult_2.setPotential(potResult_2);
 
 		TablePotential potResult_3 = new TablePotential(Arrays.asList(varResult_3, varQuality_of_wooer, varDec_Task_3),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potResult_3.values = new double[] { 0.6, 0.4, 0.4, 0.6, 0.55, 0.45, 0.45, 0.55 };
+		potResult_3.setValues(new double[] { 0.6, 0.4, 0.4, 0.6, 0.55, 0.45, 0.45, 0.55 });
 		nodeResult_3.setPotential(potResult_3);
 
 		UniformPotential potQuality_of_wooer = new UniformPotential(Arrays.asList(varQuality_of_wooer),
@@ -1143,7 +1143,7 @@ public class DANFactory extends NetsFactory {
 
 		TablePotential potWedding = new TablePotential(Arrays.asList(varWedding, varMarriage),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potWedding.values = new double[] { 1, 0, 0, 1 };
+		potWedding.setValues(new double[] { 1, 0, 0, 1 });
 		nodeWedding.setPotential(potWedding);
 
 		UniformPotential potQuality_of_general = new UniformPotential(
@@ -1154,13 +1154,13 @@ public class DANFactory extends NetsFactory {
 		TablePotential potWealth = new TablePotential(
 				Arrays.asList(varWealth, varQuality_of_general, varWar, varOffspring),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potWealth.values = new double[] { 0.5, 0.5, 0.5, 0.5, 0.85, 0.15, 0.15, 0.85, 0.6, 0.4, 0.6, 0.4, 0.9, 0.1, 0.2,
-				0.8 };
+		potWealth.setValues(new double[] { 0.5, 0.5, 0.5, 0.5, 0.85, 0.15, 0.15, 0.85, 0.6, 0.4, 0.6, 0.4, 0.9, 0.1, 0.2,
+				0.8 });
 		nodeWealth.setPotential(potWealth);
 
 		TablePotential potOffspring = new TablePotential(Arrays.asList(varOffspring, varQuality_of_wooer, varWedding),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potOffspring.values = new double[] { 1, 0, 1, 0, 0.6, 0.4, 0.2, 0.8 };
+		potOffspring.setValues(new double[] { 1, 0, 1, 0, 0.6, 0.4, 0.2, 0.8 });
 		nodeOffspring.setPotential(potOffspring);
 
 		UniformPotential potNoble_descent = new UniformPotential(Arrays.asList(varNoble_descent),
@@ -1173,23 +1173,23 @@ public class DANFactory extends NetsFactory {
 
 		ExactDistrPotential potU2 = new ExactDistrPotential(
 				Arrays.asList(varU2, varNoble_descent, varOffspring, varRetire));
-		potU2.getTablePotential().values = new double[] { 0, 0, 2, 3, 1, 3, 4, 7 };
+		potU2.getTablePotential().setValues(new double[] { 0, 0, 2, 3, 1, 3, 4, 7 });
 		nodeU2.setPotential(potU2);
 
 		ExactDistrPotential potU3 = new ExactDistrPotential(Arrays.asList(varU3, varRetire, varWar, varWealth));
-		potU3.getTablePotential().values = new double[] { 0, 1, 2, 3, 6, 8, 7, 10 };
+		potU3.getTablePotential().setValues(new double[] { 0, 1, 2, 3, 6, 8, 7, 10 });
 		nodeU3.setPotential(potU3);
 
 		ExactDistrPotential potcost_task_1 = new ExactDistrPotential(Arrays.asList(varcost_task_1, varTask_1));
-		potcost_task_1.getTablePotential().values = new double[] { -1, -0.2 };
+		potcost_task_1.getTablePotential().setValues(new double[] { -1, -0.2 });
 		nodecost_task_1.setPotential(potcost_task_1);
 
 		ExactDistrPotential potcost_task_2 = new ExactDistrPotential(Arrays.asList(varcost_task_2, varTask_2));
-		potcost_task_2.getTablePotential().values = new double[] { -0.5, -0.2 };
+		potcost_task_2.getTablePotential().setValues(new double[] { -0.5, -0.2 });
 		nodecost_task_2.setPotential(potcost_task_2);
 
 		ExactDistrPotential potcost_task_3 = new ExactDistrPotential(Arrays.asList(varcost_task_3, varDec_Task_3));
-		potcost_task_3.getTablePotential().values = new double[] { -0.1, -0.05 };
+		potcost_task_3.getTablePotential().setValues(new double[] { -0.1, -0.05 });
 		nodecost_task_3.setPotential(potcost_task_3);
 
 		UniformPotential potcost_marriage = new UniformPotential(Arrays.asList(varcost_marriage, varMarriage),
@@ -1197,7 +1197,7 @@ public class DANFactory extends NetsFactory {
 		nodecost_marriage.setPotential(potcost_marriage);
 
 		ExactDistrPotential potcost_war = new ExactDistrPotential(Arrays.asList(varcost_war, varWar));
-		potcost_war.getTablePotential().values = new double[] { 0, -5 };
+		potcost_war.getTablePotential().setValues(new double[] { 0, -5 });
 		nodecost_war.setPotential(potcost_war);
 
 		UniformPotential potcost_retirement = new UniformPotential(Arrays.asList(varcost_retirement, varRetire),
@@ -1209,7 +1209,7 @@ public class DANFactory extends NetsFactory {
 		link_nodeWedding_nodeOffspring.initializesRestrictionsPotential();
 		TablePotential restrictions_nodeWedding_nodeOffspring = (TablePotential) link_nodeWedding_nodeOffspring
 				.getRestrictionsPotential();
-		restrictions_nodeWedding_nodeOffspring.values = new double[] { 1, 1, 0, 1 };
+		restrictions_nodeWedding_nodeOffspring.setValues(new double[] { 1, 1, 0, 1 });
 		link_nodeWedding_nodeOffspring
 				.setRevealingStates(Arrays.asList(varWedding.getStates()[1], varWedding.getStates()[0]));
 
@@ -1229,7 +1229,7 @@ public class DANFactory extends NetsFactory {
 		link_nodeMarriage_nodeWedding.initializesRestrictionsPotential();
 		TablePotential restrictions_nodeMarriage_nodeWedding = (TablePotential) link_nodeMarriage_nodeWedding
 				.getRestrictionsPotential();
-		restrictions_nodeMarriage_nodeWedding.values = new double[] { 1, 0, 0, 1 };
+		restrictions_nodeMarriage_nodeWedding.setValues(new double[] { 1, 0, 0, 1 });
 		link_nodeMarriage_nodeWedding
 				.setRevealingStates(Arrays.asList(varMarriage.getStates()[1], varMarriage.getStates()[0]));
 
@@ -1287,38 +1287,38 @@ public class DANFactory extends NetsFactory {
 		TablePotential potUrine_test_result = new TablePotential(
 				Arrays.asList(varUrine_test_result, varDec_Urine_test, varDiabetes),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potUrine_test_result.values = new double[] { 0, 0, 0.99, 0.01, 0, 0, 0.03, 0.97 };
+		potUrine_test_result.setValues(new double[] { 0, 0, 0.99, 0.01, 0, 0, 0.03, 0.97 });
 		nodeUrine_test_result.setPotential(potUrine_test_result);
 
 		TablePotential potSymptom = new TablePotential(Arrays.asList(varSymptom, varDiabetes),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potSymptom.values = new double[] { 0.999, 0.001, 0.15, 0.85 };
+		potSymptom.setValues(new double[] { 0.999, 0.001, 0.15, 0.85 });
 		nodeSymptom.setPotential(potSymptom);
 
 		TablePotential potDiabetes = new TablePotential(Arrays.asList(varDiabetes),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potDiabetes.values = new double[] { 0.93, 0.07 };
+		potDiabetes.setValues(new double[] { 0.93, 0.07 });
 		nodeDiabetes.setPotential(potDiabetes);
 
 		TablePotential potBlood_test_result = new TablePotential(
 				Arrays.asList(varBlood_test_result, varDec_Blood_Test, varDiabetes),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potBlood_test_result.values = new double[] { 0, 0, 0.98, 0.02, 0, 0, 0.04, 0.96 };
+		potBlood_test_result.setValues(new double[] { 0, 0, 0.98, 0.02, 0, 0, 0.04, 0.96 });
 		nodeBlood_test_result.setPotential(potBlood_test_result);
 
 		ExactDistrPotential potCost_of_blood_test = new ExactDistrPotential(
 				Arrays.asList(varCost_of_blood_test, varDec_Blood_Test));
-		potCost_of_blood_test.getTablePotential().values = new double[] { 0, -0.05 };
+		potCost_of_blood_test.getTablePotential().setValues(new double[] { 0, -0.05 });
 		nodeCost_of_blood_test.setPotential(potCost_of_blood_test);
 
 		ExactDistrPotential potCost_of_urine_test = new ExactDistrPotential(
 				Arrays.asList(varCost_of_urine_test, varDec_Urine_test));
-		potCost_of_urine_test.getTablePotential().values = new double[] { 0, -0.03 };
+		potCost_of_urine_test.getTablePotential().setValues(new double[] { 0, -0.03 });
 		nodeCost_of_urine_test.setPotential(potCost_of_urine_test);
 
 		ExactDistrPotential potQuality_of_life = new ExactDistrPotential(
 				Arrays.asList(varQuality_of_life, varDiabetes, varTherapy));
-		potQuality_of_life.getTablePotential().values = new double[] { 10, 3, 9, 8 };
+		potQuality_of_life.getTablePotential().setValues(new double[] { 10, 3, 9, 8 });
 		nodeQuality_of_life.setPotential(potQuality_of_life);
 
 		// Link<Node> restrictions and revealing states
@@ -1327,7 +1327,7 @@ public class DANFactory extends NetsFactory {
 		link_nodeDec_Blood_Test_nodeBlood_test_result.initializesRestrictionsPotential();
 		TablePotential restrictions_nodeDec_Blood_Test_nodeBlood_test_result = (TablePotential) link_nodeDec_Blood_Test_nodeBlood_test_result
 				.getRestrictionsPotential();
-		restrictions_nodeDec_Blood_Test_nodeBlood_test_result.values = new double[] { 0, 1, 0, 1 };
+		restrictions_nodeDec_Blood_Test_nodeBlood_test_result.setValues(new double[] { 0, 1, 0, 1 });
 		link_nodeDec_Blood_Test_nodeBlood_test_result
 				.setRevealingStates(Arrays.asList(varDec_Blood_Test.getStates()[1]));
 
@@ -1336,7 +1336,7 @@ public class DANFactory extends NetsFactory {
 		link_nodeDec_Urine_test_nodeUrine_test_result.initializesRestrictionsPotential();
 		TablePotential restrictions_nodeDec_Urine_test_nodeUrine_test_result = (TablePotential) link_nodeDec_Urine_test_nodeUrine_test_result
 				.getRestrictionsPotential();
-		restrictions_nodeDec_Urine_test_nodeUrine_test_result.values = new double[] { 0, 1, 0, 1 };
+		restrictions_nodeDec_Urine_test_nodeUrine_test_result.setValues(new double[] { 0, 1, 0, 1 });
 		link_nodeDec_Urine_test_nodeUrine_test_result
 				.setRevealingStates(Arrays.asList(varDec_Urine_test.getStates()[1]));
 
@@ -1386,42 +1386,42 @@ public class DANFactory extends NetsFactory {
 		// Potentials
 		TablePotential potDisease = new TablePotential(Arrays.asList(varDisease),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potDisease.values = new double[] { 0.85, 0.15 };
+		potDisease.setValues(new double[] { 0.85, 0.15 });
 		nodeDisease.setPotential(potDisease);
 
 		TablePotential potR_T1 = new TablePotential(Arrays.asList(varR_T1, varDisease, varT1),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potR_T1.values = new double[] { 0, 0, 0, 0, 0.85, 0.15, 0.1, 0.9 };
+		potR_T1.setValues(new double[] { 0, 0, 0, 0, 0.85, 0.15, 0.1, 0.9 });
 		nodeR_T1.setPotential(potR_T1);
 
 		TablePotential potR_T2 = new TablePotential(Arrays.asList(varR_T2, varDisease, varT2),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potR_T2.values = new double[] { 0, 0, 0, 0, 0.99, 0.01, 0.005, 0.995 };
+		potR_T2.setValues(new double[] { 0, 0, 0, 0, 0.99, 0.01, 0.005, 0.995 });
 		nodeR_T2.setPotential(potR_T2);
 
 		ExactDistrPotential potU = new ExactDistrPotential(Arrays.asList(varU, varTh, varDisease));
-		potU.getTablePotential().values = new double[] { 10, 8, 2, 7 };
+		potU.getTablePotential().setValues(new double[] { 10, 8, 2, 7 });
 		nodeU.setPotential(potU);
 
 		ExactDistrPotential potU1 = new ExactDistrPotential(Arrays.asList(varU1, varT1));
-		potU1.getTablePotential().values = new double[] { 0, -0.05 };
+		potU1.getTablePotential().setValues(new double[] { 0, -0.05 });
 		nodeU1.setPotential(potU1);
 
 		ExactDistrPotential potU2 = new ExactDistrPotential(Arrays.asList(varU2, varT2));
-		potU2.getTablePotential().values = new double[] { 0, -0.33 };
+		potU2.getTablePotential().setValues(new double[] { 0, -0.33 });
 		nodeU2.setPotential(potU2);
 
 		// Link<Node> restrictions and revealing states
 		Link<Node> link_nodeT1_nodeR_T1 = probNet.getLink(nodeT1, nodeR_T1, true);
 		link_nodeT1_nodeR_T1.initializesRestrictionsPotential();
 		TablePotential restrictions_nodeT1_nodeR_T1 = (TablePotential) link_nodeT1_nodeR_T1.getRestrictionsPotential();
-		restrictions_nodeT1_nodeR_T1.values = new double[] { 0, 1, 0, 1 };
+		restrictions_nodeT1_nodeR_T1.setValues(new double[] { 0, 1, 0, 1 });
 		link_nodeT1_nodeR_T1.setRevealingStates(Arrays.asList(varT1.getStates()[1]));
 
 		Link<Node> link_nodeT2_nodeR_T2 = probNet.getLink(nodeT2, nodeR_T2, true);
 		link_nodeT2_nodeR_T2.initializesRestrictionsPotential();
 		TablePotential restrictions_nodeT2_nodeR_T2 = (TablePotential) link_nodeT2_nodeR_T2.getRestrictionsPotential();
-		restrictions_nodeT2_nodeR_T2.values = new double[] { 0, 1, 0, 1 };
+		restrictions_nodeT2_nodeR_T2.setValues(new double[] { 0, 1, 0, 1 });
 		link_nodeT2_nodeR_T2.setRevealingStates(Arrays.asList(varT2.getStates()[1]));
 
 		// Always observed nodes
@@ -1430,7 +1430,7 @@ public class DANFactory extends NetsFactory {
 	}
 
 	/**
-	 * @return A DAN with 5 tests, similarly to the diabetes problem, but where the partial order of tests Ti is: {T0,T1}<{T2}<{T3,T4}.
+	 * @return A DAN with 5 tests, similarly to the diabetes problem, but where the partial order of tests Ti is: {T0,T1}&lt;{T2}&lt;{T3,T4}.
 	 * Thus, the SDAG has 3 phases of tests.
 	 */
 	public static ProbNet buildThreePhasesOfTestsDAN() {
@@ -1492,7 +1492,7 @@ public class DANFactory extends NetsFactory {
 		for (int i = 0; i < numTests; i++) {
 			potentialTestResult[i] = new TablePotential(Arrays.asList(varTest_Result[i], varDec_Test[i], varDiabetes),
 					PotentialRole.CONDITIONAL_PROBABILITY);
-			potentialTestResult[i].values = new double[] { 0, 0, 0.99, 0.01, 0, 0, 0.03, 0.97 };
+			potentialTestResult[i].setValues(new double[] { 0, 0, 0.99, 0.01, 0, 0, 0.03, 0.97 });
 			nodeTestResult[i].setPotential(potentialTestResult[i]);
 		}
 
@@ -1504,13 +1504,13 @@ public class DANFactory extends NetsFactory {
 			variableList.add(varCost_of_Test[i]);
 			variableList.addAll(Arrays.asList(varDec_Test));
 			potentialCostOfTest[i] = new ExactDistrPotential(variableList);
-			potentialCostOfTest[i].getTablePotential().values = new double[] { 0, 50 };
+			potentialCostOfTest[i].getTablePotential().setValues(new double[] { 0, 50 });
 			nodeCostOfTest[i].setPotential(potentialCostOfTest[i]);
 		}
 
 		ExactDistrPotential potQuality_of_life = new ExactDistrPotential(
 				Arrays.asList(varQuality_of_life, varDiabetes, varTherapy));
-		potQuality_of_life.getTablePotential().values = new double[] { 10, 3, 9, 8 };
+		potQuality_of_life.getTablePotential().setValues(new double[] { 10, 3, 9, 8 });
 		nodeQuality_of_life.setPotential(potQuality_of_life);
 
 		// Link<Node> restrictions and revealing states
@@ -1519,7 +1519,7 @@ public class DANFactory extends NetsFactory {
 			link_Dec_To_Test_Result.initializesRestrictionsPotential();
 			TablePotential restrictions_nodeDec_Test_node_test_result = (TablePotential) link_Dec_To_Test_Result
 					.getRestrictionsPotential();
-			restrictions_nodeDec_Test_node_test_result.values = new double[] { 0, 1, 0, 1 };
+			restrictions_nodeDec_Test_node_test_result.setValues(new double[] { 0, 1, 0, 1 });
 			link_Dec_To_Test_Result.setRevealingStates(Arrays.asList(varDec_Test[i].getStates()[1]));
 		}
 
@@ -1529,7 +1529,7 @@ public class DANFactory extends NetsFactory {
 	}
 
 	/**
-	 * @return A DAN with 2*numTestsPerPhase tests, similarly to the diabetes problem, but where the partial order of tests Ti is: {T0,T1,...,Tn-1}<{Tn,Tn+1,T2n-1}.
+	 * @return A DAN with 2*numTestsPerPhase tests, similarly to the diabetes problem, but where the partial order of tests Ti is: {T0,T1,...,Tn-1}&lt;{Tn,Tn+1,T2n-1}.
 	 */
 	public static ProbNet buildTwoPhasesOfTestsDAN(int numTestsPerPhase) {
 
@@ -1588,7 +1588,7 @@ public class DANFactory extends NetsFactory {
 		for (int i = 0; i < numTests; i++) {
 			potentialTestResult[i] = new TablePotential(Arrays.asList(varTest_Result[i], varDec_Test[i], varDiabetes),
 					PotentialRole.CONDITIONAL_PROBABILITY);
-			potentialTestResult[i].values = new double[] { 0, 0, 0.99, 0.01, 0, 0, 0.03, 0.97 };
+			potentialTestResult[i].setValues(new double[] { 0, 0, 0.99, 0.01, 0, 0, 0.03, 0.97 });
 			nodeTestResult[i].setPotential(potentialTestResult[i]);
 		}
 
@@ -1597,23 +1597,23 @@ public class DANFactory extends NetsFactory {
         ExactDistrPotential[] potentialCostOfTest = new ExactDistrPotential[numTests];
 		for (int i = 0; i < numTests; i++) {
 			potentialCostOfTest[i] = new ExactDistrPotential(Arrays.asList(varCost_of_Test[i], varDec_Test[i]));
-			potentialCostOfTest[i].getTablePotential().values = new double[] { 0, -0.5 };
+			potentialCostOfTest[i].getTablePotential().setValues(new double[] { 0, -0.5 });
 			nodeCostOfTest[i].setPotential(potentialCostOfTest[i]);
 		}
 
 		ExactDistrPotential potQuality_of_life = new ExactDistrPotential(
 				Arrays.asList(varQuality_of_life, varDiabetes, varTherapy));
-		potQuality_of_life.getTablePotential().values = new double[] { 10, 3, 9, 8 };
+		potQuality_of_life.getTablePotential().setValues(new double[] { 10, 3, 9, 8 });
 		nodeQuality_of_life.setPotential(potQuality_of_life);
 
 		TablePotential potSymptom = new TablePotential(Arrays.asList(varSymptom, varDiabetes),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potSymptom.values = new double[] { 0.999, 0.001, 0.15, 0.85 };
+		potSymptom.setValues(new double[] { 0.999, 0.001, 0.15, 0.85 });
 		nodeSymptom.setPotential(potSymptom);
 
 		TablePotential potDiabetes = new TablePotential(Arrays.asList(varDiabetes),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potDiabetes.values = new double[] { 0.93, 0.07 };
+		potDiabetes.setValues(new double[] { 0.93, 0.07 });
 		nodeDiabetes.setPotential(potDiabetes);
 
 		// Link<Node> restrictions and revealing states
@@ -1622,7 +1622,7 @@ public class DANFactory extends NetsFactory {
 			link_Dec_To_Test_Result.initializesRestrictionsPotential();
 			TablePotential restrictions_nodeDec_Test_node_test_result = (TablePotential) link_Dec_To_Test_Result
 					.getRestrictionsPotential();
-			restrictions_nodeDec_Test_node_test_result.values = new double[] { 0, 1, 0, 1 };
+			restrictions_nodeDec_Test_node_test_result.setValues(new double[] { 0, 1, 0, 1 });
 			link_Dec_To_Test_Result.setRevealingStates(Arrays.asList(varDec_Test[i].getStates()[1]));
 		}
 
@@ -1684,7 +1684,7 @@ public class DANFactory extends NetsFactory {
 		for (int i = 0; i < numTests; i++) {
 			potentialTestResult[i] = new TablePotential(Arrays.asList(varTest_Result[i], varDec_Test[i], varDiabetes),
 					PotentialRole.CONDITIONAL_PROBABILITY);
-			potentialTestResult[i].values = new double[] { 0, 0, 0.99, 0.01, 0, 0, 0.03, 0.97 };
+			potentialTestResult[i].setValues(new double[] { 0, 0, 0.99, 0.01, 0, 0, 0.03, 0.97 });
 			nodeTestResult[i].setPotential(potentialTestResult[i]);
 		}
 
@@ -1693,23 +1693,23 @@ public class DANFactory extends NetsFactory {
         ExactDistrPotential[] potentialCostOfTest = new ExactDistrPotential[numTests];
 		for (int i = 0; i < numTests; i++) {
 			potentialCostOfTest[i] = new ExactDistrPotential(Arrays.asList(varCost_of_Test[i], varDec_Test[i]));
-			potentialCostOfTest[i].getTablePotential().values = new double[] { 0, -0.5 };
+			potentialCostOfTest[i].getTablePotential().setValues(new double[] { 0, -0.5 });
 			nodeCostOfTest[i].setPotential(potentialCostOfTest[i]);
 		}
 
 		ExactDistrPotential potQuality_of_life = new ExactDistrPotential(
 				Arrays.asList(varQuality_of_life, varDiabetes, varTherapy));
-		potQuality_of_life.getTablePotential().values = new double[] { 10, 3, 9, 8 };
+		potQuality_of_life.getTablePotential().setValues(new double[] { 10, 3, 9, 8 });
 		nodeQuality_of_life.setPotential(potQuality_of_life);
 
 		TablePotential potSymptom = new TablePotential(Arrays.asList(varSymptom, varDiabetes),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potSymptom.values = new double[] { 0.999, 0.001, 0.15, 0.85 };
+		potSymptom.setValues(new double[] { 0.999, 0.001, 0.15, 0.85 });
 		nodeSymptom.setPotential(potSymptom);
 
 		TablePotential potDiabetes = new TablePotential(Arrays.asList(varDiabetes),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potDiabetes.values = new double[] { 0.93, 0.07 };
+		potDiabetes.setValues(new double[] { 0.93, 0.07 });
 		nodeDiabetes.setPotential(potDiabetes);
 
 		// Link<Node> restrictions and revealing states
@@ -1718,7 +1718,7 @@ public class DANFactory extends NetsFactory {
 			link_Dec_To_Test_Result.initializesRestrictionsPotential();
 			TablePotential restrictions_nodeDec_Test_node_test_result = (TablePotential) link_Dec_To_Test_Result
 					.getRestrictionsPotential();
-			restrictions_nodeDec_Test_node_test_result.values = new double[] { 0, 1, 0, 1 };
+			restrictions_nodeDec_Test_node_test_result.setValues(new double[] { 0, 1, 0, 1 });
 			link_Dec_To_Test_Result.setRevealingStates(Arrays.asList(varDec_Test[i].getStates()[1]));
 		}
 
@@ -1864,64 +1864,64 @@ public class DANFactory extends NetsFactory {
 
 		// Potentials
 		TablePotential potN2_N3 = new TablePotential(Arrays.asList(varN2_N3), PotentialRole.CONDITIONAL_PROBABILITY);
-		potN2_N3.values = new double[] { 0.7193, 0.2807 };
+		potN2_N3.setValues(new double[] { 0.7193, 0.2807 });
 		nodeN2_N3.setPotential(potN2_N3);
 
 		TablePotential potCT_scan = new TablePotential(Arrays.asList(varCT_scan, varN2_N3),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potCT_scan.values = new double[] { 0.85676, 0.14324, 0.48966, 0.51034 };
+		potCT_scan.setValues(new double[] { 0.85676, 0.14324, 0.48966, 0.51034 });
 		nodeCT_scan.setPotential(potCT_scan);
 
 		TablePotential potTBNA = new TablePotential(Arrays.asList(varTBNA, varCT_scan, varN2_N3, varDecTBNA),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potTBNA.values = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0.92143, 0.07857, 0.90435, 0.09565, 0.98, 0.02, 0.54032,
-				0.45968 };
+		potTBNA.setValues(new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0.92143, 0.07857, 0.90435, 0.09565, 0.98, 0.02, 0.54032,
+				0.45968 });
 		nodeTBNA.setPotential(potTBNA);
 
 		TablePotential potPET = new TablePotential(Arrays.asList(varPET, varCT_scan, varN2_N3, varDecPET),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potPET.values = new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92473, 0.07527, 0, 0.775, 0.225, 0,
-				0.25974, 0.74026, 0, 0.09524, 0.90476 };
+		potPET.setValues(new double[] { 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0.92473, 0.07527, 0, 0.775, 0.225, 0,
+				0.25974, 0.74026, 0, 0.09524, 0.90476 });
 		nodePET.setPotential(potPET);
 
 		TablePotential potEBUS = new TablePotential(Arrays.asList(varEBUS, varPET, varCT_scan, varN2_N3, varDecEBUS),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potEBUS.values = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.97778,
+		potEBUS.setValues(new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.97778,
 				0.02222, 0.975, 0.025, 0.96667, 0.03333, 0.97368, 0.02632, 0.97561, 0.02439, 0.96552, 0.03448, 0.10811,
-				0.89189, 0.11905, 0.88095, 0.10811, 0.89189, 0.08108, 0.91892, 0.11111, 0.88889, 0.12121, 0.87879 };
+				0.89189, 0.11905, 0.88095, 0.10811, 0.89189, 0.08108, 0.91892, 0.11111, 0.88889, 0.12121, 0.87879 });
 		nodeEBUS.setPotential(potEBUS);
 
 		TablePotential potEUS = new TablePotential(Arrays.asList(varEUS, varPET, varCT_scan, varN2_N3, varDecEUS),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potEUS.values = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.92308,
+		potEUS.setValues(new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.92308,
 				0.07692, 0.9375, 0.0625, 0.92593, 0.07407, 0.92857, 0.07143, 0.93333, 0.06667, 0.93548, 0.06452, 0.2381,
-				0.7619, 0.43333, 0.56667, 0.41935, 0.58065, 0.14286, 0.85714, 0.13158, 0.86842, 0.13889, 0.86111 };
+				0.7619, 0.43333, 0.56667, 0.41935, 0.58065, 0.14286, 0.85714, 0.13158, 0.86842, 0.13889, 0.86111 });
 		nodeEUS.setPotential(potEUS);
 
 		TablePotential potMED = new TablePotential(Arrays.asList(varMED, varPET, varCT_scan, varN2_N3, varDecMED),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potMED.values = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.94444,
+		potMED.setValues(new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.94444,
 				0.05556, 0.9375, 0.0625, 0.94737, 0.05263, 0.92857, 0.07143, 0.94118, 0.05882, 0.95, 0.05, 0.27273,
-				0.72727, 0.2, 0.8, 0.21429, 0.78571, 0.1875, 0.8125, 0.1875, 0.8125, 0.2, 0.8 };
+				0.72727, 0.2, 0.8, 0.21429, 0.78571, 0.1875, 0.8125, 0.1875, 0.8125, 0.2, 0.8 });
 		nodeMED.setPotential(potMED);
 
 		TablePotential potMED_Sv = new TablePotential(Arrays.asList(varMED_Sv, varDecMED),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potMED_Sv.values = new double[] { 0, 1, 0.03704, 0.96296 };
+		potMED_Sv.setValues(new double[] { 0, 1, 0.03704, 0.96296 });
 		nodeMED_Sv.setPotential(potMED_Sv);
 
 		ExactDistrPotential potSurvivors_QALE = new ExactDistrPotential(
 				Arrays.asList(varSurvivors_QALE, varN2_N3, varTreatment));
-		potSurvivors_QALE.getTablePotential().values = new double[] { 1.25, 0.5, 2, 0.83, 3, 0.66 };
+		potSurvivors_QALE.getTablePotential().setValues(new double[] { 1.25, 0.5, 2, 0.83, 3, 0.66 });
 		nodeSurvivors_QALE.setPotential(potSurvivors_QALE);
 
 		ExactDistrPotential potInmediate_Survival = new ExactDistrPotential(
 				Arrays.asList(varInmediate_Survival, varTreatment));
-		potInmediate_Survival.getTablePotential().values = new double[] { 0.98113, 0.98039, 0.90909 };
+		potInmediate_Survival.getTablePotential().setValues(new double[] { 0.98113, 0.98039, 0.90909 });
 		nodeInmediate_Survival.setPotential(potInmediate_Survival);
 
 		ExactDistrPotential potMED_Survival = new ExactDistrPotential(Arrays.asList(varMED_Survival, varMED_Sv));
-		potMED_Survival.getTablePotential().values = new double[] { 0, 1 };
+		potMED_Survival.getTablePotential().setValues(new double[] { 0, 1 });
 		nodeMED_Survival.setPotential(potMED_Survival);
 
 		ProductPotential potNet_QALE = new ProductPotential(
@@ -1930,19 +1930,19 @@ public class DANFactory extends NetsFactory {
 		nodeNet_QALE.setPotential(potNet_QALE);
 
 		ExactDistrPotential potTBNA_Morbidity = new ExactDistrPotential(Arrays.asList(varTBNA_Morbidity, varDecTBNA));
-		potTBNA_Morbidity.getTablePotential().values = new double[] { 0, -0.0001 };
+		potTBNA_Morbidity.getTablePotential().setValues(new double[] { 0, -0.0001 });
 		nodeTBNA_Morbidity.setPotential(potTBNA_Morbidity);
 
 		ExactDistrPotential potMED_Morbidity = new ExactDistrPotential(Arrays.asList(varMED_Morbidity, varMED_Sv));
-		potMED_Morbidity.getTablePotential().values = new double[] { 0, -0.05 };
+		potMED_Morbidity.getTablePotential().setValues(new double[] { 0, -0.05 });
 		nodeMED_Morbidity.setPotential(potMED_Morbidity);
 
 		ExactDistrPotential potEUS_Morbidity = new ExactDistrPotential(Arrays.asList(varEUS_Morbidity, varDecEUS));
-		potEUS_Morbidity.getTablePotential().values = new double[] { 0, -0.03 };
+		potEUS_Morbidity.getTablePotential().setValues(new double[] { 0, -0.03 });
 		nodeEUS_Morbidity.setPotential(potEUS_Morbidity);
 
 		ExactDistrPotential potEBUS_Morbidity = new ExactDistrPotential(Arrays.asList(varEBUS_Morbidity, varDecEBUS));
-		potEBUS_Morbidity.getTablePotential().values = new double[] { 0, -0.03 };
+		potEBUS_Morbidity.getTablePotential().setValues(new double[] { 0, -0.03 });
 		nodeEBUS_Morbidity.setPotential(potEBUS_Morbidity);
 
 		SumPotential potTotal_QALE = new SumPotential(
@@ -1951,31 +1951,31 @@ public class DANFactory extends NetsFactory {
 		nodeTotal_QALE.setPotential(potTotal_QALE);
 
 		ExactDistrPotential potCostCT_scan = new ExactDistrPotential(Arrays.asList(varCostCT_scan));
-		potCostCT_scan.getTablePotential().values = new double[] { 670 };
+		potCostCT_scan.getTablePotential().setValues(new double[] { 670 });
 		nodeCostCT_scan.setPotential(potCostCT_scan);
 
 		ExactDistrPotential potCostTBNA = new ExactDistrPotential(Arrays.asList(varCostTBNA, varDecTBNA));
-		potCostTBNA.getTablePotential().values = new double[] { 0, 80 };
+		potCostTBNA.getTablePotential().setValues(new double[] { 0, 80 });
 		nodeCostTBNA.setPotential(potCostTBNA);
 
 		ExactDistrPotential potCostEBUS = new ExactDistrPotential(Arrays.asList(varCostEBUS, varDecEBUS));
-		potCostEBUS.getTablePotential().values = new double[] { 0, 620 };
+		potCostEBUS.getTablePotential().setValues(new double[] { 0, 620 });
 		nodeCostEBUS.setPotential(potCostEBUS);
 
 		ExactDistrPotential potCostEUS = new ExactDistrPotential(Arrays.asList(varCostEUS, varDecEUS));
-		potCostEUS.getTablePotential().values = new double[] { 0, 620 };
+		potCostEUS.getTablePotential().setValues(new double[] { 0, 620 });
 		nodeCostEUS.setPotential(potCostEUS);
 
 		ExactDistrPotential potCostMED = new ExactDistrPotential(Arrays.asList(varCostMED, varDecMED));
-		potCostMED.getTablePotential().values = new double[] { 0, 1620 };
+		potCostMED.getTablePotential().setValues(new double[] { 0, 1620 });
 		nodeCostMED.setPotential(potCostMED);
 
 		ExactDistrPotential potCostPET = new ExactDistrPotential(Arrays.asList(varCostPET, varDecPET));
-		potCostPET.getTablePotential().values = new double[] { 0, 2250 };
+		potCostPET.getTablePotential().setValues(new double[] { 0, 2250 });
 		nodeCostPET.setPotential(potCostPET);
 
 		ExactDistrPotential potCostTreatment = new ExactDistrPotential(Arrays.asList(varCostTreatment, varTreatment));
-		potCostTreatment.getTablePotential().values = new double[] { 3000, 11242, 19646 };
+		potCostTreatment.getTablePotential().setValues(new double[] { 3000, 11242, 19646 });
 		nodeCostTreatment.setPotential(potCostTreatment);
 
 		SumPotential potTotal_Economic_Cost = new SumPotential(
@@ -1984,7 +1984,7 @@ public class DANFactory extends NetsFactory {
 		nodeTotal_Economic_Cost.setPotential(potTotal_Economic_Cost);
 
 		ExactDistrPotential potC2E = new ExactDistrPotential(Arrays.asList(varC2E));
-		potC2E.getTablePotential().values = new double[] { -0.00003333 };
+		potC2E.getTablePotential().setValues(new double[] { -0.00003333 });
 		nodeC2E.setPotential(potC2E);
 
 		ProductPotential potWeighted_Economic_Cost = new ProductPotential(
@@ -2002,35 +2002,35 @@ public class DANFactory extends NetsFactory {
 		link_nodeDecTBNA_nodeTBNA.initializesRestrictionsPotential();
 		TablePotential restrictions_nodeDecTBNA_nodeTBNA = (TablePotential) link_nodeDecTBNA_nodeTBNA
 				.getRestrictionsPotential();
-		restrictions_nodeDecTBNA_nodeTBNA.values = new double[] { 0, 1, 0, 1 };
+		restrictions_nodeDecTBNA_nodeTBNA.setValues(new double[] { 0, 1, 0, 1 });
 		link_nodeDecTBNA_nodeTBNA.setRevealingStates(Arrays.asList(varDecTBNA.getStates()[1]));
 
 		Link<Node> link_nodeDecPET_nodePET = probNet.getLink(nodeDecPET, nodePET, true);
 		link_nodeDecPET_nodePET.initializesRestrictionsPotential();
 		TablePotential restrictions_nodeDecPET_nodePET = (TablePotential) link_nodeDecPET_nodePET
 				.getRestrictionsPotential();
-		restrictions_nodeDecPET_nodePET.values = new double[] { 1, 0, 0, 1, 0, 1 };
+		restrictions_nodeDecPET_nodePET.setValues(new double[] { 1, 0, 0, 1, 0, 1 });
 		link_nodeDecPET_nodePET.setRevealingStates(Arrays.asList(varDecPET.getStates()[0], varDecPET.getStates()[1]));
 
 		Link<Node> link_nodeDecMED_nodeMED = probNet.getLink(nodeDecMED, nodeMED, true);
 		link_nodeDecMED_nodeMED.initializesRestrictionsPotential();
 		TablePotential restrictions_nodeDecMED_nodeMED = (TablePotential) link_nodeDecMED_nodeMED
 				.getRestrictionsPotential();
-		restrictions_nodeDecMED_nodeMED.values = new double[] { 0, 1, 0, 1 };
+		restrictions_nodeDecMED_nodeMED.setValues(new double[] { 0, 1, 0, 1 });
 		link_nodeDecMED_nodeMED.setRevealingStates(Arrays.asList(varDecMED.getStates()[1]));
 
 		Link<Node> link_nodeDecEBUS_nodeEBUS = probNet.getLink(nodeDecEBUS, nodeEBUS, true);
 		link_nodeDecEBUS_nodeEBUS.initializesRestrictionsPotential();
 		TablePotential restrictions_nodeDecEBUS_nodeEBUS = (TablePotential) link_nodeDecEBUS_nodeEBUS
 				.getRestrictionsPotential();
-		restrictions_nodeDecEBUS_nodeEBUS.values = new double[] { 0, 1, 0, 1 };
+		restrictions_nodeDecEBUS_nodeEBUS.setValues(new double[] { 0, 1, 0, 1 });
 		link_nodeDecEBUS_nodeEBUS.setRevealingStates(Arrays.asList(varDecEBUS.getStates()[1]));
 
 		Link<Node> link_nodeDecEUS_nodeEUS = probNet.getLink(nodeDecEUS, nodeEUS, true);
 		link_nodeDecEUS_nodeEUS.initializesRestrictionsPotential();
 		TablePotential restrictions_nodeDecEUS_nodeEUS = (TablePotential) link_nodeDecEUS_nodeEUS
 				.getRestrictionsPotential();
-		restrictions_nodeDecEUS_nodeEUS.values = new double[] { 0, 1, 0, 1 };
+		restrictions_nodeDecEUS_nodeEUS.setValues(new double[] { 0, 1, 0, 1 });
 		link_nodeDecEUS_nodeEUS.setRevealingStates(Arrays.asList(varDecEUS.getStates()[1]));
 
 		// Always observed nodes
@@ -2098,49 +2098,49 @@ public class DANFactory extends NetsFactory {
 		// Potentials
 		TablePotential potCars_Condition = new TablePotential(Arrays.asList(varCars_Condition),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potCars_Condition.values = new double[] { 0.2, 0.8 };
+		potCars_Condition.setValues(new double[] { 0.2, 0.8 });
 		nodeCars_Condition.setPotential(potCars_Condition);
 
 		TablePotential potFirst_Result = new TablePotential(
 				Arrays.asList(varFirst_Result, varCars_Condition, varDec_First_Test),
 				PotentialRole.CONDITIONAL_PROBABILITY);
-		potFirst_Result.values = new double[] { 1, 0, 0, 0, 1, 0, 0, 0, 0, 0.13, 0.53, 0.34, 0, 0.8, 0.2, 0, 0, 0.4,
-				0.6, 0, 0, 0.9, 0.1, 0, 0, 0.4, 0.6, 0, 0, 0.9, 0.1, 0 };
+		potFirst_Result.setValues(new double[] { 1, 0, 0, 0, 1, 0, 0, 0, 0, 0.13, 0.53, 0.34, 0, 0.8, 0.2, 0, 0, 0.4,
+				0.6, 0, 0, 0.9, 0.1, 0, 0, 0.4, 0.6, 0, 0, 0.9, 0.1, 0 });
 		nodeFirst_Result.setPotential(potFirst_Result);
 
 		TablePotential potSecond_result = new TablePotential(
 				Arrays.asList(varSecond_result, varCars_Condition, varDec_Second_Test, varFirst_Result,
 						varDec_First_Test), PotentialRole.CONDITIONAL_PROBABILITY);
-		potSecond_result.values = new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		potSecond_result.setValues(new double[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 				0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0.67, 0.33, 0.89, 0.11, 0, 0, 0, 0, 0.44, 0.56, 1, 0,
 				0, 0, 0, 0, 0.44, 0.56, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-				0, 0, 0, 0, 0, 0, 0 };
+				0, 0, 0, 0, 0, 0, 0 });
 		nodeSecond_result.setPotential(potSecond_result);
 
 		ExactDistrPotential potCost_First_test = new ExactDistrPotential(
 				Arrays.asList(varCost_First_test, varDec_First_Test));
-		potCost_First_test.getTablePotential().values = new double[] { 0, -13, -10, -9 };
+		potCost_First_test.getTablePotential().setValues(new double[] { 0, -13, -10, -9 });
 		nodeCost_First_test.setPotential(potCost_First_test);
 
 		ExactDistrPotential potCost_Second_Test = new ExactDistrPotential(
 				Arrays.asList(varCost_Second_Test, varDec_Second_Test));
-		potCost_Second_Test.getTablePotential().values = new double[] { 0, -4 };
+		potCost_Second_Test.getTablePotential().setValues(new double[] { 0, -4 });
 		nodeCost_Second_Test.setPotential(potCost_Second_Test);
 
 		ExactDistrPotential potBuySell_difference = new ExactDistrPotential(
 				Arrays.asList(varBuySell_difference, varDec_Purchase));
-		potBuySell_difference.getTablePotential().values = new double[] { 0, 100, 100 };
+		potBuySell_difference.getTablePotential().setValues(new double[] { 0, 100, 100 });
 		nodeBuySell_difference.setPotential(potBuySell_difference);
 
 		ExactDistrPotential potCost_Guarantee = new ExactDistrPotential(
 				Arrays.asList(varCost_Guarantee, varDec_Purchase));
-		potCost_Guarantee.getTablePotential().values = new double[] { 0, 0, -60 };
+		potCost_Guarantee.getTablePotential().setValues(new double[] { 0, 0, -60 });
 		nodeCost_Guarantee.setPotential(potCost_Guarantee);
 
 		ExactDistrPotential potCost_Repair = new ExactDistrPotential(
 				Arrays.asList(varCost_Repair, varCars_Condition, varDec_Purchase));
-		potCost_Repair.getTablePotential().values = new double[] { 0, 0, -200, -40, 0, -20 };
+		potCost_Repair.getTablePotential().setValues(new double[] { 0, 0, -200, -40, 0, -20 });
 		nodeCost_Repair.setPotential(potCost_Repair);
 
 		SumPotential potTotal = new SumPotential(
@@ -2153,14 +2153,14 @@ public class DANFactory extends NetsFactory {
 		link_nodeFirst_Result_nodeSecond_result.initializesRestrictionsPotential();
 		TablePotential restrictions_nodeFirst_Result_nodeSecond_result = (TablePotential) link_nodeFirst_Result_nodeSecond_result
 				.getRestrictionsPotential();
-		restrictions_nodeFirst_Result_nodeSecond_result.values = new double[] { 0, 1, 1, 1, 0, 1, 1, 1 };
+		restrictions_nodeFirst_Result_nodeSecond_result.setValues(new double[] { 0, 1, 1, 1, 0, 1, 1, 1 });
 
 		Link<Node> link_nodeDec_Second_Test_nodeSecond_result = probNet
 				.getLink(nodeDec_Second_Test, nodeSecond_result, true);
 		link_nodeDec_Second_Test_nodeSecond_result.initializesRestrictionsPotential();
 		TablePotential restrictions_nodeDec_Second_Test_nodeSecond_result = (TablePotential) link_nodeDec_Second_Test_nodeSecond_result
 				.getRestrictionsPotential();
-		restrictions_nodeDec_Second_Test_nodeSecond_result.values = new double[] { 0, 1, 0, 1 };
+		restrictions_nodeDec_Second_Test_nodeSecond_result.setValues(new double[] { 0, 1, 0, 1 });
 		link_nodeDec_Second_Test_nodeSecond_result.setRevealingStates(Arrays.asList(varDec_Second_Test.getStates()[1]));
 
 		Link<Node> link_nodeDec_First_Test_nodeFirst_Result = probNet
@@ -2168,8 +2168,8 @@ public class DANFactory extends NetsFactory {
 		link_nodeDec_First_Test_nodeFirst_Result.initializesRestrictionsPotential();
 		TablePotential restrictions_nodeDec_First_Test_nodeFirst_Result = (TablePotential) link_nodeDec_First_Test_nodeFirst_Result
 				.getRestrictionsPotential();
-		restrictions_nodeDec_First_Test_nodeFirst_Result.values = new double[] { 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0,
-				1, 0, 0 };
+		restrictions_nodeDec_First_Test_nodeFirst_Result.setValues(new double[] { 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 0,
+				1, 0, 0 });
 		link_nodeDec_First_Test_nodeFirst_Result.setRevealingStates(
 				Arrays.asList(varDec_First_Test.getStates()[3], varDec_First_Test.getStates()[2],
 						varDec_First_Test.getStates()[1]));
@@ -2179,14 +2179,14 @@ public class DANFactory extends NetsFactory {
 		link_nodeDec_First_Test_nodeDec_Second_Test.initializesRestrictionsPotential();
 		TablePotential restrictions_nodeDec_First_Test_nodeDec_Second_Test = (TablePotential) link_nodeDec_First_Test_nodeDec_Second_Test
 				.getRestrictionsPotential();
-		restrictions_nodeDec_First_Test_nodeDec_Second_Test.values = new double[] { 1, 1, 1, 1, 0, 0, 1, 0 };
+		restrictions_nodeDec_First_Test_nodeDec_Second_Test.setValues(new double[] { 1, 1, 1, 1, 0, 0, 1, 0 });
 
 		Link<Node> link_nodeDec_First_Test_nodeSecond_result = probNet
 				.getLink(nodeDec_First_Test, nodeSecond_result, true);
 		link_nodeDec_First_Test_nodeSecond_result.initializesRestrictionsPotential();
 		TablePotential restrictions_nodeDec_First_Test_nodeSecond_result = (TablePotential) link_nodeDec_First_Test_nodeSecond_result
 				.getRestrictionsPotential();
-		restrictions_nodeDec_First_Test_nodeSecond_result.values = new double[] { 0, 0, 1, 0, 0, 0, 1, 0 };
+		restrictions_nodeDec_First_Test_nodeSecond_result.setValues(new double[] { 0, 0, 1, 0, 0, 0, 1, 0 });
 
 		// Always observed nodes
 

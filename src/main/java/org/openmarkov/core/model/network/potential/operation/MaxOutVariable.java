@@ -10,6 +10,7 @@ package org.openmarkov.core.model.network.potential.operation;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.StrategyTree;
+import org.openmarkov.core.model.network.potential.StrategicTablePotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 import java.util.ArrayList;
@@ -20,10 +21,12 @@ import java.util.List;
  * this class builds a new potential, first adding the additive potential into only one, then
  * by multiplying the probability and the additive potential and finally, maximizing
  * the resulting potential according to the variable.
+ *
+ * @author Manuel Arias
  */
 public class MaxOutVariable {
 
-	private TablePotential utility;
+	private final TablePotential utility;
 
 	private TablePotential policy;
 
@@ -50,8 +53,8 @@ public class MaxOutVariable {
 		// initialize the output utility potential
 		List<Variable> outputVariables = additivePotentialToMaximize.getVariables();
 		outputVariables.remove(decisionVariable);
-		TablePotential outputUtility = new TablePotential(outputVariables, PotentialRole.UNSPECIFIED);
-		outputUtility.strategyTrees = new StrategyTree[outputUtility.values.length];
+		StrategicTablePotential outputUtility = new StrategicTablePotential(outputVariables, PotentialRole.UNSPECIFIED);
+		outputUtility.strategyTrees = new StrategyTree[outputUtility.getValues().length];
 		outputUtility.setCriterion(additivePotentialToMaximize.getCriterion());
 
 		// Accumulated offsets algorithm
@@ -80,7 +83,7 @@ public class MaxOutVariable {
 
 		// initialize the policy
 		TablePotential policyPotential = new TablePotential(allVariables, PotentialRole.POLICY);
-		double[] policyValues = policyPotential.values;
+		double[] policyValues = policyPotential.getValues();
 
 		// outer iterations correspond to the variables to in the
 		// outputUtilityPotential
@@ -91,7 +94,7 @@ public class MaxOutVariable {
 			optimalStatesIndexes.clear();
 			// inner iterations correspond to the decision variable to eliminate
 			for (int innerIteration = 0; innerIteration < decisionVariableSize; innerIteration++) {
-				double auxInputUtilityPotentialValue = additivePotentialToMaximize.values[inputUtilityPotentialPosition];
+				double auxInputUtilityPotentialValue = additivePotentialToMaximize.getValues()[inputUtilityPotentialPosition];
 				if (auxInputUtilityPotentialValue >= max) {
 					if (auxInputUtilityPotentialValue > max) {
 						max = auxInputUtilityPotentialValue;
@@ -100,8 +103,8 @@ public class MaxOutVariable {
 					optimalStatesIndexes.add(innerIteration);
 				}
 				utilities[innerIteration] = auxInputUtilityPotentialValue;
-				if (additivePotentialToMaximize.strategyTrees != null) {
-					strategyTrees[innerIteration] = additivePotentialToMaximize.strategyTrees[inputUtilityPotentialPosition];
+				if (additivePotentialToMaximize instanceof StrategicTablePotential stp && stp.strategyTrees != null) {
+					strategyTrees[innerIteration] = stp.strategyTrees[inputUtilityPotentialPosition];
 				}
 
 				// find the next configuration and the index of the increased variable
@@ -113,7 +116,7 @@ public class MaxOutVariable {
 				inputUtilityPotentialPosition += accOffsetsInputUtilityPotential[increasedVariable];
 			}
 
-			outputUtility.values[outputUtilityPotentialPosition] = max;
+			outputUtility.getValues()[outputUtilityPotentialPosition] = max;
 			// TODO In testing phase it is easier to assume that there are no
 			// ties between interventions
 			outputUtility.strategyTrees[outputUtilityPotentialPosition] = StrategyTree
@@ -156,13 +159,12 @@ public class MaxOutVariable {
 	 * @return True if there are interventions in the output utility potential
 	 */
 	private static boolean thereAreInterventionsInOutputUtilityPotential(TablePotential outputUtilityPotential) {
-		boolean thereAreInterventions = false;
-		if (outputUtilityPotential.strategyTrees != null) {
-			for (int i = 0; i < outputUtilityPotential.strategyTrees.length && !thereAreInterventions; i++) {
-				thereAreInterventions = outputUtilityPotential.strategyTrees[i] != null;
+		if (outputUtilityPotential instanceof StrategicTablePotential stp && stp.strategyTrees != null) {
+			for (int i = 0; i < stp.strategyTrees.length; i++) {
+				if (stp.strategyTrees[i] != null) return true;
 			}
 		}
-		return thereAreInterventions;
+		return false;
 	}
 
 
@@ -170,7 +172,7 @@ public class MaxOutVariable {
 	/*
 	 * @param decisionVariable <code>Variable</code>
 	 * @param potentials <code>List</code> of <code>TablePotential</code>
-	 * @param sdagInterventions
+	 * @param sdagInterventions the sdag interventions
 	 * @return A <code>List</code> of <code>TablePotential</code>, with these, some of them optional, potentials:
 	 * <ol>
 	 * <li>if there are probability potentials in <code>potentials</code>, a join probability potential.
@@ -203,7 +205,7 @@ public class MaxOutVariable {
 		List<Variable> outputUtilityVariables = inputUtilityPotential.getVariables();
 		outputUtilityVariables.remove(decisionVariable);
 		TablePotential outputUtilityPotential = new TablePotential(outputUtilityVariables, PotentialRole.UNSPECIFIED);
-		outputUtilityPotential.interventions = new Intervention[outputUtilityPotential.values.length];
+		outputUtilityPotential.interventions = new Intervention[outputUtilityPotential.getValues().length];
 
 		outputUtilityPotential.setCriterion(inputUtilityPotential.getCriterion());
 
@@ -233,7 +235,7 @@ public class MaxOutVariable {
 
 		// initialize the policy
 		TablePotential policyPotential = new TablePotential(allVariables, PotentialRole.POLICY);
-		double[] policyValues = policyPotential.values;
+		double[] policyValues = policyPotential.getValues();
 
 		// outer iterations correspond to the variables to in the
 		// outputUtilityPotential
@@ -244,7 +246,7 @@ public class MaxOutVariable {
 			optimalStatesIndices.clear();
 			// inner iterations correspond to the decision variable to eliminate
 			for (int innerIteration = 0; innerIteration < decisionVariableSize; innerIteration++) {
-				double auxInputUtilityPotentialValue = inputUtilityPotential.values[inputUtilityPotentialPosition];
+				double auxInputUtilityPotentialValue = inputUtilityPotential.getValues()[inputUtilityPotentialPosition];
 				if (auxInputUtilityPotentialValue >= max) {
 					if (auxInputUtilityPotentialValue > max) {
 						max = auxInputUtilityPotentialValue;
@@ -265,7 +267,7 @@ public class MaxOutVariable {
 				inputUtilityPotentialPosition += accOffsetsInputUtilityPotential[increasedVariable];
 			}
 
-			outputUtilityPotential.values[outputUtilityPotentialPosition] = max;
+			outputUtilityPotential.getValues()[outputUtilityPotentialPosition] = max;
 			// TODO In testing phase it is easier to assume that there are no
 			// ties between interventions
 			outputUtilityPotential.interventions[outputUtilityPotentialPosition] = Intervention

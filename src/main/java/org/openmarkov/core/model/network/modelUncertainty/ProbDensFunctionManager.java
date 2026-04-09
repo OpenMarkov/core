@@ -20,10 +20,10 @@ import java.util.stream.Stream;
 public class ProbDensFunctionManager {
     
     private static final ProbDensFunctionManager INSTANCE = new ProbDensFunctionManager();
-    private Map<String, Class<? extends ProbDensFunction>> probDensFunctions;
+    private final Map<String, Class<? extends ProbDensFunction>> probDensFunctions;
     
     //For Univariate
-    private Map<String, List<String[]>> probDensParametrizations;
+    private final Map<String, List<String[]>> probDensParametrizations;
     
     /**
      * Constructor for ProbDensFunctionManager.

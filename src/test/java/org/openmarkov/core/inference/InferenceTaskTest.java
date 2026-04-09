@@ -8,13 +8,10 @@
 package org.openmarkov.core.inference;
 
 
-import net.sourceforge.jeval.EvaluationException;
 import org.junit.jupiter.api.Disabled;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.Tools;
-import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
@@ -28,16 +25,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author mluque
+ * @author Manuel Arias
+ * @author ibermejo
  */
-
-/** @author ibermejo */
 @Disabled public abstract class InferenceTaskTest extends InferenceAlgorithmTest {
     
     /**
      * Maximum error allowed in tests. It could be modified by subclasses
      * if it is necessary (for example, approximate inference methods).
      */
-    protected static double maxError = 0.0001;
+    protected static final double maxError = 0.0001;
     
     /**
      * @param network
@@ -57,7 +54,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
      */
     public static void checkIsAConditionalProbability(TablePotential pot) {
         
-        double[] potValues = pot.values;
+        double[] potValues = pot.getValues();
         int numStates = pot.getVariable(0).getNumStates();
         double[] auxValues = new double[numStates];
         int numColumns = potValues.length / numStates;
@@ -90,7 +87,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
             int size = potA.getTableSize();
             
             for (int i = 0; i < size && areEqual; i++) {
-                double valueA = potA.values[i];
+                double valueA = potA.getValues()[i];
                 double valueB = potB.getValue(varsA, potA.getConfiguration(i));
                 areEqual = Math.abs(valueA - valueB) < maxError;
                 
@@ -100,12 +97,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
         return areEqual;
         
     }
-    
-    @Override
-    protected TablePotential getTablePotential(Potential potential) throws NumberFormatException, NonProjectablePotentialException {
-        return potential.tableProject(null, null);
-    }
-    
+
     /**
      * @param aPosterioriProbs
      * @param variables
@@ -123,15 +115,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
         int size = variables.size();
         
         int indexBaseProbs = 0;
-        for (int i = 0; i < size; i++) {
-            Variable auxVar = variables.get(i);
+        for (Variable auxVar : variables) {
             int numStates = auxVar.getNumStates();
             int numProbsAux = numStates - 1;
             double[] auxExpectedProbs = new double[numProbsAux];
-            for (int j = 0; j < numProbsAux; j++) {
-                auxExpectedProbs[j] = expectedProbs[indexBaseProbs + j];
-            }
-            checkProbabilityPotential(aPosterioriProbs, variables.get(i), auxExpectedProbs);
+            System.arraycopy(expectedProbs, indexBaseProbs + 0, auxExpectedProbs, 0, numProbsAux);
+            checkProbabilityPotential(aPosterioriProbs, auxVar, auxExpectedProbs);
             indexBaseProbs = indexBaseProbs + numProbsAux;
         }
         
@@ -159,7 +148,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
      */
     @Override protected void checkProbabilities(TablePotential pot, double... values) {
         
-        double[] potValues = pot.values;
+        double[] potValues = pot.getValues();
         int potValuesLength = potValues.length;
         assertEquals(values.length + 1, potValuesLength);
         double sum = 0.0;
@@ -201,7 +190,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
         variables.add(variableD);
         
         TablePotential pot = new TablePotential(variables, PotentialRole.CONDITIONAL_PROBABILITY);
-        double values[] = {81.04585153, 0.0, 87.93064729, 0.0, -2.0, 89.3, 49.3209607, 0.0, 97.51453104, 0.0, -2.0,
+        double[] values = {81.04585153, 0.0, 87.93064729, 0.0, -2.0, 89.3, 49.3209607, 0.0, 97.51453104, 0.0, -2.0,
                 95.1};
         pot.setValues(values);
         return pot;
@@ -213,7 +202,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
         variables.add(variableT);
         
         TablePotential pot = new TablePotential(variables, PotentialRole.CONDITIONAL_PROBABILITY);
-        double values[] = {96.006, 95.1};
+        double[] values = {96.006, 95.1};
         pot.setValues(values);
         return pot;
     }

@@ -18,7 +18,7 @@ import java.util.List;
 
 /**
  * @author mluque
- * @author marias
+ * @author Manuel Arias
  * @author fjdiez
  */
 public abstract class InferenceAlgorithmScheme {
@@ -27,7 +27,7 @@ public abstract class InferenceAlgorithmScheme {
 	/**
 	 * This is a copy of the {@code ProbNet} received.
 	 */
-	protected ProbNet probNet;
+	protected final ProbNet probNet;
 	/**
 	 * For undo/redo operations.
 	 */

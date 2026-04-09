@@ -10,12 +10,16 @@ package org.openmarkov.core.model.network.potential.operation;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.StrategyTree;
+import org.openmarkov.core.model.network.potential.StrategicTablePotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+/**
+ * @author Manuel Arias
+ */
 public class SumOutVariable extends Marginalization {
 
 	/**
@@ -48,7 +52,9 @@ public class SumOutVariable extends Marginalization {
 
 			for (TablePotential additivePotential : additivePotentials) {
 				List<Variable> additiveVariables = additivePotential.getVariables();
-				boolean thereAreInterventions = additivePotential.strategyTrees != null;
+				boolean thereAreInterventions = additivePotential instanceof StrategicTablePotential;
+				StrategicTablePotential strategicInput  = thereAreInterventions ? (StrategicTablePotential) additivePotential : null;
+				StrategicTablePotential strategicOutput = null;
 
 				// Initialize the output utility potential.
 
@@ -60,11 +66,15 @@ public class SumOutVariable extends Marginalization {
 					}
 				}
 				// Create potential
-				TablePotential outputAdditivePotential = new TablePotential(outputAdditiveVariables, PotentialRole.UNSPECIFIED);
-				outputAdditivePotential.setCriterion(additivePotential.getCriterion());
+				TablePotential outputAdditivePotential;
 				if (thereAreInterventions) {
-					outputAdditivePotential.strategyTrees = new StrategyTree[outputAdditivePotential.values.length];
+					strategicOutput = new StrategicTablePotential(outputAdditiveVariables, PotentialRole.UNSPECIFIED);
+					strategicOutput.strategyTrees = new StrategyTree[strategicOutput.getValues().length];
+					outputAdditivePotential = strategicOutput;
+				} else {
+					outputAdditivePotential = new TablePotential(outputAdditiveVariables, PotentialRole.UNSPECIFIED);
 				}
+				outputAdditivePotential.setCriterion(additivePotential.getCriterion());
 
 				List<Variable> allVariables = new ArrayList<>(outputAdditiveVariables.size() + 1);
 				allVariables.add(variable);
@@ -95,14 +105,14 @@ public class SumOutVariable extends Marginalization {
 					double sum = 0;
 					// inner iterations correspond to the chance variable to eliminate
 					for (int innerIteration = 0; innerIteration < chanceVariableSize; innerIteration++) {
-						double auxProb = conditionalProb.values[conditionalProbPotentialPosition];
+						double auxProb = conditionalProb.getValues()[conditionalProbPotentialPosition];
 						// This "if" is to ensure 0*(-Infinity) = 0
 						if (auxProb > 0) {
-							sum += auxProb * additivePotential.values[inputUtilityPotentialPosition];
+							sum += auxProb * additivePotential.getValues()[inputUtilityPotentialPosition];
 						}
 						if (thereAreInterventions) {
 							probabilities[innerIteration] = auxProb;
-							strategyTrees[innerIteration] = additivePotential.strategyTrees[inputUtilityPotentialPosition];
+							strategyTrees[innerIteration] = strategicInput.strategyTrees[inputUtilityPotentialPosition];
 						}
 
 						// find the next configuration and the index of the
@@ -116,9 +126,9 @@ public class SumOutVariable extends Marginalization {
 						inputUtilityPotentialPosition += accOffsetsInputUtilityPotential[increasedVariable];
 					}
 
-					outputAdditivePotential.values[outputUtilityPotentialPosition] = sum;
+					outputAdditivePotential.getValues()[outputUtilityPotentialPosition] = sum;
 					if (thereAreInterventions) {
-						outputAdditivePotential.strategyTrees[outputUtilityPotentialPosition] = StrategyTree
+						strategicOutput.strategyTrees[outputUtilityPotentialPosition] = StrategyTree
 								.averageOfInterventions(variable, probabilities, strategyTrees);
 					}
 
@@ -148,7 +158,7 @@ public class SumOutVariable extends Marginalization {
 		} // end of if (!thereAreAdditivePotentials)
 
 		if (marginalProb.getNumVariables() > 0 ||
-				!DiscretePotentialOperations.almostEqual(marginalProb.values[0], 1.0)) {
+				!DiscretePotentialOperations.almostEqual(marginalProb.getValues()[0], 1.0)) {
 			marginalProb.setPotentialRole(PotentialRole.JOINT_PROBABILITY);
 			setProbability(marginalProb);
 		}

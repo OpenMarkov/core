@@ -96,9 +96,6 @@ public class StringDatabase {
         if (language.equals("es")) {
             return new Locale("es");
         }
-        // System.out.println("LocaleChangeEvent failure for locale "
-        // + locale.toString() + ": not defined");
-        // System.out.println("Setting english as default locale...");
         return Locale.ENGLISH;
     }
     

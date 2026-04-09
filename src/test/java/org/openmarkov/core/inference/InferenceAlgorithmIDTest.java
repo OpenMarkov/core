@@ -209,7 +209,7 @@ public abstract class InferenceAlgorithmIDTest extends InferenceAlgorithmDecTest
         InferenceAlgorithm algorithm = buildInferenceAlgorithmAndSkipTestIfNotEvaluable(diagram);
         
         // test max expected utility
-        Double meuEvaluation = algorithm.getGlobalUtility().values[0];
+        Double meuEvaluation = algorithm.getGlobalUtility().getValues()[0];
         assertEquals(10.0, meuEvaluation, maxError);
         
         // Test optimal policy
@@ -247,7 +247,7 @@ public abstract class InferenceAlgorithmIDTest extends InferenceAlgorithmDecTest
         preResolutionEvidence.addFinding(diagram, IDFactory.diseaseName, "present");
         algorithm.setPreResolutionEvidence(preResolutionEvidence);
         // test max expected utility
-        Double meuEvaluation = algorithm.getGlobalUtility().values[0];
+        Double meuEvaluation = algorithm.getGlobalUtility().getValues()[0];
         assertEquals(80.0, meuEvaluation, maxError);
         
         // Test optimal policy

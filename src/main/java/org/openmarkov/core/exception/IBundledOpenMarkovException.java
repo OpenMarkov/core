@@ -50,10 +50,6 @@ public interface IBundledOpenMarkovException extends IOpenMarkovException, Class
         return IOpenMarkovException.super.path();
     }
     
-    @Override @Nullable default String bundle() {
-        return IOpenMarkovException.super.bundle();
-    }
-    
     @Override @NotNull default String localize(LocalizationFormatter formatter) {
         return Localizable.localize(this, formatter, this.path());
     }

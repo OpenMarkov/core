@@ -60,7 +60,7 @@ public final class LocalizationFormatter {
      * Constructs a new instance of {@code LocalizationFormatter} with the specified formatting length.
      *
      * @param desiredLength The desired length
-     * @param listSeparator
+     * @param listSeparator the list separator
      */
     private LocalizationFormatter(@NotNull LocalizationFormatterLength desiredLength, @NotNull ListFormat listSeparator) {
         this.desiredLength = desiredLength;

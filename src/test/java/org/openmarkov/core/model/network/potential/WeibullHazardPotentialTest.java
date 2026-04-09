@@ -7,7 +7,6 @@
 
 package org.openmarkov.core.model.network.potential;
 
-import net.sourceforge.jeval.EvaluationException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,7 +55,7 @@ public class WeibullHazardPotentialTest {
         TablePotential projectedPotential = potential.tableProject(evidence, null);
         double[] expectedValues = new double[]{0.99891, 0.00109, 0.99765, 0.00235, 0.99972, 2.84367E-4, 0.99939,
                 6.13169E-4};
-        Assertions.assertArrayEquals(expectedValues, projectedPotential.values, 0.00001);
+        Assertions.assertArrayEquals(expectedValues, projectedPotential.getValues(), 0.00001);
     }
     
     @Test public void testCholeskyDecomposition() {

@@ -20,23 +20,23 @@ import org.openmarkov.core.model.network.constraint.*;
  * @author mpalacios
  * @version 1 21/12/10
  */
-@SuppressWarnings("serial") public class AddNodeEdit extends PNEdit {
+public class AddNodeEdit extends PNEdit {
     
     // Atribbutes
     /**
      * The new Variable object that match the new node.
      */
-    protected Variable variable;
+    protected final Variable variable;
     
     /**
      * The node type of the new node.
      */
-    protected NodeType nodeType;
+    protected final NodeType nodeType;
     
     /**
      * Graphic position of the new node
      */
-    protected Point2D.Double cursorPosition;
+    protected final Point2D.Double cursorPosition;
     
     /**
      * The new node

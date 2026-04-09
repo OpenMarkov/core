@@ -23,7 +23,7 @@ import java.util.stream.Stream;
  */
 public class NetworkTypeUtils {
     
-    public final static List<Class<? extends NetworkType>> NETWORK_TYPE_CLASSES
+    public static final List<Class<? extends NetworkType>> NETWORK_TYPE_CLASSES
             = NetworkTypeUtils.findAllNetworkTypes().toList();
     
     public static NetworkTypeInfo getInfo(Class<? extends NetworkType> networkClass) {

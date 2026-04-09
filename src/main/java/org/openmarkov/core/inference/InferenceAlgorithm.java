@@ -26,7 +26,7 @@ import java.util.List;
 
 /**
  * @author mluque
- * @author marias
+ * @author Manuel Arias
  * @author fjdiez
  */
 @ImplementationRequirements(requiresOneOfTheseConstructors = @RequiredConstructor(ProbNet.class))

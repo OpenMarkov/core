@@ -14,6 +14,9 @@ import org.openmarkov.core.action.base.linkEdits.OrientLinkEdit;
 
 import java.util.ArrayList;
 
+/**
+ * Compound edit that orients (directs) multiple undirected links at once.
+ */
 @SuppressWarnings("serial") public class COrientLinksEdit extends CompoundPNEdit {
     
     public COrientLinksEdit(ProbNet probNet, ArrayList<OrientLinkEdit> edits) {

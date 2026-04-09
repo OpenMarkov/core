@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * This class stores an {@code ArrayList} of {@code Findings} and can
  * search them with the name.
  *
- * @author marias
+ * @author Manuel Arias
  * @author fjdiez
  * @version 1.0
  * @see org.openmarkov.core.model.network.Finding
@@ -35,7 +35,7 @@ public class EvidenceCase implements ClassLocalizable {
      * List of findings {@code HashMap} of key={@code Variable} and
      * value={@code Finding}.
      */
-    protected HashMap<Variable, Finding> findings;
+    protected final HashMap<Variable, Finding> findings;
     
     // Constructors
     
@@ -104,8 +104,6 @@ public class EvidenceCase implements ClassLocalizable {
     
     /**
      * @param finding . {@code Finding}.
-     *
-     * @throws IncompatibleEvidenceException IncompatibleEvidenceException
      */
     public void addFinding(Finding finding) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         if (!isCompatible(finding)) {
@@ -132,8 +130,6 @@ public class EvidenceCase implements ClassLocalizable {
     
     /**
      * @param findings . {@code Collection} of {@code Finding}s.
-     *
-     * @throws IncompatibleEvidenceException IncompatibleEvidenceException
      */
     public void addFindings(Collection<Finding> findings) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         for (Finding finding : findings) {
@@ -145,8 +141,6 @@ public class EvidenceCase implements ClassLocalizable {
      * @param probNet      Network
      * @param variableName Variable name
      * @param stateName    {@code Finding}.
-     *
-     * @throws IncompatibleEvidenceException IncompatibleEvidenceException
      */
     public void addFinding(ProbNet probNet, String variableName, String stateName) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         Variable variable = probNet.getVariable(variableName);
@@ -158,8 +152,6 @@ public class EvidenceCase implements ClassLocalizable {
      * @param probNet      Network
      * @param variableName Variable name
      * @param value        {@code Finding}.
-     *
-     * @throws IncompatibleEvidenceException IncompatibleEvidenceException
      */
     public void addFinding(ProbNet probNet, String variableName, double value)
             throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
@@ -182,9 +174,11 @@ public class EvidenceCase implements ClassLocalizable {
     }
     
     /**
+     * Removes the finding for the variable with the given name.
+     *
      * @param variableName {@code String}.
      *
-     * @return
+     * @return the removed {@code Finding}, or {@code null} if no finding matched
      */
     public @Nullable Finding removeFinding(String variableName) {
         ArrayList<Variable> findingsVariables = new ArrayList<>(findings.keySet());
@@ -360,6 +354,14 @@ public class EvidenceCase implements ClassLocalizable {
         };
     }
     
+    /**
+     * Creates a new evidence case with all temporal findings shifted backwards
+     * by the given time difference. Non-temporal findings are copied as-is.
+     *
+     * @param timeDifference the number of time slices to shift backwards
+     * @param probNet        the network used to resolve shifted variables
+     * @return a new {@code EvidenceCase} with shifted findings
+     */
     public EvidenceCase shiftEvidenceBackwards(int timeDifference, ProbNet probNet) {
         try {
             EvidenceCase shiftedEvidence = new EvidenceCase();
@@ -401,8 +403,6 @@ public class EvidenceCase implements ClassLocalizable {
      * @param evidenceCaseToFuse Evidence case to fuse
      * @param overwrite          if true the findings in the parameter will overwrite those in
      *                           this EvidenceCase
-     *
-     * @throws IncompatibleEvidenceException IncompatibleEvidenceException
      */
     public void fuse(EvidenceCase evidenceCaseToFuse, boolean overwrite) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
         if (evidenceCaseToFuse == null) {

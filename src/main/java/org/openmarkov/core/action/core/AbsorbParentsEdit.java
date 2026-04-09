@@ -16,8 +16,12 @@ import org.openmarkov.core.action.base.linkEdits.AddLinkEdit;
 import org.openmarkov.core.action.base.linkEdits.RemoveLinkEdit;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
+/**
+ * Compound edit that absorbs (marginalizes out) the parents of a node,
+ * reconnecting grandparents and updating potentials accordingly.
+ */
 @SuppressWarnings("serial") public class AbsorbParentsEdit extends CompoundPNEdit {
-    private Node node;
+    private final Node node;
     
     public AbsorbParentsEdit(ProbNet probNet, Node node) {
         super(probNet);

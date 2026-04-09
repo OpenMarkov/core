@@ -18,7 +18,7 @@ import org.openmarkov.java.cloneUtils.CloneUtils;
 public class StringWithProperties implements Cloneable, ClassLocalizable {
     
     // Attributes
-    public String string;
+    public final String string;
     
     private Properties properties;
     

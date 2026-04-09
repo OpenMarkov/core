@@ -9,6 +9,10 @@ package org.openmarkov.core.model.network;
 
 import org.openmarkov.java.enumUtils.EnumUtils;
 
+/**
+ * Enumerates the policy types that can be assigned to a decision node:
+ * optimal (to be computed), deterministic, or probabilistic.
+ */
 public enum PolicyType {
     OPTIMAL,
     DETERMINISTIC,

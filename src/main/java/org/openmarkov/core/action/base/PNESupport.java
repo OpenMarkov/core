@@ -8,7 +8,6 @@
 package org.openmarkov.core.action.base;
 
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 import org.openmarkov.core.model.network.ProbNet;
 
 import java.util.*;
@@ -93,8 +92,11 @@ public class PNESupport /*extends UndoableEditSupport*/ {
         this.listeners.addAll(listeners);
     }
     
-    @ToCheck(reasonDescription = "This does not produce the expected events in PNEditEventListener", reasonKind = ToCheck.ReasonKind.PROBABLE_BUG)
     /**
+     * Redoes the most recently undone edit and notifies listeners for each
+     * sub-edit (flattened), matching the notification pattern of
+     * {@link PNEdit#executeEdit()}.
+     *
      * @see javax.swing.undo.UndoManager#canRedo()
      * @see javax.swing.undo.UndoManager#redo()
      */
@@ -109,7 +111,7 @@ public class PNESupport /*extends UndoableEditSupport*/ {
         return redoneEdits;
     }
     
-    private ArrayList<PNEdit> flattenEdit(@Nullable PNEdit redoneEdit) {
+    ArrayList<PNEdit> flattenEdit(@Nullable PNEdit redoneEdit) {
         if (redoneEdit == null) {
             return new ArrayList<>();
         }
@@ -126,8 +128,11 @@ public class PNESupport /*extends UndoableEditSupport*/ {
         return flattenedEdits;
     }
     
-    @ToCheck(reasonDescription = "This does not produce the expected events in PNEditEventListener", reasonKind = ToCheck.ReasonKind.PROBABLE_BUG)
     /**
+     * Undoes the most recent edit and notifies listeners for each
+     * sub-edit (flattened), matching the notification pattern of
+     * {@link PNEdit#executeEdit()}.
+     *
      * @see javax.swing.undo.UndoManager#canUndo()
      * @see javax.swing.undo.UndoManager#undo()
      */
@@ -220,18 +225,8 @@ public class PNESupport /*extends UndoableEditSupport*/ {
      * public ProbNet getProbNet() { return (ProbNet)realSource; }
      */
     public String toString() {
-        String out = "PNESupport. probNet: " + probNet;
-        if (listeners != null) {
-            out += " Number of listeners: " + listeners.size() + '.';
-        } else {
-            out += " Number of listeners: 0.";
-        }
-        if (withUndo) {
-            out += " With undo.";
-        } else {
-            out += " Without undo.";
-        }
-        return out;
+        return "PNESupport. probNet: " + probNet + " Number of listeners: " + listeners.size() +
+                ". withUndo: " + withUndo;
     }
     
     private final ProbNet probNet;

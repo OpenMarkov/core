@@ -17,7 +17,7 @@ import org.openmarkov.core.model.network.ProbNet;
  * Abstract class that defines the basic attribute (a {@code ProbNet})
  * and operations of editions.
  */
-@SuppressWarnings("serial") public abstract class PNEdit implements ClassLocalizable {
+public abstract class PNEdit implements ClassLocalizable {
     //Start interface
     
     /**
@@ -95,8 +95,12 @@ import org.openmarkov.core.model.network.ProbNet;
         if (pneSupport.isWithUndo() && !belongsToACompoundEdit) {
             pneSupport.getCurrentEditHistory().addEdit(this);
         }
-        for (PNEditListener listener : pneSupport.getListeners()) {
-            listener.afterEditExecutes(this);
+        if (!belongsToACompoundEdit) {
+            for (PNEdit flatEdit : pneSupport.flattenEdit(this)) {
+                for (PNEditListener listener : pneSupport.getListeners()) {
+                    listener.afterEditExecutes(flatEdit);
+                }
+            }
         }
     }
     
@@ -110,10 +114,7 @@ import org.openmarkov.core.model.network.ProbNet;
     protected ProbNet probNet;
     
     private boolean typicalRedo = true;
-    
-    //All simple edits are significant
-    private final boolean significant = true;
-    
+
     // Constructor
     
     /**
@@ -160,6 +161,8 @@ import org.openmarkov.core.model.network.ProbNet;
     }
     
     public boolean isSignificant() {
+        //All simple edits are significant
+        boolean significant = true;
         return significant;
     }
     

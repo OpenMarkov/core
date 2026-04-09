@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * A {@code ProbNet} stores {@code Node}s in a efficient manner.
+ * A {@code ProbNet} stores {@code Node}s in an efficient manner.
  * It has the operations to manage {@code Variables, nodes} and {@code
  * Potentials}.
  *
@@ -87,7 +87,7 @@ public class ProbNet implements PotentialNetwork, Cloneable, ClassLocalizable {
     private ProbNetReader reader;
 
     /**
-     * Writter used to save this network
+     * Writer used to save this network
      */
     private ProbNetWriter writer;
     
@@ -219,9 +219,11 @@ public class ProbNet implements PotentialNetwork, Cloneable, ClassLocalizable {
         }
         checker.buildAndThrow();
     }
-    
+
     /**
-     * @param constraints ArrayList of PNConstraint
+     * Removes all constraints in the given collection.
+     *
+     * @param constraints the collection of {@code PNConstraint} instances to be removed
      */
     public void removeConstraints(Collection<PNConstraint> constraints) {
         for (PNConstraint constraint : constraints) {
@@ -268,7 +270,7 @@ public class ProbNet implements PotentialNetwork, Cloneable, ClassLocalizable {
         return this.getConstraintsOfClass(constraintClass).findFirst().orElse(null);
     }
     
-    /** Returns wether this ProbNet contains or not a constraint of a certain constraint */
+    /** Returns whether this ProbNet contains or not a constraint of a certain constraint */
     public boolean hasConstraintOfClass(Class<? extends PNConstraint> constraintClass) {
         return this.getConstraintsOfClass(constraintClass).findAny().isPresent();
     }
@@ -334,7 +336,7 @@ public class ProbNet implements PotentialNetwork, Cloneable, ClassLocalizable {
     /**
      * Checks all the constraints applied to this {@code probNet}.
      *
-     * @return {@code true} when all the constraints are full filled,
+     * @return {@code true} when all the constraints are fullfilled,
      * otherwise {@code false}.
      */
     public boolean checkProbNet() {

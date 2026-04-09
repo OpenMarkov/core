@@ -8,7 +8,6 @@
 package org.openmarkov.core.action.base;
 
 import org.jetbrains.annotations.Nullable;
-import org.openmarkov.core.developmentStaticAnalysis.ToCheck;
 import org.openmarkov.core.model.network.ProbNet;
 
 import java.util.*;
@@ -93,53 +92,38 @@ public class PNESupport /*extends UndoableEditSupport*/ {
         this.listeners.addAll(listeners);
     }
     
-    @ToCheck(reasonDescription = "This does not produce the expected events in PNEditEventListener", reasonKind = ToCheck.ReasonKind.PROBABLE_BUG)
     /**
+     * Redoes the most recently undone edit and notifies all listeners.
+     *
+     * @return the redone edit, or {@code null} if nothing to redo
      * @see javax.swing.undo.UndoManager#canRedo()
      * @see javax.swing.undo.UndoManager#redo()
      */
-    public ArrayList<PNEdit> redo() {
+    public @Nullable PNEdit redo() {
         var redoneEdit = editsHistoryStacker.getCurrentUndoManager().redo();
-        ArrayList<PNEdit> redoneEdits = flattenEdit(redoneEdit);
-        for (PNEdit subRedoneEdit : redoneEdits) {
+        if (redoneEdit != null) {
             for (PNEditListener listener : listeners) {
-                listener.afterRedoingEdit(subRedoneEdit);
+                listener.afterRedoingEdit(redoneEdit);
             }
         }
-        return redoneEdits;
+        return redoneEdit;
     }
-    
-    private ArrayList<PNEdit> flattenEdit(@Nullable PNEdit redoneEdit) {
-        if (redoneEdit == null) {
-            return new ArrayList<>();
-        }
-        var editsToVisit = new ArrayDeque<PNEdit>();
-        editsToVisit.addFirst(redoneEdit);
-        var flattenedEdits = new ArrayList<PNEdit>();
-        while (!editsToVisit.isEmpty()) {
-            var edit = editsToVisit.removeFirst();
-            flattenedEdits.add(edit);
-            if (edit instanceof CompoundPNEdit compoundEdit) {
-                compoundEdit.getEdits().forEach(editsToVisit::addLast);
-            }
-        }
-        return flattenedEdits;
-    }
-    
-    @ToCheck(reasonDescription = "This does not produce the expected events in PNEditEventListener", reasonKind = ToCheck.ReasonKind.PROBABLE_BUG)
+
     /**
+     * Undoes the most recent edit and notifies all listeners.
+     *
+     * @return the undone edit, or {@code null} if nothing to undo
      * @see javax.swing.undo.UndoManager#canUndo()
      * @see javax.swing.undo.UndoManager#undo()
      */
-    public ArrayList<PNEdit> undo() {
+    public @Nullable PNEdit undo() {
         var undoneEdit = editsHistoryStacker.getCurrentUndoManager().undo();
-        ArrayList<PNEdit> undoneEdits = flattenEdit(undoneEdit);
-        for (PNEdit subUndoneEdit : undoneEdits) {
+        if (undoneEdit != null) {
             for (PNEditListener listener : listeners) {
-                listener.afterUndoingEdit(subUndoneEdit);
+                listener.afterUndoingEdit(undoneEdit);
             }
         }
-        return undoneEdits;
+        return undoneEdit;
     }
     
     /**

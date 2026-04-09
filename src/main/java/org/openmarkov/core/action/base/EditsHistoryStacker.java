@@ -9,6 +9,7 @@ package org.openmarkov.core.action.base;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -46,9 +47,12 @@ public class EditsHistoryStacker {
         if (this.uncommitedHistories.isEmpty()) {
             return;
         }
-        ;
         var lastUsedStack = this.uncommitedHistories.removeLast();
+        // getDoneEdits() returns most-recent-first (stack order); reverse to
+        // restore original execution order so that CompoundPNEdit.redo()
+        // replays edits in the correct sequence.
         ArrayList<PNEdit> doneEdits = lastUsedStack.getDoneEdits();
+        Collections.reverse(doneEdits);
         PNEdit stackAsEdit = switch (doneEdits.size()) {
             case 0 -> null;
             case 1 -> doneEdits.getFirst();

@@ -26,6 +26,7 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Abstract base class for Independent Causal Influence (ICI) potentials.
@@ -258,7 +259,7 @@ public abstract class ICIPotential extends Potential implements Projectable {
                     + variables.getFirst().getNumStates() * parent.getNumStates() + " and is " + parameters.length));
         }
         if (!getVariables().contains(parent)) {
-            throw new UnrecoverableException(new InvalidArgumentException(this, "potential", "There is no variable " + parent + " in this ICI family."));
+            throw new UnrecoverableException(new InvalidArgumentException(this, "potential", "There is no variable " + parent.getName() + " in this ICI family."));
         }
         expandedPotential = null;
         noisyParameters[variables.indexOf(parent) - 1] = parameters;
@@ -386,17 +387,13 @@ public abstract class ICIPotential extends Potential implements Projectable {
     }
     
     public String toString() {
-        StringBuilder buffer = new StringBuilder(super.toString());
-        buffer.append("\nFamily: ").append(family).append(". Model: ").append(modelType);
-        buffer.append("\nNumber of variables: ").append(variables.size());
-        buffer.append("\nVariables: ");
-        buffer.append("[");
-        for (int i = 0; i < variables.size() - 1; i++) {
-            buffer.append(variables.get(i)).append(", ");
-        }
-        buffer.append(variables.getLast()).append("] ");
-        buffer.append("\n");
-        return buffer.toString();
+        return super.toString()
+                + "\nFamily: " + family + ". " +
+                "Model: " + modelType + "\n" +
+                "Number of variables: " + variables.size()
+                + "\nVariables: " + "[" + variables.stream()
+                                                   .map(Variable::getName)
+                                                   .collect(Collectors.joining(", ")) + "]\n";
     }
     
     @Override public boolean equals(Object arg0) {

@@ -1203,40 +1203,36 @@ public class ProbNet implements PotentialNetwork, Cloneable, ClassLocalizable {
 
     @Override
     public String toString() {
-        StringBuilder out = new StringBuilder();
-        out.append("Type: ").append(networkType.toString()).append("\n");
+        String out = "Type: " + networkType.toString() + "\n";
         List<Node> nodes = getNodes();
         int numPotentials = getNumPotentials();
         int numNodes = nodes.size();
         if (numNodes == 0) {
-            out.append("No nodes.\n");
+            out += "No nodes.\n";
         } else {
-            out.append("Nodes (").append(numNodes).append("): ");
+            out += "Nodes (" + numNodes + "): ";
             for (Node node : nodes) {
-                out.append("\n  ").append(node.toString());
+                out += ("\n  ") + node.toString();
             }
-            out.append("\n");
+            out += "\n";
         }
         if (numPotentials == 0) {
-            out.append("No potentials.\n");
+            out += "No potentials.\n";
         } else {
-            out.append("Number of potentials: ").append(numPotentials).append("\n");
+            out += "Number of potentials: " + numPotentials + "\n";
         }
         if (constraints.isEmpty()) {
-            out.append("No constraints\n");
+            out += "No constraints\n";
         } else {
-            out.append("Constraints: ");
             String constraintsAsStr = constraints.stream().map(constraint -> {
                 String strConstraint = constraint.toString();
                 return strConstraint.substring(strConstraint.lastIndexOf('.') + 1);
             }).collect(Collectors.joining(", "));
-            out.append(constraintsAsStr);
-            out.append("\n");
+            out += "Constraints: " + constraintsAsStr + "\n";
         }
         if (getAgents() != null) {
-            out.append("\n");
-            out.append("Agents:\n").append(getAgents());
+            out += "\nAgents:\n" + getAgents();
         }
-        return out.toString();
+        return out;
     }
 }

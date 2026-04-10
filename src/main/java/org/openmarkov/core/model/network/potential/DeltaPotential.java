@@ -155,7 +155,7 @@ import java.util.*;
     }
     
     @Override public String toString() {
-        return variables.getFirst() + " = " + (state != null ? state.getName() : numericValue);
+        return variables.getFirst().getName() + " = " + (state != null ? state.getName() : numericValue);
     }
     
     @Override public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase) {

@@ -507,40 +507,6 @@ public class BasicOperations {
         return newOrder2;
     }
     
-    /**
-     * @param probNet Network
-     *
-     * @return A {@code String} with an array of arrays.
-     */
-    public static String toStringPartialOrder(ProbNet probNet) {
-        
-        List<List<Variable>> partialOrder = calculatePartialOrder(probNet);
-        
-        StringBuilder buffer = new StringBuilder();
-        int numArrays = partialOrder.size();
-        for (int i = 0; i < numArrays; i++) {
-            List<Variable> array = partialOrder.get(i);
-            int arraySize = array.size();
-            if (arraySize > 1) {
-                buffer.append("{");
-            }
-            int j = 0;
-            for (Variable variable : array) {
-                buffer.append(variable);
-                if (j++ < arraySize - 1) {
-                    buffer.append(", ");
-                }
-            }
-            if (arraySize > 1) {
-                buffer.append("}");
-            }
-            if (i < numArrays - 1) {
-                buffer.append(", ");
-            }
-        }
-        return buffer.toString();
-    }
-    
     public static int getNumVariables(ProbNet probNet) {
         List<List<Variable>> partialOrder = calculatePartialOrder(probNet);
         return partialOrder.stream().filter(Objects::nonNull).mapToInt(List::size).sum();

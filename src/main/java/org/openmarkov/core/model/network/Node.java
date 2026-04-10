@@ -405,79 +405,71 @@ public class Node implements Cloneable, ClassLocalizable {
     }
     
     public String toString() {
-        StringBuilder out = new StringBuilder();
-        out.append(variable.getName()).append(" (");
-        switch (nodeType) {
-            case CHANCE:
-                out.append("Chance");
-                break;
-            case DECISION:
-                out.append("Decision");
-                break;
-            case UTILITY:
-                out.append("Utility");
-                break;
-            default:
-                break;
-        }
-        out.append("): ");
+        String out = variable.getName() + " (" + switch (nodeType) {
+            case CHANCE -> "Chance";
+            case DECISION -> "Decision";
+            case UTILITY -> "Utility";
+            case SV_SUM -> "SV_SUM";
+            case SV_PRODUCT -> "SV_PRODUCT";
+        };
+        out += "): ";
         List<Node> parents = getParents();
         List<Node> children = getChildren();
         List<Node> siblings = getSiblings();
         List<Node> neighbors = getNeighbors();
         if (neighbors.isEmpty()) {
-            out.append("No neighbors - ");
+            out += "No neighbors - ";
         } else {
             if (!parents.isEmpty()) {
-                out.append((parents.size() == 1) ? "Parent" : "Parents").append(": {");
+                out += ((parents.size() == 1) ? "Parent" : "Parents") + ": {";
                 for (int i = 0; i < parents.size(); i++) {
                     Node parent = parents.get(i);
-                    out.append(parent.getVariable());
+                    out += (parent.getVariable());
                     if (i < parents.size() - 1) {
-                        out.append(", ");
+                        out += (", ");
                     }
                 }
-                out.append("} - ");
+                out += ("} - ");
             }
             if (!children.isEmpty()) {
-                out.append((children.size() == 1) ? "Child" : "Children").append(": {");
+                out += ((children.size() == 1) ? "Child" : "Children") + ": {";
                 for (int i = 0; i < children.size(); i++) {
                     Node child = children.get(i);
-                    out.append(child.getVariable());
+                    out += (child.getVariable());
                     if (i < children.size() - 1) {
-                        out.append(", ");
+                        out += (", ");
                     }
                 }
-                out.append("} - ");
+                out += ("} - ");
             }
             if (!siblings.isEmpty()) {
-                out.append((siblings.size() == 1) ? "Sibling" : "Siblings").append(": {");
+                out += ((siblings.size() == 1) ? "Sibling" : "Siblings") + ": {";
                 for (int i = 0; i < siblings.size(); i++) {
                     Node sibling = siblings.get(i);
-                    out.append(sibling.getVariable());
+                    out += (sibling.getVariable());
                     if (i < siblings.size() - 1) {
-                        out.append(", ");
+                        out += (", ");
                     }
                 }
-                out.append("} - ");
+                out += ("} - ");
             }
         }
         int numPotentials = potentials.size();
         if (numPotentials > 0) {
-            out.append((numPotentials == 1) ? "Potential: " : "Potentials (" + numPotentials + "): {");
+            out += ((numPotentials == 1) ? "Potential: " : "Potentials (" + numPotentials + "): {");
             for (int i = 0; i < potentials.size(); ++i) {
-                out.append(potentials.get(i).toShortString());
+                out += (potentials.get(i).toShortString());
                 if (i < potentials.size() - 1) {
-                    out.append(", ");
+                    out += (", ");
                 }
             }
             if (numPotentials > 1) {
-                out.append("}");
+                out += ("}");
             }
         } else {
-            out.append("No potentials");
+            out += ("No potentials");
         }
-        return out.toString();
+        return out;
     }
     
     

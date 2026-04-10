@@ -491,33 +491,33 @@ public class TablePotential extends AbstractIndexedPotential
     public String toString() {
         DecimalFormat formatter = new DecimalFormat("0.###", new DecimalFormatSymbols(Locale.US));
         // writes variables names
-        StringBuilder buffer = new StringBuilder(super.toString());
+        String out = super.toString();
         // Print configurations
         int valuesPosition = 0;
         boolean openBrace = false;
-        if (buffer.length() < STRING_MAX_LENGTH) {
+        if (out.length() < STRING_MAX_LENGTH) {
             if (!variables.isEmpty()) {
-                buffer.append(" = {");
+                out += " = {";
                 openBrace = true;
             } else {
-                buffer.append(" ");
+                out += " ";
             }
         }
-        while ((buffer.length() < STRING_MAX_LENGTH) && (valuesPosition < values.length)) {
-            buffer.append(formatter.format(values[valuesPosition++]));
-            if ((valuesPosition < values.length) && (buffer.length() < (STRING_MAX_LENGTH - 2))) {
-                buffer.append(", ");
+        while ((out.length() < STRING_MAX_LENGTH) && (valuesPosition < values.length)) {
+            out += formatter.format(values[valuesPosition++]);
+            if ((valuesPosition < values.length) && (out.length() < (STRING_MAX_LENGTH - 2))) {
+                out += ", ";
             }
         }
         if (values.length != 1) {
             if (valuesPosition != values.length || variables.isEmpty()) {
-                buffer.append("...");
+                out += "...";
             }
         }
         if (openBrace) {
-            buffer.append("}");
+            out += "}";
         }
-        return buffer.toString();
+        return out.toString();
     }
     
     @Override public String treeADDString() {

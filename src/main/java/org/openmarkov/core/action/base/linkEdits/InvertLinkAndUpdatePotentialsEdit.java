@@ -235,7 +235,7 @@ public final class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 	}
 
 	public String toString() {
-        return "Invert link and update potentials: " + variableFrom + "-->" + variableTo + " ==> " + variableFrom + "<--" + variableTo;
+		return "Invert link and update potentials: " + variableFrom.getName() + "-->" + variableTo.getName() + " ==> " + variableFrom.getName() + "<--" + variableTo.getName();
 	}
 
 	@Override public BaseLinkEdit getUndoEdit() {

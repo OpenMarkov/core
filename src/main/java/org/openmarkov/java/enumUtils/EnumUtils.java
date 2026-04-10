@@ -1,9 +1,10 @@
 package org.openmarkov.java.enumUtils;
 
 public class EnumUtils {
+    
     public static String toCamelCase(Enum<?> enumConstant) {
         var name = enumConstant.name();
-        StringBuilder sb = new StringBuilder();
+        String camelCased = "";
         var shouldCapitalize = false;
         for (var character : name.toCharArray()) {
             if (character == '_') {
@@ -11,18 +12,18 @@ public class EnumUtils {
                 continue;
             }
             if (shouldCapitalize) {
-                sb.append(Character.toUpperCase(character));
+                camelCased += Character.toUpperCase(character);
                 shouldCapitalize = false;
             } else {
-                sb.append(Character.toLowerCase(character));
+                camelCased += (Character.toLowerCase(character));
             }
         }
-        return sb.toString();
+        return camelCased;
     }
     
     public static String toPascalCase(Enum<?> enumConstant) {
         var name = enumConstant.name();
-        StringBuilder sb = new StringBuilder();
+        String pascalCased = "";
         var shouldCapitalize = true;
         for (var character : name.toCharArray()) {
             if (character == '_') {
@@ -30,33 +31,33 @@ public class EnumUtils {
                 continue;
             }
             if (shouldCapitalize) {
-                sb.append(Character.toUpperCase(character));
+                pascalCased += Character.toUpperCase(character);
                 shouldCapitalize = false;
             } else {
-                sb.append(Character.toLowerCase(character));
+                pascalCased += Character.toLowerCase(character);
             }
         }
-        return sb.toString();
+        return pascalCased;
     }
     
     public static String toTitleCase(Enum<?> enumConstant) {
         var name = enumConstant.name();
-        StringBuilder sb = new StringBuilder();
+        String titleCased = "";
         var shouldCapitalize = true;
         for (var character : name.toCharArray()) {
             if (character == '_') {
-                sb.append(" ");
+                titleCased += " ";
                 shouldCapitalize = true;
                 continue;
             }
             if (shouldCapitalize) {
-                sb.append(Character.toUpperCase(character));
+                titleCased += Character.toUpperCase(character);
                 shouldCapitalize = false;
             } else {
-                sb.append(Character.toLowerCase(character));
+                titleCased += Character.toLowerCase(character);
             }
         }
-        return sb.toString();
+        return titleCased.toString();
     }
     
 }

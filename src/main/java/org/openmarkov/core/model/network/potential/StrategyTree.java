@@ -14,6 +14,7 @@ import org.openmarkov.core.model.network.potential.treeadd.TreeADDBranch;
 import org.openmarkov.core.model.network.potential.treeadd.TreeADDPotential;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Represents a decision strategy as a tree structure. Each node in the tree corresponds
@@ -437,18 +438,14 @@ public class StrategyTree extends TreeADDPotential implements Cloneable {
             TreeADDBranch branch = branches.get(0);
             List<State> states = branch.getStates();
             if (states != null && !states.isEmpty()) {
-                StringBuilder sb = new StringBuilder(topVariable.getName());
-                sb.append(" = ");
-                for (int i = 0; i < states.size(); i++) {
-                    if (i > 0) sb.append(", ");
-                    sb.append(states.get(i).getName());
-                }
-                return sb.toString();
+                return topVariable.getName() + " = " + states.stream()
+                                                             .map(State::getName)
+                                                             .collect(Collectors.joining(", "));
             }
         }
         return topVariable.getName();
     }
-
+    
     /**
      * @param branch TreeADDBranch
      *
@@ -619,14 +616,11 @@ public class StrategyTree extends TreeADDPotential implements Cloneable {
     }
     
     public String toString() {
-        StringBuilder strBuffer = new StringBuilder();
-        // Print variables
         if (branches != null && !branches.isEmpty()) {
-            for (TreeADDBranch branch : branches) {
-                strBuffer.append(branch);
-            }
+            // Print variables
+            return branches.stream().map(String::valueOf).collect(Collectors.joining());
         }
-        return strBuffer.toString();
+        return "";
     }
     
     public String toStringForGraphviz(ProbNet net) {

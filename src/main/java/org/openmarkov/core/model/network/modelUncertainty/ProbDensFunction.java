@@ -41,16 +41,15 @@ public abstract class ProbDensFunction {
 	public abstract double getSample(Random randomGenerator);
 
 	@Override public String toString() {
-		StringBuilder sb = new StringBuilder();
+        String out = "";
 		ProbDensFunctionType probDensAnnotation = getClass().getAnnotation(ProbDensFunctionType.class);
 		if (probDensAnnotation != null) {
-			sb.append(probDensAnnotation.name());
-			sb.append(" :");
+            out += probDensAnnotation.name() + " :";
 		}
 		for (double parameter : getParameters()) {
-			sb.append(parameter + " ");
+            out += parameter + " ";
 		}
-		return sb.toString();
+        return out;
 	}
 
 	public abstract DomainInterval getInterval(double p);

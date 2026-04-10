@@ -187,15 +187,7 @@ public final class RemoveLinkEdit extends BaseLinkEdit {
     }
     
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Remove link between " + variableFrom.getName());
-        if (isDirected) {
-            sb.append(" -> ");
-        } else {
-            sb.append(" -- ");
-        }
-        sb.append(variableTo.getName());
-        return sb.toString();
+        return "Remove link between " + variableFrom.getName() + (isDirected ? " -> " : " -- ") + variableTo.getName();
     }
     
 }

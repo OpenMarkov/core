@@ -76,45 +76,38 @@ public class GTablePotential<E> extends AbstractIndexedPotential {
 	 * Overrides {@code toString} method. Mainly for test purposes
 	 */
 	public String toString() {
-		StringBuilder buffer = new StringBuilder();
+		String out = "";
 		int numVariables = (variables != null) ? variables.size() : 0;
 		int numElementsTable = elementTable.size();
 		if (numVariables > 0) {
 			// writes each configuration and its value
 			int[] configuration = null;
 			if (numElementsTable == 0) {
-				buffer.append("Empty potential.\n");
+				out += "Empty potential.\n";
 			} else {
-				buffer.append("Number of elements : ");
-				buffer.append(numElementsTable);
-				buffer.append("\n");
+				out += "Number of elements : " + numElementsTable + "\n";
 			}
 			for (int i = 0; i < numElementsTable; i++) {
-				buffer.append("If ");
+				out += "If ";
 				if (dimensions != null) {
 					configuration = getConfiguration(i);
 				}
 				for (int j = 0; configuration != null && j < configuration.length; j++) {
 					Variable variable = variables.get(j);
-					buffer.append(variable.getName());
-					buffer.append(" = ");
-					buffer.append(variable.getStateName(configuration[j]));
-					buffer.append(", ");
+					out += variable.getName() + " = " + variable.getStateName(configuration[j]) + ", ";
 					if (j == configuration.length - 1) {
-						buffer.append("then\n");
+						out += "then\n";
 					}
 				}
-				buffer.append(elementTable.get(i).toString());
+				out += elementTable.get(i).toString();
 			}
 		} else {
-			buffer.append("No variables.\nNumber of elements in table: ");
-			buffer.append(numElementsTable);
-			buffer.append("\n");
+			out += "No variables.\nNumber of elements in table: " + numElementsTable + "\n";
 			for (int i = 0; i < numElementsTable; i++) {
-				buffer.append(elementTable.get(i).toString());
+				out += elementTable.get(i).toString();
 			}
 		}
-		return buffer.toString();
+		return out.toString();
 	}
 
 }

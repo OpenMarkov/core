@@ -176,8 +176,8 @@ import java.util.List;
      * @return {@code String}
      */
     public String toString() {
-        return getOperationName() + ": " + variableFrom + "-->" + variableTo +
-                " ==> " + variableTo + "-->" + variableFrom;
+        return getOperationName() + ": " + variableFrom.getName() + "-->" + variableTo.getName() +
+                " ==> " + variableTo.getName() + "-->" + variableFrom.getName();
     }
     
     @Override public BaseLinkEdit getUndoEdit() {

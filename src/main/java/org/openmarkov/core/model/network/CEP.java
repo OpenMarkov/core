@@ -411,69 +411,50 @@ public class CEP implements Cloneable {
     }
     
     public String toString() {
-        StringBuilder strBuffer = new StringBuilder();
         if (zeroProbability) {
-            strBuffer.append(indent);
-            strBuffer.append("CEP with probability zero.\n");
-        } else {
-            strBuffer.append(indent);
-            strBuffer.append("Number of intervals: ");
-            strBuffer.append(thresholds.length + 1);
-            for (int i = 0; i < thresholds.length + 1; i++) {
-                strBuffer.append("\nInterval ");
-                strBuffer.append(i);
-                strBuffer.append(":\n");
-                strBuffer.append(indent);
-                strBuffer.append("lambda in (");
-                if (i == 0) {
-                    appendNumberToStrBuffer(strBuffer, minThreshold);
-                } else {
-                    appendNumberToStrBuffer(strBuffer, thresholds[i - 1]);
-                }
-                strBuffer.append(" and ");
-                if (i == thresholds.length) {
-                    if (maxThreshold == Double.POSITIVE_INFINITY || maxThreshold > 1.0E300) {
-                        strBuffer.append("+");
-                        strBuffer.append("Infinity");
-                    } else {
-                        strBuffer.append(maxThreshold);
-                    }
-                } else {
-                    appendNumberToStrBuffer(strBuffer, thresholds[i]);
-                }
-                strBuffer.append(")");
-                strBuffer.append(" Cost: ");
-                appendNumberToStrBuffer(strBuffer, costs[i]);
-                strBuffer.append("  ");
-                
-                strBuffer.append(" Eff: ");
-                appendNumberToStrBuffer(strBuffer, effectiveness[i]);
-                strBuffer.append("\n");
-                
-                strBuffer.append(indent);
-                strBuffer.append("optimal intervention:");
-                if (strategyTrees[i] != null) {
-                    strategyTrees[i].setIndentLevel(indentLevel + 2);
-                    strBuffer.append("\n");
-                } else {
-                    strBuffer.append(" ");
-                }
-                strBuffer.append(strategyTrees[i]);
-            }
+            return indent + "CEP with probability zero.\n";
         }
-        return strBuffer.toString();
+        String asString = indent + "Number of intervals: " + (thresholds.length + 1);
+        for (int i = 0; i < thresholds.length + 1; i++) {
+            asString += "\nInterval " + i + ":\n" + indent + "lambda in (";
+            if (i == 0) {
+                asString += formatNum(minThreshold);
+            } else {
+                asString += formatNum(thresholds[i - 1]);
+            }
+            asString += " and ";
+            if (i == thresholds.length) {
+                if (maxThreshold == Double.POSITIVE_INFINITY || maxThreshold > 1.0E300) {
+                    asString += "+Infinity";
+                } else {
+                    asString += maxThreshold;
+                }
+            } else {
+                asString += formatNum(thresholds[i]);
+            }
+            asString += ") Cost: " + formatNum(costs[i]) + "   Eff: " + formatNum(effectiveness[i]) + "\n" + indent + "optimal intervention:";
+            if (strategyTrees[i] != null) {
+                strategyTrees[i].setIndentLevel(indentLevel + 2);
+                asString += ("\n");
+            } else {
+                asString += (" ");
+            }
+            asString += strategyTrees[i];
+        }
+        return asString;
     }
     
-    private void appendNumberToStrBuffer(StringBuilder strBuffer, double number) {
+    private String formatNum(double number) {
         if (Math.abs(number) < 10.0) {
-            strBuffer.append(decimalFormat3afterComa.format(number));
-        } else if (Math.abs(number) < 100.0) {
-            strBuffer.append(decimalFormat2afterComa.format(number));
-        } else if (Math.abs(number) < 1000.0) {
-            strBuffer.append(decimalFormat1afterComa.format(number));
-        } else {
-            strBuffer.append(decimalFormatNoDecimalsAfterComa.format(number));
+            return decimalFormat3afterComa.format(number);
         }
+        if (Math.abs(number) < 100.0) {
+            return decimalFormat2afterComa.format(number);
+        }
+        if (Math.abs(number) < 1000.0) {
+            return decimalFormat1afterComa.format(number);
+        }
+        return decimalFormatNoDecimalsAfterComa.format(number);
     }
     
     /**

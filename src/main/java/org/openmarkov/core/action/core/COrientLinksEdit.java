@@ -31,23 +31,6 @@ import java.util.ArrayList;
         return (ArrayList<PNEdit>) (ArrayList) orientLinkEdits;
     }
     
-    public String toString() {
-        StringBuilder buffer = new StringBuilder("Orient links: ");
-        for (PNEdit edit : getEdits()) {
-            OrientLinkEdit orientLinkEdit = (OrientLinkEdit) edit;
-            buffer.append(orientLinkEdit.getVariableFrom().getName());
-            if (orientLinkEdit.isDirected()) {
-                buffer.append(" --> ");
-            } else {
-                buffer.append(" --- ");
-            }
-            buffer.append(orientLinkEdit.getVariableTo().getName());
-            buffer.append(", ");
-        }
-        buffer.delete(buffer.lastIndexOf(","), buffer.length());
-        return buffer.toString();
-    }
-    
     @Override public boolean equals(Object arg0) {
         boolean sameInformation = true;
         if (arg0 instanceof COrientLinksEdit editToCompare) {

@@ -96,13 +96,10 @@ import org.openmarkov.core.action.base.UsesVariable;
     }
     
     public String toString() {
-        StringBuilder buffer = new StringBuilder("RemoveNodeEdit: ");
         if (variable == null) {
-            buffer.append("null");
-        } else {
-            buffer.append(variable.getName());
+            return "RemoveNodeEdit: null";
         }
-        return buffer.toString();
+        return "RemoveNodeEdit: " + variable.getName();
     }
     
 }

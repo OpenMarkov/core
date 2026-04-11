@@ -93,22 +93,20 @@ public class PNESupport /*extends UndoableEditSupport*/ {
     }
     
     /**
-     * Redoes the most recently undone edit and notifies listeners for each
-     * sub-edit (flattened), matching the notification pattern of
-     * {@link PNEdit#executeEdit()}.
+     * Redoes the most recently undone edit and notifies listeners once
+     * with the top-level edit (which may be a {@link CompoundPNEdit}).
      *
      * @see javax.swing.undo.UndoManager#canRedo()
      * @see javax.swing.undo.UndoManager#redo()
      */
     public ArrayList<PNEdit> redo() {
         var redoneEdit = editsHistoryStacker.getCurrentUndoManager().redo();
-        ArrayList<PNEdit> redoneEdits = flattenEdit(redoneEdit);
-        for (PNEdit subRedoneEdit : redoneEdits) {
+        if (redoneEdit != null) {
             for (PNEditListener listener : listeners) {
-                listener.afterRedoingEdit(subRedoneEdit);
+                listener.afterRedoingEdit(redoneEdit);
             }
         }
-        return redoneEdits;
+        return flattenEdit(redoneEdit);
     }
     
     ArrayList<PNEdit> flattenEdit(@Nullable PNEdit redoneEdit) {
@@ -129,22 +127,20 @@ public class PNESupport /*extends UndoableEditSupport*/ {
     }
     
     /**
-     * Undoes the most recent edit and notifies listeners for each
-     * sub-edit (flattened), matching the notification pattern of
-     * {@link PNEdit#executeEdit()}.
+     * Undoes the most recent edit and notifies listeners once
+     * with the top-level edit (which may be a {@link CompoundPNEdit}).
      *
      * @see javax.swing.undo.UndoManager#canUndo()
      * @see javax.swing.undo.UndoManager#undo()
      */
     public ArrayList<PNEdit> undo() {
         var undoneEdit = editsHistoryStacker.getCurrentUndoManager().undo();
-        ArrayList<PNEdit> undoneEdits = flattenEdit(undoneEdit);
-        for (PNEdit subUndoneEdit : undoneEdits) {
+        if (undoneEdit != null) {
             for (PNEditListener listener : listeners) {
-                listener.afterUndoingEdit(subUndoneEdit);
+                listener.afterUndoingEdit(undoneEdit);
             }
         }
-        return undoneEdits;
+        return flattenEdit(undoneEdit);
     }
     
     /**

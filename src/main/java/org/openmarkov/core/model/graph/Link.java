@@ -286,14 +286,10 @@ public class Link<T> implements ClassLocalizable {
      * @return String
      */
     public String toString() {
-        StringBuilder buffer = new StringBuilder(from.toString());
         if (!directed) {
-            buffer.append(" --- ");
-        } else {
-            buffer.append(" --> ");
+            return from.toString() + " --- " + to.toString();
         }
-        buffer.append(to.toString());
-        return buffer.toString();
+        return from.toString() + " --> " + to.toString();
     }
     
     /*****

@@ -152,40 +152,36 @@ import java.util.List;
     }
     
     @Override public String toString() {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append(variables.get(0).getName());
+        String out = variables.get(0).getName();
         if (variables.size() == 1) {
-            buffer.append(" = ");
+            out += " = ";
         } else if (variables.size() > 1) {
-            buffer.append(" | ");
+            out += " | ";
             // Print variables
             for (int i = 1; i < variables.size() - 1; i++) {
-                buffer.append(variables.get(i));
-                buffer.append(", ");
+                out += variables.get(i).getName() + ", ";
             }
-            buffer.append(variables.get(variables.size() - 1));
-            buffer.append(" = ");
+            out += variables.get(variables.size() - 1).getName() + " = ";
         }
-        
         if (tablePotential.getValues().length == 1) {
-            buffer.append(tablePotential.getValues()[0]);
+            out += tablePotential.getValues()[0];
         } else if (tablePotential.getValues().length > 1) {
-            buffer.append("{");
+            out += "{";
             for (int i = 0; i < tablePotential.getValues().length; i++) {
-                buffer.append(tablePotential.getValues()[i]);
+                out += tablePotential.getValues()[i];
                 if (i != tablePotential.getValues().length - 1) {
-                    buffer.append(",");
+                    out += ",";
                 }
             }
-            buffer.append("}");
+            out += "}";
         }
         // Comment these lines to fix issue 477: Wrong text in Tree/ADD potentials
 		/*
-		buffer.append("\n Role: " + this.getPotentialRole());
+		out.append("\n Role: " + this.getPotentialRole());
 		if (criterion != null) {
-			buffer.append("\n Criterion: " + criterion.toString());
+			out.append("\n Criterion: " + criterion.toString());
 		}*/
-        return buffer.toString();
+        return out;
     }
     
     /**

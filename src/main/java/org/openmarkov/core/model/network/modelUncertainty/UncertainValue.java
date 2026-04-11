@@ -76,13 +76,12 @@ public class UncertainValue {
 	}
 
 	@Override public String toString() {
-		StringBuilder sb = new StringBuilder();
+        String out = "";
 		if (name != null && name.isEmpty()) {
-			sb.append(name);
-			sb.append(": ");
+            out += name + ": ";
 		}
-		sb.append(probDensFunction.toString());
-		return sb.toString();
+        out += probDensFunction.toString();
+        return out;
 	}
 
 	public boolean hasName() {

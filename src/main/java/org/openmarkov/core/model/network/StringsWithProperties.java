@@ -176,21 +176,21 @@ public class StringsWithProperties {
 	 * @return {@code String}
 	 */
 	public String toString() {
-		StringBuilder outString = new StringBuilder();
+        String out = "";
 		Set<String> strings = stringsWithProperties.keySet();
 		for (String stringWithProperties : strings) {
-			outString.append(stringWithProperties);
+            out += stringWithProperties;
 			Properties properties = stringsWithProperties.get(stringWithProperties);
 			if (properties != null && properties.size() > 0) {
-				outString.append(":\n");
+                out += ":\n";
 				Set<String> keysProperties = properties.getKeySet();
 				for (String keyProperty : keysProperties) {
-					outString.append("    " + properties.get(keyProperty) + "\n");
+                    out += "    " + properties.get(keyProperty) + "\n";
 				}
 			}
-			outString.append("\n");
+            out += "\n";
 		}
-		return outString.toString();
+        return out;
 	}
 
 }

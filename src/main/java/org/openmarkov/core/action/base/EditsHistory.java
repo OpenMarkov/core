@@ -124,6 +124,10 @@ public class EditsHistory {
     }
     
     /**
+     * Returns a copy of the done-edits stack in LIFO order (most recent edit first).
+     * The ordering reflects the internal stack structure: the first element is the
+     * edit that would be undone next.
+     *
      * @return a copy of the done edits list (most recent first)
      */
     public ArrayList<PNEdit> getDoneEdits() {

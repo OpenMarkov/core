@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A potential defined by a univariate probability density function (e.g., Normal, Beta,
@@ -384,35 +385,25 @@ import java.util.List;
     }
     
     @Override public String toString() {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append(variables.getFirst().getName());
+        String out = variables.getFirst().getName();
         if (variables.size() == 1) {
-            buffer.append(" = ");
+            out += " = ";
         } else if (variables.size() > 1) {
-            buffer.append(" | ");
+            out += " | ";
             // Print variables
-            for (int i = 1; i < variables.size() - 1; i++) {
-                buffer.append(variables.get(i));
-                buffer.append(", ");
-            }
-            buffer.append(variables.getLast());
-            buffer.append(" = ");
+            out += variables.stream().skip(1).map(Variable::getName).collect(Collectors.joining(", "));
+            out += " = ";
         }
-        buffer.append("UnivariateName").append(probDensFunctionUnivariateName).append(" ").append("Parametrization").append(probDensFunctionParametrizationName).append(" ");
+        out += "UnivariateName" + probDensFunctionUnivariateName + " Parametrization" + probDensFunctionParametrizationName + " ";
         
         if (getDistributionTable().getValues().length == 1) {
-            buffer.append(getDistributionTable().getValues()[0]);
+            out += getDistributionTable().getValues()[0];
         } else if (getDistributionTable().getValues().length > 1) {
-            buffer.append("{");
-            for (int i = 0; i < getDistributionTable().getValues().length; i++) {
-                buffer.append(getDistributionTable().getValues()[i]);
-                if (i != getDistributionTable().getValues().length - 1) {
-                    buffer.append(",");
-                }
-            }
-            buffer.append("}");
+            out += "{" + Arrays.stream(getDistributionTable().getValues())
+                               .mapToObj(Double::toString)
+                               .collect(Collectors.joining(", ")) + "}";
         }
-        return buffer.toString();
+        return out.toString();
     }
     
     @Override

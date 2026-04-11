@@ -12,6 +12,8 @@ import org.openmarkov.core.model.network.Variable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * A choice is a value assignment to a decision variable. It is possible that
@@ -141,17 +143,12 @@ public class Choice {
 	 * @return String
 	 */
 	public String toString() {
-		StringBuilder buffer = new StringBuilder(variable.getName());
 		if (numValues == 1) {
-            buffer.append("=").append(variable.getStateName(values[0]));
-		} else {
-			buffer.append("={");
-			for (int i = 0; i < numValues - 1; i++) {
-                buffer.append(variable.getStateName(values[i])).append(",");
-			}
-            buffer.append(variable.getStateName(values[numValues - 1])).append("}");
+			return variable.getName() + "=" + variable.getStateName(values[0]);
 		}
-		return buffer.toString();
+		return variable.getName() + "={" + IntStream.range(0, numValues)
+													.mapToObj(i -> variable.getStateName(values[i]))
+													.collect(Collectors.joining(",")) + "}";
 	}
 
 	/**

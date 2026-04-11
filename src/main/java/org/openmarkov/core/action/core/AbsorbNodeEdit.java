@@ -22,6 +22,7 @@ import org.openmarkov.core.model.network.potential.operation.DiscretePotentialOp
 
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * This edit makes the net absorb a node, merging all the utility children into one and updating its potential.
@@ -103,15 +104,8 @@ import java.util.*;
 
         /* Create the merged node */
         // Create the name
-        StringBuilder mergedName = new StringBuilder();
-        for (Node child : oldUtilityChildren) {
-            mergedName.append(child.getName());
-            mergedName.append(" + ");
-        }
-
-        int lastPlus = mergedName.lastIndexOf(" + ");
-        mergedName.delete(lastPlus, lastPlus + 3); // Delete the extra plus added at the end
-
+        String mergedName = oldUtilityChildren.stream().map(Node::getName).collect(Collectors.joining(" + "));
+        
         // Get the position for the new node, the gravity center of children (which is the average by coordinate).
         double x = 0;
         double y = 0;

@@ -93,37 +93,58 @@ public class PNESupport /*extends UndoableEditSupport*/ {
     }
     
     /**
-     * Redoes the most recently undone edit and notifies all listeners.
+     * Redoes the most recently undone edit and notifies listeners for each
+     * sub-edit (flattened), matching the notification pattern of
+     * {@link PNEdit#executeEdit()}.
      *
-     * @return the redone edit, or {@code null} if nothing to redo
      * @see javax.swing.undo.UndoManager#canRedo()
      * @see javax.swing.undo.UndoManager#redo()
      */
-    public @Nullable PNEdit redo() {
+    public ArrayList<PNEdit> redo() {
         var redoneEdit = editsHistoryStacker.getCurrentUndoManager().redo();
-        if (redoneEdit != null) {
+        ArrayList<PNEdit> redoneEdits = flattenEdit(redoneEdit);
+        for (PNEdit subRedoneEdit : redoneEdits) {
             for (PNEditListener listener : listeners) {
-                listener.afterRedoingEdit(redoneEdit);
+                listener.afterRedoingEdit(subRedoneEdit);
             }
         }
-        return redoneEdit;
+        return redoneEdits;
     }
-
+    
+    ArrayList<PNEdit> flattenEdit(@Nullable PNEdit redoneEdit) {
+        if (redoneEdit == null) {
+            return new ArrayList<>();
+        }
+        var editsToVisit = new ArrayDeque<PNEdit>();
+        editsToVisit.addFirst(redoneEdit);
+        var flattenedEdits = new ArrayList<PNEdit>();
+        while (!editsToVisit.isEmpty()) {
+            var edit = editsToVisit.removeFirst();
+            flattenedEdits.add(edit);
+            if (edit instanceof CompoundPNEdit compoundEdit) {
+                compoundEdit.getEdits().forEach(editsToVisit::addLast);
+            }
+        }
+        return flattenedEdits;
+    }
+    
     /**
-     * Undoes the most recent edit and notifies all listeners.
+     * Undoes the most recent edit and notifies listeners for each
+     * sub-edit (flattened), matching the notification pattern of
+     * {@link PNEdit#executeEdit()}.
      *
-     * @return the undone edit, or {@code null} if nothing to undo
      * @see javax.swing.undo.UndoManager#canUndo()
      * @see javax.swing.undo.UndoManager#undo()
      */
-    public @Nullable PNEdit undo() {
+    public ArrayList<PNEdit> undo() {
         var undoneEdit = editsHistoryStacker.getCurrentUndoManager().undo();
-        if (undoneEdit != null) {
+        ArrayList<PNEdit> undoneEdits = flattenEdit(undoneEdit);
+        for (PNEdit subUndoneEdit : undoneEdits) {
             for (PNEditListener listener : listeners) {
-                listener.afterUndoingEdit(undoneEdit);
+                listener.afterUndoingEdit(subUndoneEdit);
             }
         }
-        return undoneEdit;
+        return undoneEdits;
     }
     
     /**
@@ -204,18 +225,8 @@ public class PNESupport /*extends UndoableEditSupport*/ {
      * public ProbNet getProbNet() { return (ProbNet)realSource; }
      */
     public String toString() {
-        String out = "PNESupport. probNet: " + probNet;
-        if (listeners != null) {
-            out += " Number of listeners: " + listeners.size() + '.';
-        } else {
-            out += " Number of listeners: 0.";
-        }
-        if (withUndo) {
-            out += " With undo.";
-        } else {
-            out += " Without undo.";
-        }
-        return out;
+        return "PNESupport. probNet: " + probNet + " Number of listeners: " + listeners.size() +
+                ". withUndo: " + withUndo;
     }
     
     private final ProbNet probNet;

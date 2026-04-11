@@ -89,23 +89,23 @@ import org.openmarkov.core.action.base.PNEdit;
 	 * {@code variable1} and {@code variable2}.
 	 */
 	@Override public String toString() {
-		StringBuilder buffer = new StringBuilder(getOperationName() + ": ");
+		String out = getOperationName() + ": ";
         if (variableFrom == null) {
-			buffer.append("null");
+			out += "null";
 		} else {
-            buffer.append(variableFrom.getName());
+			out += variableFrom.getName();
 		}
 		if (isDirected) {
-			buffer.append(" --> ");
+			out += " --> ";
 		} else {
-			buffer.append(" --- ");
+			out += " --- ";
 		}
         if (variableTo == null) {
-			buffer.append("null");
+			out += "null";
 		} else {
-            buffer.append(variableTo.getName());
+			out += variableTo.getName();
 		}
-		return buffer.toString();
+		return out.toString();
 	}
 
 	/**

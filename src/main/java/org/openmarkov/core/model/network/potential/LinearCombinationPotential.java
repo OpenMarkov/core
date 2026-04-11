@@ -187,20 +187,20 @@ public class LinearCombinationPotential extends GLMPotential implements Scalable
     
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString() + " = ");
+        String out = super.toString() + " = ";
         VariableExpression[] covariates = this.covariates;
         boolean first = true;
         for (int i = 0; i < covariates.length; ++i) {
             if (this.coefficients[i] != 0.0) {
                 if (!first)
-                    sb.append(" + ");
+                    out += " + ";
                 first = false;
                 if (this.coefficients[i] != 1.0)
-                    sb.append(this.coefficients[i] + "*");
-                sb.append(covariates[i]);
+                    out += this.coefficients[i] + "*";
+                out += covariates[i];
             }
         }
-        return sb.toString();
+        return out;
     }
     
     /** Expression-based potential; variable-name-based, not index-based; returns a copy. */

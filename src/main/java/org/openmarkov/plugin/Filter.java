@@ -240,25 +240,10 @@ public class Filter<PluginClass> {
      * @return the String representing this object.
      */
     @Override public String toString() {
-        StringBuilder strBuffer = new StringBuilder();
         if (cls != null) {
-            strBuffer.append("[Filter] - (Simple) {");
-            strBuffer.append("class = ");
-            strBuffer.append(cls);
-            strBuffer.append(", constraint Type = ");
-            strBuffer.append(type);
-            strBuffer.append("}");
-        } else {
-            strBuffer.append("[Filter] - (Complex) {");
-            strBuffer.append("parent = ");
-            strBuffer.append(parent);
-            strBuffer.append(", combination = ");
-            strBuffer.append(combination);
-            strBuffer.append(", children = ");
-            strBuffer.append(children);
-            strBuffer.append("}");
+            return "[Filter] - (Simple) { class = " + cls + ", constraint Type = " + type + " }";
         }
-        return strBuffer.toString();
+        return "[Filter] - (Complex) { parent = " + parent + ", combination = " + combination + ", children = " + children + " }";
     }
     
     /**

@@ -96,7 +96,7 @@ public final class ExtensionTree<T> {
         if (!exclusiveInterfacesString.isBlank()) {
             message += ": " + exclusiveInterfacesString;
         }
-        logger.info(message);
+        System.out.println(message);
         var parentsThisFar = new ArrayList<>(parentsShown);
         parentsThisFar.add(this.currentClass);
         for (var subclass : this.subClasses.values()) {

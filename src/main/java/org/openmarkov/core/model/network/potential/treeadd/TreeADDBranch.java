@@ -20,6 +20,7 @@ import org.openmarkov.java.cloneUtils.CloneUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * {@code TreeADDBranch} represents branch of a treeADD. If the top variable of the
@@ -314,58 +315,45 @@ public class TreeADDBranch implements Cloneable, ClassLocalizable {
     }
     
     @Override public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(rootVariable);
-        builder.append(" = ");
-        
+        String out = rootVariable.getName() + " = ";
         if (states != null) {
-            states.forEach(builder::append);
+            out += states.stream().map(State::getName).collect(Collectors.joining());
         }
         
         if (potential != null) {
-            builder.append(" -> ");
+            out += " -> ";
         }
         boolean isNullPotential = potential == null;
         boolean isStrategyTree = !isNullPotential && potential.getClass() == StrategyTree.class;
         if (!isNullPotential && !isStrategyTree) {
             List<Variable> potentialVariables = potential.getVariables();
             if (potentialVariables != null && !potentialVariables.isEmpty()) {
-                builder.append(" ");
-                builder.append(potentialVariables.size());
-                builder.append(" variables(");
+                out += " " + potentialVariables.size() + " variables(";
                 for (int i = 0; i < potentialVariables.size(); i++) {
-                    builder.append(potentialVariables.get(i));
-                    builder.append((i < potentialVariables.size() - 1) ? ", " : "); ");
+                    out += potentialVariables.get(i).getName() + ((i < potentialVariables.size() - 1) ? ", " : "); ");
                 }
             }
         }
         if (parentVariables != null && !parentVariables.isEmpty() && !isStrategyTree) {
-            //			builder.append("\n");
-            builder.append(indent);
-            builder.append("ParentVariables = ");
-            builder.append(parentVariables);
+            //			out.append("\n");
+            out += indent + "ParentVariables = " + parentVariables;
         }
         if (lowerBound != null && upperBound != null) {
-            //			builder.append("\n");
-            builder.append(indent);
-            builder.append("Interval: (");
-            builder.append(lowerBound);
-            builder.append(", ");
-            builder.append(upperBound);
-            builder.append(")");
+            //			out.append("\n");
+            out += indent + "Interval: (" + lowerBound + ", " + upperBound + ")";
         }
-        //builder.append("\n");
+        //out.append("\n");
         if (isStrategyTree) {
             List<TreeADDBranch> branches = ((StrategyTree) potential).getBranches();
             for (TreeADDBranch branch : branches) {
                 branch.setIndent(indent + "    ");
                 if (branches.size() > 1) {
-                    builder.append(" IF ");
+                    out += " IF ";
                 }
-                builder.append(branch.toString());
+                out += branch.toString();
             }
         }
-        return builder.toString();
+        return out;
     }
     
     public void setReferencedBranch(TreeADDBranch treeADDBranch) {

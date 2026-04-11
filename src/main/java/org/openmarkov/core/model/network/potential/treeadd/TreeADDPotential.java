@@ -39,6 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ArrayDeque;
 import java.util.Deque;
+import java.util.stream.Collectors;
 
 /**
  * A TreeADDPotential is a potential defined by a top variable and its branches.
@@ -798,39 +799,28 @@ public class TreeADDPotential extends Potential {
     
     // Methods for toString()
     public String toString() {
-        StringBuilder strBuffer = new StringBuilder();
-        strBuffer.append(indent);
-        strBuffer.append(this.getClass().getSimpleName()); // Print name
-        strBuffer.append(" - topVariable: ");
-        strBuffer.append(topVariable.getName());
+        String out = indent + this.getClass().getSimpleName() + " - topVariable: " + topVariable.getName();
         // Print variables
         if (variables != null) {
             int numVariables = variables.size();
             int i = 0;
             if (numVariables > 0) {
-                strBuffer.append(" - Variables (");
+                out += " - Variables (" + variables.stream()
+                                                   .map(Variable::getName)
+                                                   .collect(Collectors.joining(", ")) + ")";
             } else {
-                strBuffer.append(" - No variables");
-            }
-            for (Variable variable : variables) {
-                strBuffer.append(variable.getName());
-                if (i++ == numVariables - 1) {
-                    strBuffer.append(")");
-                } else {
-                    strBuffer.append(", ");
-                }
+                out += " - No variables";
             }
         }
         if (branches != null && !branches.isEmpty()) {
-            strBuffer.append("\n");
+            out += "\n";
             for (TreeADDBranch branch : branches) {
-                strBuffer.append(branch);
+                out += branch;
             }
         } else {
-            strBuffer.append(" - No branches.");
-            strBuffer.append(")\n");
+            out += " - No branches.)\n";
         }
-        return strBuffer.toString();
+        return out;
     }
     
     /**

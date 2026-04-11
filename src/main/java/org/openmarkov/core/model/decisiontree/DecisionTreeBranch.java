@@ -160,7 +160,7 @@ public class DecisionTreeBranch implements DecisionTreeElement {
 
 	@Override
 	public String toString() {
-		return "DecisionTreeBranch [branchVariable=" + branchVariable + ", branchState=" +
+        return "DecisionTreeBranch [branchVariable=" + branchVariable.getName() + ", branchState=" +
 				branchState + "]";
 	}
 

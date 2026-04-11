@@ -293,21 +293,17 @@ public class PartitionedInterval implements Cloneable, Serializable, ClassLocali
      * print a readable format of the Partitioned Interval
      */
     public String toString() {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append("Partitioned Interval ");
-        buffer.append("\n");
-        buffer.append("  > numSubIntervals = " + getNumSubintervals());
-        buffer.append("\n");
+        String out = "Partitioned Interval \n  > numSubIntervals = " + getNumSubintervals() + "\n";
         for (int i = 0; i < getNumSubintervals(); i++) {
-            buffer.append("   > interval[" + i + "]=");
-            buffer.append(!belongsToLeftSide[i] ? "[" : "(");
-            buffer.append(limits[i]);
-            buffer.append(",");
-            buffer.append(limits[i + 1]);
-            buffer.append(!belongsToLeftSide[i + 1] ? ")" : "]");
-            buffer.append("\n");
+            out += "   > interval[" + i + "]="
+                    + (!belongsToLeftSide[i] ? "[" : "(")
+                    + limits[i]
+                    + ","
+                    + limits[i + 1]
+                    + (!belongsToLeftSide[i + 1] ? ")" : "]") +
+                    "\n";
         }
-        return buffer.toString();
+        return out;
     }
     
     /**

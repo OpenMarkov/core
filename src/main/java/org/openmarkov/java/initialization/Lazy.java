@@ -9,7 +9,7 @@ public class Lazy<T> {
     private final @NotNull ThrowingSupplier<? extends T, Exception> initializer;
     private @Nullable T value;
     
-    private Lazy(@NotNull ThrowingSupplier<? extends T, Exception> initializer) {
+    public Lazy(@NotNull ThrowingSupplier<? extends T, Exception> initializer) {
         this.initializer = initializer;
         this.isInitialized = false;
         this.value = null;
@@ -33,6 +33,10 @@ public class Lazy<T> {
             }
             return this.value;
         }
+    }
+    
+    public boolean isInitialized() {
+        return this.isInitialized;
     }
     
     public void reset() {

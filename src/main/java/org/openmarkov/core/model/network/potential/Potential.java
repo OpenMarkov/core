@@ -23,6 +23,7 @@ import org.openmarkov.java.cloneUtils.CloneUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Abstract base class for all potentials in OpenMarkov. A potential represents a
@@ -458,35 +459,32 @@ public abstract class Potential implements Localizable {
      * @return short string representation
      */
     public String toShortString() {
-        StringBuilder buffer = new StringBuilder();
+        String out = new String();
         int numVariables = (variables != null) ? variables.size() : 0;
         if (numVariables != 0) { // Constant potential
             switch (role) {
-                case CONDITIONAL_PROBABILITY:
-                    buffer.append("P(").append(variables.getFirst());
+                case CONDITIONAL_PROBABILITY -> {
+                    out += "P(" + variables.getFirst().getName();
                     if (numVariables > 1) {
-                        buffer.append(" | ");
-                        printVariables(buffer, 1);
+                        out += " | " + stringifyVariables(1);
                     }
-                    buffer.append(")");
-                    break;
-                case JOINT_PROBABILITY:
-                    buffer.append("P(");
-                    printVariables(buffer, 0);
-                    buffer.append(")");
-                    break;
-                default:
-                    buffer.append(numVariables).append(" Variables: ");
-                    buffer.append(variables.getFirst().getName());
+                    out += ")";
+                }
+                case JOINT_PROBABILITY -> {
+                    out += "P(" + stringifyVariables(0) + ")";
+                }
+                default -> {
+                    out += numVariables + " Variables: " + variables.getFirst().getName();
                     for (int i = 1; i < numVariables - 1; i++) {
-                        buffer.append(", ").append(variables.get(i).getName());
+                        out += ", " + variables.get(i).getName();
                     }
                     if (numVariables > 1) {
-                        buffer.append(", ").append(variables.get(numVariables - 1).getName());
+                        out += ", " + variables.get(numVariables - 1).getName();
                     }
+                }
             }
         }
-        return buffer.toString();
+        return out;
     }
     
     @Override public @NotNull String path() {
@@ -502,13 +500,9 @@ public abstract class Potential implements Localizable {
      * Prints in buffer the variables and in case of TablePotential the
      * configurations
      */
-    private StringBuilder printVariables(StringBuilder buffer, int firstVariable) {
+    private String stringifyVariables(int firstVariable) {
         // Print variables
-        for (int i = firstVariable; i < variables.size() - 1; i++) {
-            buffer.append(variables.get(i)).append(", ");
-        }
-        buffer.append(variables.getLast());
-        return buffer;
+        return variables.stream().skip(firstVariable).map(Variable::getName).collect(Collectors.joining(", "));
     }
     
     /**

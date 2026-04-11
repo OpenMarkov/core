@@ -71,15 +71,15 @@ public abstract class ConstraintViolatedException extends DoEditException {
         }
         
         private static String tabList(String originalText) {
-            StringBuilder finalText = new StringBuilder();
+            String finalText = "";
             Iterator<String> lines = originalText.lines().iterator();
             if (lines.hasNext()) {
-                finalText.append("- ").append(lines.next());
+                finalText += "- " + lines.next();
             }
             while (lines.hasNext()) {
-                finalText.append(System.lineSeparator()).append("  ").append(lines.next());
+                finalText += System.lineSeparator() + "  " + lines.next();
             }
-            return finalText.toString();
+            return finalText;
         }
         
         private @Nullable ConstraintViolatedException getFirstExceptionFound() {

@@ -12,6 +12,9 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 /**
  * Stores attributes for use in {@code SimpleMarkovEvaluation}
  */
@@ -85,32 +88,21 @@ public class InferenceOptions {
 	 * Prints decision criteria, simulation indices and discount rate
 	 */
 	public String toString() {
-		StringBuilder buffer = new StringBuilder();
+		String out = "";
 		if (simulationIndexVariable != null) {
-			buffer.append("Simulation indices: ");
-			printVariable(buffer, simulationIndexVariable);
-		} else {
-			buffer.append("No simulation indices.\n");
-		}
-		buffer.append("Discount rate = " + discountRate);
-		return buffer.toString();
-	}
-
-	/**
-	 * Inserts in buffer the name and states of the received variable
-	 */
-    private static void printVariable(StringBuilder buffer, Variable variable) {
-		buffer.append(variable.getName());
-		if (variable.getVariableType() != VariableType.NUMERIC) {
-			buffer.append("(");
-			State[] states = variable.getStates();
-			for (int i = 0; i < states.length - 1; i++) {
-				buffer.append(states[i].getName() + ", ");
+			out += "Simulation indices: " + simulationIndexVariable.getName();
+			if (simulationIndexVariable.getVariableType() != VariableType.NUMERIC) {
+				out += "(" + Arrays.stream(simulationIndexVariable.getStates())
+								   .map(State::getName)
+								   .collect(Collectors.joining(", ")) + ")\n";
+			} else {
+				out += "Continuous variable!\n";
 			}
-			buffer.append(states[states.length - 1].getName() + ")\n");
 		} else {
-			buffer.append("Continuous variable!\n");
+			out += "No simulation indices.\n";
 		}
+		out += "Discount rate = " + discountRate;
+		return out;
 	}
-
+	
 }

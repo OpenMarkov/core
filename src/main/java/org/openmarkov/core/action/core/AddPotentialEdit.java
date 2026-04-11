@@ -8,8 +8,11 @@
 package org.openmarkov.core.action.core;
 
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.action.base.PNEdit;
+
+import java.util.stream.Collectors;
 
 /**
  * Edit that adds a potential to the network's global potential list.
@@ -50,13 +53,10 @@ import org.openmarkov.core.action.base.PNEdit;
 	 * @return A {@code String} with the potential variables.
 	 */
 	public String toString() {
-		StringBuilder buffer = new StringBuilder("AddPotentialEdit: ");
 		if (potential != null) {
-			buffer.append(potential.getVariables());
-		} else {
-			buffer.append("null !!!!");
+			return potential.getVariables().stream().map(Variable::getName).collect(Collectors.joining(" "));
 		}
-		return buffer.toString();
+		return "null !!!!";
 	}
 
 }

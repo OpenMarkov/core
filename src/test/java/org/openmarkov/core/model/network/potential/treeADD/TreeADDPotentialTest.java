@@ -23,6 +23,8 @@ import org.openmarkov.core.model.network.type.MIDType;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 @TestInstance(TestInstance.Lifecycle.PER_METHOD)
 public class TreeADDPotentialTest {
     
@@ -189,9 +191,107 @@ public class TreeADDPotentialTest {
     @Test public void testShift() {
         // TODO
     }
-    
+
     @Test public void testGetInducedFindings() {
         // TODO
     }
-    
+
+    /**
+     * Issue #215: reordering states of the top variable should reorder the
+     * branches, not expand the tree to a flat table.
+     */
+    @Test
+    public void testReorderTopVariablePreservesTreeStructure() {
+        // Build a TreeADD with explicit TablePotential leaves
+        State s0 = new State("absent");
+        State s1 = new State("present");
+        State[] statesAB = {s0, s1};
+
+        Variable varA = new Variable("X", statesAB);
+        Variable varB = new Variable("Y", statesAB);
+        List<Variable> varsBA = List.of(varB, varA);
+
+        // Leaf potentials for each branch of A
+        TablePotential leafAbsent = new TablePotential(List.of(varB), PotentialRole.CONDITIONAL_PROBABILITY,
+                new double[]{1.0, 0.0});  // P(Y|X=absent)
+        TablePotential leafPresent = new TablePotential(List.of(varB), PotentialRole.CONDITIONAL_PROBABILITY,
+                new double[]{0.9, 0.1});  // P(Y|X=present)
+
+        TreeADDBranch branchAbsent = new TreeADDBranch(List.of(s0), varA, leafAbsent, varsBA);
+        TreeADDBranch branchPresent = new TreeADDBranch(List.of(s1), varA, leafPresent, varsBA);
+
+        TreeADDPotential tree = new TreeADDPotential(varsBA, varA, PotentialRole.CONDITIONAL_PROBABILITY,
+                List.of(branchAbsent, branchPresent));
+
+        // Reorder A's states to [present, absent]
+        State[] newOrder = {s1, s0};
+        Potential reordered = tree.reorder(varA, newOrder);
+
+        // Result should still be a TreeADDPotential
+        assertTrue(reordered instanceof TreeADDPotential,
+                "Reordered potential should remain a TreeADDPotential");
+
+        TreeADDPotential reorderedTree = (TreeADDPotential) reordered;
+        assertEquals(2, reorderedTree.getBranches().size());
+
+        // First branch should now be 'present', second should be 'absent'
+        TreeADDBranch first = reorderedTree.getBranches().get(0);
+        TreeADDBranch second = reorderedTree.getBranches().get(1);
+
+        assertTrue(first.getStates().contains(s1), "First branch should be 'present'");
+        assertTrue(second.getStates().contains(s0), "Second branch should be 'absent'");
+
+        // Leaf potentials should follow their branches
+        TablePotential firstLeaf = (TablePotential) first.getPotential();
+        assertEquals(0.9, firstLeaf.getValues()[0], 1e-9, "present branch: P(Y=absent|X=present)=0.9");
+        assertEquals(0.1, firstLeaf.getValues()[1], 1e-9, "present branch: P(Y=present|X=present)=0.1");
+
+        TablePotential secondLeaf = (TablePotential) second.getPotential();
+        assertEquals(1.0, secondLeaf.getValues()[0], 1e-9, "absent branch: P(Y=absent|X=absent)=1.0");
+        assertEquals(0.0, secondLeaf.getValues()[1], 1e-9, "absent branch: P(Y=present|X=absent)=0.0");
+    }
+
+    /**
+     * Reordering a variable that is NOT the top variable should propagate
+     * into leaf potentials without changing the branch order.
+     */
+    @Test
+    public void testReorderNonTopVariablePropagatesToLeaves() {
+        State s0 = new State("absent");
+        State s1 = new State("present");
+        State[] statesAB = {s0, s1};
+
+        Variable varA = new Variable("X", statesAB);
+        Variable varB = new Variable("Y", statesAB);
+        List<Variable> varsBA = List.of(varB, varA);
+
+        TablePotential leafAbsent = new TablePotential(List.of(varB), PotentialRole.CONDITIONAL_PROBABILITY,
+                new double[]{1.0, 0.0});
+        TablePotential leafPresent = new TablePotential(List.of(varB), PotentialRole.CONDITIONAL_PROBABILITY,
+                new double[]{0.9, 0.1});
+
+        TreeADDBranch branchAbsent = new TreeADDBranch(List.of(s0), varA, leafAbsent, varsBA);
+        TreeADDBranch branchPresent = new TreeADDBranch(List.of(s1), varA, leafPresent, varsBA);
+
+        TreeADDPotential tree = new TreeADDPotential(varsBA, varA, PotentialRole.CONDITIONAL_PROBABILITY,
+                List.of(branchAbsent, branchPresent));
+
+        // Reorder Y's states to [present, absent]
+        State[] newOrder = {s1, s0};
+        Potential reordered = tree.reorder(varB, newOrder);
+
+        assertTrue(reordered instanceof TreeADDPotential);
+        TreeADDPotential reorderedTree = (TreeADDPotential) reordered;
+
+        // Branch order unchanged (X is still top variable)
+        assertEquals(2, reorderedTree.getBranches().size());
+        TreeADDBranch first = reorderedTree.getBranches().get(0);
+        assertTrue(first.getStates().contains(s0), "First branch should still be 'absent'");
+
+        // Leaf values should be reordered for Y: [absent, present] → [present, absent]
+        TablePotential firstLeaf = (TablePotential) first.getPotential();
+        assertEquals(0.0, firstLeaf.getValues()[0], 1e-9, "After reorder: P(Y=present|X=absent)=0.0");
+        assertEquals(1.0, firstLeaf.getValues()[1], 1e-9, "After reorder: P(Y=absent|X=absent)=1.0");
+    }
+
 }

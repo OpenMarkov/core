@@ -35,8 +35,10 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.stream.Collectors;
@@ -829,16 +831,47 @@ public class TreeADDPotential extends Potential {
     }
 
     /**
-     * Expands the tree to a {@link TablePotential} and reorders the given variable's states.
-     * The tree structure is not preserved, but the probability semantics are correct.
+     * Reorders the states of the given variable throughout the tree, preserving
+     * the tree structure.
+     * <ul>
+     *   <li>If the variable is the {@link #topVariable}, the branches are
+     *       reordered to match {@code newOrder} and leaf potentials are updated
+     *       recursively.</li>
+     *   <li>Otherwise the reorder is propagated into each branch's potential.</li>
+     * </ul>
      */
     @Override
     public Potential reorder(Variable variable, State[] newOrder) {
-        try {
-            return getCPT().reorder(variable, newOrder);
-        } catch (NonProjectablePotentialException e) {
-            return copy();
+        TreeADDPotential reordered = new TreeADDPotential(this); // deep copy
+        if (variable.equals(reordered.topVariable)) {
+            // Reorder branches to match the new state ordering
+            Map<State, TreeADDBranch> stateToBranch = new HashMap<>();
+            for (TreeADDBranch branch : reordered.branches) {
+                for (State state : branch.getStates()) {
+                    stateToBranch.put(state, branch);
+                }
+            }
+            List<TreeADDBranch> newBranches = new ArrayList<>();
+            Set<TreeADDBranch> alreadyAdded = new HashSet<>();
+            for (State state : newOrder) {
+                TreeADDBranch branch = stateToBranch.get(state);
+                if (branch != null && alreadyAdded.add(branch)) {
+                    newBranches.add(branch);
+                }
+            }
+            reordered.branches = newBranches;
         }
+        // Propagate into each branch's leaf potential (whether or not this was
+        // the top variable, because the same variable may also appear in leaves)
+        for (TreeADDBranch branch : reordered.branches) {
+            Potential branchPotential = branch.getPotential();
+            if (branchPotential != null) {
+                if (branchPotential instanceof TreeADDPotential || branchPotential.getVariables().contains(variable)) {
+                    branch.setPotential(branchPotential.reorder(variable, newOrder));
+                }
+            }
+        }
+        return reordered;
     }
     
 }

@@ -20,7 +20,7 @@ import java.util.stream.Stream;
  * A compound edit is a complex edition composed of several editions. This is an
  * abstract class.
  */
-public abstract class MultiEdit extends PNEdit {
+public abstract sealed class MultiEdit extends PNEdit permits CompoundPNEdit, ListPNEdit, MultiStepEdit {
     
     public MultiEdit(ProbNet probNet) {
         super(probNet);

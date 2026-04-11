@@ -390,30 +390,22 @@ public class TreeADDPotential extends Potential {
      */
     public void pruneAndGraftNode(String variableName) {
         if (getRootVariable().getName().toUpperCase().matches(variableName.toUpperCase())) {
-            int numBranches = branches.size();
-            if (numBranches == 1 && TreeADDPotential.class.isAssignableFrom(branches.get(0)
-                                                                                    .getPotential()
-                                                                                    .getClass())) {
-                TreeADDPotential treeADDPotential = (TreeADDPotential) branches.get(0).getPotential();
-                setRootVariable(treeADDPotential.getRootVariable());
-                branches = treeADDPotential.branches;
-                indentLevel = treeADDPotential.indentLevel;
-            } else {
-                if (numBranches > 1) { // Tie. Choose randomly one branch (the first branch) whose child is a TreeADDPotential. Otherwise, do nothing.
-                    boolean assignableBranchFound = false;
-                    for (int i = 0; i < numBranches && !assignableBranchFound; i++) {
-                        TreeADDBranch branch = branches.get(i);
-                        assignableBranchFound = TreeADDPotential.class.isAssignableFrom(branch.getPotential()
-                                                                                              .getClass());
-                        if (assignableBranchFound) {
-                            TreeADDPotential treeADDPotential = (TreeADDPotential) branch.getPotential();
-                            setRootVariable(treeADDPotential.getRootVariable());
-                            branches = treeADDPotential.branches;
-                            indentLevel = treeADDPotential.indentLevel;
-                        }
-                    }
+            // Find the first branch whose child is a TreeADDPotential and graft it up
+            TreeADDPotential graftCandidate = null;
+            for (TreeADDBranch branch : branches) {
+                if (branch.getPotential() instanceof TreeADDPotential subtree) {
+                    graftCandidate = subtree;
+                    break;
                 }
             }
+            if (graftCandidate != null) {
+                setRootVariable(graftCandidate.getRootVariable());
+                branches = graftCandidate.branches;
+                indentLevel = graftCandidate.indentLevel;
+            }
+            // When all branches are leaves, the root variable cannot be removed
+            // in-place (a TreeADDPotential must have a root). The caller should
+            // extract the first branch's potential via getFirstBranchPotential().
         }
         
         for (TreeADDBranch branch : branches) {

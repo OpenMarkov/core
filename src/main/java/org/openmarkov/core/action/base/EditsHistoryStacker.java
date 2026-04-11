@@ -46,17 +46,12 @@ public class EditsHistoryStacker {
         if (this.uncommitedHistories.isEmpty()) {
             return;
         }
-        ;
         var lastUsedStack = this.uncommitedHistories.removeLast();
         ArrayList<PNEdit> doneEdits = lastUsedStack.getDoneEdits();
-        PNEdit stackAsEdit = switch (doneEdits.size()) {
-            case 0 -> null;
-            case 1 -> doneEdits.getFirst();
-            default -> new ListPNEdit(doneEdits.getFirst().getProbNet(), doneEdits);
-        };
-        if (stackAsEdit == null) {
+        if (doneEdits.isEmpty()) {
             return;
         }
+        PNEdit stackAsEdit = new ListPNEdit(doneEdits.getFirst().getProbNet(), doneEdits);
         if (!closeOperations.contains(CloseEditStackOptions.FORGET)) {
             var nextLastStack = this.uncommitedHistories.isEmpty() ? this.mainEditsHistory : this.uncommitedHistories.getLast();
             nextLastStack.addEdit(stackAsEdit);

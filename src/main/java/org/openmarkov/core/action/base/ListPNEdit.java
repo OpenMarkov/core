@@ -11,23 +11,25 @@ import org.openmarkov.core.model.network.ProbNet;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * A compound edit is a complex edition composed of several editions. This is an
  * abstract class.
  */
-@SuppressWarnings("serial") public class ListPNEdit extends CompoundPNEdit {
+@SuppressWarnings("serial") public class ListPNEdit extends MultiEdit {
     
-    private final ArrayList<PNEdit> edits;
+    private final List<PNEdit> edits;
     
-    public ListPNEdit(ProbNet probNet, Collection<PNEdit> doneEdits) {
+    public ListPNEdit(ProbNet probNet, List<PNEdit> doneEdits) {
         super(probNet);
-        this.edits = new ArrayList<>(doneEdits);
+        this.edits = Collections.unmodifiableList(doneEdits);
+        this.edits.forEach(PNEdit::markItBelongsToACompoundEdit);
     }
     
-    @Override protected ArrayList<PNEdit> generateEdits() {
-        return this.edits;
+    @Override public Stream<PNEdit> getEdits() {
+        return this.edits.stream();
     }
-    
-    
 }

@@ -81,10 +81,6 @@ import java.util.ArrayList;
         return edits;
     }
 
-	@Override public void undo() {
-		super.undo();
-	}
-
 	/**
 	 * @return variable {@code Variable}
 	 */

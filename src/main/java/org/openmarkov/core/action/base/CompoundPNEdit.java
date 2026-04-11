@@ -7,55 +7,39 @@
 
 package org.openmarkov.core.action.base;
 
-import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.java.initialization.Lazy;
 
 import java.util.ArrayList;
+import java.util.stream.Stream;
 
 /**
  * A compound edit is a complex edition composed of several editions. This is an
  * abstract class.
  */
-public abstract class CompoundPNEdit extends PNEdit {
-
-    // Attribute
-    private boolean generatedEdits;
+public abstract class CompoundPNEdit extends MultiEdit {
     
     // Constructor
-    private ArrayList<PNEdit> edits;
+    private Lazy<ArrayList<PNEdit>> edits;
     
 
     public CompoundPNEdit(ProbNet probNet) {
         super(probNet);
-        this.generatedEdits = false;
+        this.edits = new Lazy<>(() -> {
+            var res = this.generateEdits();
+            res.forEach(PNEdit::markItBelongsToACompoundEdit);
+            return res;
+        });
     }
-    
-    // Methods
     
     /**
-     * Generate edits and does them
+     * Returns the sub-edits, generating them on first call. All sub-edits are
+     * marked as belonging to this compound edit.
      *
-     * @throws DoEditException DoEditException
+     * @return the list of sub-edits
      */
-    @Override protected void doEdit() throws DoEditException {
-        ArrayList<PNEdit> doneEdits = new ArrayList<>(this.getEdits().size());
-        try {
-            for (PNEdit edit : this.getEdits()) {
-                edit.executeEdit();
-                doneEdits.add(edit);
-            }
-        } catch (DoEditException e) {
-            for (PNEdit editToUndo : doneEdits.reversed()) {
-                editToUndo.undo();
-            }
-            throw e;
-        }
-    }
-    
-    @Override public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
-        for (PNEdit pnEdit : this.getEdits()) {
-            pnEdit.checkConstraintsWillBeMet(constraintChecker);
-        }
+    public Stream<PNEdit> getEdits() {
+        return this.edits.get().stream();
     }
     
     /**
@@ -66,30 +50,7 @@ public abstract class CompoundPNEdit extends PNEdit {
      */
     protected abstract ArrayList<PNEdit> generateEdits();
     
-    /**
-     * Returns the sub-edits, generating them on first call. All sub-edits are
-     * marked as belonging to this compound edit.
-     *
-     * @return the list of sub-edits
-     */
-    public ArrayList<PNEdit> getEdits() {
-        if (!this.generatedEdits) {
-            this.edits = this.generateEdits();
-            this.edits.forEach(PNEdit::markItBelongsToACompoundEdit);
-            this.generatedEdits = true;
-        }
-        return this.edits;
-    }
 
-    @Override public void redo() {
-        this.getEdits().forEach(PNEdit::redo);
-        this.setTypicalRedo(false);
-        super.redo();
-    }
     
-    @Override public void undo() {
-        this.getEdits().reversed().forEach(PNEdit::undo);
-        super.undo();
-    }
     
 }

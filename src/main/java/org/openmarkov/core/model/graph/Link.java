@@ -13,7 +13,6 @@ import org.openmarkov.core.model.network.PartitionedInterval;
 import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
-import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
@@ -135,7 +134,7 @@ public class Link<T> implements ClassLocalizable {
     public boolean hasTotalRestriction() {
         boolean totalRestriction = false;
         if (hasRestrictions()) {
-            int numStates = restrictionsPotential.getVariables().get(0).getNumStates();
+            int numStates = restrictionsPotential.getVariables().getFirst().getNumStates();
             int valuesSize = restrictionsPotential.getValues().length;
             
             for (int index = 0; index < numStates && !totalRestriction; index++) {
@@ -169,7 +168,7 @@ public class Link<T> implements ClassLocalizable {
         Set<State> statesRestrictTotally = new HashSet<>();
         
         if (hasRestrictions()) {
-            Variable parentVariable = restrictionsPotential.getVariables().get(0);
+            Variable parentVariable = restrictionsPotential.getVariables().getFirst();
             int numStates = parentVariable.getNumStates();
             int valuesSize = restrictionsPotential.getValues().length;
             
@@ -211,8 +210,8 @@ public class Link<T> implements ClassLocalizable {
      */
     public void tryResetRestrictionsPotential() {
         double[] restrictions = this.restrictionsPotential.getValues();
-        for (int i = 0; i < restrictions.length; i++) {
-            if (restrictions[i] == 0) {
+        for (double restriction : restrictions) {
+            if (restriction == 0) {
                 return;
             }
         }
@@ -268,7 +267,7 @@ public class Link<T> implements ClassLocalizable {
      *
      * @return the potential of the the link restriction.
      */
-    public Potential getRestrictionsPotential() {
+    public TablePotential getRestrictionsPotential() {
         return restrictionsPotential;
     }
     
@@ -278,8 +277,8 @@ public class Link<T> implements ClassLocalizable {
      * @param potential Potential
      */
     
-    public void setRestrictionsPotential(Potential potential) {
-        this.restrictionsPotential = (TablePotential) potential;
+    public void setRestrictionsPotential(TablePotential potential) {
+        this.restrictionsPotential = potential;
     }
     
     /**

@@ -10,6 +10,7 @@ import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
 import org.openmarkov.core.model.network.potential.Potential;
+import org.openmarkov.core.model.network.potential.TablePotential;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -135,7 +136,7 @@ final class ProbNetCopier {
                 Link<Node> destLink = dest.addLink(destFrom, destTo, link.isDirected());
                 if (deep) {
                     if (link.getRestrictionsPotential() != null) {
-                        destLink.setRestrictionsPotential(link.getRestrictionsPotential().deepCopy(dest));
+                        destLink.setRestrictionsPotential((TablePotential) link.getRestrictionsPotential().deepCopy(dest));
                     }
                     List<PartitionedInterval> newIntervals = new ArrayList<>();
                     for (PartitionedInterval interval : link.getRevealingIntervals()) {

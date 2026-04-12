@@ -20,6 +20,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.ModelNetworkConstraint;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.SumPotential;
+import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 
 import java.util.ArrayList;
@@ -145,7 +146,7 @@ public final class RemoveLinkEdit extends BaseLinkEdit {
         if (probNet.hasExplicitLinks()) {
             Link<Node> newLink = probNet.getLink(node1, node2, isDirected);
             if (link != null && newLink != null) {
-                Potential restrictionsPotential = link.getRestrictionsPotential();
+                TablePotential restrictionsPotential = link.getRestrictionsPotential();
                 newLink.setRestrictionsPotential(restrictionsPotential);
                 List<State> revealingStates = link.getRevealingStates();
                 newLink.setRevealingStates(revealingStates);

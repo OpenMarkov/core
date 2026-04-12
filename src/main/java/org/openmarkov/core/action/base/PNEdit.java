@@ -68,7 +68,7 @@ public abstract class PNEdit implements ClassLocalizable {
      * @throws DoEditException if the edit fails during execution
      * @throws ConstraintViolatedException if constraints would be violated
      */
-    public void executeEdit() throws DoEditException {
+    public final void executeEdit() throws DoEditException {
         PNESupport pneSupport = getProbNet().getPNESupport();
         try {
             ConstraintChecker constraintChecker = new ConstraintChecker(probNet);
@@ -80,7 +80,6 @@ public abstract class PNEdit implements ClassLocalizable {
             }
             throw ex;
         }
-        PNUndoableEditEvent event = new PNUndoableEditEvent(this);
         for (PNEditListener listener : pneSupport.getListeners()) {
             listener.beforeEditExecutes(this);
         }
@@ -129,15 +128,15 @@ public abstract class PNEdit implements ClassLocalizable {
     /**
      * @return probNet. {@code ProbNet}
      */
-    public ProbNet getProbNet() {
+    public final ProbNet getProbNet() {
         return probNet;
     }
     
-    public void setProbNet(ProbNet probNet) {
+    public final void setProbNet(ProbNet probNet) {
         this.probNet = probNet;
     }
     
-    protected void setTypicalRedo(boolean redo) {
+    protected final void setTypicalRedo(boolean redo) {
         typicalRedo = redo;
     }
     
@@ -156,23 +155,13 @@ public abstract class PNEdit implements ClassLocalizable {
     public void undo() {
     }
     
-    public boolean canUndo() {
-        return true;
-    }
-    
-    public boolean isSignificant() {
-        //All simple edits are significant
-        boolean significant = true;
-        return significant;
-    }
-    
     private boolean belongsToACompoundEdit = false;
     
     /**
      * Marks this edit as belonging to a compound edit, so it will not be
      * independently recorded in the undo history.
      */
-    public void markItBelongsToACompoundEdit() {
+    public final void markItBelongsToACompoundEdit() {
         this.belongsToACompoundEdit = true;
     }
     

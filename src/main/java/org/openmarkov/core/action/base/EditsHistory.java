@@ -45,7 +45,7 @@ public class EditsHistory {
         if (!canUndo()) {
             return null;
         }
-        return doneEdits.getFirst();
+        return doneEdits.getLast();
     }
     
     /**
@@ -70,10 +70,10 @@ public class EditsHistory {
             return null;
         }
         //Redoes the edit.
-        PNEdit undoneEdit = doneEdits.getFirst();
+        PNEdit undoneEdit = doneEdits.getLast();
         undoneEdit.undo();
         //Then adds it to the undone list.
-        undoneEdits.addFirst(doneEdits.removeFirst());
+        undoneEdits.addFirst(doneEdits.removeLast());
         return undoneEdit;
     }
     
@@ -86,7 +86,7 @@ public class EditsHistory {
         if (!canUndo()) {
             return null;
         }
-        return doneEdits.removeFirst();
+        return doneEdits.removeLast();
     }
     
     /**
@@ -102,7 +102,7 @@ public class EditsHistory {
         PNEdit redoneEdit = undoneEdits.getFirst();
         redoneEdit.redo();
         //Then adds it to the undone list.
-        doneEdits.addFirst(undoneEdits.removeFirst());
+        doneEdits.addLast(undoneEdits.removeFirst());
         return redoneEdit;
     }
     
@@ -120,15 +120,11 @@ public class EditsHistory {
      */
     public void addEdit(PNEdit edit) {
         removeUndoneEdits();
-        doneEdits.addFirst(edit);
+        doneEdits.addLast(edit);
     }
     
     /**
-     * Returns a copy of the done-edits stack in LIFO order (most recent edit first).
-     * The ordering reflects the internal stack structure: the first element is the
-     * edit that would be undone next.
-     *
-     * @return a copy of the done edits list (most recent first)
+     * @return a copy of the done edits list (most recent done last)
      */
     public ArrayList<PNEdit> getDoneEdits() {
         return new ArrayList<>(this.doneEdits);

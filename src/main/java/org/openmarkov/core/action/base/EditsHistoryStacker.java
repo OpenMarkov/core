@@ -61,6 +61,7 @@ public class EditsHistoryStacker {
         if (stackAsEdit == null) {
             return;
         }
+        PNEdit stackAsEdit = new ListPNEdit(doneEdits.getFirst().getProbNet(), doneEdits);
         if (!closeOperations.contains(CloseEditStackOptions.FORGET)) {
             var nextLastStack = this.uncommitedHistories.isEmpty() ? this.mainEditsHistory : this.uncommitedHistories.getLast();
             nextLastStack.addEdit(stackAsEdit);

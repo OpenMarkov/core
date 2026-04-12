@@ -34,11 +34,11 @@ import java.util.ArrayList;
     @Override public boolean equals(Object arg0) {
         boolean sameInformation = true;
         if (arg0 instanceof COrientLinksEdit editToCompare) {
-            for (PNEdit edit : editToCompare.getEdits()) {
-                sameInformation &= getEdits().contains(edit);
+            for (PNEdit edit : editToCompare.getEdits().toList()) {
+                sameInformation = sameInformation && getEdits().toList().contains(edit);
             }
-            for (PNEdit edit : getEdits()) {
-                sameInformation &= editToCompare.getEdits().contains(edit);
+            for (PNEdit edit : getEdits().toList()) {
+                sameInformation = sameInformation && editToCompare.getEdits().toList().contains(edit);
             }
         } else {
             sameInformation = false;

@@ -14,6 +14,7 @@ import org.openmarkov.core.model.network.potential.TablePotential;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Utility class that centralises the two copy strategies for {@link ProbNet}:
@@ -113,7 +114,8 @@ final class ProbNetCopier {
             for (Potential potential : node.getPotentials()) {
                 newPotentials.add(potential.deepCopy(dest));
             }
-            dest.getNode(node.getName()).setPotentials(newPotentials);
+            Objects.requireNonNull(dest.getNode(node.getName()),
+                    "Node not found in dest: " + node.getName()).setPotentials(newPotentials);
         }
 
         copyLinks(source, dest, true);
@@ -131,8 +133,10 @@ final class ProbNetCopier {
         if (source.hasExplicitLinks()) {
             dest.makeLinksExplicit(false);
             for (Link<Node> link : source.getLinks()) {
-                Node destFrom = dest.getNode(link.getFrom().getVariable().getName());
-                Node destTo = dest.getNode(link.getTo().getVariable().getName());
+                Node destFrom = Objects.requireNonNull(dest.getNode(link.getFrom().getVariable().getName()),
+                        "Node not found in dest: " + link.getFrom().getVariable().getName());
+                Node destTo = Objects.requireNonNull(dest.getNode(link.getTo().getVariable().getName()),
+                        "Node not found in dest: " + link.getTo().getVariable().getName());
                 Link<Node> destLink = dest.addLink(destFrom, destTo, link.isDirected());
                 if (deep) {
                     if (link.getRestrictionsPotential() != null) {

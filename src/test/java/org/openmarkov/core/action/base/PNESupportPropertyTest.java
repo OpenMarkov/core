@@ -188,7 +188,7 @@ class PNESupportPropertyTest {
                 .hasSize(1);
         assertThat(undoEvents.getFirst().edit())
                 .as("undo notification should carry the compound edit")
-                .isInstanceOf(CompoundPNEdit.class);
+                .isInstanceOf(MultiEdit.class);
 
         // Redo
         listener.clear();
@@ -199,7 +199,7 @@ class PNESupportPropertyTest {
                 .hasSize(1);
         assertThat(redoEvents.getFirst().edit())
                 .as("redo notification should carry the compound edit")
-                .isInstanceOf(CompoundPNEdit.class);
+                .isInstanceOf(MultiEdit.class);
     }
 
     // -----------------------------------------------------------------------
@@ -230,8 +230,8 @@ class PNESupportPropertyTest {
 
         // The compound edit stored in history should have edits in [A, B] order
         PNEdit topEdit = net.getPNESupport().getCurrentEditHistory().nextEditToUndo();
-        assertThat(topEdit).isInstanceOf(CompoundPNEdit.class);
-        var subEdits = ((CompoundPNEdit) topEdit).getEdits();
+        assertThat(topEdit).isInstanceOf(MultiEdit.class);
+        var subEdits = ((MultiEdit) topEdit).getEdits().toList();
         assertThat(subEdits).hasSize(2);
         assertThat(subEdits.get(0))
                 .as("first sub-edit should be editA (executed first)")

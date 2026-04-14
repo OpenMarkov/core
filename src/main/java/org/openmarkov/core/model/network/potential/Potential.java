@@ -141,6 +141,7 @@ public abstract class Potential implements Localizable {
      * Converts a variable array to a list.
      *
      * @param variables array of variables
+     *
      * @return a new {@code List} containing the given variables
      */
     protected static List<Variable> toList(Variable[] variables) {
@@ -154,6 +155,7 @@ public abstract class Potential implements Localizable {
      *
      * @param variable   the variable to search for
      * @param potentials list of table potentials to search
+     *
      * @return the matching potential, or {@code null} if not found
      */
     protected static TablePotential findPotentialByVariable(Variable variable, List<TablePotential> potentials) {
@@ -303,7 +305,9 @@ public abstract class Potential implements Localizable {
      *
      * @param evidenceCase     evidence to project onto
      * @param inferenceOptions inference options
+     *
      * @return the projected table potential
+     *
      * @throws NonProjectablePotentialException if the potential cannot be projected
      */
     public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions)
@@ -316,7 +320,9 @@ public abstract class Potential implements Localizable {
      * (not necessarily a {@link TablePotential}).
      *
      * @param evidenceCase evidence to project onto
+     *
      * @return the projected potential
+     *
      * @throws NonProjectablePotentialException if the potential cannot be projected
      */
     public abstract Potential project(EvidenceCase evidenceCase) throws NonProjectablePotentialException;
@@ -473,7 +479,7 @@ public abstract class Potential implements Localizable {
                 case JOINT_PROBABILITY -> {
                     out += "P(" + stringifyVariables(0) + ")";
                 }
-                default -> {
+                case null, default -> {
                     out += numVariables + " Variables: " + variables.getFirst().getName();
                     for (int i = 1; i < numVariables - 1; i++) {
                         out += ", " + variables.get(i).getName();
@@ -605,7 +611,9 @@ public abstract class Potential implements Localizable {
      * Returns the probability for the given configuration of state indices.
      *
      * @param sampledStateIndexes map from each variable to its state index
+     *
      * @return the probability value for the configuration
+     *
      * @throws NonProjectablePotentialException if the potential cannot compute the probability
      */
     public double getProbability(HashMap<Variable, Integer> sampledStateIndexes) throws NonProjectablePotentialException {
@@ -616,7 +624,9 @@ public abstract class Potential implements Localizable {
      * Returns the probability for the configuration specified by the evidence case.
      *
      * @param evidenceCase evidence case defining the variable-state configuration
+     *
      * @return the probability value for the configuration
+     *
      * @throws NonProjectablePotentialException if the potential cannot compute the probability
      */
     public double getProbability(EvidenceCase evidenceCase) throws NonProjectablePotentialException {

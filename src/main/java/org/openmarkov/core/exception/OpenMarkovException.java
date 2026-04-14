@@ -21,28 +21,12 @@ package org.openmarkov.core.exception;
  * Infrastructure exceptions ({@link UnreachableException}, {@link UnrecoverableException})
  * do NOT extend this class — they represent programming errors or fatal system
  * conditions, not domain errors.
- * <p>
- * When a checked exception must be propagated as unchecked (e.g. inside Swing's
- * Event Dispatch Thread), wrap it with {@link UnrecoverableException} rather than
- * converting the concrete class to extend {@link OpenMarkovRuntimeException}.
  *
- * @see OpenMarkovRuntimeException
  * @see IBundledOpenMarkovException
  */
 public abstract class OpenMarkovException extends Exception implements IBundledOpenMarkovException {
-
+    
     protected OpenMarkovException() {
     }
-
-    protected OpenMarkovException(Throwable cause) {
-        super(cause);
-    }
-
-    protected OpenMarkovException(String message) {
-        super(message);
-    }
-
-    protected OpenMarkovException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    
 }

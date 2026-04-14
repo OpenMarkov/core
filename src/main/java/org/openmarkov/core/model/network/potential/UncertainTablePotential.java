@@ -189,7 +189,7 @@ public class UncertainTablePotential extends TablePotential implements Uncertain
     public @NotNull TablePotential tableProject(EvidenceCase evidenceCase,
                                                 InferenceOptions inferenceOptions,
                                                 List<TablePotential> projectedPotentials)
-            throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
+            throws NonProjectablePotentialException {
         List<Variable> unobservedVariables = new ArrayList<>(variables);
         if (evidenceCase != null) {
             unobservedVariables.removeAll(evidenceCase.getVariables());

@@ -22,7 +22,7 @@ import java.util.List;
 public interface Propagation extends Task {
 
 	HashMap<Variable, TablePotential> getPosteriorValues()
-            throws IncompatibleEvidenceException, ConstraintViolatedException;
+			throws IncompatibleEvidenceException, ConstraintViolatedException, CannotNormalizePotentialException, NonProjectablePotentialException, NotEvaluableNetworkException.NotApplicableNetwork;
 
     
     void setPostResolutionEvidence(EvidenceCase postResolutionEvidence) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException;

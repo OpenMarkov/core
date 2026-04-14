@@ -10,6 +10,7 @@ package org.openmarkov.core.action.core;
 import org.apache.logging.log4j.LogManager;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeAbsorptionHandler;
@@ -81,19 +82,27 @@ import java.util.stream.Collectors;
     protected void doEdit() throws DoEditException.CannotDoEditException {
         // If there are more than one utility children, merge them into one node
         if (absorbedNode.getChildren().size() > 1) {
-            mergeUtilityChildren();
+            try {
+                mergeUtilityChildren();
+            } catch (NonProjectablePotentialException e) {
+                throw new DoEditException.CannotDoEditException(e);
+            }
             utilityNodesMerged = true;
         } else {
             utilityNodesMerged = false;
         }
-
-        NodeAbsorptionHandler.absorbNodeConsistently(absorbedNode, absorbedVariable);
+        
+        try {
+            NodeAbsorptionHandler.absorbNodeConsistently(absorbedNode, absorbedVariable);
+        } catch (NonProjectablePotentialException e) {
+            throw new DoEditException.CannotDoEditException(e);
+        }
         // Links saved for the undo()
         linksDeleted = getLinksWithNode(absorbedNode);
         probNet.removeNode(absorbedNode);
     }
     
-    private void mergeUtilityChildren() {
+    private void mergeUtilityChildren() throws NonProjectablePotentialException {
 
         // Save the old children for undoing
         oldUtilityChildren = absorbedNode.getChildren();

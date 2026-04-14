@@ -288,7 +288,7 @@ public class DiscretePotentialOperationsTest {
     }
     
     @Test
-    public void testMultiplyAndMarginalizeProjected() throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
+    public void testMultiplyAndMarginalizeProjected() throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
         // Create data
         // Variables
         Variable A = new Variable("A", 2);
@@ -397,7 +397,7 @@ public class DiscretePotentialOperationsTest {
     @Test public void testGetAccumulatedOffsets() {
     }
     
-    @Test public void testNormalize() {
+    @Test public void testNormalize() throws CannotNormalizePotentialException {
         TablePotential multiplication = DiscretePotentialOperations.multiply(commonVariables.potentials);
         //			TablePotential normalized;
         //				normalized = (TablePotential)

@@ -102,7 +102,7 @@ public class TablePotentialProjectionRegressionTest {
      */
     @Test
     public void tableProject_lastVariable_stateZero()
-            throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
+            throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
         EvidenceCase ev = new EvidenceCase();
         ev.addFinding(new Finding(y, 0));
 
@@ -121,7 +121,7 @@ public class TablePotentialProjectionRegressionTest {
      */
     @Test
     public void tableProject_lastVariable_stateOne()
-            throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
+            throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
         EvidenceCase ev = new EvidenceCase();
         ev.addFinding(new Finding(y, 1));
 
@@ -145,7 +145,7 @@ public class TablePotentialProjectionRegressionTest {
      */
     @Test
     public void tableProject_firstVariable_stateZero()
-            throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
+            throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
         EvidenceCase ev = new EvidenceCase();
         ev.addFinding(new Finding(x, 0));
 
@@ -163,7 +163,7 @@ public class TablePotentialProjectionRegressionTest {
      */
     @Test
     public void tableProject_firstVariable_stateOne()
-            throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
+            throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
         EvidenceCase ev = new EvidenceCase();
         ev.addFinding(new Finding(x, 1));
 
@@ -185,7 +185,7 @@ public class TablePotentialProjectionRegressionTest {
      */
     @Test
     public void tableProject_evidenceVariableAbsent_returnsOriginal()
-            throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
+            throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
         Variable z = new Variable("Z", new State[]{new State("0"), new State("1")});
         EvidenceCase ev = new EvidenceCase();
         ev.addFinding(new Finding(z, 0)); // Z is not in tpXY
@@ -209,7 +209,7 @@ public class TablePotentialProjectionRegressionTest {
      */
     @Test
     public void tableProject_allVariables_yieldsConstant()
-            throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
+            throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
         EvidenceCase ev = new EvidenceCase();
         ev.addFinding(new Finding(x, 0));
         ev.addFinding(new Finding(y, 1));
@@ -246,7 +246,7 @@ public class TablePotentialProjectionRegressionTest {
      */
     @Test
     public void tableProject_middleVariable_stateZero()
-            throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
+            throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
         EvidenceCase ev = new EvidenceCase();
         ev.addFinding(new Finding(vB, 0));
 
@@ -285,7 +285,7 @@ public class TablePotentialProjectionRegressionTest {
      */
     @Test
     public void tableProject_middleVariable_stateOne()
-            throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
+            throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
         EvidenceCase ev = new EvidenceCase();
         ev.addFinding(new Finding(vB, 1));
 
@@ -325,7 +325,7 @@ public class TablePotentialProjectionRegressionTest {
      */
     @Test
     public void tableProject_thenMultiply_consistentWithMultiplyThenProject()
-            throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
+            throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
         // Two potentials over [X, Y]
         double[] tableP = {0.1, 0.2, 0.3, 0.4};
         double[] tableQ = {0.5, 0.6, 0.7, 0.8};

@@ -209,7 +209,7 @@ public class TablePotentialTest {
     }
     
     @Test public void testGetAccumulateOffsets()
-            throws NonProjectablePotentialException, org.openmarkov.core.exception.IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
+            throws org.openmarkov.core.exception.IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
         // tablePotential1 contains B,D,A,C. Dimensions (2,2,2,2)
         // tablePotential2 contains A,B,C. Dimensions (2,2,2)
         int[] accOffsets = tablePotential1.getAccumulatedOffsets(tablePotential2.getVariables());
@@ -303,8 +303,7 @@ public class TablePotentialTest {
     @Test
     /** tablePotential5 has two variables: fsVariable1 and fsVariable2, each one
      *  with 2 states.<p>
-     *  evidenceCase: fsVariable2 = 1, fsVariable4 = 0. */ public void testProject2()
-            throws NonProjectablePotentialException {
+     *  evidenceCase: fsVariable2 = 1, fsVariable4 = 0. */ public void testProject2() throws NonProjectablePotentialException {
         
         TablePotential projected = tablePotential5.tableProject(evidenceCase, null);
         
@@ -400,8 +399,7 @@ public class TablePotentialTest {
      */
     
     @Test
-    /** Test multiplication of projected potentials. */ public void testMultiplicationProjected()
-            throws NonProjectablePotentialException {
+    /** Test multiplication of projected potentials. */ public void testMultiplicationProjected() throws NonProjectablePotentialException {
         int dimA = 3;
         int dimB = 2;
         int dimC = 3;

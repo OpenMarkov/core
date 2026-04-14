@@ -11,6 +11,7 @@ package org.openmarkov.core.exception;
 import org.jdom2.JDOMException;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.java.exceptionUtils.ThrowableUtils;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -24,11 +25,7 @@ import java.util.HashMap;
 public abstract class ParserException extends UserInputException {
 
     protected ParserException() {}
-
-    protected ParserException(Throwable cause) {
-        super(cause);
-    }
-
+    
     @Override public String toString() {
         return IBundledOpenMarkovException.toString(this);
     }
@@ -182,13 +179,13 @@ public abstract class ParserException extends UserInputException {
     public static final class BadlyStructuredFile extends ParserException {
 
         public BadlyStructuredFile(URL url, SAXParseException saxParseException) {
-            super(saxParseException);
+            ThrowableUtils.transferStackTrace(saxParseException, this);
             this.url = url;
             this.saxParseException = saxParseException;
         }
 
         public BadlyStructuredFile(URL url, IOException ioException) {
-            super(ioException);
+            ThrowableUtils.transferStackTrace(ioException, this);
             this.url = url;
             this.saxParseException = null;
         }

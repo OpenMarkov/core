@@ -123,7 +123,7 @@ public abstract class MinMaxPotential extends ICIPotential {
      * all of them projected onto the evidence
      */
     @Override
-    public @NotNull TablePotential tableProject(EvidenceCase evidence, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
+    public @NotNull TablePotential tableProject(EvidenceCase evidence, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException {
         List<TablePotential> potentials = new ArrayList<>();
         List<TablePotential> subPotentials = buildSubpotentialList();
         for (TablePotential subPotential : subPotentials) {

@@ -99,12 +99,22 @@ public class ClassUtils {
     }
     
     public static @Nullable URL rawFileOfClass(Class<?> theClass) {
-        URL classUrl = theClass.getResource(theClass.getSimpleName() + ".class");
+        String simpleName = theClass.getSimpleName();
+        URL classUrl = theClass.getResource(simpleName + ".class");
         if (classUrl == null) {
             return null;
         }
         return classUrl;
     }
+    
+    public static boolean isProductionClass(Class<?> theClass) {
+        return !isTestClass(theClass);
+    }
+    
+    public static boolean isTestClass(Class<?> theClass) {
+        return theClass.getProtectionDomain().getCodeSource().getLocation().toString().contains("test-classes");
+    }
+    
     
     /**
      * Gets the file location of a class.

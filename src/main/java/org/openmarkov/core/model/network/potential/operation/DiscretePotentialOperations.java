@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.model.network.potential.operation;
 
+import org.openmarkov.core.exception.CannotNormalizePotentialException;
 import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.PotentialOperationException;
@@ -244,7 +245,7 @@ public final class DiscretePotentialOperations {
      *
      * @return The {@code potential} normalized
      */
-    public static TablePotential normalize(TablePotential potential) {
+    public static TablePotential normalize(TablePotential potential) throws CannotNormalizePotentialException {
         return TablePotentialTransform.normalize(potential);
     }
     
@@ -368,7 +369,7 @@ public final class DiscretePotentialOperations {
      *
      * @return A {@code TablePotential}
      */
-    public static TablePotential projectOutVariable(Variable variable, TablePotential inputPotential) throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
+    public static TablePotential projectOutVariable(Variable variable, TablePotential inputPotential) throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
         return TablePotentialTransform.projectOutVariable(variable, inputPotential);
     }
     

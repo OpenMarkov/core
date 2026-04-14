@@ -29,16 +29,14 @@ import org.openmarkov.core.model.network.EvidenceCase;
  * @see Scalable
  */
 public interface Projectable {
-
+    
     /**
      * Projects this potential onto the given evidence, returning a discrete table potential.
      *
      * @param evidence evidence case containing the observed variable–state assignments
      * @param options  inference options; may be {@code null} for default behaviour
+     *
      * @return a {@link TablePotential} conditioned on the supplied evidence
-     * @throws NonProjectablePotentialException if the potential cannot be converted to a table
-     *                                          for the given evidence
      */
-    TablePotential tableProject(EvidenceCase evidence, InferenceOptions options)
-            throws NonProjectablePotentialException;
+    TablePotential tableProject(EvidenceCase evidence, InferenceOptions options) throws NonProjectablePotentialException;
 }

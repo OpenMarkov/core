@@ -9,7 +9,7 @@ package org.openmarkov.core.exception;
 
 import org.openmarkov.core.model.network.potential.Potential;
 
-public class CannotNormalizePotentialException extends OpenMarkovRuntimeException {
+public class CannotNormalizePotentialException extends OpenMarkovException {
     
     private final Potential potential;
     

@@ -116,6 +116,7 @@ public class LinearCombinationPotential extends GLMPotential implements Scalable
         return projectedPotential;
     }
     
+    
     @Override
     public Potential copy() {
         return new LinearCombinationPotential(this);

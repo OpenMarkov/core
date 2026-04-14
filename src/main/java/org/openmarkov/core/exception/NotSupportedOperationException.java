@@ -8,7 +8,7 @@ import org.jetbrains.annotations.Nullable;
  *
  * @author jrico
  */
-public final class NotSupportedOperationException extends UnsupportedOperationException implements IBundledOpenMarkovException {
+public final class NotSupportedOperationException extends UnsupportedOperationException implements IOpenMarkovException {
 
     private final StackTraceElement operation;
     private final @Nullable String reason;
@@ -28,7 +28,11 @@ public final class NotSupportedOperationException extends UnsupportedOperationEx
     @Override public @Nullable String getExceptionMessage() {
         return getMessage();
     }
-
+    
+    @Override public @Nullable String getExceptionTitle() {
+        return "Operation not supported";
+    }
+    
     @Override public String getMessage() {
         String message = "Operation " + this.operation.getMethodName() + " is not supported";
         if (this.reason != null && !this.reason.isBlank()) {

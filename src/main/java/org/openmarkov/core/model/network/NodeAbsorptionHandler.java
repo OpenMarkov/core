@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.model.network;
 
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
@@ -39,7 +40,7 @@ public final class NodeAbsorptionHandler {
      * @param node             the node performing the absorption (the utility child's context)
      * @param absorbedVariable the variable whose node is being absorbed
      */
-    public static void absorbNodeConsistently(Node node, Variable absorbedVariable) {
+    public static void absorbNodeConsistently(Node node, Variable absorbedVariable) throws NonProjectablePotentialException {
         ProbNet probNet = node.getProbNet();
         Node absorbedNode = probNet.getNode(absorbedVariable);
         Node child = absorbedNode.getChildren().getFirst();

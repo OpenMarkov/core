@@ -93,7 +93,7 @@ public class AugmentedProbTablePotential extends Potential {
     }
     
     @Override
-    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable, NonProjectablePotentialException.CannotEvaluate, NonProjectablePotentialException.CannotResolveVariable {
+    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials) throws NonProjectablePotentialException.CannotEvaluate, NonProjectablePotentialException.CannotResolveVariable {
         Map<Variable, String> findingsMap = evidenceCase.getFindingsMap();
         VariableExpression[] expressions = this.augmentedProbTable.getFunctionValues();
         var resolvedTablePotential = new TablePotential(this.finiteStatesVariables, role);

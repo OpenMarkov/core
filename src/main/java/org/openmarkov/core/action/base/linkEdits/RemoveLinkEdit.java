@@ -10,6 +10,7 @@ package org.openmarkov.core.action.base.linkEdits;
 import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -125,8 +126,12 @@ public final class RemoveLinkEdit extends BaseLinkEdit {
 					 */
                     
                     // Temporal patch to be removed when the above TO-DO is implemented
-                    if (Arrays.stream(newPotential.getCPT().getValues()).sum() == 0) {
-                        newPotential = new UniformPotential(newPotential.getVariables(), newPotential.getPotentialRole());
+                    try {
+                        if (Arrays.stream(newPotential.getCPT().getValues()).sum() == 0) {
+                            newPotential = new UniformPotential(newPotential.getVariables(), newPotential.getPotentialRole());
+                        }
+                    } catch (NonProjectablePotentialException e) {
+                        throw new DoEditException.CannotDoEditException(e);
                     }
                     
                     newPotentials.add(newPotential);

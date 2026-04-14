@@ -2,7 +2,7 @@ package org.openmarkov.core.exception;
 
 import org.jetbrains.annotations.Nullable;
 
-public class InvalidArgumentException extends IllegalArgumentException implements IBundledOpenMarkovException {
+public class InvalidArgumentException extends IllegalArgumentException implements IOpenMarkovException {
 
     public final boolean valueIsSet;
     public final @Nullable Object value;
@@ -44,7 +44,11 @@ public class InvalidArgumentException extends IllegalArgumentException implement
     @Override public @Nullable String getExceptionMessage() {
         return getMessage();
     }
-
+    
+    @Override public @Nullable String getExceptionTitle() {
+        return "Argument is invalid";
+    }
+    
     private static String buildMessage(@Nullable Object value, @Nullable String argumentName, String reason) {
         String valuePart = value != null ? "(" + value + ") " : "";
         String namePart = argumentName != null ? argumentName + " " : "";

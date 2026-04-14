@@ -57,7 +57,7 @@ public abstract class InferenceAlgorithm implements Task {
      *
      * @throws NotEvaluableNetworkException NotEvaluableNetworkException
      */
-    public InferenceAlgorithm(ProbNet network) throws NotEvaluableNetworkException.NotApplicableNetwork, NotEvaluableNetworkException.UnsatisfiedConstraints, ConstraintViolatedException {
+    public InferenceAlgorithm(ProbNet network) throws NotEvaluableNetworkException.NotApplicableNetwork, ConstraintViolatedException {
         this.probNet = network.copy();
         this.preResolutionEvidence = new EvidenceCase();
         this.conditioningVariables = new ArrayList<>();

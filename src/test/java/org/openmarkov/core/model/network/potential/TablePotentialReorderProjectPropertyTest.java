@@ -192,8 +192,7 @@ class TablePotentialReorderProjectPropertyTest {
      */
     @Property
     void tableProject_nullEvidence_returnsSameObject(
-            @ForAll("variableLists") List<Variable> variables)
-            throws NonProjectablePotentialException {
+            @ForAll("variableLists") List<Variable> variables) throws NonProjectablePotentialException {
         TablePotential tp = filledPotential(variables);
         TablePotential projected = tp.tableProject(null, null);
         assertThat(projected).isSameAs(tp);
@@ -209,8 +208,8 @@ class TablePotentialReorderProjectPropertyTest {
             @ForAll @IntRange(min = 2, max = 5) int sB,
             @ForAll @IntRange(min = 0, max = 4) int rawStateA,
             @ForAll @IntRange(min = 0, max = 4) int rawStateB)
-            throws NonProjectablePotentialException,
-                   IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
+            throws
+            IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
         int stateA = rawStateA % sA;
         int stateB = rawStateB % sB;
         Variable a = new Variable("A", sA);
@@ -244,8 +243,8 @@ class TablePotentialReorderProjectPropertyTest {
             @ForAll @IntRange(min = 2, max = 5) int sA,
             @ForAll @IntRange(min = 2, max = 5) int sB,
             @ForAll @IntRange(min = 0, max = 4) int rawStateA)
-            throws NonProjectablePotentialException,
-                   IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
+            throws
+            IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
         int stateA = rawStateA % sA;
         Variable a = new Variable("A", sA);
         Variable b = new Variable("B", sB);
@@ -278,8 +277,8 @@ class TablePotentialReorderProjectPropertyTest {
             @ForAll @IntRange(min = 2, max = 5) int sB,
             @ForAll @IntRange(min = 2, max = 5) int sC,
             @ForAll @IntRange(min = 0, max = 4) int rawStateA)
-            throws NonProjectablePotentialException,
-                   IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
+            throws
+            IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
         int stateA = rawStateA % sA;
         Variable a = new Variable("A", sA);
         Variable b = new Variable("B", sB);

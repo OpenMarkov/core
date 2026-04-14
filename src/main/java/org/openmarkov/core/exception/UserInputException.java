@@ -16,8 +16,8 @@ package org.openmarkov.core.exception;
  * {@code org.openmarkov.core.io.format.annotation}.
  */
 public abstract class UserInputException extends OpenMarkovException {
+    
     protected UserInputException() {}
-    protected UserInputException(Throwable cause) { super(cause); }
-    protected UserInputException(String message) { super(message); }
-    protected UserInputException(String message, Throwable cause) { super(message, cause); }
+    
+    
 }

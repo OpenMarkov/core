@@ -236,7 +236,7 @@ public class DiscretePotentialOperationsRegressionTest {
     }
 
     @Test
-    public void normalizeAlreadyNormalizedIsIdentity() {
+    public void normalizeAlreadyNormalizedIsIdentity() throws CannotNormalizePotentialException {
         TablePotential result = DiscretePotentialOperations.normalize(pA);
         // P(A) sums to 1 already; each value should be the same.
         assertEquals(0.4, result.getValues()[0], 1e-6);
@@ -244,7 +244,7 @@ public class DiscretePotentialOperationsRegressionTest {
     }
 
     @Test
-    public void normalizeUnnormalizedPotential() {
+    public void normalizeUnnormalizedPotential() throws CannotNormalizePotentialException {
         TablePotential unnorm = new TablePotential(List.of(a), PotentialRole.CONDITIONAL_PROBABILITY,
                 new double[]{2.0, 6.0});  // sum = 8
         TablePotential result = DiscretePotentialOperations.normalize(unnorm);

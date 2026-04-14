@@ -74,7 +74,7 @@ public class ConditionalGaussianPotentialTest {
     }
     
     @Test public void testTableProjectWithEvidence()
-            throws NonProjectablePotentialException, org.openmarkov.core.exception.IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
+            throws org.openmarkov.core.exception.IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
         
         EvidenceCase evidence = new EvidenceCase();
         evidence.addFinding(new Finding(predictedAudiometry, 2)); // on

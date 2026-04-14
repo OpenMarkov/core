@@ -78,7 +78,7 @@ import java.util.List;
     }
     
     @Override
-    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
+    public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials) throws NonProjectablePotentialException {
         // get the projected TablePotential, which will be returned inside a list
         TablePotential projectedPotential = tablePotential
                 .tableProject(evidenceCase, inferenceOptions, alreadyProjectedPotentials);

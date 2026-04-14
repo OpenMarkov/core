@@ -23,7 +23,7 @@ import java.util.List;
  */
 //TODO: Almost every exception of this class is wrapped into an UnrecheableException,
 // or shown with JOptionPanel, leading to further bugs. This might be a RuntimeException.
-public abstract sealed class NonProjectablePotentialException extends OpenMarkovRuntimeException {
+public abstract sealed class NonProjectablePotentialException extends OpenMarkovException {
 
     public static final class SuperValueMustBeSumOrProduct extends NonProjectablePotentialException {
         public SuperValueMustBeSumOrProduct(Potential potential) {

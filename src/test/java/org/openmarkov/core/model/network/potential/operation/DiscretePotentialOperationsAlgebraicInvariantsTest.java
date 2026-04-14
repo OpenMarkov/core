@@ -10,6 +10,7 @@ package org.openmarkov.core.model.network.potential.operation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.openmarkov.core.exception.CannotNormalizePotentialException;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
@@ -271,7 +272,7 @@ public class DiscretePotentialOperationsAlgebraicInvariantsTest {
      * we build an unnormalised version (2×tpAB) to make the test meaningful.</p>
      */
     @Test
-    public void normalize_conditionalProbability_eachRowSumsToOne() {
+    public void normalize_conditionalProbability_eachRowSumsToOne() throws CannotNormalizePotentialException {
         // tpAB * 2: each row sums to 2.0 before normalization
         double[] doubled = Arrays.stream(u.tpAB.getValues()).map(v -> v * 2.0).toArray();
         TablePotential unnormalized = new TablePotential(u.variablesAB,
@@ -297,7 +298,7 @@ public class DiscretePotentialOperationsAlgebraicInvariantsTest {
      * by its total sum, so the result sums to 1.0.
      */
     @Test
-    public void normalize_jointProbability_tableSumsToOne() {
+    public void normalize_jointProbability_tableSumsToOne() throws CannotNormalizePotentialException {
         // tpAB values sum to 3.0 — use them as a joint potential
         TablePotential joint = new TablePotential(u.variablesAB,
                 PotentialRole.JOINT_PROBABILITY, u.tpAB.getValues().clone());
@@ -319,7 +320,7 @@ public class DiscretePotentialOperationsAlgebraicInvariantsTest {
      * to be able to compare before/after independently.</p>
      */
     @Test
-    public void normalize_alreadyNormalized_isIdempotent() {
+    public void normalize_alreadyNormalized_isIdempotent() throws CannotNormalizePotentialException {
         // Build a joint potential that already sums to 1.0
         double[] table = {0.5, 0.4, 0.1};
         TablePotential joint = new TablePotential(u.variablesA,
@@ -338,7 +339,7 @@ public class DiscretePotentialOperationsAlgebraicInvariantsTest {
      * the same result as normalising once.
      */
     @Test
-    public void normalize_idempotency_holdsForUnnormalisedPotential() {
+    public void normalize_idempotency_holdsForUnnormalisedPotential() throws CannotNormalizePotentialException {
         // Joint potential with sum 3.0
         TablePotential joint = new TablePotential(u.variablesAB,
                 PotentialRole.JOINT_PROBABILITY, u.tpAB.getValues().clone());

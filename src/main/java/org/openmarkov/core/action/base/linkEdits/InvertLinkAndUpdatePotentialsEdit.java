@@ -8,6 +8,7 @@
 package org.openmarkov.core.action.base.linkEdits;
 
 import org.openmarkov.core.exception.DoEditException;
+import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
@@ -123,13 +124,21 @@ public final class InvertLinkAndUpdatePotentialsEdit extends BaseLinkEdit {
 
 		// pot(x) are added to xyPotentials
 		for (Potential parentsOldPotential : parentsOldPotentials) {
-			xyPotentials.add(parentsOldPotential.getCPT());
-		}
+            try {
+                xyPotentials.add(parentsOldPotential.getCPT());
+            } catch (NonProjectablePotentialException e) {
+                throw new DoEditException.CannotDoEditException(e);
+            }
+        }
 
 		// pot(y) are added to xyPotentials
 		for (Potential childOldPotential : childsOldPotentials) {
-			xyPotentials.add(childOldPotential.getCPT());
-		}
+            try {
+                xyPotentials.add(childOldPotential.getCPT());
+            } catch (NonProjectablePotentialException e) {
+                throw new DoEditException.CannotDoEditException(e);
+            }
+        }
 
 		// Correct order of variables
 		Set<Variable> variables = new LinkedHashSet<>();

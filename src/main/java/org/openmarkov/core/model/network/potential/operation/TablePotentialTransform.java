@@ -40,7 +40,7 @@ final class TablePotentialTransform {
      * @return the same potential, normalized
      * @throws CannotNormalizePotentialException if all values are zero
      */
-    static TablePotential normalize(TablePotential potential) {
+    static TablePotential normalize(TablePotential potential) throws CannotNormalizePotentialException {
         TablePotential tablePotential = potential;
         if (Arrays.stream(tablePotential.getValues()).allMatch(value -> value == 0.0)) {
             throw new CannotNormalizePotentialException(tablePotential);
@@ -84,7 +84,7 @@ final class TablePotentialTransform {
      * @return the projected potential
      */
     static TablePotential projectOutVariable(Variable variable, TablePotential inputPotential)
-            throws NonProjectablePotentialException, IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther {
+            throws IncompatibleEvidenceException.EvidenceIsIncompatibleWithOther, NonProjectablePotentialException {
         EvidenceCase evi = new EvidenceCase();
         evi.addFinding(new Finding(variable, variable.getStates()[0]));
         return inputPotential.tableProject(evi, null);

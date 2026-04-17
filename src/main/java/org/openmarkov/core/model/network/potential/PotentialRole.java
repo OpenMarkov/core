@@ -12,24 +12,29 @@ import org.openmarkov.core.stringformat.LocalizationFormatter;
 import org.openmarkov.java.enumUtils.EnumUtils;
 
 /**
- * Enumerates the roles a potential can play in a probabilistic graphical model:
- * conditional probability, joint probability, policy, link restriction, or unspecified.
+ * Enumerates the roles a potential can play in a probabilistic graphical model.
+ *
+ * <ul>
+ *   <li>{@link #CONDITIONAL_PROBABILITY} — conditional probability distribution {@code P(X | parents)}.</li>
+ *   <li>{@link #JOINT_PROBABILITY} — joint distribution over several variables.</li>
+ *   <li>{@link #POLICY} — decision policy (optimal action table).</li>
+ *   <li>{@link #LINK_RESTRICTION} — constraint attached to a link.</li>
+ *   <li>{@link #UNSPECIFIED} — role not fixed by this enum. Currently used as the internal
+ *       marker for utility potentials: the PGMX readers map {@code role="utility"} to
+ *       {@code UNSPECIFIED}, and {@code PGMXWriter_0_2} writes {@code UNSPECIFIED} as
+ *       {@code role="utility"}. See {@code org.openmarkov.io.probmodel.reader.PGMXReader_0_2}.</li>
+ * </ul>
  *
  * @author Manuel Arias
  * @version 1.0
  */
 public enum PotentialRole implements Localizable {
-    
+
     CONDITIONAL_PROBABILITY,
     JOINT_PROBABILITY,
     POLICY,
     LINK_RESTRICTION,
-    UNSPECIFIED,
-    // DECISION,
-    // UTILITY,
-    // TODO Remove
-    // INTERVENTION,
-    // UTIL_2
+    UNSPECIFIED
 	;
     
     public String toString() {

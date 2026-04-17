@@ -271,7 +271,6 @@ public class PotentialOperations {
         }
         PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
         if (auxNodeType == NodeType.DECISION) {
-            //			role = PotentialRole.DECISION;
             role = PotentialRole.POLICY;
         }
         UniformPotential uniformPotential = new UniformPotential(variables, role);
@@ -286,7 +285,6 @@ public class PotentialOperations {
         }
         PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
         if (auxNodeType == NodeType.DECISION) {
-            //			role = PotentialRole.DECISION;
             role = PotentialRole.POLICY;
         }
         TablePotential tablePotential = new TablePotential(variables, role);
@@ -302,7 +300,6 @@ public class PotentialOperations {
         }
         PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
         if (auxNodeType == NodeType.DECISION) {
-            //			role = PotentialRole.DECISION;
             role = PotentialRole.POLICY;
         }
         ExactDistrPotential exactDistrPotential = new ExactDistrPotential(variables, role);

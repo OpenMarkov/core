@@ -100,7 +100,7 @@ public class UncertainTablePotential extends TablePotential implements Uncertain
     // -----------------------------------------------------------------------
 
     @Override
-    public Potential reorder(List<Variable> newOrderOfVariables) {
+    public UncertainTablePotential reorder(List<Variable> newOrderOfVariables) {
         UncertainTablePotential newPotential = new UncertainTablePotential(newOrderOfVariables, getPotentialRole());
         int[] accOffsets = getAccumulatedOffsets(newOrderOfVariables);
         int[] potentialPositions = new int[getNumVariables()];

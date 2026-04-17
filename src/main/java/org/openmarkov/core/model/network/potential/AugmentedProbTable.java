@@ -224,7 +224,7 @@ public class AugmentedProbTable extends UncertainTablePotential {
     
     
     @Override
-    public Potential reorder(List<Variable> newOrderOfVariables) {
+    public AugmentedProbTable reorder(List<Variable> newOrderOfVariables) {
         AugmentedProbTable newPotential = new AugmentedProbTable(newOrderOfVariables, getPotentialRole());
         int[] accOffsets = getAccumulatedOffsets(newOrderOfVariables);
         int[] potentialPositions = new int[getNumVariables()];

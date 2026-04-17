@@ -104,7 +104,7 @@ public class StrategicTablePotential extends TablePotential implements StrategyC
      * array to match {@code newOrderOfVariables}.
      */
     @Override
-    public Potential reorder(List<Variable> newOrderOfVariables) {
+    public StrategicTablePotential reorder(List<Variable> newOrderOfVariables) {
         StrategicTablePotential newPotential = new StrategicTablePotential(newOrderOfVariables, getPotentialRole());
         int[] accOffsets = getAccumulatedOffsets(newOrderOfVariables);
         int[] potentialPositions = new int[getNumVariables()];

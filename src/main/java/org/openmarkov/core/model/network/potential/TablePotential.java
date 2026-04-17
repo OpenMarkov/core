@@ -599,7 +599,7 @@ public class TablePotential extends AbstractIndexedPotential
         return getProbability(sampledStateIndexes);
     }
     
-    @Override public Potential addVariable(Variable newVariable) {
+    @Override public TablePotential addVariable(Variable newVariable) {
         // creates the new potential
         List<Variable> newVariables = new ArrayList<>(variables);
         newVariables.add(newVariable);
@@ -691,7 +691,7 @@ public class TablePotential extends AbstractIndexedPotential
     }
     
     @Override
-    public Potential reorder(List<Variable> newOrderOfVariables) {
+    public TablePotential reorder(List<Variable> newOrderOfVariables) {
         TablePotential newPotential = new TablePotential(newOrderOfVariables, getPotentialRole());
         int[] accOffsets = getAccumulatedOffsets(newOrderOfVariables);
         int[] potentialPositions = new int[getNumVariables()];

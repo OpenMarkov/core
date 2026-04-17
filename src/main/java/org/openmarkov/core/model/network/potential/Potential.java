@@ -540,20 +540,23 @@ public abstract class Potential implements Localizable {
     }
     
     /**
-     * When this potential represents a conditional probability, this method returns a value for the first variable,
+     * When this potential represents a conditional probability, returns a value for the first variable,
      * sampled with the probability distribution. If this variable is finite-states, it returns the index of
      * the sampled state. If the variable is numeric, it returns the value sampled.
+     *
+     * <p>Default implementation throws {@link UnsupportedOperationException}; subclasses that support
+     * sampling must override it. A future redesign may promote this to a dedicated
+     * {@code Sampleable} capability interface.</p>
      *
      * @param randomGenerator Random generator
      * @param sampledParents  Sampled parents
      *
      * @return a value for the first variable, sampled with the probability distribution.
+     * @throws UnsupportedOperationException if this potential does not support sampling.
      */
-    // TODO replace int with double
-    // TODO make this method abstract and implement it in all the subclasses of Potential
     public int sampleConditionedVariable(Random randomGenerator, Map<Variable, Integer> sampledParents) {
-        // dummy code. TODO remove when making this method abstract.
-        return Integer.MAX_VALUE;
+        throw new UnsupportedOperationException(
+                "sampleConditionedVariable not implemented for " + getClass().getSimpleName());
     }
     
     /**

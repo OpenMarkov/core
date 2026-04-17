@@ -514,4 +514,16 @@ public class PotentialTest {
         assertSame(potential1.getPotentialRole(), potential2.getPotentialRole());
         assertSame(potential1.getCriterion(), potential2.getCriterion());
     }
+
+    @Test
+    public void sampleConditionedVariableThrowsWhenNotOverridden() {
+        Variable variable = new Variable("v");
+        State[] states = {new State("a"), new State("b"), new State("c")};
+        variable.setStates(states);
+        DeltaPotential potential = new DeltaPotential(List.of(variable), PotentialRole.CONDITIONAL_PROBABILITY,
+                                                      states[0]);
+        UnsupportedOperationException ex = assertThrows(UnsupportedOperationException.class,
+                () -> potential.sampleConditionedVariable(new java.util.Random(), new java.util.HashMap<>()));
+        assertTrue(ex.getMessage().contains("DeltaPotential"));
+    }
 }

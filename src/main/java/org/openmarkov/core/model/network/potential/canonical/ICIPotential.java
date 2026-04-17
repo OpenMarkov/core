@@ -188,11 +188,7 @@ public abstract class ICIPotential extends Potential implements Projectable {
      * @param evidenceCase     {@code EvidenceCase}
      *
      * @return {@code ArrayList} of {@code Potential}
-     *
      */
-    // TODO This is the actual valid tableProject that should be used once the
-    // bug in projectEvidence (assuming tableProject always returns a
-    // one-element list of potentials) is solved
     public List<TablePotential> internalTableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions) throws NonProjectablePotentialException {
         List<TablePotential> projectedPotentials = new ArrayList<>();
         for (TablePotential subPotential : getSubpotentials()) {

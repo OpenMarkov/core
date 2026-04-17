@@ -42,7 +42,7 @@ import java.util.*;
  */
 @PotentialType(names = {"ProbTable", "Table"})
 public class TablePotential extends AbstractIndexedPotential
-        implements Comparable<TablePotential>, Projectable, Reorderable, Scalable {
+        implements Comparable<TablePotential>, Projectable, Reorderable, Scalable, CEUtilityPotential {
     // Attributes
     /**
      * Table storing the numerical values of the potential.

@@ -18,7 +18,7 @@ import java.util.List;
  * A generalized {@code TablePotential} that contains an
  * {@code Objects} table of the same type: {@code Element}.
  */
-public class GTablePotential<E> extends AbstractIndexedPotential {
+public class GTablePotential<E> extends AbstractIndexedPotential implements CEUtilityPotential {
 
 	// Attributes
 	/**

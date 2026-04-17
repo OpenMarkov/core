@@ -212,6 +212,35 @@
                                                     <xs:element name="Coefficients" minOccurs="0"/>
                                                     <xs:element name="CovarianceMatrix" minOccurs="0"/>
                                                     <xs:element name="CholeskyMatrix" minOccurs="0"/>
+                                                    <!-- ConditionalGaussian / DiscretizedCauchy Structure -->
+                                                    <xs:element name="Mean" minOccurs="0">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="Potential"/>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="Variance" minOccurs="0">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="Potential"/>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="Median" minOccurs="0">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="Potential"/>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
+                                                    <xs:element name="Scale" minOccurs="0">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="Potential"/>
+                                                            </xs:sequence>
+                                                        </xs:complexType>
+                                                    </xs:element>
                                                     <!-- Hazard (Exponential) Structure -->
                                                     <xs:element name="Log" minOccurs="0"/>
                                                     <!-- Function Structure -->

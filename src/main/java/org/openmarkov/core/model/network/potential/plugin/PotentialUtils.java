@@ -65,7 +65,7 @@ public class PotentialUtils {
         potentialsByExceptionLevel.forEach(potentialClass -> {
             String potentialName = PotentialUtils.getPotentialName(potentialClass);
             if (potentialName == null || potentialName.isBlank()) return;
-            potentialsByName.put(potentialName, potentialClass);
+            potentialsByName.putIfAbsent(potentialName, potentialClass);
         });
         POTENTIALS_BY_NAME = potentialsByName;
     }

@@ -40,7 +40,7 @@ import java.util.*;
  * @version 1.0
  * @since OpenMarkov 1.0
  */
-@PotentialType(names = {"Table", "ProbTable"})
+@PotentialType(names = {"ProbTable", "Table"})
 public class TablePotential extends AbstractIndexedPotential
         implements Comparable<TablePotential>, Projectable, Reorderable, Scalable {
     // Attributes

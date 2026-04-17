@@ -109,12 +109,15 @@ public abstract class Potential implements Localizable {
     //    }
     
     /**
-     * TODO - Remove this constructor, replace with a copy method
-     * Copy constructor for potential
+     * Copy-constructor helper for subclasses. {@link Potential} is abstract, so this
+     * constructor is never invoked from outside the hierarchy: subclasses call it via
+     * {@code super(potential)} from their own copy constructor to replicate the shared
+     * state (variables, role, comment, criterion). Public copying is offered through
+     * {@link #copy()}, which every subclass overrides.
      *
-     * @param potential Potential
+     * @param potential potential whose shared state is copied into the new instance
      */
-    public Potential(Potential potential) {
+    protected Potential(Potential potential) {
         this(potential.getVariables(), potential.getPotentialRole());
         this.comment = potential.getComment();
         this.criterion = CloneUtils.safeClone(potential.getCriterion());

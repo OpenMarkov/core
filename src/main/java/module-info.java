@@ -63,5 +63,6 @@ open module org.openmarkov.core {
     exports org.openmarkov.java.initialization;
     exports org.openmarkov.java.function;
     exports org.openmarkov.java.collectionsUtils.arrayUtils;
+    exports org.openmarkov.java.reflectionUtils;
     
 }

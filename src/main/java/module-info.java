@@ -16,6 +16,7 @@ open module org.openmarkov.core {
     requires org.apache.commons.collections4;
     requires org.apache.commons.io;
     requires antlr;
+    requires org.apache.poi.poi;
     
     exports org.openmarkov.core.action.core;
     exports org.openmarkov.core.model.decisiontree;

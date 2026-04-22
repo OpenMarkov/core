@@ -24,7 +24,7 @@ import java.util.List;
  * @param <T> The type of utility associated with this node (e.g., Double,
  *            CostEffectiveness).
  */
-public abstract class DecisionTreeNode<T> implements DecisionTreeElement {
+public abstract non-sealed class DecisionTreeNode<T> implements DecisionTreeElement {
 
 	protected double scenarioProbability = Double.NEGATIVE_INFINITY;
 	private Variable variable;

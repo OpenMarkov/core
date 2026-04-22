@@ -15,7 +15,7 @@ import java.util.List;
  * Interface that represents an element in a decision tree.
  * Both nodes and branches implement this interface.
  */
-public interface DecisionTreeElement {
+public sealed interface DecisionTreeElement permits DecisionTreeBranch, DecisionTreeNode {
 	/**
 	 * Returns the list of children of this element.
 	 * 

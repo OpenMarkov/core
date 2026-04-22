@@ -22,7 +22,7 @@ import java.util.List;
  * node.
  * A branch is typically associated with a specific state of a variable.
  */
-public class DecisionTreeBranch implements DecisionTreeElement {
+public non-sealed class DecisionTreeBranch implements DecisionTreeElement {
 
 	protected double scenarioProbability = Double.NEGATIVE_INFINITY;
 	private final Variable branchVariable;

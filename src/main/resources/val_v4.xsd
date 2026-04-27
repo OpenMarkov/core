@@ -327,7 +327,14 @@
                         </xs:sequence>
                     </xs:complexType>
                 </xs:element>
-                <xs:element name="Evidence" minOccurs="0">
+                <xs:element name="Evidence" minOccurs="0"/>
+                <xs:element name="VariableType" minOccurs="0"/>
+                <xs:element name="DefaultStates" minOccurs="0">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="State" maxOccurs="unbounded"/>
+                        </xs:sequence>
+                    </xs:complexType>
                 </xs:element>
             </xs:all>
             <xs:anyAttribute processContents="skip"/>

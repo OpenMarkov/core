@@ -843,7 +843,7 @@ public class ProbNet implements PotentialNetwork, Cloneable, ClassLocalizable {
      *
      * @return return variable with that basename and time slice
      */
-    public Variable getVariable(String baseName, int timeSlice) {
+    public @Nullable Variable getVariable(String baseName, int timeSlice) {
         return getVariable(baseName + " [" + timeSlice + "]");
     }
     
@@ -854,7 +854,7 @@ public class ProbNet implements PotentialNetwork, Cloneable, ClassLocalizable {
      * @return a new variable having the same base name as the first argument
      * but in the time slice indicated by the second argument
      */
-    public Variable getShiftedVariable(Variable variable, int timeDifference) {
+    public @Nullable Variable getShiftedVariable(Variable variable, int timeDifference) {
         return getVariable(variable.getBaseName(), variable.getTimeSlice() + timeDifference);
     }
     

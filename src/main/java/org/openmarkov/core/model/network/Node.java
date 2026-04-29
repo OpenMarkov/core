@@ -8,6 +8,7 @@
 package org.openmarkov.core.model.network;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
 import org.openmarkov.core.localize.ClassLocalizable;
 import org.openmarkov.core.model.graph.Link;
@@ -164,7 +165,7 @@ public class Node implements Cloneable, ClassLocalizable {
             this.additionalProperties.putAll(additionalProperties);
         }
     }
-
+    
     /**
      * Adds or replaces a single additional property.
      *
@@ -181,7 +182,7 @@ public class Node implements Cloneable, ClassLocalizable {
     public String getName() {
         return getVariable().getName();
     }
-
+    
     /**
      * @return The base name of the variable (without temporal index).
      */
@@ -202,9 +203,9 @@ public class Node implements Cloneable, ClassLocalizable {
             addPotential(potential);
         }
     }
-
+    
     /** Removes all potentials from this node. */
-    public void clearPotentials(){
+    public void clearPotentials() {
         this.potentials.clear();
     }
     
@@ -272,6 +273,7 @@ public class Node implements Cloneable, ClassLocalizable {
     
     /**
      * @return the first potential in this node's list
+     *
      * @throws ThereIsNoPotentialsInNodeException if the node has no potentials
      */
     public Potential getFirstPotential() throws ThereIsNoPotentialsInNodeException {
@@ -310,42 +312,42 @@ public class Node implements Cloneable, ClassLocalizable {
     public List<Link<Node>> getLinks() {
         return probNet.getLinks(this);
     }
-
+    
     /** @return the child nodes of this node (targets of outgoing directed links) */
     public @NotNull List<Node> getChildren() {
         return probNet.getChildren(this);
     }
-
+    
     /** @return the parent nodes of this node (sources of incoming directed links) */
     public @NotNull List<Node> getParents() {
         return probNet.getParents(this);
     }
-
+    
     /** @return the sibling nodes of this node (connected by undirected links) */
     public List<Node> getSiblings() {
         return probNet.getSiblings(this);
     }
-
+    
     /** @return all neighbor nodes (parents, children, and siblings) */
     public List<Node> getNeighbors() {
         return probNet.getNeighbors(this);
     }
-
+    
     /** @return the number of child nodes */
     public int getNumChildren() {
         return probNet.getNumChildren(this);
     }
-
+    
     /** @return the number of parent nodes */
     public int getNumParents() {
         return probNet.getNumParents(this);
     }
-
+    
     /** @return the number of sibling nodes */
     public int getNumSiblings() {
         return probNet.getNumSiblings(this);
     }
-
+    
     /** @return the number of neighbor nodes */
     public int getNumNeighbors() {
         return probNet.getNumNeighbors(this);
@@ -649,6 +651,7 @@ public class Node implements Cloneable, ClassLocalizable {
      * all metadata (coordinates, purpose, relevance, etc.) but not potentials.
      *
      * @param probNet the target network for the cloned node
+     *
      * @return a new {@code Node} with cloned variable and copied properties
      */
     public Node clone(ProbNet probNet) {
@@ -677,12 +680,13 @@ public class Node implements Cloneable, ClassLocalizable {
      * @return the first potential, or {@code null} if no potentials are assigned
      */
     public Potential getPotential() {
-        if(potentials.isEmpty()){
+        if (potentials.isEmpty()) {
             return null;
-        }else{
+        } else {
             return getPotentials().getFirst();
         }
     }
+    
     /**
      * @return the last potential in this node's list
      */
@@ -691,7 +695,20 @@ public class Node implements Cloneable, ClassLocalizable {
         int x = getPotentials().size() - 1;
         return getPotentials().get(x);
     }
-
-
-
+    
+    public boolean temporalEvolutionCanBeExecuted() {
+        return this.getVariable().isTemporal() &&
+                !(
+                        this.getNodeType() == NodeType.CHANCE
+                                && this.getVariable().getVariableType() != VariableType.FINITE_STATES
+                );
+    }
+    
+    public @Nullable Variable nextSlice() {
+        if (!this.getVariable().isTemporal()) {
+            return null;
+        }
+        return this.getProbNet().getShiftedVariable(this.getVariable(), 1);
+    }
+    
 }

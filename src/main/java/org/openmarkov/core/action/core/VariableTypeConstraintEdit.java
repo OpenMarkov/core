@@ -7,7 +7,11 @@
 
 package org.openmarkov.core.action.core;
 
+import org.openmarkov.core.action.base.ConstraintChecker;
+import org.openmarkov.core.exception.ConstraintViolatedException;
+import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.constraint.OnlyContinuousVariables;
 import org.openmarkov.core.model.network.constraint.OnlyDiscreteVariables;
 import org.openmarkov.core.model.network.constraint.PNConstraint;
@@ -51,6 +55,32 @@ import java.util.List;
 			}
 		}
 
+	}
+
+	@Override
+	public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
+		if (newVariableTypeConstraint instanceof OnlyDiscreteVariables constraint) {
+				Node node;
+				for (Node pNode : probNet.getNodes()){
+					if (pNode.getVariable().getVariableType() != VariableType.FINITE_STATES){
+						node = pNode;
+						constraintChecker.addException(
+								new ConstraintViolatedException.OnlyDiscreteVariablesAllowed(constraint, node.getVariable()));
+						break;
+					}
+				}
+		}
+		if (newVariableTypeConstraint instanceof OnlyContinuousVariables constraint) {
+			Node node;
+			for (Node pNode : probNet.getNodes()){
+				if (pNode.getVariable().getVariableType() != VariableType.NUMERIC){
+					node = pNode;
+					constraintChecker.addException(
+							new ConstraintViolatedException.OnlyContinuousVariablesAllowed(constraint, node.getVariable()));
+					break;
+				}
+			}
+		}
 	}
 
 	// Methods

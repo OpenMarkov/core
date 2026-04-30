@@ -27,6 +27,12 @@ import java.util.Random;
 import java.util.Set;
 
 /**
+ * Sampler that walks the {@link ProbNet}, collects all uncertain parameters
+ * (including those nested in {@link TreeADDPotential} branches) and produces
+ * deterministic, reproducible samples by sweeping each parameter through its
+ * domain interval. Used by sensitivity-analysis tasks rather than by random
+ * propagation.
+ *
  * @author Manuel Arias
  */
 public class SystematicSampling extends Sampler {

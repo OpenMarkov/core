@@ -13,6 +13,13 @@ import org.openmarkov.core.exception.InvalidArgumentException;
 
 import java.util.Random;
 
+/**
+ * Abstract base for every probability density function used to express model
+ * uncertainty over a CPT entry or a numeric parameter. Concrete subclasses must
+ * declare a {@link ProbDensFunctionType} annotation, expose a no-argument
+ * constructor (enforced by {@link ImplementationRequirements}) and implement
+ * parameter handling, validation, mean, sample and interval computation.
+ */
 @ImplementationRequirements(requiresOneOfTheseConstructors = @RequiredConstructor({}))
 public abstract class ProbDensFunction {
 	public abstract double[] getParameters();

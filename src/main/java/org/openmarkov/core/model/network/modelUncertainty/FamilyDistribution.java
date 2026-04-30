@@ -11,6 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Group of {@link UncertainValue}s that must be sampled jointly, typically
+ * because they share a common normalisation constraint or stem from the same
+ * multivariate distribution. Subclasses ({@link DirichletFamily},
+ * {@link ComplementFamily}) refine the joint sampling logic.
+ */
 public class FamilyDistribution {
 
 	protected List<UncertainValue> family;

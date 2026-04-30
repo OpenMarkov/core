@@ -9,6 +9,13 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.Random;
 
+/**
+ * Base class for probability density functions whose inverse cumulative
+ * distribution function is known in closed form. Sampling and central interval
+ * computation are then implemented generically by inverse-CDF transformation;
+ * subclasses only need to provide
+ * {@link #getInverseCumulativeDistributionFunction(double)}.
+ */
 public abstract class ProbDensFunctionWithKnownInverseCDF extends ProbDensFunction {
 	@Override public DomainInterval getInterval(double p) {
 		double halfP = p / 2.0;

@@ -12,6 +12,12 @@ import org.openmarkov.core.exception.InvalidArgumentException;
 
 import java.util.Random;
 
+/**
+ * Log-normal probability density function parameterised by the mean
+ * ({@code mu}) and standard deviation ({@code sigma}) of the underlying
+ * normal distribution. Sampling is delegated to an auxiliary
+ * {@link NormalFunction}.
+ */
 @ProbDensFunctionType(name = "LogNormal", isValidForProbabilities = false, parameters = { "mu",
 		"sigma" }) public class LogNormalFunction extends ProbDensFunction {
 	private double mu;

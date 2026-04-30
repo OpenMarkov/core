@@ -9,6 +9,12 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.List;
 
+/**
+ * Family of {@link UncertainValue}s whose probability density function is a
+ * {@link ComplementFunction}. All members of the family share the same
+ * remaining probability mass: each sampled value equals that mass weighted by
+ * its {@code nu} parameter.
+ */
 public class ComplementFamily extends FamilyDistribution {
 
 	/**

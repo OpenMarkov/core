@@ -12,15 +12,30 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Marks a {@link ProbDensFunction} subclass as a registrable type for the
+ * {@link ProbDensFunctionManager}. The annotation declares the textual name
+ * used in serialisation, the optional univariate name shared by alternative
+ * parametrisations, the kinds of variables the function applies to and the
+ * names of its numeric parameters.
+ */
 @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) public @interface ProbDensFunctionType {
+	/** Unique identifier of this function type (used in network files). */
 	String name();
 
-	//For Univariate
+	/**
+	 * Common univariate identifier shared by several alternative
+	 * parametrisations of the same family (for instance several
+	 * &quot;Normal&quot; flavours). Defaults to {@code "default"}.
+	 */
 	String univariateName() default "default";
 
+	/** Whether this function is admissible for probability values. */
 	boolean isValidForProbabilities() default true;
 
+	/** Whether this function is admissible for numeric values. */
 	boolean isValidForNumeric() default true;
 
+	/** Names of the parameters in their canonical order. */
 	String[] parameters();
 }

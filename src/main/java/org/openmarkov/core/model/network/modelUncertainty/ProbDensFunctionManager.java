@@ -17,6 +17,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+/**
+ * Singleton registry of {@link ProbDensFunction} implementations. At startup
+ * it scans the classpath for classes annotated with
+ * {@link ProbDensFunctionType} and indexes them by name (and by univariate
+ * name) so that uncertain values can be created from the textual descriptors
+ * stored in network files.
+ */
 public class ProbDensFunctionManager {
     
     private static final ProbDensFunctionManager INSTANCE = new ProbDensFunctionManager();

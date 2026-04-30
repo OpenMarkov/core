@@ -11,6 +11,12 @@ import org.openmarkov.core.exception.InvalidArgumentException;
 
 import java.util.List;
 
+/**
+ * Beta probability density function parameterised by {@code alpha} and
+ * {@code N}, where {@code N = alpha + beta}. It is an alternative
+ * parametrisation of {@link BetaFunction} more convenient when the sample size
+ * {@code N} is the natural quantity to elicit.
+ */
 @ProbDensFunctionType(name = "BetaAlphaNFunction", univariateName = "Beta", isValidForProbabilities = false, isValidForNumeric = false, parameters = {
 		"alpha", "N" }) public class BetaAlphaNFunction extends BetaFunction {
 	private double alpha;

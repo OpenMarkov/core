@@ -11,6 +11,11 @@ import org.openmarkov.core.exception.InvalidArgumentException;
 
 import java.util.Random;
 
+/**
+ * Normal (Gaussian) probability density function with mean {@code mu} and
+ * variance {@code sigma}. Sampling is built on top of the
+ * {@link StandardNormalFunction}.
+ */
 @ProbDensFunctionType(name = "Normal", isValidForProbabilities = false, parameters = { "mu",
 		"sigma" }) public class NormalFunction extends ProbDensFunction {
 	private double mu;

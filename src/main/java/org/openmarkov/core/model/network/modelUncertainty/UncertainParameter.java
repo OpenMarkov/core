@@ -10,6 +10,12 @@ package org.openmarkov.core.model.network.modelUncertainty;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 
+/**
+ * Locator for an {@link UncertainValue} in the context of a network: pairs
+ * the value with the {@link Potential} that owns it, the (possibly nested)
+ * sub-potential where it lives and the configuration index of the cell. It is
+ * the unit of work consumed by sensitivity-analysis tasks.
+ */
 public class UncertainParameter {
 
 	final UncertainValue uncertainValue;

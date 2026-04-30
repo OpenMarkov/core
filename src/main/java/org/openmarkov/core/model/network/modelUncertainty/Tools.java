@@ -7,6 +7,11 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+/**
+ * Static helpers used by the model-uncertainty package: array sums,
+ * normalisation and a few small numerical utilities. Kept package-flavoured
+ * to avoid pulling in a heavier math library for these one-line operations.
+ */
 public class Tools {
 	/**
 	 * @param aa Array of real numbers

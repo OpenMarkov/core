@@ -12,6 +12,15 @@ import org.apache.commons.math3.distribution.GammaDistribution;
 
 import java.util.Random;
 
+/**
+ * Common base for Gamma probability density functions. Stores the canonical
+ * shape ({@code k}) and scale ({@code theta}) parameters and provides shared
+ * sampling and statistical-moment implementations regardless of the concrete
+ * parametrisation exposed to the user.
+ *
+ * @see GammaFunction
+ * @see GammamvFunction
+ */
 public abstract class GammaAbstract extends ProbDensFunction {
 	protected double kAbstract;
 	protected double thetaAbstract;

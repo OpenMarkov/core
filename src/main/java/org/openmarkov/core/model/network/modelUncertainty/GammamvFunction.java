@@ -9,6 +9,11 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import org.openmarkov.core.exception.InvalidArgumentException;
 
+/**
+ * Gamma probability density function parameterised by mean ({@code mu}) and
+ * standard deviation ({@code sigma}). Internally these are converted to the
+ * canonical shape/scale parameters of {@link GammaAbstract}.
+ */
 @ProbDensFunctionType(name = "Gamma-mv", isValidForProbabilities = false, parameters = { "mean",
 		"standard deviation" }) public class GammamvFunction extends GammaAbstract {
 	private double mu;

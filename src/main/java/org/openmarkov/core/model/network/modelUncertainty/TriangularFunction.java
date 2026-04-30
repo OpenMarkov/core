@@ -9,6 +9,11 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import org.openmarkov.core.exception.InvalidArgumentException;
 
+/**
+ * Triangular probability density function defined by its minimum, maximum and
+ * mode. Sampling uses inverse-CDF transformation provided by
+ * {@link ProbDensFunctionWithKnownInverseCDF}.
+ */
 @ProbDensFunctionType(name = "Triangular", parameters = {"minimum", "maximum",
         "mode"}) public class TriangularFunction extends ProbDensFunctionWithKnownInverseCDF {
     /**

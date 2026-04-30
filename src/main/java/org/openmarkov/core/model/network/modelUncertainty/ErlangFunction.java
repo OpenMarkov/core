@@ -11,6 +11,11 @@ import org.openmarkov.core.exception.InvalidArgumentException;
 
 import java.util.Random;
 
+/**
+ * Erlang probability density function with shape {@code k} (a positive integer)
+ * and rate {@code lambda}. Samples are obtained as the sum of {@code k}
+ * independent {@link ExponentialFunction} samples with rate {@code lambda}.
+ */
 public class ErlangFunction extends ProbDensFunction {
 	private int k;
 	private double lambda;

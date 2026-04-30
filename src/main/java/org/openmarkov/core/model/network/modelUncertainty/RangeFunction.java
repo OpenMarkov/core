@@ -9,6 +9,10 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import org.openmarkov.core.exception.InvalidArgumentException;
 
+/**
+ * Continuous uniform probability density function on the interval
+ * {@code [lowerBound, upperBound]}.
+ */
 @ProbDensFunctionType(name = "Range", parameters = {"lower bound", "upper bound"}) public class RangeFunction
         extends ProbDensFunctionWithKnownInverseCDF {
     private double lowerBound;

@@ -8,6 +8,10 @@
 package org.openmarkov.core.model.network.modelUncertainty;
 
 /**
+ * Describes a deterministic variation along one axis used in sensitivity
+ * analysis. Encapsulates the {@link DeterministicAxisVariationType variation
+ * type}, a reference value and the lower/upper variation bounds.
+ *
  * Created by Jorge on 02/07/2015.
  */
 public class AxisVariation {

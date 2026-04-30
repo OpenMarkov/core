@@ -11,6 +11,12 @@ import org.openmarkov.core.exception.InvalidArgumentException;
 
 import java.util.Random;
 
+/**
+ * One component of a Dirichlet-distributed family. Holds a single
+ * {@code alpha} concentration parameter; sampling is performed through an
+ * auxiliary {@link GammaFunction}, leaving the normalisation step to
+ * {@link DirichletFamily}.
+ */
 @ProbDensFunctionType(name = "Dirichlet", isValidForNumeric = false, parameters = "alpha")
 public class DirichletFunction extends ProbDensFunction {
     private double alpha;

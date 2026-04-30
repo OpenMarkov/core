@@ -13,6 +13,11 @@ import org.openmarkov.core.exception.InvalidArgumentException;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Beta probability density function on {@code [0, 1]} parameterised by the
+ * shape parameters {@code alpha} and {@code beta}. Sampling is delegated to a
+ * two-component {@link DirichletFamily}.
+ */
 @ProbDensFunctionType(name = "Beta", parameters = {"alpha", "beta"}) public class BetaFunction
         extends ProbDensFunction {
     private double alpha;

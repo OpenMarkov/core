@@ -11,6 +11,12 @@ import org.openmarkov.core.exception.InvalidArgumentException;
 
 import java.util.Random;
 
+/**
+ * Probability density function representing a complement: the value receives
+ * a fraction {@code nu} of the probability mass left over by the rest of the
+ * uncertain values in its row. Used to ensure that the row of a CPT keeps
+ * adding up to one when several entries are uncertain.
+ */
 @ProbDensFunctionType(name = "Complement", isValidForNumeric = false, parameters = "nu")
 public class ComplementFunction extends ProbDensFunction {
 	private double nu;

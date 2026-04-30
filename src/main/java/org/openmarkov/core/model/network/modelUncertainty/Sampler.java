@@ -17,6 +17,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Abstract base for samplers that draw concrete potentials from a model with
+ * {@link UncertainValue}s. Subclasses know how to combine independent values
+ * with the contributions of {@link DirichletFamily} and
+ * {@link ComplementFamily} groups so that the resulting potential remains a
+ * valid probability distribution.
+ */
 public abstract class Sampler {
 
 	protected SamplerUncertainValues samplerUncertainValues;

@@ -9,6 +9,11 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import org.openmarkov.core.exception.InvalidArgumentException;
 
+/**
+ * Exponential probability density function with rate {@code lambda}, defined
+ * over {@code [0, +inf)}. Inherits inverse-CDF sampling from
+ * {@link ProbDensFunctionWithKnownInverseCDF}.
+ */
 public class ExponentialFunction extends ProbDensFunctionWithKnownInverseCDF {
 	private double lambda;
 

@@ -11,6 +11,11 @@ import org.openmarkov.core.exception.InvalidArgumentException;
 
 import java.util.Random;
 
+/**
+ * Degenerate probability density function concentrated on a single value
+ * {@code nu}. Sampling always returns {@code nu}; useful to mark deterministic
+ * entries in an otherwise uncertain potential.
+ */
 @ProbDensFunctionType(name = "Exact", isValidForNumeric = true, parameters = "nu")
 public class ExactFunction extends ProbDensFunction {
 	private double nu;

@@ -7,6 +7,12 @@
 
 package org.openmarkov.core.model.network.modelUncertainty;
 
+/**
+ * Standard normal probability density function, {@code N(0, 1)}. The inverse
+ * cumulative distribution function is approximated with the rational
+ * polynomial of Odeh and Evans, which avoids depending on the Apache Commons
+ * Math implementation for this very common case.
+ */
 public class StandardNormalFunction extends ProbDensFunctionWithKnownInverseCDF {
 	// Odeh and Evans' coefficients
     private static final double[] p = new double[]{-0.322232431088, -1.0, -0.342242088547, -0.0204231210245,

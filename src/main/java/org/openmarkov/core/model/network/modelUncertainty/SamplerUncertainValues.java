@@ -10,6 +10,13 @@ package org.openmarkov.core.model.network.modelUncertainty;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Package-private helper that, given a list of {@link UncertainValue}s,
+ * partitions them into Complement, Dirichlet and &quot;other&quot; subsets and
+ * builds the corresponding {@link FamilyDistribution}s. It also keeps the
+ * original index of each value so that a {@link Sampler} can reassemble the
+ * sampled vector preserving the original ordering.
+ */
 class SamplerUncertainValues {
 
 	final int[] indexesComplement;

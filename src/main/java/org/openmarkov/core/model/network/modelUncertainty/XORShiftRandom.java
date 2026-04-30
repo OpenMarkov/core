@@ -9,6 +9,12 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import java.util.Random;
 
+/**
+ * Pseudo-random number generator based on Marsaglia's XORShift algorithm.
+ * It is markedly faster than {@link Random} and good enough for the
+ * Monte-Carlo simulations performed in sensitivity analysis. Note that the
+ * implementation is not thread-safe.
+ */
 @SuppressWarnings("serial") public class XORShiftRandom extends Random {
 
 	private long seed = System.nanoTime();

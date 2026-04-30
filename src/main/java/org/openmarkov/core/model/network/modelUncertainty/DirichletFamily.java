@@ -11,6 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Family of {@link UncertainValue}s following a Dirichlet distribution.
+ * Each member is sampled from an independent {@link GammaFunction} with the
+ * corresponding {@code alpha} parameter and the resulting vector is normalised
+ * to sum one, which is the standard sampling procedure for the Dirichlet.
+ */
 public class DirichletFamily extends FamilyDistribution {
 	public DirichletFamily(List<UncertainValue> uncertainValues) {
 		super(filterByFunction(DirichletFunction.class, uncertainValues));

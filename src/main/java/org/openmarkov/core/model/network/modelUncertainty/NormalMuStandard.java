@@ -9,6 +9,11 @@ package org.openmarkov.core.model.network.modelUncertainty;
 
 import org.openmarkov.core.exception.InvalidArgumentException;
 
+/**
+ * Normal probability density function parameterised by mean ({@code mu}) and
+ * standard deviation ({@code standard}). Internally delegates to
+ * {@link NormalFunction}, which uses mean and variance.
+ */
 @ProbDensFunctionType(name = "NormalMuStandardFunction", univariateName = "Normal", isValidForProbabilities = false, isValidForNumeric = false, parameters = {
         "mu", "standard"}) public class NormalMuStandard extends NormalFunction {
     private double mu;

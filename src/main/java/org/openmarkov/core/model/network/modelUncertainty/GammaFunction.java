@@ -11,6 +11,10 @@ import org.openmarkov.core.exception.InvalidArgumentException;
 
 import java.util.List;
 
+/**
+ * Gamma probability density function in its canonical parametrisation by
+ * shape {@code k} and scale {@code theta}.
+ */
 @ProbDensFunctionType(name = "Gamma", isValidForProbabilities = false, parameters = { "k",
 		"theta" }) public class GammaFunction extends GammaAbstract {
 	private double k;

@@ -1,6 +1,4 @@
-package org.openmarkov.java.collectionsUtils.arrayUtils;
-
-import org.apache.poi.ss.formula.functions.T;
+package org.openmarkov.java.collectionsUtils;
 
 import java.util.Collection;
 import java.util.function.Predicate;

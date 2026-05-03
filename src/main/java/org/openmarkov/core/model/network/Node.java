@@ -646,6 +646,11 @@ public class Node implements Cloneable, ClassLocalizable {
         this.coordinateY = coordinateY;
     }
     
+    public void setCoordinates(double coordinateX, double coordinateY) {
+        this.setCoordinateX(coordinateX);
+        this.setCoordinateY(coordinateY);
+    }
+    
     /**
      * Creates a clone of this node bound to the given {@code ProbNet}, copying
      * all metadata (coordinates, purpose, relevance, etc.) but not potentials.

@@ -56,7 +56,6 @@ public abstract non-sealed class DecisionTreeNode<T> implements DecisionTreeElem
 	public DecisionTreeNode(Node node) {
 		this.variable = node.getVariable();
 		this.nodeType = node.getNodeType();
-		List<Potential> potentials = node.getPotentials();
 		children = new ArrayList<>();
 	}
 
@@ -162,8 +161,11 @@ public abstract non-sealed class DecisionTreeNode<T> implements DecisionTreeElem
 	}
 
 	/**
-	 * Copies the state from another node.
-	 * 
+	 * Copies the state from another node. The children list is duplicated as a new
+	 * {@link ArrayList} containing the same element references (shallow copy of the
+	 * list, not of the elements). The parent link is reset to {@code null}: callers
+	 * are expected to re-attach the copied node to its new place in the tree.
+	 *
 	 * @param node The node to copy from.
 	 */
 	public void copy(DecisionTreeNode<T> node) {
@@ -171,8 +173,8 @@ public abstract non-sealed class DecisionTreeNode<T> implements DecisionTreeElem
 		scenarioProbability = node.scenarioProbability;
 		variable = node.variable;
 		nodeType = node.getNodeType();
-		children = node.children;
-		parent = node.parent;
+		children = new ArrayList<>(node.children);
+		parent = null;
 		network = node.network;
 	}
 

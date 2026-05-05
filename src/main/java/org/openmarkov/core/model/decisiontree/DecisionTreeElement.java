@@ -23,8 +23,6 @@ public sealed interface DecisionTreeElement permits DecisionTreeBranch, Decision
 	 */
 	List<DecisionTreeElement> getChildren();
 
-	// double getUtility();
-
 	/**
 	 * Returns the evidence case associated with the path to this element.
 	 * 

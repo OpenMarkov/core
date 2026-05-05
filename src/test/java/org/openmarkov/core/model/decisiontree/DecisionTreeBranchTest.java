@@ -7,7 +7,6 @@
 package org.openmarkov.core.model.decisiontree;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.openmarkov.core.model.network.EvidenceCase;
 import org.openmarkov.core.model.network.Node;
@@ -157,15 +156,43 @@ class DecisionTreeBranchTest {
     }
 
     /**
-     * Documents pre-existing bug: {@link DecisionTreeBranch#toString()} dereferences
-     * branchVariable without null check. Phase 1 of the refactor will make this
-     * test pass; until then, it is disabled to keep the suite green.
+     * Branch with no associated variable (e.g. the synthetic root) must produce
+     * a stable, non-throwing string. Fixed in Phase 1 of the decisiontree refactor.
      */
-    @Disabled("Pre-existing NPE; will be fixed in Phase 1 of decisiontree refactor")
     @Test
     void toStringDoesNotThrowWhenBranchVariableIsNull() {
         DecisionTreeBranch branch = new DecisionTreeBranch(probNet);
         assertDoesNotThrow(branch::toString);
+    }
+
+    @Test
+    void scenarioEvidenceCacheIsInvalidatedWhenBranchIsReparented() {
+        // The branch caches its accumulated evidence the first time it is queried.
+        // If the branch is then attached to a different parent, the cache must
+        // be cleared so the next query reflects the new ancestor chain.
+        DecisionTreeBranch branch = new DecisionTreeBranch(probNet);
+
+        StubDecisionTreeNode<Double> parentYes = new StubDecisionTreeNode<>(decisionNode, probNet);
+        DecisionTreeBranch upstreamYes = new DecisionTreeBranch(probNet, decisionVariable, yes);
+        parentYes.addChild(upstreamYes);
+        StubDecisionTreeNode<Double> innerYes = new StubDecisionTreeNode<>(chanceNode, probNet);
+        upstreamYes.setChild(innerYes);
+        innerYes.addChild(branch);
+
+        // Prime the cache through the "yes" chain.
+        EvidenceCase first = branch.getBranchStates();
+        assertEquals(yes.getName(), first.getFindings().get(0).getState());
+
+        // Re-parent the branch under a different decision-state chain.
+        StubDecisionTreeNode<Double> parentNo = new StubDecisionTreeNode<>(decisionNode, probNet);
+        DecisionTreeBranch upstreamNo = new DecisionTreeBranch(probNet, decisionVariable, no);
+        parentNo.addChild(upstreamNo);
+        StubDecisionTreeNode<Double> innerNo = new StubDecisionTreeNode<>(chanceNode, probNet);
+        upstreamNo.setChild(innerNo);
+        innerNo.addChild(branch);   // triggers branch.setParent(innerNo) → cache invalidation
+
+        EvidenceCase second = branch.getBranchStates();
+        assertEquals(no.getName(), second.getFindings().get(0).getState());
     }
 
     @Test

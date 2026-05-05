@@ -147,6 +147,43 @@ class DecisionTreeNodeTest {
     }
 
     @Test
+    void copyDoesNotShareChildrenListWithSource() {
+        StubDecisionTreeNode<Double> source = new StubDecisionTreeNode<>(decisionNode, probNet);
+        DecisionTreeBranch branch = new DecisionTreeBranch(probNet);
+        source.addChild(branch);
+
+        StubDecisionTreeNode<Double> dest = new StubDecisionTreeNode<>(chanceNode, probNet);
+        dest.copy(source);
+
+        // Mutating the source list after copy must not leak into the destination.
+        DecisionTreeBranch extra = new DecisionTreeBranch(probNet);
+        source.addChild(extra);
+
+        assertEquals(1, dest.getChildren().size());
+        assertEquals(2, source.getChildren().size());
+    }
+
+    @Test
+    void copyResetsParentLink() {
+        // When a node is copied into another tree, its parent must be cleared so
+        // the caller can re-attach it to the new structure.
+        StubDecisionTreeNode<Double> root = new StubDecisionTreeNode<>(decisionNode, probNet);
+        DecisionTreeBranch branch = new DecisionTreeBranch(probNet, decisionVariable,
+                decisionVariable.getStates()[0]);
+        root.addChild(branch);
+
+        StubDecisionTreeNode<Double> source = new StubDecisionTreeNode<>(chanceNode, probNet);
+        branch.setChild(source);   // source now has a parent
+
+        StubDecisionTreeNode<Double> dest = new StubDecisionTreeNode<>(chanceNode, probNet);
+        dest.copy(source);
+
+        // The destination must report empty branch states (no parent), even though
+        // the source was inheriting findings from the branch.
+        assertTrue(dest.getBranchStates().getFindings().isEmpty());
+    }
+
+    @Test
     void utilityGetterAndSetterRoundTrip() {
         StubDecisionTreeNode<Double> node = new StubDecisionTreeNode<>(decisionNode, probNet);
 

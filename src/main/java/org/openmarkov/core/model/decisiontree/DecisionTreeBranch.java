@@ -107,25 +107,6 @@ public non-sealed class DecisionTreeBranch implements DecisionTreeElement {
 
 	@Override
 	public double getScenarioProbability() {
-		// TODO Manolo> I'm testing if everything is calculated correctly by inference
-		// modules
-		/*
-		 * if (scenarioProbability == Double.NEGATIVE_INFINITY) {
-		 * scenarioProbability = 1;
-		 * if (child.getNodeType() == NodeType.UTILITY) {
-		 * EvidenceCase evidenceCase = getBranchStates();
-		 * for (Finding finding : evidenceCase.getFindings()) {
-		 * Node node = probNet.getNode(finding.getVariable());
-		 * if (node != null && node.getNodeType() == NodeType.CHANCE) {
-		 * Potential potential = node.getPotentials().get(0);
-		 * scenarioProbability *= potential.getProbability(evidenceCase);
-		 * }
-		 * }
-		 * } else {
-		 * scenarioProbability = child.getScenarioProbability();
-		 * }
-		 * }
-		 */
 		return scenarioProbability;
 	}
 
@@ -160,7 +141,10 @@ public non-sealed class DecisionTreeBranch implements DecisionTreeElement {
 
 	@Override
 	public String toString() {
-        return "DecisionTreeBranch [branchVariable=" + branchVariable.getName() + ", branchState=" +
+		if (branchVariable == null) {
+			return "DecisionTreeBranch [root]";
+		}
+		return "DecisionTreeBranch [branchVariable=" + branchVariable.getName() + ", branchState=" +
 				branchState + "]";
 	}
 
@@ -176,6 +160,8 @@ public non-sealed class DecisionTreeBranch implements DecisionTreeElement {
 	@Override
 	public void setParent(DecisionTreeElement parent) {
 		this.parent = (DecisionTreeNode) parent;
+		// Invalidate the lazily-computed evidence cache: the path to the root has changed.
+		this.scenarioEvidence = null;
 	}
 
 	/**

@@ -11,8 +11,6 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.potential.Potential;
 
-import java.text.DecimalFormat;
-
 /**
  * Minimal concrete subclass of {@link DecisionTreeNode} used only for unit testing.
  * Avoids depending on inference-module subclasses.
@@ -39,10 +37,5 @@ final class StubDecisionTreeNode<T> extends DecisionTreeNode<T> {
     @Override
     public void setOnlyValueForUtility(Potential tablePotential) {
         // unused in tests
-    }
-
-    @Override
-    public String formatUtility(DecimalFormat df, boolean addSlashPrefixIfItAddsContent) {
-        return String.valueOf(getUtility());
     }
 }

@@ -21,14 +21,17 @@ import java.util.List;
  * Represents a branch in the decision tree, connecting a parent node to a child
  * node.
  * A branch is typically associated with a specific state of a variable.
+ *
+ * @param <T> The utility type carried by the surrounding tree (e.g. {@code Double}
+ *            for plain expected-utility evaluation, {@code CEP} for cost-effectiveness).
  */
-public non-sealed class DecisionTreeBranch implements DecisionTreeElement {
+public non-sealed class DecisionTreeBranch<T> implements DecisionTreeElement {
 
 	protected double scenarioProbability = Double.NEGATIVE_INFINITY;
 	private final Variable branchVariable;
 	private final State branchState;
-	private DecisionTreeNode parent;
-	private DecisionTreeNode child;
+	private DecisionTreeNode<T> parent;
+	private DecisionTreeNode<T> child;
 	private final ProbNet probNet;
 	private EvidenceCase scenarioEvidence = null;
 
@@ -122,10 +125,10 @@ public non-sealed class DecisionTreeBranch implements DecisionTreeElement {
 
 	/**
 	 * Returns the child node attached to this branch.
-	 * 
+	 *
 	 * @return The child DecisionTreeNode.
 	 */
-	public DecisionTreeNode getChild() {
+	public DecisionTreeNode<T> getChild() {
 		return child;
 	}
 
@@ -134,7 +137,7 @@ public non-sealed class DecisionTreeBranch implements DecisionTreeElement {
 	 *
 	 * @param child the child to set.
 	 */
-	public void setChild(DecisionTreeNode child) {
+	public void setChild(DecisionTreeNode<T> child) {
 		this.child = child;
 		child.setParent(this);
 	}
@@ -150,26 +153,28 @@ public non-sealed class DecisionTreeBranch implements DecisionTreeElement {
 
 	/**
 	 * Returns the parent node of this branch.
-	 * 
+	 *
 	 * @return The parent DecisionTreeNode.
 	 */
-	public DecisionTreeNode getParent() {
+	public DecisionTreeNode<T> getParent() {
 		return parent;
 	}
 
 	@Override
 	public void setParent(DecisionTreeElement parent) {
-		this.parent = (DecisionTreeNode) parent;
+		@SuppressWarnings("unchecked")
+		DecisionTreeNode<T> typedParent = (DecisionTreeNode<T>) parent;
+		this.parent = typedParent;
 		// Invalidate the lazily-computed evidence cache: the path to the root has changed.
 		this.scenarioEvidence = null;
 	}
 
 	/**
 	 * Returns the utility of the child node.
-	 * 
+	 *
 	 * @return The utility value.
 	 */
-	public Object getUtility() {
+	public T getUtility() {
 		return child.getUtility();
 	}
 

@@ -180,11 +180,11 @@ public abstract non-sealed class DecisionTreeNode<T> implements DecisionTreeElem
 
 	/**
 	 * Checks if a specific branch represents the best decision from this node.
-	 * 
+	 *
 	 * @param treeBranch The branch to check.
 	 * @return True if it is the best decision, false otherwise.
 	 */
-	public abstract boolean isBestDecision(DecisionTreeBranch treeBranch);
+	public abstract boolean isBestDecision(DecisionTreeBranch<T> treeBranch);
 
 	/**
 	 * Sets the utility based on a TablePotential.

@@ -32,7 +32,7 @@ final class StubDecisionTreeNode<T> extends DecisionTreeNode<T> {
     }
 
     @Override
-    public boolean isBestDecision(DecisionTreeBranch treeBranch) {
+    public boolean isBestDecision(DecisionTreeBranch<T> treeBranch) {
         return false;
     }
 

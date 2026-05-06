@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.action.base;
 
+import org.openmarkov.core.model.network.ProbNet;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +23,7 @@ import java.util.List;
 public class EditsHistoryStacker {
     
     private final EditsHistory mainEditsHistory;
+    
     private final ArrayDeque<EditsHistory> uncommitedHistories;
     
     public EditsHistoryStacker() {
@@ -51,12 +54,22 @@ public class EditsHistoryStacker {
         if (doneEdits.isEmpty()) {
             return;
         }
-        PNEdit stackAsEdit = new ListPNEdit(doneEdits.getFirst().getProbNet(), doneEdits);
+        ProbNet probNet = doneEdits.getFirst().getProbNet();
+        ListPNEdit stackAsEdit = new ListPNEdit(probNet, doneEdits);
         if (!closeOperations.contains(CloseEditStackOptions.FORGET)) {
             var nextLastStack = this.uncommitedHistories.isEmpty() ? this.mainEditsHistory : this.uncommitedHistories.getLast();
             nextLastStack.addEdit(stackAsEdit);
+            for (PNEditListener listener : probNet.getPNESupport().getListeners()) {
+                listener.afterEditExecutes(stackAsEdit);
+            }
         }
         if (closeOperations.contains(CloseEditStackOptions.UNDO)) {
+            ArrayList<PNEdit> undoneEdits = PNESupport.flattenEdit(stackAsEdit);
+            for (PNEdit subUndoneEdit : undoneEdits) {
+                for (PNEditListener listener : probNet.getPNESupport().getListeners()) {
+                    listener.afterUndoingEdit(subUndoneEdit);
+                }
+            }
             stackAsEdit.undo();
         }
     }
@@ -74,5 +87,8 @@ public class EditsHistoryStacker {
         return this.mainEditsHistory;
     }
     
+    public EditsHistory getMainEditsHistory() {
+        return this.mainEditsHistory;
+    }
     
 }

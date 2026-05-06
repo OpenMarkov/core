@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Manuel Arias
  */
-public class PNESupport /*extends UndoableEditSupport*/ {
+public class PNESupport implements PNEditListener /*extends UndoableEditSupport*/ {
 
     // Attributes
     /**
@@ -57,6 +57,8 @@ public class PNESupport /*extends UndoableEditSupport*/ {
         this.probNet = probNet;
         this.withUndo = false;
         this.editsHistoryStacker = new EditsHistoryStacker();
+        this.listeners = Collections.synchronizedSet(new LinkedHashSet<>());
+        this.listeners.add(this);
     }
 
     // Methods
@@ -67,7 +69,7 @@ public class PNESupport /*extends UndoableEditSupport*/ {
      * from any thread while {@link #redo()}, {@link #undo()} or
      * {@link PNEdit#executeEdit()} iterate over it.
      */
-    private final Set<PNEditListener> listeners = ConcurrentHashMap.newKeySet();
+    private final Set<PNEditListener> listeners;
 
     /**
      * Returns an unmodifiable view of the current listener set.
@@ -77,7 +79,7 @@ public class PNESupport /*extends UndoableEditSupport*/ {
      * @return unmodifiable view of registered {@link PNEditListener}s
      */
     public Set<PNEditListener> getListeners() {
-        return Collections.unmodifiableSet(listeners);
+        return Collections.unmodifiableSet(this.listeners);
     }
 
     /**
@@ -100,16 +102,20 @@ public class PNESupport /*extends UndoableEditSupport*/ {
      * @see javax.swing.undo.UndoManager#redo()
      */
     public ArrayList<PNEdit> redo() {
-        var redoneEdit = editsHistoryStacker.getCurrentUndoManager().redo();
-        if (redoneEdit != null) {
-            for (PNEditListener listener : listeners) {
-                listener.afterRedoingEdit(redoneEdit);
+        var redoneEdit = this.editsHistoryStacker.getCurrentUndoManager().redo();
+        if (redoneEdit == null) {
+            return new ArrayList<>();
+        }
+        ArrayList<PNEdit> redoneEdits = PNESupport.flattenEdit(redoneEdit);
+        for (PNEdit subRedoneEdit : redoneEdits) {
+            for (PNEditListener listener : this.listeners) {
+                listener.afterRedoingEdit(subRedoneEdit);
             }
         }
-        return flattenEdit(redoneEdit);
+        return redoneEdits;
     }
     
-    ArrayList<PNEdit> flattenEdit(@Nullable PNEdit redoneEdit) {
+    static ArrayList<PNEdit> flattenEdit(@Nullable PNEdit redoneEdit) {
         if (redoneEdit == null) {
             return new ArrayList<>();
         }
@@ -134,20 +140,24 @@ public class PNESupport /*extends UndoableEditSupport*/ {
      * @see javax.swing.undo.UndoManager#undo()
      */
     public ArrayList<PNEdit> undo() {
-        var undoneEdit = editsHistoryStacker.getCurrentUndoManager().undo();
-        if (undoneEdit != null) {
-            for (PNEditListener listener : listeners) {
-                listener.afterUndoingEdit(undoneEdit);
+        var undoneEdit = this.editsHistoryStacker.getCurrentUndoManager().undo();
+        if (undoneEdit == null) {
+            return new ArrayList<>();
+        }
+        ArrayList<PNEdit> undoneEdits = PNESupport.flattenEdit(undoneEdit);
+        for (PNEdit subUndoneEdit : undoneEdits) {
+            for (PNEditListener listener : this.listeners) {
+                listener.afterUndoingEdit(subUndoneEdit);
             }
         }
-        return flattenEdit(undoneEdit);
+        return undoneEdits;
     }
     
     /**
      * Removes all undone edits from the current history, making redo unavailable.
      */
     public void removeUndoneEdits() {
-        editsHistoryStacker.getCurrentUndoManager().removeUndoneEdits();
+        this.editsHistoryStacker.getCurrentUndoManager().removeUndoneEdits();
     }
     
     /**
@@ -156,21 +166,21 @@ public class PNESupport /*extends UndoableEditSupport*/ {
      * @return the current edit history
      */
     public EditsHistory getCurrentEditHistory() {
-        return editsHistoryStacker.getCurrentUndoManager();
+        return this.editsHistoryStacker.getCurrentUndoManager();
     }
     
     /**
      * @return {@code true} if there are edits that can be undone
      */
     public boolean getCanUndo() {
-        return editsHistoryStacker.getCurrentUndoManager().canUndo();
+        return this.editsHistoryStacker.getCurrentUndoManager().canUndo();
     }
     
     /**
      * @return {@code true} if there are edits that can be redone
      */
     public boolean getCanRedo() {
-        return editsHistoryStacker.getCurrentUndoManager().canRedo();
+        return this.editsHistoryStacker.getCurrentUndoManager().canRedo();
     }
     
     /**
@@ -178,8 +188,8 @@ public class PNESupport /*extends UndoableEditSupport*/ {
      * {@code basicUndoManager} and increases the parenthesis deph.
      */
     public void openNewSubEditHistory() {
-        if (withUndo) {
-            editsHistoryStacker.openNewSubEditHistory();
+        if (this.withUndo) {
+            this.editsHistoryStacker.openNewSubEditHistory();
         }
     }
     
@@ -188,8 +198,8 @@ public class PNESupport /*extends UndoableEditSupport*/ {
      * {@code basicUndoManager} and decreases the parenthesis deph.
      */
     public void closeSubEditHistory(CloseEditStackOptions... closeOperations) {
-        if (withUndo) {
-            editsHistoryStacker.closeSubEditHistory(List.of(closeOperations));
+        if (this.withUndo) {
+            this.editsHistoryStacker.closeSubEditHistory(List.of(closeOperations));
         }
     }
     
@@ -197,14 +207,14 @@ public class PNESupport /*extends UndoableEditSupport*/ {
      * Cancels the current sub-edit history by undoing all its edits and discarding them.
      */
     public void cancelLastSubEditHistory() {
-        closeSubEditHistory(CloseEditStackOptions.FORGET, CloseEditStackOptions.UNDO);
+        this.closeSubEditHistory(CloseEditStackOptions.FORGET, CloseEditStackOptions.UNDO);
     }
     
     /**
      * @return withUndo {@code boolean}.
      */
     public boolean isWithUndo() {
-        return withUndo;
+        return this.withUndo;
     }
     
     /**
@@ -221,8 +231,8 @@ public class PNESupport /*extends UndoableEditSupport*/ {
      * public ProbNet getProbNet() { return (ProbNet)realSource; }
      */
     public String toString() {
-        return "PNESupport. probNet: " + probNet + " Number of listeners: " + listeners.size() +
-                ". withUndo: " + withUndo;
+        return "PNESupport. probNet: " + this.probNet + " Number of listeners: " + this.listeners.size() +
+                ". withUndo: " + this.withUndo;
     }
     
     private final ProbNet probNet;
@@ -245,5 +255,39 @@ public class PNESupport /*extends UndoableEditSupport*/ {
      */
     public void removeListener(PNEditListener listener) {
         this.listeners.remove(listener);
+    }
+    
+    private @Nullable PNEdit lastDoneEditWhenSave;
+    private boolean networkIsModified = false;
+    
+    public boolean networkIsModified() {
+        return this.networkIsModified;
+    }
+    
+    @Override public void afterEditExecutes(PNEdit edit) {
+        onEditChanges(edit);
+    }
+    
+    @Override public void afterUndoingEdit(PNEdit edit) {
+        onEditChanges(edit);
+    }
+    
+    @Override public void afterRedoingEdit(PNEdit edit) {
+        onEditChanges(edit);
+    }
+    
+    private void onEditChanges(PNEdit edit) {
+        if (edit.belongsToACompoundEdit()) {
+            return;
+        }
+        if (this.editsHistoryStacker.getCurrentUndoManager() != this.editsHistoryStacker.getMainEditsHistory()) {
+            return;
+        }
+        this.networkIsModified = (!this.withUndo || this.editsHistoryStacker.getCurrentUndoManager()
+                                                                            .nextEditToUndo() != lastDoneEditWhenSave);
+    }
+    
+    public void onSave() {
+        this.lastDoneEditWhenSave = this.editsHistoryStacker.getMainEditsHistory().nextEditToUndo();
     }
 }

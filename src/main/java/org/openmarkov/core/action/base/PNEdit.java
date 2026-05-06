@@ -95,7 +95,7 @@ public abstract class PNEdit implements ClassLocalizable {
             pneSupport.getCurrentEditHistory().addEdit(this);
         }
         if (!belongsToACompoundEdit) {
-            for (PNEdit flatEdit : pneSupport.flattenEdit(this)) {
+            for (PNEdit flatEdit : PNESupport.flattenEdit(this)) {
                 for (PNEditListener listener : pneSupport.getListeners()) {
                     listener.afterEditExecutes(flatEdit);
                 }
@@ -156,6 +156,10 @@ public abstract class PNEdit implements ClassLocalizable {
     }
     
     private boolean belongsToACompoundEdit = false;
+    
+    public boolean belongsToACompoundEdit() {
+        return this.belongsToACompoundEdit;
+    }
     
     /**
      * Marks this edit as belonging to a compound edit, so it will not be

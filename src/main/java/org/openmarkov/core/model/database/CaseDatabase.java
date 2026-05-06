@@ -5,7 +5,7 @@
  * WITHOUT WARRANTIES OF ANY KIND.
  */
 
-package org.openmarkov.core.io.database;
+package org.openmarkov.core.model.database;
 
 import org.openmarkov.core.model.network.Variable;
 

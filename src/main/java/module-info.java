@@ -39,10 +39,6 @@ open module org.openmarkov.core {
     exports org.openmarkov.core.model.network.type;
     exports org.openmarkov.core.model.network.type.plugin;
     exports org.openmarkov.core.inference.annotation;
-    exports org.openmarkov.core.io;
-    exports org.openmarkov.core.io.database;
-    exports org.openmarkov.core.io.database.plugin;
-    exports org.openmarkov.core.io.format.annotation;
     exports org.openmarkov.core.stringformat;
     exports org.openmarkov.core.testTags;
     exports org.openmarkov.plugin;
@@ -54,7 +50,6 @@ open module org.openmarkov.core {
     exports org.openmarkov.java.exceptionUtils;
     exports org.openmarkov.java.cloneUtils;
     exports org.openmarkov.java.nullUtils;
-    exports org.openmarkov.core.io.exception;
     exports org.openmarkov.core.action.base;
     exports org.openmarkov.core.action.base.linkEdits;
     exports org.openmarkov.core.developmentStaticAnalysis.requirements;
@@ -67,5 +62,6 @@ open module org.openmarkov.core {
     exports org.openmarkov.java.reflectionUtils;
     exports org.openmarkov.java.collectionsUtils.streamUtils;
     exports org.openmarkov.java.collectionsUtils;
+    exports org.openmarkov.core.model.database;
     
 }

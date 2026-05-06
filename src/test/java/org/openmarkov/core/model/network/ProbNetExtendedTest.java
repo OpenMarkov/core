@@ -729,38 +729,7 @@ public class ProbNetExtendedTest {
             assertTrue(str.contains("Bayesian"));
         }
     }
-
-    // -----------------------------------------------------------------------
-    // I/O references
-    // -----------------------------------------------------------------------
-
-    @Nested
-    class IOTests {
-
-        @Test
-        void readerDefaultIsNull() {
-            assertNull(bn.getReader());
-        }
-
-        @Test
-        void setAndGetReader() {
-            // We don't have a concrete reader to test with, just test null round-trip
-            bn.setReader(null);
-            assertNull(bn.getReader());
-        }
-
-        @Test
-        void writerDefaultIsNull() {
-            assertNull(bn.getWriter());
-        }
-
-        @Test
-        void setAndGetWriter() {
-            bn.setWriter(null);
-            assertNull(bn.getWriter());
-        }
-    }
-
+    
     // -----------------------------------------------------------------------
     // Network construction utilities
     // -----------------------------------------------------------------------

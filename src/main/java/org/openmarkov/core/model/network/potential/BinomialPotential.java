@@ -67,9 +67,9 @@ public class BinomialPotential extends Potential {
 	 * 	 variables and the potential role.
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-		//CMI 08/01/2023 added DESnet behaviour
+		// 08/01/2023 added DESnet behaviour
 		if (node.getProbNet().getNetworkType() instanceof DESNetworkType) return false;
-		//CMF
+		//
 		return role == PotentialRole.CONDITIONAL_PROBABILITY && (!variables.isEmpty()
 																		 && variables.get(0).getVariableType()
 				== VariableType.NUMERIC

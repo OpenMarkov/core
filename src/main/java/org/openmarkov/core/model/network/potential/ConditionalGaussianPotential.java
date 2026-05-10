@@ -68,9 +68,9 @@ import java.util.List;
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 
-		//CMI 08/01/2023 added DESnet behaviour
+		// 08/01/2023 added DESnet behaviour
 		if (node.getProbNet().getNetworkType() instanceof DESNetworkType) return false;
-		//CMF
+		//
 
 		// not a utility potential, only discrete or discretized conditioned variables
 		return role != PotentialRole.UNSPECIFIED && !variables.isEmpty()

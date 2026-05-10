@@ -90,7 +90,7 @@ import java.util.List;
 					Potential newPotential = new SumPotential(variables, oldPotential.getPotentialRole());
 					newPotentials.add(newPotential);
 				}
-			//CMI 05/04/2020 - There may be self-loops in DESNets for EVENT and CHANCE nodes.
+			// 05/04/2020 - There may be self-loops in DESNets for EVENT and CHANCE nodes.
 				// Previous code is supposing there is no self loops so methods consider there is no duplicated variables
 				// method Potential#addVariable only adds the variable if the variable is not there.
 				//To avoid regressions, and keep the changes in previous classes to a minumun, the Uniform Potential is created here.
@@ -106,7 +106,7 @@ import java.util.List;
 					Potential newPotential = new UniformPotential(variables, oldPotential.getPotentialRole());
 					newPotentials.add(newPotential);
 				}
-			//CMF
+			//
 			} else {
 				for (Potential oldPotential : oldPotentials) {
 					// Update potential

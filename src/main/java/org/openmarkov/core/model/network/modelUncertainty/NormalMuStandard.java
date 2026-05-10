@@ -28,7 +28,7 @@ package org.openmarkov.core.model.network.modelUncertainty;
 		this(normalMuStandardFunction.getMu(), normalMuStandardFunction.getStandard());
 	}
 
-	//CMI
+	//
 	//For Univariate
 
 	/**
@@ -40,7 +40,7 @@ package org.openmarkov.core.model.network.modelUncertainty;
 			throw new IllegalArgumentException("Wrong parameters" + this.getClass().getName());
 		}
 	}
-	//CMF
+	//
 
 	@Override public double[] getParameters() {
 		double[] a = new double[2];

@@ -30,13 +30,13 @@ public class ExactFunction
 		return nu;
 	}
 
-	//CMI
+	//
 	//For Univariate
 	@Override public void verifyParameters(double[] parameters) throws IllegalArgumentException {
 		//Parameters are always ok
 	}
 
-	//CMF
+	//
 	@Override public boolean verifyParametersDomain(boolean isChanceVariable) {
 		return ((!isChanceVariable) || ((0 <= nu) && (nu <= 1)));
 	}

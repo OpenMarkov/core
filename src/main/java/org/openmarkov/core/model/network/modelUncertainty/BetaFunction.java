@@ -39,7 +39,7 @@ import java.util.Random;
 		}
 	}
 
-	//CMI
+	//
 	//For Univariate
 
 	/**
@@ -51,7 +51,7 @@ import java.util.Random;
 			throw new IllegalArgumentException("Wrong parameters" + this.getClass().getName());
 		}
 	}
-	//CMF
+	//
 
 	@Override public boolean verifyParametersDomain(boolean isChanceVariable) {
 		return ((alpha > 0) && (beta > 0));

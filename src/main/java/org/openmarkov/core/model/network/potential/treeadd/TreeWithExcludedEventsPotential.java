@@ -87,7 +87,9 @@ public class TreeWithExcludedEventsPotential extends Potential implements DESSim
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		if (!(node.getProbNet().getNetworkType() instanceof DESNetworkType)) return false;
 
-		boolean validate =(variables.get(0).getVariableType() ==VariableType.EVENT) && variables.subList(1,variables.size()).stream().anyMatch(variable -> variable.getVariableType() ==VariableType.EVENT);
+//		boolean validate =(variables.get(0).getVariableType() ==VariableType.EVENT) && variables.subList(1,variables.size()).stream().anyMatch(variable -> variable.getVariableType() ==VariableType.EVENT);
+		boolean validate = variables.subList(1,variables.size()).stream().anyMatch(variable -> variable.getVariableType() ==VariableType.EVENT);
+
 		return validate;
 	}
 
@@ -107,7 +109,8 @@ public class TreeWithExcludedEventsPotential extends Potential implements DESSim
 		double result =0;
 		List<Variable> eventVariables = parents.getVariables().stream().filter(variable ->variable.getVariableType() ==VariableType.EVENT).collect(Collectors.toList());
 		//19/03/2023 - only one event in parents - FIXME throw exception without changing method signature; consider to add exception
-		if ( eventVariables.size()!=1) throw new RuntimeException("TreeWithEventsPotential#sampleConditionedVariable: There must be exactly one event in parents configuration");
+		//31/05/2024 - treewithoutevents can be used with chance nodes and, therefore some of the configurations may not have events (see inEurHeart=
+//		if ( eventVariables.size()!=1) throw new RuntimeException("TreeWithEventsPotential#sampleConditionedVariable: There must be exactly one event in parents configuration");
 
 		try
 		{

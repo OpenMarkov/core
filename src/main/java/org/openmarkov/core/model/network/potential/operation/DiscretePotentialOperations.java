@@ -7,42 +7,14 @@
 
 package org.openmarkov.core.model.network.potential.operation;
 
-import org.openmarkov.core.exception.DivideByZeroException;
-import org.openmarkov.core.exception.IllegalArgumentTypeException;
-import org.openmarkov.core.exception.IncompatibleEvidenceException;
-import org.openmarkov.core.exception.InvalidStateException;
-import org.openmarkov.core.exception.NonProjectablePotentialException;
-import org.openmarkov.core.exception.NormalizeNullVectorException;
-import org.openmarkov.core.exception.PotentialOperationException;
-import org.openmarkov.core.exception.WrongCriterionException;
-import org.openmarkov.core.inference.Choice;
-import org.openmarkov.core.model.network.CEP;
-import org.openmarkov.core.model.network.Criterion;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
-import org.openmarkov.core.model.network.potential.FunctionPotential;
-import org.openmarkov.core.model.network.potential.GTablePotential;
-import org.openmarkov.core.model.network.potential.Potential;
-import org.openmarkov.core.model.network.potential.PotentialRole;
-import org.openmarkov.core.model.network.potential.StrategyTree;
-import org.openmarkov.core.model.network.potential.TablePotential;
-
 import net.sourceforge.jeval.EvaluationException;
+import org.openmarkov.core.exception.*;
+import org.openmarkov.core.inference.Choice;
+import org.openmarkov.core.model.network.*;
+import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
+import org.openmarkov.core.model.network.potential.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * This class defines a set of common operations over discrete potentials (
@@ -1707,7 +1679,7 @@ public final class DiscretePotentialOperations {
 		return multiplyAndMaximize(potentialsVariable, variablesToKeep, variableToMaximize);
 	}
 
-	// CMI
+	// 
 	// For Univariate
 
 	/**

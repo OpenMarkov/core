@@ -15,10 +15,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME) @Target(ElementType.TYPE) public @interface ProbDensFunctionType {
 	String name();
 
-	//CMI To be removed
+	// To be removed
 	//For Univariate
 	String univariateName() default "default";
-	//CMF
+	//
 
 	//
 	boolean isValidForProbabilities() default true;

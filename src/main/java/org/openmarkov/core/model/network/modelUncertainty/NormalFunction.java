@@ -44,13 +44,13 @@ import java.util.Random;
 		}
 	}
 
-	//CMI
+	//
 	//For Univariate
 
 	@Override public boolean verifyParametersDomain(boolean isChanceVariable) {
 		return (sigma > 0);
 	}
-	//CMF
+	//
 
 	@Override public double[] getParameters() {
 		double[] a = new double[2];

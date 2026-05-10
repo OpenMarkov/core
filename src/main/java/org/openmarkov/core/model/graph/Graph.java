@@ -154,9 +154,9 @@ public class Graph<T> {
 
 	private void addLink(Link<T> link) {
 		nodeLinks.get(link.getNode1()).add(link);
-		//CMI 31/12/2019 - allowing self-loops. It has been added the following check to avoid adding to the probNet the link duplicated when having a self-loop
+		// 31/12/2019 - allowing self-loops. It has been added the following check to avoid adding to the probNet the link duplicated when having a self-loop
 		if (!link.getNode1().equals(link.getNode2()) )
-		//CMF
+		//
 		nodeLinks.get(link.getNode2()).add(link);
 	}
 
@@ -228,11 +228,11 @@ public class Graph<T> {
 			for (Link<T> link : linksNode1) {
 				if (directed && link.isDirected() &&
 
-			//CMI 06/01/2020 - when directed links
+			// 06/01/2020 - when directed links
 			// the previous code, took ALL the links of node1 (incoming or outgoing  ) and afterwards looks for links ending in node2.
 			// This does not work when self-loops, because it may take any link ending in node2. Therefore another check for Node1 has been added
 						link.getNode1().equals(node1) &&
-			//CMF
+			//
 						link.getNode2().equals(node2) || !directed && !link.isDirected()
 						&& link.contains(node2)) {
 					return link;

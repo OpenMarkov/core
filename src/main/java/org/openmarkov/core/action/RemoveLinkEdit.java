@@ -103,7 +103,7 @@ import java.util.List;
 				// Update potentials
 				this.oldPotentials = node2.getPotentials();
 				for (Potential oldPotential : oldPotentials) {
-					//CMI 10/01/2020 for removing a self-cycle, 19/03/2020 fixed bug; when using removePotential with self-loops, it removed the first ocurrence of the variable, removing node variable
+					// 10/01/2020 for removing a self-cycle, 19/03/2020 fixed bug; when using removePotential with self-loops, it removed the first ocurrence of the variable, removing node variable
 
 					Potential newPotential;
 					if (node1.equals(node2)){
@@ -142,7 +142,7 @@ import java.util.List;
 							newPotential = new UniformPotential(newPotential.getVariables(), newPotential.getPotentialRole());
 						}
 					} catch (NonProjectablePotentialException | WrongCriterionException e) {
-						//CMI 15/01/2023; temporal fix for DESnet nodes in DESnet evaluation OM version; In this version every potential has its own validate.
+						// 15/01/2023; temporal fix for DESnet nodes in DESnet evaluation OM version; In this version every potential has its own validate.
 						//This is done here in order to be as little invasive as possible. FIXME merge with code or remove when TO-DO is implemented
 						if (node1.getProbNet().getNetworkType() instanceof DESNetworkType) {
 							if (!newPotential.validate(node2, newPotential.getVariables(), newPotential.getPotentialRole())) {
@@ -153,7 +153,7 @@ import java.util.List;
 							e.printStackTrace();
 						}
 //						e.printStackTrace();
-						//CMF
+						//
 					}
 
 					newPotentials.add(newPotential);

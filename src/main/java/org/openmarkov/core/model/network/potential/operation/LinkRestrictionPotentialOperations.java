@@ -17,11 +17,7 @@ import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class LinkRestrictionPotentialOperations {
 
@@ -65,7 +61,7 @@ public class LinkRestrictionPotentialOperations {
 	}
 
 	public static List<int[]> getStateCombinationsWithLinkRestriction(Node node) {
-		//CMI Issue #162
+		// Issue #162
 		Potential p = node.getPotentials().get(0);
 		TablePotential potential;
 		if (p instanceof ExactDistrPotential) {
@@ -74,7 +70,7 @@ public class LinkRestrictionPotentialOperations {
 			potential = (TablePotential) node.getPotentials().get(0);
 		}
 		//TablePotential potential = (TablePotential) node.getPotentials ().get (0);
-		//CMF
+		//
 		List<Variable> nodeVariables = potential.getVariables();
 		List<int[]> stateList = new ArrayList<>();
 		List<Link<Node>> links = getParentLinksWithRestriction(node);

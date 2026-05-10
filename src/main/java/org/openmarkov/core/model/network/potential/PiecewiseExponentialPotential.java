@@ -104,24 +104,7 @@ import java.util.stream.Collectors;
 	 */
 	private FunctionPotential initTimeFunction;
 
-	public void setPiecewiseTable(TreeMap<Double, Double> piecewiseTable) {
-		this.piecewiseTable = piecewiseTable;
-		aProduct = new TreeMap<>();
-		inverseAProduct = new TreeMap<>();
-		List<Double> timeI = new ArrayList<>(piecewiseTable.keySet());
-		List<Double> probI = new ArrayList<>(piecewiseTable.values());
-		double a =1;
-		for (int i = 0; i < timeI.size(); i++) {
-			aProduct.put(timeI.get(i),a);
-			if (i<timeI.size() -1) {
-				a *= Math.pow(1 - probI.get(i), timeI.get(i + 1) - timeI.get(i));
-			} else {
-				a = 0;
-			}
-			inverseAProduct.put(a, timeI.get(i));
-		}
 
-	}
 
 
 	/**
@@ -135,18 +118,6 @@ import java.util.stream.Collectors;
 //
 //	}
 
-	/**
-	 * Creates a new PiecewiseExponentialPotential with variables as its list of Variable and role as PotentialRole
-	 *
-	 * @param variables <code>ArrayList</code> of <code>Variable</code> . Variables of PiecewiseExponentialPotential
-	 * @param role      <code>PotentialRole</code> of PiecewiseExponentialPotential
-	 */
-	public PiecewiseExponentialPotential(List<Variable> variables, PotentialRole role, TreeMap piecewiseTable, FunctionPotential initTimeFunction, boolean useRates) {
-		this(variables,role);
-		setPiecewiseTable(piecewiseTable);
-		this.initTimeFunction = initTimeFunction;
-		this.useRates = useRates;
-	}
 
 	/**
 	 * Creates a new PiecewiseExponentialPotential with variables as its list of Variable and role as PotentialRole
@@ -163,6 +134,20 @@ import java.util.stream.Collectors;
 		setPiecewiseTable(piecewiseTable);
 		this.initTimeFunction = new FunctionPotential(variables, role, piecewiseTable.firstKey().toString());
 	}
+
+	/**
+	 * Creates a new PiecewiseExponentialPotential with variables as its list of Variable and role as PotentialRole
+	 *
+	 * @param variables <code>ArrayList</code> of <code>Variable</code> . Variables of PiecewiseExponentialPotential
+	 * @param role      <code>PotentialRole</code> of PiecewiseExponentialPotential
+	 */
+	public PiecewiseExponentialPotential(List<Variable> variables, PotentialRole role, TreeMap piecewiseTable, FunctionPotential initTimeFunction, boolean useRates) {
+		this(variables,role);
+		setPiecewiseTable(piecewiseTable);
+		this.initTimeFunction = initTimeFunction;
+		this.useRates = useRates;
+	}
+
 
 
 	/**
@@ -188,7 +173,24 @@ import java.util.stream.Collectors;
 	}
 
 	// Methods
+	public void setPiecewiseTable(TreeMap<Double, Double> piecewiseTable) {
+		this.piecewiseTable = piecewiseTable;
+		aProduct = new TreeMap<>();
+		inverseAProduct = new TreeMap<>();
+		List<Double> timeI = new ArrayList<>(piecewiseTable.keySet());
+		List<Double> probI = new ArrayList<>(piecewiseTable.values());
+		double a =1;
+		for (int i = 0; i < timeI.size(); i++) {
+			aProduct.put(timeI.get(i),a);
+			if (i<timeI.size() -1) {
+				a *= Math.pow(1 - probI.get(i), timeI.get(i + 1) - timeI.get(i));
+			} else {
+				a = 0;
+			}
+			inverseAProduct.put(a, timeI.get(i));
+		}
 
+	}
 	/**
 	 * Returns if an instance of a certain Potential type makes sense given the
 	 * variables and the potential role
@@ -198,7 +200,9 @@ import java.util.stream.Collectors;
 	 * @param role      <code>PotentialRole</code>
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-		return (node.getProbNet().getNetworkType() instanceof DESNetworkType) && (node.getNodeType() == NodeType.EVENT);
+		return (node.getProbNet().getNetworkType() instanceof DESNetworkType) &&
+				((variables.get(0).getVariableType() ==VariableType.EVENT)
+				|| (variables.get(0).getVariableType()==VariableType.NUMERIC));
 	}
 
 	@Override

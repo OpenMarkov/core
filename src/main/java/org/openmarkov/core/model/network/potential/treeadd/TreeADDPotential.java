@@ -26,10 +26,10 @@ import java.util.*;
  * @author myebra
  */
 @PotentialType(name = "Tree/ADD", family = "Tree")
-//CMI 15/01/2023 - Potentials to be simulated in DESnets implements DESSimulablePotential
+// 15/01/2023 - Potentials to be simulated in DESnets implements DESSimulablePotential
 //public class TreeADDPotential extends Potential {
 	public class TreeADDPotential extends Potential implements DESSimulablePotential {
-//CMF
+//
 
 	// Attributes
 	/**
@@ -69,10 +69,10 @@ import java.util.*;
 		List<Variable> potentialVariables;
 		// if topVariable is finite states or discretized, it creates a branch
 		// for each state
-		//CMI
+		//
 //		if (variableType == VariableType.FINITE_STATES || variableType == VariableType.DISCRETIZED) {
 		if (variableType == VariableType.FINITE_STATES || variableType == VariableType.DISCRETIZED || variableType==VariableType.EVENT) {
-		//CMF
+		//
 			for (int i = branchingStates.length - 1; i >= 0; i--) {
 				// if potential role of the treeADD is a conditional probability
 				// it is assigned an uniform potential
@@ -477,7 +477,7 @@ import java.util.*;
 		return hasUncertainty;
 	}
 
-	//CMI - 03/05/2020 for sampling an TreeWithEvents - Check if this is applicable to other network types
+	// - 03/05/2020 for sampling an TreeWithEvents - Check if this is applicable to other network types
 	//14/08/2022 refactored for avoiding nuisance variance
 	/**
      * When this potential represents a conditional probability, this method returns a value for the first variable,
@@ -540,7 +540,7 @@ import java.util.*;
 		}
 		return max;
 	}
-	//CMF
+	//
 
 	/**
 	 * Generates a sampled potential

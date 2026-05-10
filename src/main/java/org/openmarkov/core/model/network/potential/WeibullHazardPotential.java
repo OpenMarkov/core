@@ -38,12 +38,12 @@ import java.util.Map;
 	 */
 	private Variable timeVariable = null;
 
-	//CMI 21/11/2023 -For efficiency:  list of Variables sort the same way as the coefficients and evaluator as final.
+	// 21/11/2023 -For efficiency:  list of Variables sort the same way as the coefficients and evaluator as final.
 
 	private final Evaluator desEvaluator = new Evaluator();
 
 
-	//CMF
+	//
 
 	public WeibullHazardPotential(List<Variable> variables, PotentialRole role, String[] covariates,
 			double[] coefficients) {
@@ -96,9 +96,9 @@ import java.util.Map;
 		return !variables.isEmpty() && variables.get(0).isTemporal()
 				&& variables.get(0).getVariableType() == VariableType.FINITE_STATES
 				&& variables.get(0).getNumStates() == 2
-				//CMI 21/11/2023 - for DESnets vs MIDs; FIXME currently only checks it is a DESnet
+				// 21/11/2023 - for DESnets vs MIDs; FIXME currently only checks it is a DESnet
 				|| node.getProbNet().getNetworkType() instanceof DESNetworkType;
-				//CMF
+				//
 
 	}
 
@@ -207,7 +207,7 @@ import java.util.Map;
 	}
 
 
-	//CMI 21/11/2023 implementing DESSimulablePotential; it also samples if failure occurs in the present cycle for comparing with MIDs
+	// 21/11/2023 implementing DESSimulablePotential; it also samples if failure occurs in the present cycle for comparing with MIDs
 	//FIXME Consider using this potential for DESnets in general
 
 
@@ -274,7 +274,7 @@ import java.util.Map;
 
 
 
-	//CMF
+	//
 
 
 

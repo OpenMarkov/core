@@ -52,9 +52,9 @@ import java.util.List;
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 
-		//CMI 08/01/2023 added DESnet behaviour
+		// 08/01/2023 added DESnet behaviour
 		if (node.getProbNet().getNetworkType() instanceof DESNetworkType) return false;
-		//CMF
+		//
 		boolean valid = ICIPotential.validate(node, variables, role) && (
 				(role == PotentialRole.CONDITIONAL_PROBABILITY) || (role == PotentialRole.POLICY)
 		);

@@ -1156,7 +1156,7 @@ import java.util.*;
 		return sampleIndex;
 	}
 
-	//CMI 14/08/2022 - sampleConditionedVariable refactored for dealing with nuisance variance
+	// 14/08/2022 - sampleConditionedVariable refactored for dealing with nuisance variance
 	@Override
 	public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) throws OpenMarkovException {
 
@@ -1178,7 +1178,7 @@ import java.util.*;
 		return sampleIndex;
 	}
 
-	//CMF
+	//
 
 
 	@Override public double getProbability(HashMap<Variable, Integer> sampledStateIndexes) {

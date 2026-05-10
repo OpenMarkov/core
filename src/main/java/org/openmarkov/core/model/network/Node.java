@@ -91,7 +91,7 @@ public class Node {
 	private boolean alwaysObserved = false;
 
 
-	//CMI 24/10/2020
+	// 24/10/2020
 	/**
 	 * Event nodes property which indicates its behaviour when triggered by another event:
 	 * When true a new instance of the event with its timestamp is queued (the event may be several times in the queue)
@@ -99,7 +99,7 @@ public class Node {
 	 * if the event is in the queue, it is added to it. Otherwise the timestamp of the event is modified.
 	 */
 	private boolean alwaysAppend = false;
-	//CMF
+	//
 
 
 	// Constructor
@@ -348,11 +348,11 @@ public class Node {
 		case DECISION:
 			out.append("Decision");
 			break;
-		//CMI 2019 added event nodes
+		// 2019 added event nodes
 		case EVENT:
 				out.append("Event");
 				break;
-		//CMF
+		//
 		case UTILITY:
 			out.append("Utility");
 			break;
@@ -770,7 +770,7 @@ public class Node {
 		return newNode;
 	}
 
-//CMI 24/10/2020 - event nodes queue behaviour
+// 24/10/2020 - event nodes queue behaviour
 	/**
 	 * Returns true if alwaysAppend is set.
 	 * alwaysAppend is an event nodes property which indicates its behaviour when triggered by another event:
@@ -793,6 +793,6 @@ public class Node {
 		this.alwaysAppend = alwaysAppend;
 	}
 
-//CMF
+//
 
 }

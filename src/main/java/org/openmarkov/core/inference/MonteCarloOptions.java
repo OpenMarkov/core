@@ -23,6 +23,11 @@ public class MonteCarloOptions implements Cloneable {
     private int numSimulations = 1;
     private int numSeries = 1;
 
+    //PSA Options
+    /**
+     * True if we are conducting a PSA analysis
+     */
+    private boolean psa = false;
 
     //Log options
     /**
@@ -268,6 +273,24 @@ public class MonteCarloOptions implements Cloneable {
         return new MonteCarloOptions(this);
     }
 
+    public void setPSA(boolean selected) {
+        psa = selected;
+    }
 
+    /**
+     *
+     * @return  true if we are conducting a PSA analysis, false otherwise
+     */
 
+    public boolean isPsa() {
+        return psa;
+    }
+
+    /**
+     * Sets psa
+     * @param psa indicates whether to carry out PSA or not
+     */
+    public void setPsa(boolean psa) {
+        this.psa = psa;
+    }
 }

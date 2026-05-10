@@ -42,6 +42,9 @@ public class TableWithEvents extends Potential implements DESSimulablePotential 
     protected ArrayList<Configuration> impossibleConfigurations;
 
 
+
+
+
     public TableWithEvents(List<Variable> variables, PotentialRole role) {
         this(variables,role,false);
     }

@@ -14,12 +14,12 @@ public abstract class ProbDensFunction {
 
 	public abstract void setParameters(double[] args);
 
-	//CMI
+	//
 	//For Univariate
 	public void verifyParameters(double[] parameters) throws IllegalArgumentException {
 		throw new IllegalArgumentException("verifyParameters not implemented in " + this.getClass().getName());
 	}
-	//CMF
+	//
 
 	public abstract boolean verifyParametersDomain(boolean isChanceVariable);
 

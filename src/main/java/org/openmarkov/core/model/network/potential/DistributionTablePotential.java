@@ -169,10 +169,19 @@ public class DistributionTablePotential extends Potential implements DESSimulabl
     /**
      * Returns the TableWithEvents object where the distribution parameters are stored
      *
-     * @return the TableWithEvents object where the distribution parameters are stored
+     * @return the TableWithEvents object where the  distribution parameters (numeric and function) are stored
      */
     public TableWithEvents getTableWithEvents() {
         return tableWithEvents;
+    }
+
+    /**
+     * Returns the TablePotential associated to its TableWithEvents object where the distribution parameters are stored
+     *
+     * @return the TablePotentialobject where the numeric distribution parameters are stored
+     */
+    public TablePotential getTablePotential() {
+        return tableWithEvents.getTablePotential();
     }
 
     /**

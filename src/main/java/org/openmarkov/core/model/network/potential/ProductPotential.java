@@ -60,9 +60,9 @@ import java.util.List;
 	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-		//CMI 08/01/2023 added DESnet behaviour
+		// 08/01/2023 added DESnet behaviour
 		if (node.getProbNet().getNetworkType() instanceof DESNetworkType) return false;
-		//CMF
+		//
 		boolean suitable = (
 				role == PotentialRole.CONDITIONAL_PROBABILITY || role == PotentialRole.POLICY
 		) && variables.get(0).getVariableType() == VariableType.NUMERIC;

@@ -55,7 +55,7 @@ import java.util.List;
 	}
 
 
-	//CMI 08/01/2023 - added DESnets provisional behaviour and added node parameter.
+	// 08/01/2023 - added DESnets provisional behaviour and added node parameter.
 	/**
 	 * Returns if an instance of a certain Potential type makes sense given the
 	 * variables and the potential role
@@ -67,9 +67,9 @@ import java.util.List;
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		// 10/01/2023 Issue #483. Signature changed.
 		//public static boolean validate(List<Variable> variables, PotentialRole role) {
-		//CMI 08/01/2023 - for DESnets
+		// 08/01/2023 - for DESnets
 		if (node.getProbNet().getNetworkType() instanceof DESNetworkType) return false;
-		//CMF
+		//
 		return role == PotentialRole.CONDITIONAL_PROBABILITY && variables.size() == 2
 				// child = variables.get (0)
 				// parent = variables.get (1)
@@ -77,7 +77,7 @@ import java.util.List;
 				.equals(variables.get(1).getBaseName())
 				&& variables.get(0).getTimeSlice() == variables.get(1).getTimeSlice() + 1;
 	}
-//CMF
+//
 
 	// Methods
 	@Override public List<TablePotential> tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,

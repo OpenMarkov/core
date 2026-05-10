@@ -10,8 +10,10 @@ package org.openmarkov.core.action;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
+import org.openmarkov.core.model.network.potential.DistributionTablePotential;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.TransitionTablePotential;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,6 +122,12 @@ import java.util.List;
 			return (TablePotential) (node.getPotentials().get(0));
 		} else if (node.getPotentials().get(0) instanceof ExactDistrPotential) {
 			return ((ExactDistrPotential) (node.getPotentials().get(0))).getTablePotential();
+			// 19/05/2024 - first attempt to DESnets PSA; currently only working with DistributionTablePotential and TransitionTablePotential
+		} else if (node.getPotentials().get(0) instanceof TransitionTablePotential) {
+			return ((TransitionTablePotential) (node.getPotentials().get(0))).getTablePotential();
+		} else if (node.getPotentials().get(0) instanceof DistributionTablePotential) {
+			return ((DistributionTablePotential) node.getPotentials().get(0)).getTableWithEvents().getTablePotential();
+		//
 		} else {
 			return null;
 		}
@@ -136,6 +144,7 @@ import java.util.List;
 		}
 		placeNewUncertainColumn(potential);
 		placeNewValuesColumn(potential);
+
 	}
 
 	private void placeNewValuesColumn(TablePotential potential) {
@@ -151,6 +160,12 @@ import java.util.List;
 	}
 
 	private void placeNewUncertainColumn(TablePotential potential) {
+		// 20/05/2024 First version of DESNET PSA FIXME recode for mixing with common PSA
+		if (node.getPotentials().get(0) instanceof DistributionTablePotential){
+			placeUncertainColumn(potential, newUncertainColumn, potential.getConditionedVariable(), basePosition);
+			return;
+		}
+		//
 		placeUncertainColumn(potential, newUncertainColumn, getVariable(), basePosition);
 	}
 

@@ -99,7 +99,7 @@ import java.util.Map;
 	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-//CMI 17/10/2020
+// 17/10/2020
 //		return (
 //				!variables.isEmpty() && variables.get(0).getVariableType() == VariableType.NUMERIC
 //		);
@@ -107,7 +107,7 @@ import java.util.Map;
 				!variables.isEmpty() && (variables.get(0).getVariableType() == VariableType.NUMERIC
 						|| variables.get(0).getVariableType() == VariableType.EVENT)
 		);
-//CMF
+//
 	}
 
 	/**

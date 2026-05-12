@@ -4,12 +4,12 @@
 
     <parent>
         <groupId>org.openmarkov</groupId>
-        <artifactId>org.openmarkov</artifactId>
+        <artifactId>root</artifactId>
         <version>0.3.0-SNAPSHOT</version>
-        <relativePath>../org.openmarkov</relativePath>
+        <relativePath>../root</relativePath>
     </parent>
 
-    <artifactId>org.openmarkov.core</artifactId>
+    <artifactId>core</artifactId>
     <version>0.3.0-SNAPSHOT</version>
 
     <build>

@@ -135,7 +135,7 @@
     <Localization class="org.openmarkov.core.exception.ConstraintViolatedException$OnlyAtemporalVariablesAllowed"
                   value="Variable {variable} must be atemporal."/>
     <Localization class="org.openmarkov.core.exception.ConstraintViolatedException$OnlyChanceNodesAllowed"
-                  value="Node {node} must be a chance node."/>
+                  value="Node for {variable} must be a chance node."/>
     <Localization class="org.openmarkov.core.exception.ConstraintViolatedException$OnlyContinuousVariablesAllowed"
                   value="Variable {variable} must be continuous."/>
     <Localization class="org.openmarkov.core.exception.ConstraintViolatedException$OnlyDirectedLinksAllowed"

@@ -125,8 +125,8 @@ public class PNESupport implements PNEditListener /*extends UndoableEditSupport*
         while (!editsToVisit.isEmpty()) {
             var edit = editsToVisit.removeFirst();
             flattenedEdits.add(edit);
-            if (edit instanceof CompoundPNEdit compoundEdit) {
-                compoundEdit.getEdits().forEach(editsToVisit::addLast);
+            if (edit instanceof MultiEdit multiEdit) {
+                multiEdit.getEdits().forEach(editsToVisit::addLast);
             }
         }
         return flattenedEdits;
@@ -158,6 +158,13 @@ public class PNESupport implements PNEditListener /*extends UndoableEditSupport*
      */
     public void removeUndoneEdits() {
         this.editsHistoryStacker.getCurrentUndoManager().removeUndoneEdits();
+    }
+    
+    /**
+     * Removes all undone edits from the current history, making redo unavailable.
+     */
+    public void removeDoneEdits() {
+        this.editsHistoryStacker.getCurrentUndoManager().removeDoneEdits();
     }
     
     /**

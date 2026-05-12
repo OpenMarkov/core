@@ -23,7 +23,7 @@ import java.util.List;
 		List<Node> nodes = probNet.getNodes();
 		for (Node node : nodes) {
 			if (node.getNodeType() != NodeType.CHANCE) {
-                constraintChecker.addException(new ConstraintViolatedException.OnlyChanceNodesAllowed(this, node));
+                constraintChecker.addException(new ConstraintViolatedException.OnlyChanceNodesAllowed(this, node.getVariable()));
 			}
 		}
 	}

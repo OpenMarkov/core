@@ -184,12 +184,18 @@ public class ProbNet implements PotentialNetwork, Cloneable, ClassLocalizable {
      * @param constraints the constraints to check
      * @throws ConstraintViolatedException if any constraint is violated
      */
-    public void checkConstraints(Iterable<PNConstraint> constraints) throws ConstraintViolatedException {
+    public void checkConstraints(Iterable<? extends PNConstraint> constraints) throws ConstraintViolatedException {
         ConstraintChecker checker = new ConstraintChecker(this);
         for (PNConstraint constraint : constraints) {
             constraint.checkProbNet(this, checker);
         }
         checker.buildAndThrow();
+    }
+    
+    public void checkConstraintsIn(ConstraintChecker constraintChecker) {
+        for (PNConstraint constraint : this.constraints) {
+            constraint.checkProbNet(this, constraintChecker);
+        }
     }
 
     /**

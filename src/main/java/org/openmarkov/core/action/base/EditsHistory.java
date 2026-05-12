@@ -26,14 +26,14 @@ public class EditsHistory {
      * @return {@code true} if there are edits that can be undone
      */
     public boolean canUndo() {
-        return !doneEdits.isEmpty();
+        return !this.doneEdits.isEmpty();
     }
     
     /**
      * @return {@code true} if there are edits that can be redone
      */
     public boolean canRedo() {
-        return !undoneEdits.isEmpty();
+        return !this.undoneEdits.isEmpty();
     }
     
     /**
@@ -45,7 +45,7 @@ public class EditsHistory {
         if (!canUndo()) {
             return null;
         }
-        return doneEdits.getLast();
+        return this.doneEdits.getLast();
     }
     
     /**
@@ -57,7 +57,7 @@ public class EditsHistory {
         if (!canRedo()) {
             return null;
         }
-        return undoneEdits.getFirst();
+        return this.undoneEdits.getFirst();
     }
     
     /**
@@ -70,10 +70,10 @@ public class EditsHistory {
             return null;
         }
         //Redoes the edit.
-        PNEdit undoneEdit = doneEdits.getLast();
+        PNEdit undoneEdit = this.doneEdits.getLast();
         undoneEdit.undo();
         //Then adds it to the undone list.
-        undoneEdits.addFirst(doneEdits.removeLast());
+        this.undoneEdits.addFirst(this.doneEdits.removeLast());
         return undoneEdit;
     }
     
@@ -86,7 +86,7 @@ public class EditsHistory {
         if (!canUndo()) {
             return null;
         }
-        return doneEdits.removeLast();
+        return this.doneEdits.removeLast();
     }
     
     /**
@@ -99,10 +99,10 @@ public class EditsHistory {
             return null;
         }
         //Redoes the edit.
-        PNEdit redoneEdit = undoneEdits.getFirst();
+        PNEdit redoneEdit = this.undoneEdits.getFirst();
         redoneEdit.redo();
         //Then adds it to the undone list.
-        doneEdits.addLast(undoneEdits.removeFirst());
+        this.doneEdits.addLast(this.undoneEdits.removeFirst());
         return redoneEdit;
     }
     
@@ -110,7 +110,11 @@ public class EditsHistory {
      * Clears all undone edits, making them no longer available for redo.
      */
     public void removeUndoneEdits() {
-        undoneEdits.clear();
+        this.undoneEdits.clear();
+    }
+    
+    public void removeDoneEdits() {
+        this.doneEdits.clear();
     }
     
     /**
@@ -120,7 +124,7 @@ public class EditsHistory {
      */
     public void addEdit(PNEdit edit) {
         removeUndoneEdits();
-        doneEdits.addLast(edit);
+        this.doneEdits.addLast(edit);
     }
     
     /**
@@ -136,4 +140,5 @@ public class EditsHistory {
     public ArrayList<PNEdit> getUndoneEdits() {
         return new ArrayList<>(this.undoneEdits);
     }
+    
 }

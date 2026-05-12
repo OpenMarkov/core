@@ -362,12 +362,12 @@ public abstract class ConstraintViolatedException extends DoEditException {
     
     public static class OnlyChanceNodesAllowed extends ConstraintViolatedException {
         
-        public OnlyChanceNodesAllowed(OnlyChanceNodes onlyChanceNodes, Node node) {
+        public OnlyChanceNodesAllowed(OnlyChanceNodes onlyChanceNodes, Variable variable) {
             super(onlyChanceNodes);
-            this.node = node;
+            this.variable = variable;
         }
         
-        private final Node node;
+        private final Variable variable;
     }
     
     public static class OnlyContinuousVariablesAllowed extends ConstraintViolatedException {

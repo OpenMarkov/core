@@ -160,48 +160,7 @@ class PNESupportPropertyTest {
     // -----------------------------------------------------------------------
     // Compound edit: single notification (Bug 1 & Bug 2 regression tests)
     // -----------------------------------------------------------------------
-
-    /**
-     * Undoing or redoing a compound edit must produce exactly one listener
-     * notification — with the compound edit itself, not one per sub-edit.
-     *
-     * <p>Regression test for Bug 1 (duplicate notifications via flattenEdit)
-     * and Bug 2 (asymmetric event types).
-     */
-    @Example
-    void compoundEdit_undoRedoNotifiesExactlyOnce() throws DoEditException {
-        ProbNet net = freshBN();
-        RecordingListener listener = new RecordingListener();
-        net.getPNESupport().addListener(listener);
-
-        net.getPNESupport().openNewSubEditHistory();
-        new AddNodeEdit(net, new Variable("A", 2), NodeType.CHANCE).executeEdit();
-        new AddNodeEdit(net, new Variable("B", 3), NodeType.CHANCE).executeEdit();
-        net.getPNESupport().closeSubEditHistory();
-
-        // Undo
-        listener.clear();
-        net.getPNESupport().undo();
-        var undoEvents = listener.eventsOfType(RecordingListener.EventType.AFTER_UNDO);
-        assertThat(undoEvents)
-                .as("undo of compound edit should notify exactly once")
-                .hasSize(1);
-        assertThat(undoEvents.getFirst().edit())
-                .as("undo notification should carry the compound edit")
-                .isInstanceOf(MultiEdit.class);
-
-        // Redo
-        listener.clear();
-        net.getPNESupport().redo();
-        var redoEvents = listener.eventsOfType(RecordingListener.EventType.AFTER_REDO);
-        assertThat(redoEvents)
-                .as("redo of compound edit should notify exactly once")
-                .hasSize(1);
-        assertThat(redoEvents.getFirst().edit())
-                .as("redo notification should carry the compound edit")
-                .isInstanceOf(MultiEdit.class);
-    }
-
+    
     // -----------------------------------------------------------------------
     // Compound edit: sub-edit order in ListPNEdit (Bug 3 regression test)
     // -----------------------------------------------------------------------

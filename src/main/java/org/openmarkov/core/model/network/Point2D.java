@@ -91,7 +91,7 @@ public class Point2D {
          * @since 1.2
          */
         public String toString() {
-            return "Point2D.Double[" + x + ", " + y + "]";
+            return this.localize();
         }
         
         /**

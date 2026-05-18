@@ -32,6 +32,8 @@ public class MulticriteriaOptions implements Cloneable, ClassLocalizable {
 	public MulticriteriaOptions(MulticriteriaOptions multiCriteriaOptions) {
 		this.multicriteriaType = multiCriteriaOptions.getMulticriteriaType();
 		this.mainUnit = multiCriteriaOptions.getMainUnit();
+		this.ceOptionsShowed = multiCriteriaOptions.isCeOptionsShowed();
+		this.unicriterionOptionsShowed = multiCriteriaOptions.isUnicriterionOptionsShowed();
 	}
 
 	public Type getMulticriteriaType() {

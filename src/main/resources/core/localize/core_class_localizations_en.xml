@@ -309,7 +309,7 @@
                   value="Finding of variable {variable} with numerical value {numericalValue} and state index {stateIndex}"/>
     <Localization class="org.openmarkov.core.model.network.Node" value="{nodeType} node of {variable}"/>
     <Localization class="org.openmarkov.core.model.network.PartitionedInterval" value="Interval with limits: {limits}"/>
-    <Localization class="org.openmarkov.core.model.network.Point2D$Double" value="{x: {x}, y: {y}}"/>
+    <Localization class="org.openmarkov.core.model.network.Point2D$Double" value="{ x: {x}, y: {y} }"/>
     <Localization class="org.openmarkov.core.model.network.ProbNet"
                   value="{networkType} network named {metadata.name}"
                   short="{networkType} network named {metadata.name}"

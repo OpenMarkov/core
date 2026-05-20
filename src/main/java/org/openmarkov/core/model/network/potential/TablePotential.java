@@ -42,7 +42,7 @@ import java.util.*;
  */
 @PotentialType(names = {"ProbTable", "Table"})
 public class TablePotential extends AbstractIndexedPotential
-        implements Comparable<TablePotential>, Projectable, Reorderable, Scalable, CEUtilityPotential {
+        implements Comparable<TablePotential>, Projectable, Reorderable, Scalable, CEUtilityPotential, DESSimulablePotential {
     // Attributes
     /**
      * Table storing the numerical values of the potential.
@@ -688,6 +688,28 @@ public class TablePotential extends AbstractIndexedPotential
      */
     public boolean hasInterventionForDecision(Variable decision) {
         return false;
+    }
+    
+    // 14/08/2022 - sampleConditionedVariable refactored for dealing with nuisance variance
+    @Override
+    public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) {
+        
+        int index = 0;
+        int sampleIndex = 0;
+        // find index of first position for the given configuration
+        for (int i = 1; i < variables.size(); ++i) {
+            index += parents.getState(variables.get(i)) * offsets[i];
+        }
+        double accumulatedProbability = values[index + sampleIndex];
+        //24/10/2023; adapted to indeterminate number of random numbers to sample potentials
+        while (randomNumbers[0] > accumulatedProbability
+                // Make sure we don't go out of bounds even if the sum of probabilities
+                // is smaller than one.
+                && sampleIndex < variables.get(0).getNumStates() - 1) {
+            ++sampleIndex;
+            accumulatedProbability += values[index + sampleIndex];
+        }
+        return sampleIndex;
     }
     
     @Override

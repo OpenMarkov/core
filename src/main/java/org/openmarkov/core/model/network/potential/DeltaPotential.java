@@ -20,6 +20,7 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 
 import java.util.*;
 
@@ -30,7 +31,7 @@ import java.util.*;
  *
  * @author Manuel Arias
  */
-@PotentialType(names = "Delta") public class DeltaPotential extends Potential implements Projectable, Scalable {
+@PotentialType(names = "Delta") public class DeltaPotential extends Potential implements Projectable, Scalable, DESSimulablePotential {
     
     // state and stateIndex are used for finite states variables
     private State state = null;
@@ -83,6 +84,10 @@ import java.util.*;
     @ToCheck(reasonKind = ToCheck.ReasonKind.PROBABLE_BUG,
             reasonDescription = "The boolean expression might be wrong, as there are no parentheses used.")
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+        //I have tried to add DeltaPotential to the DESnet set of potentials; haphazardly OM returned Uniform and Sum potentials whereas in the GUI appears Delta potentials
+        if ((node.getProbNet().getNetworkType() instanceof DESNetworkType)) {
+            return true;
+        }
         return (variables.size() <= 1) //This means it has no parents
                 || (role == PotentialRole.POLICY)
                 || ((role == PotentialRole.CONDITIONAL_PROBABILITY)
@@ -235,6 +240,15 @@ import java.util.*;
             return copy;
         }
         return copy();
+    }
+    
+    @Override
+    public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) {
+        return switch (getConditionedVariable().getVariableType()) {
+            case FINITE_STATES-> stateIndex;
+            case DISCRETIZED -> Double.NaN;
+            case NUMERIC, EVENT-> numericValue;
+        };
     }
     
 }

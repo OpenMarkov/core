@@ -183,7 +183,9 @@ public class TreeADDBranch implements Cloneable, ClassLocalizable {
         TreeADDBranch branch = null;
         if (potential != null) {
             if (this.rootVariable.getVariableType() == VariableType.FINITE_STATES
-                    || this.rootVariable.getVariableType() == VariableType.DISCRETIZED) {
+                    || this.rootVariable.getVariableType() == VariableType.DISCRETIZED
+                    || this.rootVariable.getVariableType() == VariableType.EVENT
+            ) {
                 branch = new TreeADDBranch(new ArrayList<>(getBranchStates()), this.getRootVariable(),
                                            this.getPotential().copy(), this.getParentVariables());
                 
@@ -232,7 +234,11 @@ public class TreeADDBranch implements Cloneable, ClassLocalizable {
     
     public List<Variable> getAddableVariables() {
         List<Variable> addableVariables = new ArrayList<>(parentVariables);
+        boolean selfLoop = addableVariables.contains(potential.getConditionedVariable());
         addableVariables.removeAll(potential.getVariables());
+        if (selfLoop) {
+            addableVariables.add(potential.getConditionedVariable());
+        }
         if (potential instanceof ExactDistrPotential) {
             addableVariables.remove(potential.getVariable(0));
         }

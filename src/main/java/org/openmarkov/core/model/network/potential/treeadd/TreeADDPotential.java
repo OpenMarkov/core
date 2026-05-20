@@ -10,6 +10,7 @@ package org.openmarkov.core.model.network.potential.treeadd;
 import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
+import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.Criterion;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -21,6 +22,7 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
+import org.openmarkov.core.model.network.potential.DESSimulablePotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.StrategyTree;
@@ -51,7 +53,7 @@ import java.util.stream.Collectors;
  * @author myebra
  */
 @PotentialType(names = "Tree/ADD")
-public class TreeADDPotential extends Potential {
+public class TreeADDPotential extends Potential implements DESSimulablePotential {
     
     // Attributes
     /**
@@ -91,7 +93,7 @@ public class TreeADDPotential extends Potential {
         List<Variable> potentialVariables;
         // if topVariable is finite states or discretized, it creates a branch
         // for each state
-        if (variableType == VariableType.FINITE_STATES || variableType == VariableType.DISCRETIZED) {
+        if (variableType == VariableType.FINITE_STATES || variableType == VariableType.DISCRETIZED|| variableType==VariableType.EVENT) {
             
             for (int i = branchingStates.length - 1; i >= 0; i--) {
                 // if potential role of the treeADD is a conditional probability
@@ -460,6 +462,66 @@ public class TreeADDPotential extends Potential {
         }
         return hasUncertainty;
     }
+    
+    /**
+     * When this potential represents a conditional probability, this method returns a value for the first variable,
+     * sampled with the probability distribution. If this variable is finite-states, it returns the index of
+     * the sampled state. If the variable is numeric, it returns the value sampled.
+     *
+     * @param randomNumbers
+     * @param parents
+     * @return
+     */
+    @Override
+    public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) throws OpenMarkovException {
+        //It may be several states in a branch
+        double branchValue=0;
+        //26/10/2023; TTE is the variableValue of events
+        //16/11/2023; A numeric variable can be split into intervals each of one is a branch of the tree
+        if (topVariable.getVariableType()!=VariableType.EVENT)
+            branchValue = parents.getFinding(topVariable).getNumericalValue();
+        double result=0;
+        
+        for (TreeADDBranch branch: branches) {
+            boolean sample = false;
+            if (branch.isIntervalBranch()) {
+                if (branch.isInsideInterval(branchValue)) sample = true;
+            } else{
+                List<State> branchStates = branch.getBranchStates();
+                String stateName = topVariable.getStateName((int)branchValue);
+                sample = branchStates.stream().anyMatch(state -> state.getName().equals(stateName));
+            }
+            if (sample){
+
+                    parents.removeFinding(topVariable);
+
+                //03/2023
+                result = ((DESSimulablePotential)branch.getPotential()).sampleConditionedVariable(randomNumbers, parents);
+                return result;
+            }
+            
+        }
+        return result;
+    }
+
+    @Override
+    public void resetSimulation(){
+        for (TreeADDBranch branch: branches){
+            ((DESSimulablePotential)branch.getPotential()).resetSimulation();
+        }
+    }
+    
+
+    @Override
+    public int numRandomNumbersNeeded(){
+        int max =1;
+        for (TreeADDBranch branch: branches){
+            int needed = ((DESSimulablePotential)branch.getPotential()).numRandomNumbersNeeded();
+            if (needed > max) max = needed;
+        }
+        return max;
+    }
+
     
     /**
      * Generates a sampled potential

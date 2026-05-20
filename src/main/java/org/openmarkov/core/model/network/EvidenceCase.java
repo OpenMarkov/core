@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @author Manuel Arias
  * @author fjdiez
  * @version 1.0
- * @see org.openmarkov.core.model.network.Finding
+ * @see Finding
  * @since OpenMarkov 1.0
  */
 public class EvidenceCase implements ClassLocalizable {
@@ -351,6 +351,7 @@ public class EvidenceCase implements ClassLocalizable {
             case DISCRETIZED -> (newFinding.stateIndex == existingFinding.stateIndex) || (
                     newFinding.numericalValue == existingFinding.numericalValue
             );
+            case EVENT -> true;
         };
     }
     

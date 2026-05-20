@@ -370,6 +370,42 @@ public abstract class ConstraintViolatedException extends DoEditException {
         private final Variable variable;
     }
     
+    //{eventNode} is of type event.
+    public static class CannotHaveEventNodeException extends ConstraintViolatedException {
+        
+        public final Node eventNode;
+        
+        public CannotHaveEventNodeException(NoEventNodes constraint, Node eventNode) {
+            super(constraint);
+            this.eventNode = eventNode;
+        }
+        
+    }
+    
+    //There can be only one orphan event node which the purpose of initial, but multiple have it:\n{orphanEventNodes}
+    public static class    OnlyOneOrphanInitialEventException extends ConstraintViolatedException {
+        
+        public final List<Node> orphanEventNodes;
+        
+        public OnlyOneOrphanInitialEventException(OnlyOneOrphanInitialEvent constraint, List<Node> orphanEventNodes) {
+            super(constraint);
+            this.orphanEventNodes = orphanEventNodes;
+        }
+    }
+    
+    
+    //Self loop can only be used if the node is event or chance, which is not applicable to {node}.
+    public static class    OnlySelfLoopsWithEventAndChanceNodesException extends ConstraintViolatedException {
+        
+        public final Node node;
+        
+        public OnlySelfLoopsWithEventAndChanceNodesException(OnlySelfLoopsWithEventAndChanceNodes constraint, Node node) {
+            super(constraint);
+            this.node = node;
+        }
+    }
+    
+    
     public static class OnlyContinuousVariablesAllowed extends ConstraintViolatedException {
         
         public OnlyContinuousVariablesAllowed(OnlyContinuousVariables onlyContinuousVariables, Variable variable) {

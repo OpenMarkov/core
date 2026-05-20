@@ -23,7 +23,8 @@ import java.io.Serializable;
 public enum VariableType implements Serializable, Localizable {
     FINITE_STATES,
     NUMERIC,
-    DISCRETIZED;
+    DISCRETIZED,
+    EVENT;
 
 	public String toString() {
         return EnumUtils.toCamelCase(this);

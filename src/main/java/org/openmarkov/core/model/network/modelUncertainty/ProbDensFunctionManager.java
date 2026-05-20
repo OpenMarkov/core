@@ -129,6 +129,18 @@ public class ProbDensFunctionManager {
         return validFunctions;
     }
     
+    public List<String> getDESValidProbDensFunctions() {
+        List<String> validFunctions = new ArrayList<>();
+        for (String functionName : probDensFunctions.keySet()) {
+            Class<?> functionClass = probDensFunctions.get(functionName);
+            ProbDensFunctionType annotation = functionClass.getAnnotation(ProbDensFunctionType.class);
+            if ((annotation.isValidForNumeric()) || (annotation.isValidForProbabilities())) {
+                validFunctions.add(functionName);
+            }
+        }
+        return validFunctions;
+    }
+    
     public String[] getParameters(String functionName) {
         Class<? extends ProbDensFunction> functionClass = probDensFunctions.get(functionName);
         ProbDensFunctionType annotation = functionClass.getAnnotation(ProbDensFunctionType.class);

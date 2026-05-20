@@ -15,6 +15,7 @@ import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.operation.AugmentedProbTableInference;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 
 import java.util.*;
 
@@ -58,6 +59,9 @@ public class AugmentedProbTablePotential extends Potential {
     }
     
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+        if (node.getProbNet().getNetworkType() instanceof DESNetworkType) {
+            return false;
+        }
         return (node.getVariable().getVariableType() == VariableType.FINITE_STATES);
         
     }

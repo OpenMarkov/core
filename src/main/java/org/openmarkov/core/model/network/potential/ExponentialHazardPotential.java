@@ -16,6 +16,7 @@ import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 
 import java.util.List;
 import java.util.Map;
@@ -75,6 +76,9 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
 	 * @return True if it is valid
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+		if (node.getProbNet().getNetworkType() instanceof DESNetworkType) {
+			return false;
+		}
 		return !variables.isEmpty() && variables.get(0).getVariableType() == VariableType.FINITE_STATES
 				&& variables.get(0).getNumStates() == 2;
 	}

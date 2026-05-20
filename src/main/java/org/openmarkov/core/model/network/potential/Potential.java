@@ -589,7 +589,14 @@ public abstract class Potential implements Localizable {
             newVariables.add(variable);
             newPotential = new UniformPotential(newVariables, role);
         } else {
-            newPotential = this;
+            //DESnets - 18/03/2023 - due to self-loop, the conditioned variable can be repeated - FIXME
+            if (variable.equals(variables.get(0))){
+                List<Variable> newVariables = new ArrayList<Variable>(variables);
+                newVariables.add(variable);
+                newPotential = new UniformPotential(newVariables, role);
+            } else{
+                newPotential = this;
+            }
         }
         return newPotential;
     }

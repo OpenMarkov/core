@@ -22,6 +22,7 @@ import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionManage
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionType;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -157,6 +158,9 @@ import java.util.stream.Collectors;
      * @return True if it is valid
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+        if (node.getProbNet().getNetworkType() instanceof DESNetworkType) {
+            return false;
+        }
         return (node.getVariable().getVariableType() == VariableType.NUMERIC);
         
     }

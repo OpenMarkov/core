@@ -33,7 +33,9 @@ public class InferenceOptions {
 	private MulticriteriaOptions multiCriteriaOptions;
 
 	private TemporalOptions temporalOptions;
-
+	
+	private MonteCarloOptions monteCarloOptions;
+	
 	// Constructor
 	public InferenceOptions(ProbNet probNet, Variable simulationIndexVariable) {
 		this.probNet = probNet;
@@ -43,11 +45,13 @@ public class InferenceOptions {
 	public InferenceOptions() {
 		this.multiCriteriaOptions = new MulticriteriaOptions();
 		this.temporalOptions = new TemporalOptions();
+		this.monteCarloOptions = new MonteCarloOptions();
 	}
 
 	public InferenceOptions(InferenceOptions inferenceOptions) {
 		this.multiCriteriaOptions = new MulticriteriaOptions(inferenceOptions.getMultiCriteriaOptions());
 		this.temporalOptions = new TemporalOptions(inferenceOptions.getTemporalOptions());
+		this.setMonteCarloOptions(new MonteCarloOptions(inferenceOptions.getMonteCarloOptions()));
 	}
 
 	/**
@@ -103,6 +107,14 @@ public class InferenceOptions {
 		}
 		out += "Discount rate = " + discountRate;
 		return out;
+	}
+	
+	public MonteCarloOptions getMonteCarloOptions() {
+		return monteCarloOptions;
+	}
+	
+	public void setMonteCarloOptions(MonteCarloOptions monteCarloOptions) {
+		this.monteCarloOptions = monteCarloOptions;
 	}
 	
 }

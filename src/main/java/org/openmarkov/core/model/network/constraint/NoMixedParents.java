@@ -43,7 +43,7 @@ public class NoMixedParents extends PNConstraint {
         
         static MixedParentsGroup of(NodeType nodeType) {
             return switch (nodeType) {
-                case CHANCE, DECISION -> MixedParentsGroup.CHANCE_OR_DECISION;
+                case CHANCE, DECISION, EVENT -> MixedParentsGroup.CHANCE_OR_DECISION;
                 case UTILITY -> MixedParentsGroup.UTILITY;
                 case SV_SUM, SV_PRODUCT -> MixedParentsGroup.WRONG_GROUP;
             };

@@ -13,11 +13,14 @@ import org.openmarkov.core.model.graph.Link;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
 import org.openmarkov.core.model.network.ProbNet;
+import org.openmarkov.core.model.network.PurposeType;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.constraint.*;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.SumPotential;
+import org.openmarkov.core.model.network.potential.UniformPotential;
 
+import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -147,6 +150,21 @@ public final class AddLinkEdit extends BaseLinkEdit {
                 constraintChecker.addException(new ConstraintViolatedException.OnlyUndirectedLinksCannotHaveChildren(constraint, nodeFrom, List.of(nodeTo)));
             }
         }
+        if (probNet.getConstraintOfClass(OnlyOneOrphanInitialEvent.class) instanceof OnlyOneOrphanInitialEvent constraint) {
+            Node destinationNode = probNet.getNode(this.getVariableTo());
+            if ((destinationNode.getPurpose().equals(PurposeType.INITIAL_EVENT.getName()))) {
+                constraintChecker.addException(new ConstraintViolatedException.OnlyOneOrphanInitialEventException(constraint, List.of(this.nodeFrom, destinationNode)));
+            }
+        }
+        
+        if (probNet.getConstraintOfClass(OnlySelfLoopsWithEventAndChanceNodes.class) instanceof OnlySelfLoopsWithEventAndChanceNodes constraint) {
+            Variable originVariable = this.getVariableFrom();
+            Variable destinationVariable = this.getVariableTo();
+            if ((originVariable.equals(destinationVariable)) && ( (probNet.getNode(originVariable).getNodeType() != NodeType.EVENT) && (probNet.getNode(originVariable).getNodeType() != NodeType.CHANCE ) )){
+                constraintChecker.addException(new ConstraintViolatedException.OnlySelfLoopsWithEventAndChanceNodesException(constraint, this.getNodeFrom()));
+            }
+        }
+        
         if (probNet.getConstraintOfClass(ModelNetworkConstraint.class) instanceof ModelNetworkConstraint constraint
                 && !constraint.isLinkAdditionAllowed() && !constraint.canEditBeDone(this)) {
             constraintChecker.addException(new ConstraintViolatedException.ModelDoesNotAllowAddingLink(constraint, this.getVariableFrom(), this.getVariableTo()));
@@ -188,6 +206,25 @@ public final class AddLinkEdit extends BaseLinkEdit {
                     Potential newPotential = new SumPotential(variables, oldPotential.getPotentialRole());
                     newPotentials.add(newPotential);
                 }
+                
+                // 05/04/2020 - There may be self-loops in DESNets for EVENT and CHANCE nodes.
+                // Previous code is supposing there is no self loops so methods consider there is no duplicated variables
+                // method Potential#addVariable only adds the variable if the variable is not there.
+                //To avoid regressions, and keep the changes in previous classes to a minumun, the Uniform Potential is created here.
+                //Because of this previous assumption I am also checking the constrain.
+                //Currently networks with OnlySelfLoopsWithEventAndChanceNodes only have one potential
+            } else if ((nodeFrom == nodeTo ) && ( (nodeFrom.getNodeType() ==NodeType.EVENT) || (nodeFrom.getNodeType() ==NodeType.CHANCE))
+                    && nodeFrom.getProbNet().getNetworkType().isApplicableConstraint(new OnlySelfLoopsWithEventAndChanceNodes())){
+                for (Potential oldPotential : oldPotentials) {
+                    // Update potential
+                    List<Variable> variables = oldPotential.getVariables();
+                    variables.add(nodeFrom.getVariable());
+                    Potential newPotential = new UniformPotential(variables, oldPotential.getPotentialRole());
+                    newPotentials.add(newPotential);
+                }
+                //
+                
+                
             } else {
                 for (Potential oldPotential : oldPotentials) {
                     // Update potential

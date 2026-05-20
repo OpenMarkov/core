@@ -17,6 +17,7 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,9 @@ public class LinearCombinationPotential extends GLMPotential implements Scalable
      * @return True if it is valid
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+        if (node.getProbNet().getNetworkType() instanceof DESNetworkType) {
+            return false;
+        }
         return role == PotentialRole.UNSPECIFIED || (
                 !variables.isEmpty() && variables.getFirst().getVariableType() == VariableType.NUMERIC
         );
@@ -114,6 +118,11 @@ public class LinearCombinationPotential extends GLMPotential implements Scalable
             }
         }
         return projectedPotential;
+    }
+    
+    @Override
+    protected TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, double[] coefficients, String[] covariates, List<Variable> evidencelessVariables, Map<String, String> variableValues) throws NonProjectablePotentialException {
+        throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
     }
     
     

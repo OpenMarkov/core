@@ -106,8 +106,14 @@ public abstract class InferenceAlgorithm implements Task {
      * @throws NotEvaluableNetworkException NotEvaluableNetworkException
      */
     private void checkApplicability() throws NotEvaluableNetworkException.NotApplicableNetwork {
+        List<NetworkType> networkTypes = getPossibleNetworkTypes();
+        boolean isApplicable = false;
         NetworkType networkType = probNet.getNetworkType();
-        if (!getPossibleNetworkTypes().contains(networkType)) {
+        // Check that there is a network type applicable equal to type of probNet
+        for (int i = 0; (i < networkTypes.size()) && !isApplicable; i++) {
+            isApplicable = networkType == networkTypes.get(i);
+        }
+        if (!isApplicable) {
             throw new NotEvaluableNetworkException.NotApplicableNetwork(probNet, getPossibleNetworkTypes());
         }
     }

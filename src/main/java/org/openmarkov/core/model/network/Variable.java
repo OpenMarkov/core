@@ -371,6 +371,14 @@ public class Variable implements Cloneable, Comparable<Variable>, ClassLocalizab
                 setPartitionedInterval(
                         new PartitionedInterval(getDefaultInterval(getNumStates()), getDefaultBelongs(getNumStates())));
                 break;
+            //2019 - created type Event - 11/04/2020 added a state named event
+            case EVENT:
+                //FIXME 13/01/2023; check partitioned interval; this is set because DeltaPotentialPanel uses it. Not needed for EVENT variables
+                this.setStates(new State[] { new State("event") });
+                setPartitionedInterval(
+                        new PartitionedInterval(new double[]{0.0,Double.POSITIVE_INFINITY}, getDefaultBelongs(getNumStates())));
+                break;
+            //
             default:
                 break;
         }

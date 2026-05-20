@@ -6,9 +6,11 @@
  */
 package org.openmarkov.core.model.network.potential;
 
+import net.sourceforge.jeval.EvaluationException;
 import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
+import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.EvidenceCase;
@@ -21,6 +23,7 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,7 +34,8 @@ import java.util.Map;
  * @author carmenyago
  * @version 1.0 2016
  */
-@PotentialType(names = "Function") public class FunctionPotential extends GLMPotential {
+@PotentialType(names = "Function")
+public class FunctionPotential extends GLMPotential implements DESSimulablePotential {
     
     /**
      * The default function
@@ -87,8 +91,26 @@ import java.util.Map;
     
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
         return (
-                !variables.isEmpty() && variables.get(0).getVariableType() == VariableType.NUMERIC
+                !variables.isEmpty() && (variables.get(0).getVariableType() == VariableType.NUMERIC
+                        || variables.get(0).getVariableType() == VariableType.EVENT)
         );
+    }
+    
+    @Override
+    public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents)  {
+        List<Variable> parentVariables = parents.getVariables();
+        Map<Variable, String> variablesMap = new HashMap<>();
+        double result =0;
+        for (Variable parentVariable:parentVariables){
+            variablesMap.put(parentVariable, ""+parents.getFinding(parentVariable).getNumericalValue());
+        }
+        try {
+            result = Double.parseDouble(this.covariates[0].evaluateWith(variablesMap));
+        } catch (NonProjectablePotentialException.CannotEvaluate |
+                 NonProjectablePotentialException.CannotResolveVariable e) {
+            throw new UnrecoverableException(e);
+        }
+        return  result;
     }
     
     /**
@@ -134,7 +156,11 @@ import java.util.Map;
                                                     double[] coefficients, VariableExpression[] covariates, List<Variable> evidencelessVariables,
                                                     Map<Variable, String> variableValues) throws NonProjectablePotentialException.PotentialCannotBeConvertedToATable {
         throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
-        
+    }
+    
+    @Override
+    protected TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, double[] coefficients, String[] covariates, List<Variable> evidencelessVariables, Map<String, String> variableValues) throws NonProjectablePotentialException {
+        throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
     }
     
     @Override public Potential copy() {
@@ -213,7 +239,7 @@ import java.util.Map;
     public Potential reorder(List<Variable> newOrderOfVariables) {
         return copy();
     }
-
+    
     /** Expression-based potential; variable-name-based, not index-based; returns a copy. */
     @Override
     public Potential reorder(Variable variable, State[] newOrder) {

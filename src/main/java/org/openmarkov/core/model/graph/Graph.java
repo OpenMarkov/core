@@ -158,9 +158,12 @@ public class Graph<T> {
         return getNodes().size();
     }
     
+    
     private void addLink(Link<T> link) {
         nodeLinks.get(link.getFrom()).add(link);
-        nodeLinks.get(link.getTo()).add(link);
+        if (!link.getFrom().equals(link.getTo())) {
+            nodeLinks.get(link.getTo()).add(link);
+        }
     }
     
     /**
@@ -227,16 +230,23 @@ public class Graph<T> {
      */
     public Link<T> getLink(T node1, T node2, boolean directed) {
         makeLinksExplicit(false);
-        List<Link<T>> linksNode1 = nodeLinks.get(node1);
-        if (linksNode1 != null) {
-            for (Link<T> link : linksNode1) {
-                if (directed && link.isDirected() && link.getTo().equals(node2) || !directed && !link.isDirected()
+        List<Link<T>> linksNode = nodeLinks.get(node1);
+        if (linksNode != null) {
+            for (Link<T> link : linksNode) {
+                if (directed && link.isDirected() &&
+                        // 06/01/2020 - when directed links
+                        // the previous code, took ALL the links of node1 (incoming or outgoing  ) and afterwards looks for links ending in node2.
+                        // This does not work when self-loops, because it may take any link ending in node2. Therefore another check for Node1 has been added
+                        link.getFrom().equals(node1) &&
+                        link.getTo().equals(node2) || !directed && !link.isDirected()
                         && link.contains(node2)) {
                     return link;
                 }
             }
+            
         }
         return null;
+        
     }
     
     /**
@@ -382,8 +392,8 @@ public class Graph<T> {
             return true;
         }
         HashMap<T, Collection<T>> parentsToIgnoredChildren = new HashMap<>();
-        for(var linkToIgnore : linksToIgnore) {
-            if(!parentsToIgnoredChildren.containsKey(linkToIgnore.getFrom())){
+        for (var linkToIgnore : linksToIgnore) {
+            if (!parentsToIgnoredChildren.containsKey(linkToIgnore.getFrom())) {
                 parentsToIgnoredChildren.put(linkToIgnore.getFrom(), new HashSet<>());
             }
             parentsToIgnoredChildren.get(linkToIgnore.getFrom()).add(linkToIgnore.getTo());
@@ -392,16 +402,16 @@ public class Graph<T> {
         int numNodes = nodes.size();
         boolean[] markedNodes = new boolean[numNodes];
         Deque<T> nodesToExpand = new ArrayDeque<>();
-
+        
         // Mark node1 and put it in the list of nodes to be expanded
         nodesToExpand.push(node1);
         markedNodes[nodes.indexOf(node1)] = true;
-
+        
         while (!nodesToExpand.isEmpty()) {
             T expandingNode = nodesToExpand.pop(); // the top of the stack
             ArrayList<T> neighbors = new ArrayList<>((directed) ? getChildren(expandingNode) : getNeighbors(expandingNode));
             var nodeLinksToIgnore = parentsToIgnoredChildren.get(expandingNode);
-            if(nodeLinksToIgnore != null) {
+            if (nodeLinksToIgnore != null) {
                 neighbors.removeIf(nodeLinksToIgnore::contains);
             }
             if (neighbors.contains(node2)) {

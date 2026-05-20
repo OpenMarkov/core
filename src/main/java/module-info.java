@@ -18,6 +18,7 @@ open module org.openmarkov.core {
     requires antlr;
     requires org.apache.poi.poi;
     requires rust.essentials;
+    requires java.desktop;
     
     exports org.openmarkov.core.action.core;
     exports org.openmarkov.core.model.decisiontree;
@@ -64,5 +65,6 @@ open module org.openmarkov.core {
     exports org.openmarkov.java.collectionsUtils.streamUtils;
     exports org.openmarkov.java.collectionsUtils;
     exports org.openmarkov.core.model.database;
+    exports org.openmarkov.core.model.network.modelUncertainty.ParametrizedFunction;
     
 }

@@ -7,8 +7,6 @@
 
 package org.openmarkov.core.exception;
 
-import org.openmarkov.core.exception.IBundledOpenMarkovException;
-
 import org.openmarkov.core.model.network.Finding;
 import org.openmarkov.core.model.network.Variable;
 
@@ -33,6 +31,15 @@ public abstract class IncompatibleEvidenceException extends UserInputException {
         
         public final Finding newFinding;
         public final Finding oldFinding;
+    }
+    
+    //Node for {variable} is not an Event node.
+    public static final class VariableMustBeEvent extends IncompatibleEvidenceException {
+        public final Variable variable;
+        
+        public VariableMustBeEvent(Variable variable) {
+            this.variable = variable;
+        }
     }
     
     public static final class FindingVariableIsMissingAState extends IncompatibleEvidenceException {

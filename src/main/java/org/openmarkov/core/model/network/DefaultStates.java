@@ -51,6 +51,10 @@ public class DefaultStates {
         defaultStates.add("low");
         defaultStates.add("medium");
         defaultStates.add("high");
+        //For event nodes
+        defaultStates = new ArrayList<>();
+        defaultStates.add("not happened");
+        defaultStates.add("happened");
         list.add(defaultStates);
         //defaultStates = new ArrayList<String>();
         //defaultStates.add("nonamed");
@@ -140,7 +144,7 @@ public class DefaultStates {
                 }
                 return states;
             }
-            case UTILITY: {
+            case UTILITY, EVENT: {
                 return new State[]{new State("Default")};
             }
             default: {

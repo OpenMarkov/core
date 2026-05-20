@@ -23,6 +23,7 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.TablePotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -117,7 +118,31 @@ public final class RemoveLinkEdit extends BaseLinkEdit {
                 // Update potentials
                 this.oldPotentials = node2.getPotentials();
                 for (Potential oldPotential : oldPotentials) {
-                    Potential newPotential = oldPotential.removeVariable(node1.getVariable());
+                    Potential newPotential;
+                    
+                    if (node1.equals(node2)){
+
+						/* Potential#removeVariable(Variable variable) removes variable when it if first encountered,
+						does not take into account self loops, then creates a new Uniform potential.
+						When removing self-loops Variable appears twice: in potential.variables(0) and potential.variables(k) so it is necessary
+						to remove potential.variables(k) instead of potential.variables(0).
+						Therefore I replicate the behaviour of removeVariable but removing the last ocurrence
+						but removing the last occurrence of Variable because if not */
+                        List<Variable> variables = oldPotential.getVariables();
+                        variables.remove(oldPotential.getVariables().lastIndexOf(node2.getVariable()));
+                        newPotential = new UniformPotential(variables, oldPotential.getPotentialRole());
+                        
+                    } else {
+                        
+                        newPotential = oldPotential.removeVariable(node1.getVariable());
+                        // 10/01/2020 for removing a self-cycle end of "if condition"
+                    }
+                    
+                    //Before having selfloops it was only this line
+//					Potential newPotential = oldPotential.removeVariable(node1.getVariable());
+                    //
+                    
+                    
                     // TODO - Implements validate for all potential types, at this moment it always return true.
 					/*
 					if (!newPotential.validate(node2, newPotential.getVariables(), newPotential.getPotentialRole())){
@@ -130,8 +155,16 @@ public final class RemoveLinkEdit extends BaseLinkEdit {
                         if (Arrays.stream(newPotential.getCPT().getValues()).sum() == 0) {
                             newPotential = new UniformPotential(newPotential.getVariables(), newPotential.getPotentialRole());
                         }
-                    } catch (NonProjectablePotentialException e) {
-                        throw new DoEditException.CannotDoEditException(e);
+                    }  catch (NonProjectablePotentialException e) {
+                        // 15/01/2023; temporal fix for DESnet nodes in DESnet evaluation OM version; In this version every potential has its own validate.
+                        //This is done here in order to be as little invasive as possible. FIXME merge with code or remove when TO-DO is implemented
+                        if (node1.getProbNet().getNetworkType() instanceof DESNetworkType) {
+                            if (!newPotential.validate(node2, newPotential.getVariables(), newPotential.getPotentialRole())) {
+                                newPotential = new UniformPotential(newPotential.getVariables(), newPotential.getPotentialRole());
+                            }
+                        } else {
+                            throw new DoEditException.CannotDoEditException(e);
+                        }
                     }
                     
                     newPotentials.add(newPotential);

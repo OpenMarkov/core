@@ -13,6 +13,7 @@ import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.inference.InferenceOptions;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,6 +65,9 @@ public class CycleLengthShift extends Potential {
      * @return True if it is valid
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+        if (node.getProbNet().getNetworkType() instanceof DESNetworkType) {
+            return false;
+        }
         // 10/01/2023 Issue #483. Signature changed. It used to be:
         // public static boolean validate(List<Variable> variables, PotentialRole role) {
         if (!(role == PotentialRole.CONDITIONAL_PROBABILITY && variables.size() == 2)) {

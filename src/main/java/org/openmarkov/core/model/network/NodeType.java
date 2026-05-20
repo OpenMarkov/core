@@ -34,6 +34,7 @@ public enum NodeType implements Serializable, Localizable {
     CHANCE,
     DECISION,
     UTILITY,
+    EVENT,
     SV_SUM,
     SV_PRODUCT;
     

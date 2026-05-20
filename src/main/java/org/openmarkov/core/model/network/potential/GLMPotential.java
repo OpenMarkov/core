@@ -303,6 +303,10 @@ public abstract class GLMPotential extends Potential {
         super.shift(probNet, timeDifference);
     }
     
+    protected abstract TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
+                                                         double[] coefficients, String[] covariates, List<Variable> evidencelessVariables,
+                                                         Map<String, String> variableValues) throws NonProjectablePotentialException;
+    
     @Override public Potential deepCopy(ProbNet copyNet) {
         GLMPotential potential = (GLMPotential) super.deepCopy(copyNet);
         if (this.choleskyDecomposition != null) {

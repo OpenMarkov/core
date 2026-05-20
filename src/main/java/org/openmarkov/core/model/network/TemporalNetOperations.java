@@ -26,7 +26,7 @@ import java.util.Map;
 public class TemporalNetOperations {
     
     private static final Logger logger = LogManager.getLogger(TemporalNetOperations.class);
-
+    
     // Attributes
     /**
      * Vertical separation in pixels between slices.
@@ -485,6 +485,18 @@ public class TemporalNetOperations {
 //		}
 //
 //	}
+    
+    
+    public static void transformToID(ProbNet expandedNetwork) throws ConstraintViolatedException {
+        for (Node node : expandedNetwork.getNodes()) {
+            Variable variable = node.getVariable();
+            if (variable.isTemporal()) {
+                variable.setName(variable.getBaseName() + " |" + variable.getTimeSlice() + "|");
+                variable.setTimeSlice(Variable.noTemporalTimeSlice);
+            }
+        }
+        expandedNetwork.setNetworkType(InfluenceDiagramType.getUniqueInstance());
+    }
     
     /**
      * Transforms an expanded MID into an influence diagram by changing the ProbNet type and

@@ -18,6 +18,7 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -184,6 +185,22 @@ import java.util.Random;
     
     @Override public void scalePotential(double scale) {
     
+    }
+    
+    /**
+     * Returns if an instance of a certain Potential type makes sense given the
+     * variables and the potential role
+     *
+     * @param node      {@code Node}
+     * @param variables {@code ArrayList} of {@code Variable}
+     * @param role      {@code PotentialRole}
+     * @return True if it is valid
+     */
+    public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+        //11/01/2023 FIXME Provisional; Potential for DESnets
+        if ((node.getProbNet().getNetworkType() instanceof DESNetworkType)) return false;
+        // TODO
+        return true;
     }
     
     @Override public Potential deepCopy(ProbNet copyNet) {

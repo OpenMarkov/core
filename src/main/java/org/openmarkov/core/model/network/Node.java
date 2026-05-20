@@ -99,6 +99,15 @@ public class Node implements Cloneable, ClassLocalizable {
     private double coordinateY = 100;
     private boolean alwaysObserved = false;
     
+    // 24/10/2020
+    /**
+     * Event nodes property which indicates its behaviour when triggered by another event:
+     * When true a new instance of the event with its timestamp is queued (the event may be several times in the queue)
+     * When false there is only an instance of the event in the queue at maximum:
+     * if the event is in the queue, it is added to it. Otherwise the timestamp of the event is modified.
+     */
+    private boolean alwaysAppend = false;
+    
     // Constructor
     
     /**
@@ -320,7 +329,7 @@ public class Node implements Cloneable, ClassLocalizable {
     
     /** @return the parent nodes of this node (sources of incoming directed links) */
     public @NotNull List<Node> getParents() {
-        return probNet.getParents(this);
+        return probNet==null?Collections.emptyList():probNet.getParents(this);
     }
     
     /** @return the sibling nodes of this node (connected by undirected links) */
@@ -411,6 +420,7 @@ public class Node implements Cloneable, ClassLocalizable {
             case CHANCE -> "Chance";
             case DECISION -> "Decision";
             case UTILITY -> "Utility";
+            case EVENT -> "Event";
             case SV_SUM -> "SV_SUM";
             case SV_PRODUCT -> "SV_PRODUCT";
         };
@@ -630,6 +640,29 @@ public class Node implements Cloneable, ClassLocalizable {
         this.alwaysObserved = alwaysObserved;
     }
     
+    // 24/10/2020 - event nodes queue behaviour
+    /**
+     * Returns true if alwaysAppend is set.
+     * alwaysAppend is an event nodes property which indicates its behaviour when triggered by another event:
+     * When true a new instance of the event with its timestamp is queued (the event may be several times in the queue)
+     * When false there is only an instance of the event in the queue at maximum:
+     * if the event is in the queue, it is added to it. Otherwise the timestamp of the event is modified.
+     */
+    public boolean isAlwaysAppend() {
+        return alwaysAppend;
+    }
+    
+    /**
+     * Sets the property alwaysAppend of event nodes.
+     * alwaysAppend is an event nodes property which indicates its behaviour when triggered by another event:
+     * When true a new instance of the event with its timestamp is queued (the event may be several times in the queue)
+     * When false there is only an instance of the event in the queue at maximum:*
+     * @param alwaysAppend - true if the event is always queued when triggered by another event.
+     */
+    public void setAlwaysAppend(boolean alwaysAppend) {
+        this.alwaysAppend = alwaysAppend;
+    }
+    
     public double getCoordinateX() {
         return coordinateX;
     }
@@ -705,7 +738,7 @@ public class Node implements Cloneable, ClassLocalizable {
         return this.getVariable().isTemporal() &&
                 !(
                         this.getNodeType() == NodeType.CHANCE
-                                && this.getVariable().getVariableType() != VariableType.FINITE_STATES
+                                && this.getVariable().getVariableType() != FINITE_STATES
                 );
     }
     
@@ -716,4 +749,7 @@ public class Node implements Cloneable, ClassLocalizable {
         return this.getProbNet().getShiftedVariable(this.getVariable(), 1);
     }
     
+    public String removeAdditionalProperty(String string) {
+        return this.additionalProperties.remove(string);
+    }
 }

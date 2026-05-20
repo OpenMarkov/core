@@ -19,6 +19,7 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 
 import java.util.*;
 
@@ -28,7 +29,7 @@ import java.util.*;
  * parameterized by a shape parameter (gamma) and covariates. Used in cost-effectiveness
  * and temporal Bayesian network models.
  */
-@PotentialType(names = "Hazard (Weibull)") public class WeibullHazardPotential extends GLMPotential {
+@PotentialType(names = "Hazard (Weibull)") public class WeibullHazardPotential extends GLMPotential implements DESSimulablePotential {
     
     protected static final VariableExpression GAMMA = new VariableExpression(Collections.emptyList(), "Gamma");
     protected static final VariableExpression[] MANDATORY_COVARIATES = new VariableExpression[]{GAMMA, CONSTANT};
@@ -94,7 +95,9 @@ import java.util.*;
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
         return !variables.isEmpty() && variables.get(0).isTemporal()
                 && variables.get(0).getVariableType() == VariableType.FINITE_STATES
-                && variables.get(0).getNumStates() == 2;
+                && variables.get(0).getNumStates() == 2
+                // 21/11/2023 - for DESnets vs MIDs; FIXME currently only checks it is a DESnet
+                || node.getProbNet().getNetworkType() instanceof DESNetworkType;
     }
     
     @Override
@@ -199,6 +202,69 @@ import java.util.*;
         return projectedPotential;
     }
     
+    // 21/11/2023 implementing DESSimulablePotential; it also samples if failure occurs in the present cycle for comparing with MIDs
+    //FIXME Consider using this potential for DESnets in general
+
+
+//	@Override
+//	public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) {
+//
+//		if (timeVariable == null) throw new RuntimeException("Weibull Hazard potential has no time variable; hazard cannot be computed");
+//		//I always consider: first coefficient is lngamma; second is constant
+//		//lambda = exp(constant + cov1*value_variable_1; cov2*value_variable_2 + covN*value_variable_N)
+//		//Efficience problem--> getting findings .Are parents always in the same order through the simulations?
+//		//parents.getFindings
+//		String[] covariates = getCovariates();
+//		double[] coefficients =getCoefficients();
+//		//gamma in potential dialos  is lngamma stored in coefficients[0]
+//		double gamma =Math.exp(coefficients[0]);
+//		//lambda = exp(constant + cov1*value_variable_1; cov2*value_variable_2 + covN*value_variable_N_-1)
+//		//last coefficient is the timeVariable; mandatory for sampling due to it is neccesary for lambda
+//		double lnlambda = coefficients[1];
+//		for (int i = 2; i < coefficients.length ; i++) {
+//			int finalI = i;
+//			Variable covariateVariable =  variables.stream().filter(variable -> variable.getName().equals(covariates[finalI])).findFirst().orElseThrow(RuntimeException::new);
+//			Finding finding = parents.getFinding(covariateVariable);
+//			if (covariateVariable.getVariableType().equals(VariableType.FINITE_STATES)){
+//				double value = coefficients[i] * finding.getStateIndex();
+//				lnlambda += value;
+//			} else {
+//				double value =coefficients[i] * finding.getNumericalValue();
+//				lnlambda +=  value;
+//			}
+//
+//		}
+//		double timeVariableValue = parents.getFinding(timeVariable).getNumericalValue();
+//		double lambda = Math.exp(lnlambda);
+//		//hazard; for one year cycle; FIXME has to be revised
+//		double transitionProbability = 1 - Math.exp(lambda*(Math.pow(timeVariableValue,gamma)-Math.pow(timeVariableValue-1,gamma) ));
+//		if (randomNumbers[0]<= transitionProbability)
+//			return 0;
+//		else
+//			return 1;
+//	}
+    
+    @Override
+    public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) {
+        
+        if (timeVariable == null) throw new RuntimeException("Weibull Hazard potential has no time variable; hazard cannot be computed");
+        double[] coefficients =getCoefficients();
+        double gamma =Math.exp(coefficients[0]);
+        Variable variableLambda =variables.stream().filter(variable -> variable.getName().equals("Lambda")).findFirst().orElse(null);
+        double lambda = parents.getFinding(variableLambda).getNumericalValue();
+        double timeVariableValue = parents.getFinding(timeVariable).getNumericalValue();
+        //hazard; for one year cycle; FIXME has to be revised
+        double transitionProbability = 1 - Math.exp(lambda*(Math.pow(timeVariableValue-1,gamma) -Math.pow(timeVariableValue,gamma) ));
+//		System.out.println("Weibull Hazard: timeVariableValue "+ timeVariableValue +" transitionProbability "+ transitionProbability + " randomNumber " + randomNumbers[0]);
+        if (randomNumbers[0]< transitionProbability) {
+//			System.out.println("Weibull Hazard: state corresponding to 1: " + variables.get(0).getStateName(1));
+            return 1;
+            
+        }
+        else
+            return 0;
+    }
+    
     @Override public Potential copy() {
         return new WeibullHazardPotential(this);
     }
@@ -220,6 +286,11 @@ import java.util.*;
         if (timeVariable != null) {
             timeVariable = probNet.getShiftedVariable(timeVariable, timeDifference);
         }
+    }
+    
+    @Override
+    protected TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, double[] coefficients, String[] covariates, List<Variable> evidencelessVariables, Map<String, String> variableValues) throws NonProjectablePotentialException {
+        throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
     }
     
     @Override public void replaceNumericVariable(Variable convertedParentVariable) {

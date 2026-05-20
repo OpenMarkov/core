@@ -18,6 +18,7 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +74,10 @@ import java.util.List;
      *
      * @return True if valid
      */
-    public static boolean validate(List<Variable> variables, PotentialRole role) {
+    public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+        if (node.getProbNet().getNetworkType() instanceof DESNetworkType) {
+            return false;
+        }
         // not a utility potential, only discrete or discretized conditioned variables
         return role != PotentialRole.UNSPECIFIED && !variables.isEmpty()
                 && variables.getFirst().getVariableType() != VariableType.NUMERIC;

@@ -18,6 +18,7 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +28,7 @@ import java.util.List;
  *
  * @author Manuel Arias
  */
-@PotentialType(names = "Exact") public class ExactDistrPotential extends Potential {
+@PotentialType(names = "Exact") public class ExactDistrPotential extends Potential implements DESSimulablePotential {
     
     
     // Attributes
@@ -137,6 +138,11 @@ import java.util.List;
         this.tablePotential.setValues(values);
     }
     
+    @Override
+    public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) {
+        return tablePotential.getValue(parents);
+    }
+    
     @Override public List<Variable> getVariables() {
         return variables;
     }
@@ -195,6 +201,10 @@ import java.util.List;
      * @return True if it is valid
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+        //11/01/2023 FIXME Provisional; validate for DESnets
+        if ((node.getProbNet().getNetworkType() instanceof DESNetworkType)){
+            return !variables.stream().anyMatch(variable -> variable.getVariableType()==VariableType.EVENT) && node.getVariable().getVariableType() == VariableType.NUMERIC;
+        }
         if (node.getNodeType() != NodeType.CHANCE) {
             return true;
         }

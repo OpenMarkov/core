@@ -17,6 +17,7 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
+import org.openmarkov.core.model.network.type.DESNetworkType;
 
 import java.util.List;
 import java.util.Map;
@@ -78,6 +79,9 @@ public class BinomialPotential extends Potential {
      * variables and the potential role.
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+        if (node.getProbNet().getNetworkType() instanceof DESNetworkType) {
+            return false;
+        }
         if (variables.isEmpty()) {
             return false;
         }

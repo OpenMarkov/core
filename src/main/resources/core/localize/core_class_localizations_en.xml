@@ -338,6 +338,14 @@
     <Localization class="org.openmarkov.core.model.network.constraint.NoEmptyName" value="Names aren't empty"/>
     <Localization class="org.openmarkov.core.model.network.constraint.NoLinkRestriction"
                   value="Links must have no restrictions"/>
+
+    <Localization class="org.openmarkov.core.model.network.constraint.NoEventNodes"
+                  value="No event nodes allowed"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.OnlyOneOrphanInitialEvent"
+                  value="There must be only one Initial Event with no parent"/>
+    <Localization class="org.openmarkov.core.model.network.constraint.OnlySelfLoopsWithEventAndChanceNodes"
+                  value="Self loops only allowed in event nodes"/>
+
     <Localization class="org.openmarkov.core.model.network.constraint.NoLoops" value="There must be no loops"/>
     <Localization class="org.openmarkov.core.model.network.constraint.NoMixedParents"
                   value="Utility nodes can not have mixed parents."/>

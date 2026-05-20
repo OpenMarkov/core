@@ -7,8 +7,17 @@
 
 package org.openmarkov.core.action.core;
 
+import org.openmarkov.core.action.base.ConstraintChecker;
+import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.action.base.PNEdit;
+import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.PurposeType;
+import org.openmarkov.core.model.network.constraint.OnlyOneOrphanInitialEvent;
+
+import javax.swing.JOptionPane;
+import java.util.ArrayList;
+import java.util.List;
 
 @SuppressWarnings("serial")
 
@@ -44,6 +53,19 @@ public class PurposeEdit extends PNEdit {
 		this.lastPurpose = node.getPurpose();
 		this.newPurpose = newPurpose;
 		this.node = node;
+	}
+	
+	@Override public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
+		if (probNet.getConstraintOfClass(OnlyOneOrphanInitialEvent.class) instanceof OnlyOneOrphanInitialEvent constraint) {
+            if (this.getNewPurpose().equals(PurposeType.INITIAL_EVENT.getName())){
+				List<Node> eventNodes= probNet.getNodes(NodeType.EVENT);
+				List<Node> initialEventNodes = new ArrayList<>(eventNodes.stream().filter(node->node.getPurpose().equals(PurposeType.INITIAL_EVENT.getName())).toList());
+				if (!initialEventNodes.isEmpty()){
+					initialEventNodes.add(0,node);
+					constraintChecker.addException(new ConstraintViolatedException.OnlyOneOrphanInitialEventException(constraint, initialEventNodes));
+				}
+			}
+		}
 	}
 	
 	@Override protected void doEdit() {

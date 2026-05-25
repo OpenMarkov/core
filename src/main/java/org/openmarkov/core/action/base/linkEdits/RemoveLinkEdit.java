@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.action.base.linkEdits;
 
+import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.exception.DoEditException;
@@ -151,22 +152,15 @@ public final class RemoveLinkEdit extends BaseLinkEdit {
 					 */
                     
                     // Temporal patch to be removed when the above TO-DO is implemented
+                    @Nullable Boolean sumIs0;
                     try {
-                        if (Arrays.stream(newPotential.getCPT().getValues()).sum() == 0) {
-                            newPotential = new UniformPotential(newPotential.getVariables(), newPotential.getPotentialRole());
-                        }
-                    }  catch (NonProjectablePotentialException e) {
-                        // 15/01/2023; temporal fix for DESnet nodes in DESnet evaluation OM version; In this version every potential has its own validate.
-                        //This is done here in order to be as little invasive as possible. FIXME merge with code or remove when TO-DO is implemented
-                        if (node1.getProbNet().getNetworkType() instanceof DESNetworkType) {
-                            if (!newPotential.validate(node2, newPotential.getVariables(), newPotential.getPotentialRole())) {
-                                newPotential = new UniformPotential(newPotential.getVariables(), newPotential.getPotentialRole());
-                            }
-                        } else {
-                            throw new DoEditException.CannotDoEditException(e);
-                        }
+                        sumIs0 = Arrays.stream(newPotential.getCPT().getValues()).sum() == 0;
+                    } catch (NonProjectablePotentialException e) {
+                        sumIs0 = null;
                     }
-                    
+                    if (sumIs0 == null || sumIs0) {
+                        newPotential = new UniformPotential(newPotential.getVariables(), newPotential.getPotentialRole());
+                    }
                     newPotentials.add(newPotential);
                 }
                 node2.setPotentials(newPotentials);

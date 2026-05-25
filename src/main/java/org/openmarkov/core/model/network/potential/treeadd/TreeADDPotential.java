@@ -22,6 +22,7 @@ import org.openmarkov.core.model.network.State;
 import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.VariableType;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
+import org.openmarkov.core.model.network.potential.AugmentedProbTable;
 import org.openmarkov.core.model.network.potential.DESSimulablePotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
@@ -104,7 +105,8 @@ public class TreeADDPotential extends Potential implements DESSimulablePotential
                     Variable conditionedVariable = variables.get(0);
                     potentialVariables = new ArrayList<>();
                     potentialVariables.add(conditionedVariable);
-                    UniformPotential potential = new UniformPotential(potentialVariables, role);
+                    //Potential potential = new UniformPotential(potentialVariables, role);
+                    Potential potential = new TablePotential(potentialVariables, role);
                     List<State> branchStates = new ArrayList<>();
                     branchStates.add(branchingStates[i]);
                     branches.add(new TreeADDBranch(branchStates, topVariable, potential, variables));
@@ -117,8 +119,9 @@ public class TreeADDPotential extends Potential implements DESSimulablePotential
             Threshold minimum = new Threshold(interval.getMin(), !interval.isLeftClosed());
             Threshold maximum = new Threshold(interval.getMax(), interval.isRightClosed());
             potentialVariables = new ArrayList<>();
-            potentialVariables.add(variables.get(0));
-            UniformPotential potential = new UniformPotential(potentialVariables, role);
+            potentialVariables.add(variables.getFirst());
+            //Potential potential = new UniformPotential(potentialVariables, role);
+            Potential potential = new TablePotential(potentialVariables, role);
             branches.add(new TreeADDBranch(minimum, maximum, topVariable, potential, variables));
         }
     }

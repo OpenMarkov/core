@@ -28,85 +28,77 @@ import java.util.List;
  */
 
 @SuppressWarnings("serial") public class VariableTypeConstraintEdit extends PNEdit {
-	// Attributes
+    // Attributes
     
     private final PNConstraint newVariableTypeConstraint;
-	private PNConstraint lastConstraint;
-
-	// Constructor
-
-	/**
-	 * This method creates a new VariableTypeConstraintEdit
-	 *
-	 * @param probNet                   the network that will be edited
-	 *                                  {@code ProbNet}
-	 * @param newVariableTypeConstraint the new constraint. If null, the network
-	 *                                  will do not have constraint about variables, i.e, works with continuous
-	 *                                  and discrete variables.
-	 */
-	public VariableTypeConstraintEdit(ProbNet probNet, PNConstraint newVariableTypeConstraint) {
-		super(probNet);
-		this.newVariableTypeConstraint = newVariableTypeConstraint;
-		List<PNConstraint> constraints = probNet.getConstraints();
-		for (PNConstraint constraint : constraints) {
-			if (constraint instanceof OnlyDiscreteVariables || constraint instanceof OnlyContinuousVariables) {
-				lastConstraint = constraint;
-				break;
-			}
-		}
-
-	}
-
-	@Override
-	public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
-		if (newVariableTypeConstraint instanceof OnlyDiscreteVariables constraint) {
-				Node node;
-				for (Node pNode : probNet.getNodes()){
-					if (pNode.getVariable().getVariableType() != VariableType.FINITE_STATES){
-						node = pNode;
-						constraintChecker.addException(
-								new ConstraintViolatedException.OnlyDiscreteVariablesAllowed(constraint, node.getVariable()));
-						break;
-					}
-				}
-		}
-		if (newVariableTypeConstraint instanceof OnlyContinuousVariables constraint) {
-			Node node;
-			for (Node pNode : probNet.getNodes()){
-				if (pNode.getVariable().getVariableType() != VariableType.NUMERIC){
-					node = pNode;
-					constraintChecker.addException(
-							new ConstraintViolatedException.OnlyContinuousVariablesAllowed(constraint, node.getVariable()));
-					break;
-				}
-			}
-		}
-	}
-
-	// Methods
-	@Override protected void doEdit() {
-
-		if (lastConstraint != null) {
-			probNet.removeConstraint(lastConstraint);
-		}
-
-		if (newVariableTypeConstraint != null) {
-			probNet.addConstraint(newVariableTypeConstraint);
-		}
-
-	}
+    private PNConstraint lastConstraint;
+    
+    // Constructor
+    
+    /**
+     * This method creates a new VariableTypeConstraintEdit
+     *
+     * @param probNet                   the network that will be edited
+     *                                  {@code ProbNet}
+     * @param newVariableTypeConstraint the new constraint. If null, the network
+     *                                  will do not have constraint about variables, i.e, works with continuous
+     *                                  and discrete variables.
+     */
+    public VariableTypeConstraintEdit(ProbNet probNet, PNConstraint newVariableTypeConstraint) {
+        super(probNet);
+        this.newVariableTypeConstraint = newVariableTypeConstraint;
+        List<PNConstraint> constraints = probNet.getConstraints();
+        for (PNConstraint constraint : constraints) {
+            if (constraint instanceof OnlyDiscreteVariables || constraint instanceof OnlyContinuousVariables) {
+                lastConstraint = constraint;
+                break;
+            }
+        }
+        
+    }
+    
+    @Override
+    public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {
+        if (newVariableTypeConstraint instanceof OnlyDiscreteVariables constraint) {
+            for (Node node : probNet.getNodes()) {
+                if (node.getVariable().getVariableType() != VariableType.FINITE_STATES) {
+                    constraintChecker.addException(new ConstraintViolatedException.OnlyDiscreteVariablesAllowed(constraint, node.getVariable()));
+                }
+            }
+        }
+        if (newVariableTypeConstraint instanceof OnlyContinuousVariables constraint) {
+            for (Node node : probNet.getNodes()) {
+                if (node.getVariable().getVariableType() != VariableType.NUMERIC) {
+                    constraintChecker.addException(new ConstraintViolatedException.OnlyContinuousVariablesAllowed(constraint, node.getVariable()));
+                }
+            }
+        }
+    }
+    
+    // Methods
+    @Override protected void doEdit() {
+        
+        if (lastConstraint != null) {
+            probNet.removeConstraint(lastConstraint);
+        }
+        
+        if (newVariableTypeConstraint != null) {
+            probNet.addConstraint(newVariableTypeConstraint);
+        }
+        
+    }
     
     @Override public void undo() {
-		super.undo();
-
-		if (newVariableTypeConstraint != null) {
-			probNet.removeConstraint(newVariableTypeConstraint);
-		}
-
-		if (lastConstraint != null) {
-			probNet.addConstraint(lastConstraint);
-		}
-
-	}
-
+        super.undo();
+        
+        if (newVariableTypeConstraint != null) {
+            probNet.removeConstraint(newVariableTypeConstraint);
+        }
+        
+        if (lastConstraint != null) {
+            probNet.addConstraint(lastConstraint);
+        }
+        
+    }
+    
 }

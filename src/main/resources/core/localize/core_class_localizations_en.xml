@@ -187,8 +187,6 @@
                   value="Cannot invert link from {from} to {to} of {probNet} due to {unsatisfiedConstraint}"/>
     <Localization class="org.openmarkov.core.exception.DoEditException$CannotRemovePotential"
                   value="Can not remove potential: {oldPotential} of {probNet}"/>
-    <Localization class="org.openmarkov.core.exception.DoEditException$InstanceAlreadyExists"
-                  value="Instance {instanceName} already exists"/>
     <Localization class="org.openmarkov.core.exception.DoEditException$NodeIsNull"
                   value="No node is selected, try selecting a node from the {probNet}"/>
     <Localization class="org.openmarkov.core.exception.EmptyDatabaseException" value="Dataset from {source} is empty."/>

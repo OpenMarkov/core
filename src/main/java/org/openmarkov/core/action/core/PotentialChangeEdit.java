@@ -40,7 +40,7 @@ public class PotentialChangeEdit extends PNEdit {
     
     @Override protected void doEdit() throws DoEditException.CannotRemovePotential {
             if (!node.removePotential(oldPotential)) {
-                throw new DoEditException.CannotRemovePotential(probNet, oldPotential);
+                throw new DoEditException.CannotRemovePotential(probNet,this, oldPotential);
             }
             node.addPotential(newPotential);
 	}

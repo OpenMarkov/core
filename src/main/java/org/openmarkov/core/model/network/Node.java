@@ -7,6 +7,8 @@
 
 package org.openmarkov.core.model.network;
 
+import io.github.jorgericovivas.rust_essentials.tuples.Tuple2Record;
+import io.github.jorgericovivas.rust_essentials.tuples.Tuples;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.ThereIsNoPotentialsInNodeException;
@@ -261,13 +263,17 @@ public class Node implements Cloneable, ClassLocalizable {
     /**
      * Changes the type of this node and updates the internal depot index.
      *
-     * @param nodeType the new node type
+     * @param newNodeType the new node type
      */
-    public void setNodeType(NodeType nodeType) {
+    public void setNodeType(NodeType newNodeType) {
+        NodeType oldNodeType = this.nodeType;
+        if(oldNodeType == newNodeType){
+            return;
+        }
         // Remove node from NodeTypeDepot HashMap
         this.probNet.nodeDepot.removeNode(this);
-        // Change of nodeType
-        this.nodeType = nodeType;
+        // Change of newNodeType
+        this.nodeType = newNodeType;
         // Add node to NodeTypeDepot HashMap
         this.probNet.nodeDepot.addNode(this);
     }

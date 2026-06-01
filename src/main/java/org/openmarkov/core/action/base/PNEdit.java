@@ -78,7 +78,7 @@ public abstract class PNEdit implements ClassLocalizable {
             for (PNEditListener listener : pneSupport.getListeners()) {
                 listener.onEditViolatesConstraints(this, ex);
             }
-            throw ex;
+            throw new DoEditException.CannotDoEditException(ex, this);
         }
         for (PNEditListener listener : pneSupport.getListeners()) {
             listener.beforeEditExecutes(this);

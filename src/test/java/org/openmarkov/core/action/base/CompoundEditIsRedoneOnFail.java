@@ -57,7 +57,7 @@ class CompoundEditIsRedoneOnFail {
     static class FailableEdit extends PNEdit {
         @Override protected void doEdit() throws DoEditException {
             if (fails) {
-                throw new DoEditException.NodeIsNull(null);
+                throw new DoEditException.NodeIsNull(null, this);
             }
             this.probNet.addNode(new Variable(this.name), NodeType.CHANCE);
         }

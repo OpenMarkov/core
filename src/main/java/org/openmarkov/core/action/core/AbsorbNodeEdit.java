@@ -85,7 +85,7 @@ import java.util.stream.Collectors;
             try {
                 mergeUtilityChildren();
             } catch (NonProjectablePotentialException e) {
-                throw new DoEditException.CannotDoEditException(e);
+                throw new DoEditException.CannotDoEditException(e, this);
             }
             utilityNodesMerged = true;
         } else {
@@ -95,7 +95,7 @@ import java.util.stream.Collectors;
         try {
             NodeAbsorptionHandler.absorbNodeConsistently(absorbedNode, absorbedVariable);
         } catch (NonProjectablePotentialException e) {
-            throw new DoEditException.CannotDoEditException(e);
+            throw new DoEditException.CannotDoEditException(e, this);
         }
         // Links saved for the undo()
         linksDeleted = getLinksWithNode(absorbedNode);

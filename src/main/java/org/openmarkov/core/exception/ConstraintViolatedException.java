@@ -10,10 +10,11 @@ import org.openmarkov.core.stringformat.LocalizationFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class ConstraintViolatedException extends DoEditException {
+public abstract class ConstraintViolatedException extends OpenMarkovException {
     public final PNConstraint constraint;
     
     public ConstraintViolatedException(PNConstraint constraint) {
+        super();
         this.constraint = constraint;
     }
     

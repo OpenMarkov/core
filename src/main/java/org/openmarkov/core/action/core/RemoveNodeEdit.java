@@ -70,7 +70,7 @@ import org.openmarkov.core.action.base.UsesVariable;
     // Methods
     @Override protected void doEdit() throws DoEditException.NodeIsNull {
         if (node == null) {
-            throw new DoEditException.NodeIsNull(probNet);
+            throw new DoEditException.NodeIsNull(probNet, this);
         }
         probNet.removeNode(node);
         

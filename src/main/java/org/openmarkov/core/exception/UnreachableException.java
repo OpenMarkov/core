@@ -17,6 +17,10 @@ import org.openmarkov.java.exceptionUtils.ThrowableUtils;
  */
 public class UnreachableException extends RuntimeException {
     
+    public UnreachableException(String message) {
+        super(message);
+    }
+    
     public UnreachableException(Throwable cause) {
         super(extractUnderlyingCause(cause));
         cause = this.getCause();

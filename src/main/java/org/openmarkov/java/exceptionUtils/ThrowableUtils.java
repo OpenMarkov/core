@@ -14,6 +14,9 @@ public class ThrowableUtils {
      * merged.
      */
     public static void transferStackTrace(Throwable from, Throwable to) {
+        if(to==null){
+            return;
+        }
         Throwable source = from;
         Throwable target = to;
         var sourceStackTrace = source.getStackTrace();

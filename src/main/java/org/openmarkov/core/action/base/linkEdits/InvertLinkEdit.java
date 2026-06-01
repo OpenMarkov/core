@@ -128,7 +128,7 @@ import java.util.List;
         // Checks that the inversion is legal, i.e. it does not produce cycles.
         if (!probNet.checkProbNet()) {
             undo();
-            throw new DoEditException.CannotInvertLink(parent, child, probNet, probNet.getUnsatisfiedConstraints());
+            throw new DoEditException.CannotInvertLink(parent, child, probNet, this, probNet.getUnsatisfiedConstraints());
         }
     }
     

@@ -65,11 +65,21 @@ public class LinearCombinationPotential extends GLMPotential implements Scalable
         );
     }
     
+    /**
+     * Not supported by this potential; use the {@code tableProject} family instead.
+     *
+     * @throws NotSupportedOperationException always.
+     */
     @Override
     public Potential project(EvidenceCase evidenceCase) {
         throw new NotSupportedOperationException();
     }
     
+    /**
+     * Projects this potential by evaluating, for every configuration of the
+     * evidenceless variables, the linear combination of covariates and coefficients
+     * (the identity-link regression value) and storing it in the resulting table.
+     */
     @Override
     protected TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
                                                     double[] coefficients, VariableExpression[] covariates, List<Variable> evidencelessVariables,

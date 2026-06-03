@@ -191,6 +191,12 @@ public abstract class GLMPotential extends Potential {
         return this.covarianceMatrix != null || this.choleskyDecomposition != null;
     }
     
+    /**
+     * Projects the generalized linear model onto the evidence by resolving each parent
+     * variable to a numeric value (from the evidence or defaulted) and delegating to the
+     * subclass-specific {@code tableProject} that evaluates the covariates and coefficients.
+     * Throws {@link NonProjectablePotentialException} if a parent without evidence is numeric.
+     */
     @Override
     public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException {
         double[] coefficients = (sampledCoefficients == null) ? this.coefficients : this.sampledCoefficients;

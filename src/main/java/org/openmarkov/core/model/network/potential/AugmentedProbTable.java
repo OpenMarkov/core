@@ -223,6 +223,10 @@ public class AugmentedProbTable extends UncertainTablePotential {
     }
     
     
+    /**
+     * Returns a copy of this potential with its variables (and the corresponding function
+     * expression cells) rearranged into the given order.
+     */
     @Override
     public AugmentedProbTable reorder(List<Variable> newOrderOfVariables) {
         AugmentedProbTable newPotential = new AugmentedProbTable(newOrderOfVariables, getPotentialRole());

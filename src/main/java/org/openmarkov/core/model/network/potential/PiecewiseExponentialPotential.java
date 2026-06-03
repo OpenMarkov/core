@@ -214,11 +214,27 @@ public class PiecewiseExponentialPotential extends Potential implements DESSimul
 				|| (variables.get(0).getVariableType()==VariableType.NUMERIC));
 	}
 
+	/**
+	 * Returns the number of random numbers needed to draw a sample, which equals the number
+	 * of intervals (entries) in the piecewise table.
+	 *
+	 * @return the size of the piecewise table
+	 */
 	@Override
 	public int numRandomNumbersNeeded(){
 		return piecewiseTable.size();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * <p>
+	 * Draws a time-to-event from the piecewise exponential distribution by inverse-CDF sampling,
+	 * conditioned on the entry time computed by {@link #getInitTimeFunction()}. The returned value
+	 * is the sampled time relative to that entry time (i.e. {@code sample - initValue}).
+	 *
+	 * @throws org.openmarkov.core.exception.InvalidArgumentException if the entry time is lower than
+	 *         the first time in the piecewise table
+	 */
 	@Override
 	public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) throws OpenMarkovException {
 		//initValue should be >= than time_0
@@ -287,11 +303,13 @@ public class PiecewiseExponentialPotential extends Potential implements DESSimul
 
 	}
 	//03/01/2023; added after merge because it was added to Potential as an abstract method
+	/** Reordering is not supported for this potential; always returns {@code null}. */
 	@Override
 	public Potential reorder(List<Variable> newOrderOfVariables) {
 		return null;
 	}
 	//03/01/2023; added after merge because it was added to Potential as an abstract method
+	/** Reordering is not supported for this potential; always returns {@code null}. */
 	@Override
 	public Potential reorder(Variable variable, State[] newOrder) {
 		return null;
@@ -301,12 +319,16 @@ public class PiecewiseExponentialPotential extends Potential implements DESSimul
 	public List<Variable> getNumericVariables() {
 		return numericVariables;	}
 
+	/**
+	 * Sorts the entries of the piecewise table by increasing time. Currently a no-op, since the
+	 * underlying {@code TreeMap} already keeps the intervals ordered by their lower bound.
+	 */
 	public void sort(){
 
 	}
 
 	/**
-	 * TreeMap with pairs <lower_bound_interval, probability_per_time_unit>
+	 * TreeMap with pairs {@code <lower_bound_interval, probability_per_time_unit>}
 	 */
 	public TreeMap<Double, Double> getPiecewiseTable() {
 		return piecewiseTable;

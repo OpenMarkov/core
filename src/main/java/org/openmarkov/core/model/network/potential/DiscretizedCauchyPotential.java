@@ -98,6 +98,12 @@ import java.util.List;
         this.scale = scale;
     }
     
+    /**
+     * Projects this potential to a table by discretizing a Cauchy distribution: for each parent
+     * configuration it builds a {@code CauchyDistribution} from the projected median and scale
+     * potentials and assigns each conditioned state the probability mass between consecutive
+     * thresholds.
+     */
     @Override
     public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException {
         List<Variable> unobservedVariables = new ArrayList<>(variables);
@@ -142,6 +148,11 @@ import java.util.List;
         return projectedPotential;
     }
     
+    /**
+     * Not supported: this potential can only be projected to a table via {@link #tableProject}.
+     *
+     * @throws NotSupportedOperationException always
+     */
     @Override
     public Potential project(EvidenceCase evidenceCase) {
         throw new NotSupportedOperationException();
@@ -245,6 +256,10 @@ import java.util.List;
         }
     }
     
+    /**
+     * Returns a copy with the variables in the given order, reordering both the median and the
+     * scale potentials accordingly.
+     */
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
         DiscretizedCauchyPotential copy = new DiscretizedCauchyPotential(this);

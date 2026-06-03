@@ -66,6 +66,12 @@ import java.util.Map;
         );
     }
     
+    /**
+     * Projecting to a generic {@link Potential} is not supported; use the
+     * {@code tableProject} methods instead.
+     *
+     * @throws NotSupportedOperationException always
+     */
     @Override
     public Potential project(EvidenceCase evidenceCase) {
         throw new NotSupportedOperationException();

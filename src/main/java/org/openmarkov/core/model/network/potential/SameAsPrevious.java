@@ -68,11 +68,12 @@ import java.util.List;
         throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
     }
     
+    /** Not supported for this potential; always throws {@link NotSupportedOperationException}. */
     @Override
     public Potential project(EvidenceCase evidenceCase) {
         throw new NotSupportedOperationException();
     }
-    
+
     public Potential getOriginalPotential(ProbNet probNet) {
         return getOriginalPotential(probNet, getConditionedVariable());
     }

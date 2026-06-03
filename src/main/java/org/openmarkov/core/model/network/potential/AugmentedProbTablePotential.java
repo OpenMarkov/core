@@ -58,6 +58,16 @@ public class AugmentedProbTablePotential extends Potential {
         this.augmentedProbTable = new AugmentedProbTable(AugmentedProbTablePotential.getAugmentedProbTable());
     }
     
+    /**
+     * Returns whether this potential type makes sense for the given node, variables and role.
+     * It is valid only for non-DES networks whose conditioned variable is finite-states.
+     *
+     * @param node      the node the potential would be attached to
+     * @param variables the variables of the potential
+     * @param role      the potential role
+     *
+     * @return {@code true} if an {@code AugmentedProbTablePotential} is applicable
+     */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
         if (node.getProbNet().getNetworkType() instanceof DESNetworkType) {
             return false;
@@ -96,6 +106,11 @@ public class AugmentedProbTablePotential extends Potential {
         this.parameterVariables = parameterVariables;
     }
     
+    /**
+     * Evaluates the symbolic cell expressions against the numeric parents' values in the
+     * evidence and returns the resulting numeric {@link TablePotential} over the finite-state
+     * variables.
+     */
     @Override
     public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials) throws NonProjectablePotentialException.CannotEvaluate, NonProjectablePotentialException.CannotResolveVariable {
         Map<Variable, String> findingsMap = evidenceCase.getFindingsMap();
@@ -114,6 +129,11 @@ public class AugmentedProbTablePotential extends Potential {
         return resolvedTablePotential;
     }
     
+    /**
+     * Not supported: this potential can only be projected to a table via {@link #tableProject}.
+     *
+     * @throws NotSupportedOperationException always
+     */
     @Override
     public Potential project(EvidenceCase evidenceCase) {
         throw new NotSupportedOperationException();
@@ -133,6 +153,10 @@ public class AugmentedProbTablePotential extends Potential {
         
     }
     
+    /**
+     * Returns a copy with the finite-state variables reordered as given; the numeric parameter
+     * variables are kept and appended to the new order.
+     */
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
         int size = newOrderOfVariables.size();

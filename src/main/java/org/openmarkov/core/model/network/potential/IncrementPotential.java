@@ -78,6 +78,11 @@ public class IncrementPotential extends Potential implements DESSimulablePotenti
 //				&& (variables.stream().filter(v -> v.equals(node.getVariable())).count()==2);//Check this use of equals
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * <p>This potential does not draw a random sample: it increments and returns an
+	 * internal counter, so successive calls yield consecutive integer values.</p>
+	 */
 	@Override
 	public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) throws OpenMarkovException {
 	//14/08/2022 refactored for nuisance variable. Changed for starting in 0;
@@ -85,6 +90,10 @@ public class IncrementPotential extends Potential implements DESSimulablePotenti
 		return ++incrementedValue;
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * <p>Resets the internal increment counter back to zero.</p>
+	 */
     @Override
 	public void resetSimulation(){
 
@@ -125,11 +134,13 @@ public class IncrementPotential extends Potential implements DESSimulablePotenti
 		return potential;
 
 	}
+	/** Reordering is not implemented for this potential; returns {@code null}. */
 	//03/01/2023; added after merge because it was added to Potential as an abstract method
 	@Override
 	public Potential reorder(List<Variable> newOrderOfVariables) {
 		return null;
 	}
+	/** Reordering is not implemented for this potential; returns {@code null}. */
 	//03/01/2023; added after merge because it was added to Potential as an abstract method
 	@Override
 	public Potential reorder(Variable variable, State[] newOrder) {

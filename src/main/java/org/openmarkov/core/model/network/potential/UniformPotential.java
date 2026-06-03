@@ -108,6 +108,7 @@ import java.util.Random;
         throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);
     }
     
+    /** Not supported for this potential; always throws {@link NotSupportedOperationException}. */
     @Override
     public Potential project(EvidenceCase evidenceCase) {
         throw new NotSupportedOperationException();

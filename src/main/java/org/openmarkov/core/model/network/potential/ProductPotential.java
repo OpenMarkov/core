@@ -97,6 +97,11 @@ import java.util.List;
         return DiscretePotentialOperations.multiply(parentPotentials);
     }
     
+    /**
+     * Not supported by this potential.
+     *
+     * @throws NotSupportedOperationException always.
+     */
     @Override
     public Potential project(EvidenceCase evidenceCase) {
         throw new NotSupportedOperationException();

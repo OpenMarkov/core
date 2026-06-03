@@ -100,6 +100,12 @@ import java.util.*;
                 || node.getProbNet().getNetworkType() instanceof DESNetworkType;
     }
     
+    /**
+     * Projecting to a generic {@link Potential} is not supported; use the
+     * {@code tableProject} methods instead.
+     *
+     * @throws NotSupportedOperationException always
+     */
     @Override
     public Potential project(EvidenceCase evidenceCase) {
         throw new NotSupportedOperationException();
@@ -244,9 +250,18 @@ import java.util.*;
 //			return 1;
 //	}
     
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Samples the binary conditioned variable for a single cycle: it computes the one-cycle Weibull
+     * transition probability from the shape parameter, the lambda finding and the time finding, and
+     * returns the index {@code 1} if the event occurs in this cycle or {@code 0} otherwise.
+     *
+     * @throws RuntimeException if this potential has no time variable, as the hazard cannot be computed
+     */
     @Override
     public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) {
-        
+
         if (timeVariable == null) throw new RuntimeException("Weibull Hazard potential has no time variable; hazard cannot be computed");
         double[] coefficients =getCoefficients();
         double gamma =Math.exp(coefficients[0]);

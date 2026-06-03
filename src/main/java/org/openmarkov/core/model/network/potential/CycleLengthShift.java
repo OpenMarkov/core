@@ -85,6 +85,13 @@ public class CycleLengthShift extends Potential {
     }
     
     // Methods
+
+    /**
+     * Projects this shift onto a table potential. For a numeric conditioned
+     * variable it returns a constant equal to the parent's numeric value plus
+     * the cycle length; for a finite-states variable it returns the parent's
+     * projected potential with its values shifted one state.
+     */
     @Override
     public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException.MissingVariableInEvidence {
         Variable conditionedVariable = getConditionedVariable();
@@ -127,11 +134,12 @@ public class CycleLengthShift extends Potential {
         return projectedPotential;
     }
     
+    /** Not supported for this potential; always throws {@link NotSupportedOperationException}. */
     @Override
     public Potential project(EvidenceCase evidenceCase) {
         throw new NotSupportedOperationException();
     }
-    
+
     @Override public Collection<Finding> getInducedFindings(EvidenceCase evidenceCase) {
         Variable conditionedVariable = getConditionedVariable();
         Variable conditioningVariable = variables.get((conditionedVariable == variables.getFirst()) ? 1 : 0);

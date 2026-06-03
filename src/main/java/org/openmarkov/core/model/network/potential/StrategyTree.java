@@ -497,6 +497,10 @@ public class StrategyTree extends TreeADDPotential implements Cloneable {
         return this;
     }
     
+    /**
+     * @return {@code true} if any branch of this strategy tree can reach this same
+     *         tree, i.e. the tree contains a cycle.
+     */
     public boolean cehasCycle() {
         boolean hasCycle = false;
         if (branches != null) {
@@ -623,6 +627,13 @@ public class StrategyTree extends TreeADDPotential implements Cloneable {
         return "";
     }
     
+    /**
+     * Renders this strategy tree as a Graphviz {@code digraph} description, using
+     * the network to determine node shapes and colors.
+     *
+     * @param net Network used to look up node types; may be {@code null}.
+     * @return The Graphviz DOT source representing this strategy tree.
+     */
     public String toStringForGraphviz(ProbNet net) {
         
         String content = "digraph G {\n";
@@ -805,6 +816,11 @@ public class StrategyTree extends TreeADDPotential implements Cloneable {
         return auxSet;
     }
     
+    /**
+     * @param decision Decision variable to look for.
+     * @return {@code true} if this strategy tree, or any of its descendants,
+     *         contains an intervention on the given decision variable.
+     */
     public boolean hasInterventionForDecision(Variable decision) {
         boolean hasInterv = false;
         
@@ -829,6 +845,12 @@ public class StrategyTree extends TreeADDPotential implements Cloneable {
         return strategyTree;
     }
     
+    /**
+     * Projects this strategy tree into a {@link TablePotential} whose entries are
+     * {@code 1.0} for the configurations selected by the tree and {@code 0.0} otherwise.
+     *
+     * @return The projected table potential.
+     */
     public TablePotential tableProject() {
         TablePotential projection = new TablePotential(variables, role);
         fillPotential(projection, new EvidenceCase(), this);

@@ -332,11 +332,20 @@ import java.util.stream.Collectors;
         initializeAugmentedProbTable();
     }
     
+    /**
+     * Sets every cell of the distribution table to the default initialization expression.
+     */
     protected void initializeAugmentedProbTable() {
         VariableExpression[] functionValues = distributionTable.getFunctionValues();
         Arrays.fill(functionValues, INITIALIZATION_VALUE);
     }
     
+    /**
+     * Verifies that the given values are valid parameters for the configured probability
+     * density function, delegating to the function's own parameter check.
+     *
+     * @param values candidate distribution parameter values
+     */
     public void checkDistributionValues(double[] values) {
         ProbDensFunction p = getProbDensFunctionManager().newInstance(probDensFunctionName, values);
         p.verifyParameters(values);
@@ -410,6 +419,11 @@ import java.util.stream.Collectors;
         return out.toString();
     }
     
+    /**
+     * Returns a copy with the finite-state variables reordered as given; the numeric parameter
+     * variables are re-added and the distribution table is reordered accordingly, keeping the
+     * pseudo-variable as its first variable.
+     */
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
         int size = newOrderOfVariables.size();

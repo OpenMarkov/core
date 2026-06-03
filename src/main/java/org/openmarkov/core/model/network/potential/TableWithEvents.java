@@ -407,17 +407,26 @@ public class TableWithEvents extends Potential implements DESSimulablePotential 
     }
     
     //03/01/2023; added after merge because it was added to Potential as an abstract method
+    /**
+     * Not supported by this potential: always returns {@code null}.
+     */
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
         return null;
     }
-    
+
     //03/01/2023; added after merge because it was added to Potential as an abstract method
+    /**
+     * Not supported by this potential: always returns {@code null}.
+     */
     @Override
     public Potential reorder(Variable variable, State[] newOrder) {
         return null;
     }
-    
+
+    /**
+     * Not implemented for this potential: always returns {@link Double#NaN}.
+     */
     @Override
     public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) throws OpenMarkovException {
         return Double.NaN;

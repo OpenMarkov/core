@@ -76,11 +76,21 @@ public class UncertainTablePotential extends TablePotential implements Uncertain
     // Overrides — copy / deepCopy must return UncertainTablePotential
     // -----------------------------------------------------------------------
 
+    /**
+     * {@inheritDoc}
+     * <p>The returned copy is an {@code UncertainTablePotential} that shares (shallow-copies)
+     * the {@code uncertainValues} array of this potential.
+     */
     @Override
     public Potential copy() {
         return new UncertainTablePotential(this);
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>In addition to the inherited state, this also deep-clones the
+     * {@code uncertainValues} array.
+     */
     @Override
     public Potential deepCopy(ProbNet copyNet) {
         UncertainTablePotential p = (UncertainTablePotential) super.deepCopy(copyNet);
@@ -99,6 +109,11 @@ public class UncertainTablePotential extends TablePotential implements Uncertain
     // Overrides — reorder must return UncertainTablePotential and copy uncertainValues
     // -----------------------------------------------------------------------
 
+    /**
+     * {@inheritDoc}
+     * <p>In addition to reordering the values, this also propagates the
+     * {@code uncertainValues} into the reordered potential.
+     */
     @Override
     public UncertainTablePotential reorder(List<Variable> newOrderOfVariables) {
         UncertainTablePotential newPotential = new UncertainTablePotential(newOrderOfVariables, getPotentialRole());
@@ -140,6 +155,11 @@ public class UncertainTablePotential extends TablePotential implements Uncertain
         return newPotential;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>In addition to reordering the states, this also propagates the
+     * {@code uncertainValues} into the reordered potential.
+     */
     @Override
     public TablePotential reorder(Variable variable, State[] newOrder) {
         UncertainTablePotential copyPotential = new UncertainTablePotential(this);

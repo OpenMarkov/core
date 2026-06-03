@@ -115,17 +115,29 @@ public class ExternalPotential extends Potential implements DESSimulablePotentia
 		return potential;
 
 	}
+	/**
+	 * Not implemented: returns {@code null} instead of throwing
+	 * {@code UnsupportedOperationException} as the base implementation does.
+	 */
 	//03/01/2023; added after merge because it was added to Potential as an abstract method
 	@Override
 	public Potential reorder(List<Variable> newOrderOfVariables) {
 		return null;
 	}
+	/**
+	 * Not implemented: returns {@code null} instead of throwing
+	 * {@code UnsupportedOperationException} as the base implementation does.
+	 */
 	//03/01/2023; added after merge because it was added to Potential as an abstract method
 	@Override
 	public Potential reorder(Variable variable, State[] newOrder) {
 		return null;
 	}
 
+	/**
+	 * Always returns {@code Double.MAX_VALUE}, the sentinel indicating no sample is
+	 * produced, since the value is meant to be supplied from an external source.
+	 */
 	@Override
 	public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) throws OpenMarkovException {
 		return Double.MAX_VALUE;

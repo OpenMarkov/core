@@ -107,6 +107,12 @@ import java.util.*;
         }
     }
     
+    /**
+     * Projects this delta onto a table potential. For a numeric variable it
+     * returns a constant equal to the stored numeric value; for a finite-states
+     * variable it returns a table assigning probability 1 to the delta state and
+     * 0 to the rest (a constant 1 if that variable is already in the evidence).
+     */
     @Override
     public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) {
         // numeric variable
@@ -129,11 +135,12 @@ import java.util.*;
         return projectedPotential;
     }
     
+    /** Not supported for this potential; always throws {@link NotSupportedOperationException}. */
     @Override
     public Potential project(EvidenceCase evidenceCase) {
         throw new NotSupportedOperationException();
     }
-    
+
     @Override public Potential copy() {
         return new DeltaPotential(this);
     }

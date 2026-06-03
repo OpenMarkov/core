@@ -59,6 +59,11 @@ import java.util.List;
     }
     
     // Methods
+    /**
+     * {@inheritDoc}
+     * <p>Delegates the projection to the wrapped {@link TablePotential} and sets the
+     * child variable's decision criterion and an unspecified role on the result.
+     */
     @Override
     public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions) throws NonProjectablePotentialException {
         // get the projected TablePotential, which will be returned inside a list
@@ -78,6 +83,11 @@ import java.util.List;
         return exactDistrPotential;
     }
     
+    /**
+     * {@inheritDoc}
+     * <p>Delegates the projection to the wrapped {@link TablePotential} and sets the
+     * child variable's decision criterion and an unspecified role on the result.
+     */
     @Override
     public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> alreadyProjectedPotentials) throws NonProjectablePotentialException {
         // get the projected TablePotential, which will be returned inside a list
@@ -138,6 +148,11 @@ import java.util.List;
         this.tablePotential.setValues(values);
     }
     
+    /**
+     * Returns the exact stored value for the given parent configuration. Since this
+     * is an exact (degenerate) distribution, no sampling is performed and
+     * {@code randomNumbers} is ignored.
+     */
     @Override
     public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) {
         return tablePotential.getValue(parents);

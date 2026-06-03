@@ -87,6 +87,11 @@ public class ExponentialHazardPotential extends WeibullHazardPotential {
         return new VariableExpression[]{CONSTANT};
 	}
     
+    /**
+     * Projects this potential to a table by treating the exponential model as the special case of the
+     * Weibull model with shape k = 1: it prepends a fixed GAMMA covariate (coefficient 0) to the
+     * coefficients and covariates and delegates to {@link WeibullHazardPotential#tableProject}.
+     */
     @Override public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions,
                                                           double[] coefficients, VariableExpression[] covariates, List<Variable> evidencelessVariables,
                                                           Map<Variable, String> variableValues) throws NonProjectablePotentialException.MissingEvidenceInVariable, NonProjectablePotentialException.CannotEvaluate, NonProjectablePotentialException.CannotResolveVariable {

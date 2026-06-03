@@ -99,6 +99,12 @@ import java.util.List;
         this.variance = variance;
     }
     
+    /**
+     * Projects this potential to a table by discretizing a normal distribution: for each parent
+     * configuration it builds a {@code Normal} distribution from the projected mean and variance
+     * potentials and assigns each conditioned state the probability mass between consecutive
+     * thresholds.
+     */
     @Override
     public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) throws NonProjectablePotentialException {
         List<Variable> unobservedVariables = new ArrayList<>(variables);
@@ -140,6 +146,11 @@ import java.util.List;
         return projectedPotential;
     }
     
+    /**
+     * Not supported: this potential can only be projected to a table via {@link #tableProject}.
+     *
+     * @throws NotSupportedOperationException always
+     */
     @Override
     public Potential project(EvidenceCase evidenceCase) {
         throw new NotSupportedOperationException();
@@ -248,6 +259,10 @@ import java.util.List;
         variance.replaceVariable(oldVariable, variable);
     }
     
+    /**
+     * Returns a copy with the variables in the given order, reordering both the mean and the
+     * variance potentials accordingly.
+     */
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
         ConditionalGaussianPotential copy = new ConditionalGaussianPotential(this);

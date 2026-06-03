@@ -85,6 +85,15 @@ import java.util.List;
         return suitable || (role == PotentialRole.UNSPECIFIED && node.isSuperValueNode());
     }
     
+    /**
+     * Projects this potential as the sum of the already-projected table potentials
+     * of its parent variables.
+     *
+     * @param evidenceCase        {@code EvidenceCase}
+     * @param inferenceOptions    Inference options
+     * @param projectedPotentials Projected potentials
+     * @return The table potential resulting from summing the parents' potentials.
+     */
     @Override
     public @NotNull TablePotential tableProject(EvidenceCase evidenceCase, InferenceOptions inferenceOptions, List<TablePotential> projectedPotentials) {
         List<Variable> parentVariables = new ArrayList<>(variables);
@@ -96,6 +105,11 @@ import java.util.List;
         return DiscretePotentialOperations.sum(parentPotentials);
     }
     
+    /**
+     * Not supported by this potential.
+     *
+     * @throws NotSupportedOperationException always.
+     */
     @Override
     public Potential project(EvidenceCase evidenceCase) {
         throw new NotSupportedOperationException();

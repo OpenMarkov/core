@@ -22,6 +22,12 @@ import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.List;
 
+/**
+ * Potential for an event variable in a discrete-event simulation (DESnet) that
+ * models whether the event occurs and, if so, when. It is characterised by a
+ * probability of occurrence and a time-to-event, and is sampled rather than
+ * projected to a table.
+ */
 @PotentialType(names = "Indicator")
 public class IndicatorPotential extends Potential implements DESSimulablePotential {
 
@@ -64,6 +70,11 @@ public class IndicatorPotential extends Potential implements DESSimulablePotenti
 		return (variables.get(0).getVariableType() == VariableType.EVENT);
 	}
 
+	/**
+	 * Samples whether the event occurs: returns the time-to-event when the random
+	 * number falls within the probability of occurrence, and {@code Double.NaN}
+	 * (rather than {@code Double.MAX_VALUE}) when the event does not occur.
+	 */
 	@Override
 	public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) throws OpenMarkovException {
 
@@ -101,6 +112,10 @@ public class IndicatorPotential extends Potential implements DESSimulablePotenti
 		return false;
 	}
 
+	/**
+	 * No-op: scaling has no effect on this potential, so it does not throw
+	 * {@code UnsupportedOperationException} as the base implementation does.
+	 */
 	@Override
 	public void scalePotential(double scale) {
 
@@ -117,12 +132,20 @@ public class IndicatorPotential extends Potential implements DESSimulablePotenti
 		return potential;
 	}
 
+	/**
+	 * Not implemented: returns {@code null} instead of throwing
+	 * {@code UnsupportedOperationException} as the base implementation does.
+	 */
 	@Override
 	public Potential reorder(List<Variable> newOrderOfVariables) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/**
+	 * Not implemented: returns {@code null} instead of throwing
+	 * {@code UnsupportedOperationException} as the base implementation does.
+	 */
 	@Override
 	public Potential reorder(Variable variable, State[] newOrder) {
 		// TODO Auto-generated method stub

@@ -231,7 +231,7 @@ As FunctionPotential is not projectable I leave the default behaviour
      * the function does not change, otherwise the function is set to its default value
      *
      * @param variable - the variable to be removed
-     * @returns a FunctionPotential without the variable
+     * @return a FunctionPotential without the variable
      */
     @Override public Potential removeVariable(Variable variable) {
         if (variables.contains(variable)) {
@@ -291,12 +291,20 @@ As FunctionPotential is not projectable I leave the default behaviour
 
 //
     
+    /**
+     * Not implemented: returns {@code null} instead of throwing
+     * {@code UnsupportedOperationException} as the base implementation does.
+     */
     @Override
     public Potential reorder(List<Variable> newOrderOfVariables) {
         // TODO Auto-generated method stub
         return null;
     }
-    
+
+    /**
+     * Not implemented: returns {@code null} instead of throwing
+     * {@code UnsupportedOperationException} as the base implementation does.
+     */
     @Override
     public Potential reorder(Variable variable, State[] newOrder) {
         // TODO Auto-generated method stub

@@ -62,6 +62,10 @@ public class GTablePotential<E> extends AbstractIndexedPotential implements CEUt
 		this(potential.getVariables(), potential.getPotentialRole());
 	}
 
+	/**
+	 * Always throws {@link NonProjectablePotentialException} because a generalized
+	 * table of arbitrary elements cannot be projected to a table.
+	 */
 	@Override
 	public Potential project(EvidenceCase evidenceCase) throws NonProjectablePotentialException {
 		throw new NonProjectablePotentialException.PotentialCannotBeConvertedToATable(this);

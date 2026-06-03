@@ -333,7 +333,16 @@ public class TablePotential extends AbstractIndexedPotential
      * Dispatches via virtual methods so that {@link UncertainTablePotential} handles the storage.
      */
     public void setUncertainValuesConsistently(List<UncertainValue> uncertainValues, List<Double> newValuesColumn, int basePosition) {
-        setUncertainValues(new UncertainValue[uncertainValues.size()]);  // virtual dispatch
+        // Allocate the uncertain-values table only if it does not exist yet; allocating on every
+        // call would discard the uncertain values already set on other columns. The array must run
+        // parallel to the values array (same length and indexing), not be a single column: both
+        // placeUncertainColumn and placeValuesColumn write at i + basePosition, and basePosition is
+        // a position in the values array (> 0 for any column other than the first). getValues().length
+        // is used rather than tableSize because in projected potentials tableSize can be smaller than
+        // the backing array, which would otherwise re-introduce the out-of-bounds write.
+        if (getUncertainValues() == null) {
+            setUncertainValues(new UncertainValue[getValues().length]);  // virtual dispatch
+        }
         placeUncertainColumn(uncertainValues, getVariable(0), basePosition);  // virtual dispatch
         placeValuesColumn(newValuesColumn, basePosition);
     }
@@ -345,16 +354,44 @@ public class TablePotential extends AbstractIndexedPotential
      */
     public void placeUncertainColumn(List<UncertainValue> column, Variable variable, int basePosition) {
         UncertainValue[] table = getUncertainValues();   // virtual: null for plain TablePotential
-        for (int i = 0; i < variable.getNumStates(); i++) {
+        // A column occupies contiguous cells starting at basePosition (stride 1: the conditioned
+        // variable is variable 0 with offset 1, and a utility value occupies a single cell). The
+        // column height is the size of the column itself — number of states of the conditioned
+        // variable for a chance potential, or 1 for a utility value — not getVariable(0).getNumStates(),
+        // which would mis-size the loop for utility potentials. When clearing (column == null) the
+        // height is taken from the variable argument.
+        int columnHeight = (column != null) ? column.size() : variable.getNumStates();
+        checkColumnFits(columnHeight, basePosition, table.length);
+        for (int i = 0; i < columnHeight; i++) {
             table[i + basePosition] = (column != null) ? column.get(i) : null;
         }
     }
 
-    private void placeValuesColumn(List<Double> column, int basePosition) {
+    /**
+     * Places the given numeric values into a single column of the values table at the given base
+     * position, leaving the rest of the table untouched. Symmetric with {@link #placeUncertainColumn}.
+     * The column height is the size of {@code column} (stride 1: contiguous cells from basePosition).
+     */
+    public void placeValuesColumn(List<Double> column, int basePosition) {
         double[] table = getValues();
-        Variable variable = getVariable(0);
-        for (int i = 0; i < variable.getNumStates(); i++) {
+        checkColumnFits(column.size(), basePosition, table.length);
+        for (int i = 0; i < column.size(); i++) {
             table[i + basePosition] = column.get(i);
+        }
+    }
+
+    /**
+     * Validates that a column of {@code columnHeight} consecutive cells starting at {@code basePosition}
+     * fits within a table of {@code tableLength} cells. Guards against a column whose size is
+     * inconsistent with the potential structure, which would otherwise corrupt a neighbouring column
+     * or throw an opaque {@link ArrayIndexOutOfBoundsException}.
+     */
+    private static void checkColumnFits(int columnHeight, int basePosition, int tableLength) {
+        if (basePosition < 0 || columnHeight < 0 || basePosition + columnHeight > tableLength) {
+            throw new IllegalArgumentException(
+                    "Column of " + columnHeight + " cell(s) at base position " + basePosition
+                    + " does not fit in a table of length " + tableLength
+                    + "; the column size is inconsistent with the potential structure.");
         }
     }
     

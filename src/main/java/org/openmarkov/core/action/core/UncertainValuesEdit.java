@@ -12,7 +12,9 @@ import org.openmarkov.core.model.network.Variable;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.DistributionTablePotential;
 import org.openmarkov.core.model.network.potential.ExactDistrPotential;
+import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.UncertainTablePotential;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.model.network.potential.TransitionTablePotential;
 
@@ -40,6 +42,15 @@ import java.util.List;
      * Selected column in the values table
      */
     private final int selectedColumn;
+    /**
+     * True when {@link #doEdit()} replaced the node's plain {@link TablePotential} with an
+     * {@link UncertainTablePotential}; {@link #undo()} then restores {@link #originalRawPotential}.
+     */
+    private boolean potentialWasUpgraded;
+    /**
+     * The node's original potential, kept so {@link #undo()} can restore it after an upgrade.
+     */
+    private Potential originalRawPotential;
     
     /**
      * Creates a new {@code AddNodeEdit} with the network where the new
@@ -122,20 +133,78 @@ import java.util.List;
     }
     
     @Override protected void doEdit() {
-        TablePotential potential = getPotential();
+        TablePotential potential = prepareUncertainPotential();
         potential.setUncertainValuesConsistently(newUncertainColumn, newValuesColumn, basePosition);
     }
-    
-    
+
+    /**
+     * Returns the {@link TablePotential} that will store the uncertain values, upgrading the node's
+     * plain {@link TablePotential} to an {@link UncertainTablePotential} when needed.
+     *
+     * <p>Since uncertain values were extracted out of {@code TablePotential} into the
+     * {@code UncertainTablePotential} subclass, a plain {@code TablePotential} rejects them. A node
+     * normally starts without uncertainty, so the first edit must replace its potential with an
+     * {@code UncertainTablePotential} that keeps the same values, role and metadata.
+     *
+     * @return a potential able to carry uncertain values
+     */
+    private TablePotential prepareUncertainPotential() {
+        TablePotential working = getPotential();
+        if (working == null) {
+            throw new UnsupportedOperationException(
+                    "Uncertain values are not supported for the potential of node " + node.getName() + ".");
+        }
+        if (working instanceof UncertainTablePotential) {
+            return working;   // already uncertainty-capable (includes ExactDistrPotential's inner table)
+        }
+        Potential raw = node.getPotentials().get(0);
+        if (raw != working) {
+            // 'working' is a plain TablePotential wrapped inside another potential (e.g. a Transition or
+            // Distribution table). Upgrading it would require replacing it inside its wrapper, which is
+            // not supported here; fail with a clear message instead of an opaque one further down.
+            throw new UnsupportedOperationException(
+                    "Editing uncertain values is not supported for potentials of type "
+                    + raw.getClass().getSimpleName() + " whose inner table carries no uncertainty.");
+        }
+        UncertainTablePotential upgraded = upgradeToUncertain(working);
+        node.setPotential(upgraded);
+        originalRawPotential = working;
+        potentialWasUpgraded = true;
+        return upgraded;
+    }
+
+    /**
+     * Builds an {@link UncertainTablePotential} equivalent to {@code source}: same variables, role,
+     * numeric values (cloned, so the original is left intact for undo) and metadata.
+     */
+    private static UncertainTablePotential upgradeToUncertain(TablePotential source) {
+        UncertainTablePotential upgraded = new UncertainTablePotential(
+                source.getVariables(), source.getPotentialRole(), source.getValues().clone());
+        upgraded.properties = source.properties;
+        if (source.isAdditive()) {
+            upgraded.setCriterion(source.getCriterion());
+        }
+        return upgraded;
+    }
+
     @Override public void undo() {
         super.undo();
+        if (potentialWasUpgraded) {
+            // The node had no uncertainty before this edit; restore the original plain potential, which
+            // still holds the original values (they were cloned into the upgraded copy, not moved).
+            node.setPotential(originalRawPotential);
+            potentialWasUpgraded = false;
+            return;
+        }
         TablePotential potential = getPotential();
         if (wasNullOldUncertainValues) {
             potential.setUncertainValues(null);
-            potential.setValues(oldValuesColumn.stream().mapToDouble(Double::doubleValue).toArray());
+            // Restore only the edited column in place. Using setValues() here would replace the whole
+            // values table with a single column's worth of data, corrupting every other column.
+            potential.placeValuesColumn(oldValuesColumn, basePosition);
         } else {
             potential.setUncertainValuesConsistently(oldUncertainColumn, oldValuesColumn, basePosition);
         }
     }
-    
+
 }

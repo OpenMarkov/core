@@ -8,7 +8,6 @@
 package org.openmarkov.core.action.core;
 
 import net.jqwik.api.*;
-import net.jqwik.api.constraints.IntRange;
 import org.openmarkov.core.exception.DoEditException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
@@ -47,7 +46,7 @@ class AddNodeEditPropertyTest {
     @Property
     void afterDoEdit_nodeIsInNetwork(@ForAll("chanceVariables") Variable v) throws DoEditException {
         ProbNet net = freshBayesianNet();
-        new AddNodeEdit(net, v, NodeType.CHANCE).executeEdit();
+        new AddNodeEdit(net, v, NodeType.CHANCE, null).executeEdit();
         assertThat(net.getNode(v)).isNotNull();
     }
 
@@ -58,7 +57,7 @@ class AddNodeEditPropertyTest {
     void afterDoEdit_chanceCountIncreasesBy1(@ForAll("chanceVariables") Variable v) throws DoEditException {
         ProbNet net = freshBayesianNet();
         int before = net.getNumNodes(NodeType.CHANCE);
-        new AddNodeEdit(net, v, NodeType.CHANCE).executeEdit();
+        new AddNodeEdit(net, v, NodeType.CHANCE, null).executeEdit();
         assertThat(net.getNumNodes(NodeType.CHANCE)).isEqualTo(before + 1);
     }
 
@@ -70,7 +69,7 @@ class AddNodeEditPropertyTest {
             @ForAll("distinctChanceVariableLists") List<Variable> vars) throws DoEditException {
         ProbNet net = freshBayesianNet();
         for (Variable v : vars) {
-            new AddNodeEdit(net, v, NodeType.CHANCE).executeEdit();
+            new AddNodeEdit(net, v, NodeType.CHANCE, null).executeEdit();
         }
         assertThat(net.getNumNodes(NodeType.CHANCE)).isEqualTo(vars.size());
     }
@@ -83,7 +82,7 @@ class AddNodeEditPropertyTest {
             @ForAll("distinctChanceVariableLists") List<Variable> vars) throws DoEditException {
         ProbNet net = freshBayesianNet();
         for (Variable v : vars) {
-            new AddNodeEdit(net, v, NodeType.CHANCE).executeEdit();
+            new AddNodeEdit(net, v, NodeType.CHANCE, null).executeEdit();
         }
         for (Variable v : vars) {
             assertThat(net.getNode(v))
@@ -102,7 +101,7 @@ class AddNodeEditPropertyTest {
     @Property
     void afterUndo_nodeIsAbsent(@ForAll("chanceVariables") Variable v) throws DoEditException {
         ProbNet net = freshBayesianNet();
-        AddNodeEdit edit = new AddNodeEdit(net, v, NodeType.CHANCE);
+        AddNodeEdit edit = new AddNodeEdit(net, v, NodeType.CHANCE, null);
         edit.executeEdit();
         edit.undo();
         assertThat(net.getNode(v)).isNull();
@@ -115,7 +114,7 @@ class AddNodeEditPropertyTest {
     void afterUndo_chanceCountRestoredToOriginal(@ForAll("chanceVariables") Variable v) throws DoEditException {
         ProbNet net = freshBayesianNet();
         int original = net.getNumNodes(NodeType.CHANCE);
-        AddNodeEdit edit = new AddNodeEdit(net, v, NodeType.CHANCE);
+        AddNodeEdit edit = new AddNodeEdit(net, v, NodeType.CHANCE, null);
         edit.executeEdit();
         edit.undo();
         assertThat(net.getNumNodes(NodeType.CHANCE)).isEqualTo(original);
@@ -131,7 +130,7 @@ class AddNodeEditPropertyTest {
     @Property
     void afterUndoRedo_nodeIsInNetwork(@ForAll("chanceVariables") Variable v) throws DoEditException {
         ProbNet net = freshBayesianNet();
-        AddNodeEdit edit = new AddNodeEdit(net, v, NodeType.CHANCE);
+        AddNodeEdit edit = new AddNodeEdit(net, v, NodeType.CHANCE, null);
         edit.executeEdit();
         edit.undo();
         edit.redo();
@@ -146,7 +145,7 @@ class AddNodeEditPropertyTest {
     void afterUndoRedo_chanceCountMatchesAfterDoEdit(@ForAll("chanceVariables") Variable v)
             throws DoEditException {
         ProbNet net = freshBayesianNet();
-        AddNodeEdit edit = new AddNodeEdit(net, v, NodeType.CHANCE);
+        AddNodeEdit edit = new AddNodeEdit(net, v, NodeType.CHANCE, null);
         edit.executeEdit();
         int afterDo = net.getNumNodes(NodeType.CHANCE);
         edit.undo();
@@ -167,10 +166,10 @@ class AddNodeEditPropertyTest {
     void addDuplicateName_throwsConstraintViolatedException(
             @ForAll("chanceVariables") Variable v) throws DoEditException {
         ProbNet net = freshBayesianNet();
-        new AddNodeEdit(net, v, NodeType.CHANCE).executeEdit();
+        new AddNodeEdit(net, v, NodeType.CHANCE, null).executeEdit();
 
         Variable duplicate = new Variable(v.getName(), 3); // same name, different object
-        AddNodeEdit duplicateEdit = new AddNodeEdit(net, duplicate, NodeType.CHANCE);
+        AddNodeEdit duplicateEdit = new AddNodeEdit(net, duplicate, NodeType.CHANCE, null);
 
         assertThatThrownBy(duplicateEdit::executeEdit)
                 .as("duplicate variable name '%s' should be rejected", v.getName())

@@ -54,8 +54,8 @@ class AddLinkEditPropertyTest {
         net.getPNESupport().setWithUndo(true);
         Variable vA = new Variable("A", statesA);
         Variable vB = new Variable("B", statesB);
-        new AddNodeEdit(net, vA, NodeType.CHANCE).executeEdit();
-        new AddNodeEdit(net, vB, NodeType.CHANCE).executeEdit();
+        new AddNodeEdit(net, vA, NodeType.CHANCE, null).executeEdit();
+        new AddNodeEdit(net, vB, NodeType.CHANCE, null).executeEdit();
         return new TwoNodeBN(net, vA, vB, net.getNode(vA), net.getNode(vB));
     }
 
@@ -210,7 +210,7 @@ class AddLinkEditPropertyTest {
         ProbNet net = new ProbNet(BayesianNetworkType.getUniqueInstance());
         net.getPNESupport().setWithUndo(true);
         Variable v = new Variable("A", states);
-        new AddNodeEdit(net, v, NodeType.CHANCE).executeEdit();
+        new AddNodeEdit(net, v, NodeType.CHANCE, null).executeEdit();
         AddLinkEdit edit = new AddLinkEdit(net, v, v, true);
         assertThatThrownBy(edit::executeEdit)
                 .as("self-loop should be rejected by NoSelfLoop constraint")
@@ -260,8 +260,8 @@ class AddLinkEditPropertyTest {
 
         Variable vC = new Variable("C", 2);
         Variable vU = new Variable("U"); // numeric / utility
-        new AddNodeEdit(net, vC, NodeType.CHANCE).executeEdit();
-        new AddNodeEdit(net, vU, NodeType.UTILITY).executeEdit();
+        new AddNodeEdit(net, vC, NodeType.CHANCE, null).executeEdit();
+        new AddNodeEdit(net, vU, NodeType.UTILITY, null).executeEdit();
         Node nodeU = net.getNode(vU);
 
         // Record the variable list of U's potential BEFORE adding the link

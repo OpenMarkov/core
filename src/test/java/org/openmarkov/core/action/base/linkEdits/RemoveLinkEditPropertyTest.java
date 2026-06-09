@@ -52,8 +52,8 @@ class RemoveLinkEditPropertyTest {
         net.getPNESupport().setWithUndo(true);
         Variable vA = new Variable("A", statesA);
         Variable vB = new Variable("B", statesB);
-        new AddNodeEdit(net, vA, NodeType.CHANCE).executeEdit();
-        new AddNodeEdit(net, vB, NodeType.CHANCE).executeEdit();
+        new AddNodeEdit(net, vA, NodeType.CHANCE, null).executeEdit();
+        new AddNodeEdit(net, vB, NodeType.CHANCE, null).executeEdit();
         new AddLinkEdit(net, vA, vB, true).executeEdit();
         return new LinkedBN(net, vA, vB, net.getNode(vA), net.getNode(vB));
     }
@@ -70,9 +70,9 @@ class RemoveLinkEditPropertyTest {
         Variable vA = new Variable("A", sA);
         Variable vB = new Variable("B", sB);
         Variable vC = new Variable("C", sC);
-        new AddNodeEdit(net, vA, NodeType.CHANCE).executeEdit();
-        new AddNodeEdit(net, vB, NodeType.CHANCE).executeEdit();
-        new AddNodeEdit(net, vC, NodeType.CHANCE).executeEdit();
+        new AddNodeEdit(net, vA, NodeType.CHANCE, null).executeEdit();
+        new AddNodeEdit(net, vB, NodeType.CHANCE, null).executeEdit();
+        new AddNodeEdit(net, vC, NodeType.CHANCE, null).executeEdit();
         new AddLinkEdit(net, vA, vB, true).executeEdit();
         new AddLinkEdit(net, vB, vC, true).executeEdit();
         return new ChainBN(net, vA, vB, vC, net.getNode(vA), net.getNode(vB), net.getNode(vC));
@@ -239,8 +239,8 @@ class RemoveLinkEditPropertyTest {
         net.getPNESupport().setWithUndo(true);
         Variable vA = new Variable("A", sA);
         Variable vB = new Variable("B", sB);
-        new AddNodeEdit(net, vA, NodeType.CHANCE).executeEdit();
-        new AddNodeEdit(net, vB, NodeType.CHANCE).executeEdit();
+        new AddNodeEdit(net, vA, NodeType.CHANCE, null).executeEdit();
+        new AddNodeEdit(net, vB, NodeType.CHANCE, null).executeEdit();
         Node nodeB = net.getNode(vB);
 
         List<Variable> varsOriginal =
@@ -272,9 +272,9 @@ class RemoveLinkEditPropertyTest {
         Variable vNum1 = new Variable("Num1"); // NUMERIC
         Variable vNum2 = new Variable("Num2"); // NUMERIC
         Variable vU = new Variable("U");       // NUMERIC → UTILITY node
-        new AddNodeEdit(net, vNum1, NodeType.CHANCE).executeEdit();
-        new AddNodeEdit(net, vNum2, NodeType.CHANCE).executeEdit();
-        new AddNodeEdit(net, vU, NodeType.UTILITY).executeEdit();
+        new AddNodeEdit(net, vNum1, NodeType.CHANCE, null).executeEdit();
+        new AddNodeEdit(net, vNum2, NodeType.CHANCE, null).executeEdit();
+        new AddNodeEdit(net, vU, NodeType.UTILITY, null).executeEdit();
         new AddLinkEdit(net, vNum1, vU, true).executeEdit();
         new AddLinkEdit(net, vNum2, vU, true).executeEdit();
 
@@ -302,9 +302,9 @@ class RemoveLinkEditPropertyTest {
         Variable vFS = new Variable("FS", 3);  // FINITE_STATES
         Variable vNum = new Variable("Num");    // NUMERIC
         Variable vU = new Variable("U");        // NUMERIC → UTILITY
-        new AddNodeEdit(net, vFS, NodeType.CHANCE).executeEdit();
-        new AddNodeEdit(net, vNum, NodeType.CHANCE).executeEdit();
-        new AddNodeEdit(net, vU, NodeType.UTILITY).executeEdit();
+        new AddNodeEdit(net, vFS, NodeType.CHANCE, null).executeEdit();
+        new AddNodeEdit(net, vNum, NodeType.CHANCE, null).executeEdit();
+        new AddNodeEdit(net, vU, NodeType.UTILITY, null).executeEdit();
         new AddLinkEdit(net, vFS, vU, true).executeEdit();
         new AddLinkEdit(net, vNum, vU, true).executeEdit();
 
@@ -331,8 +331,8 @@ class RemoveLinkEditPropertyTest {
 
         Variable vNum = new Variable("Num");
         Variable vU = new Variable("U");
-        new AddNodeEdit(net, vNum, NodeType.CHANCE).executeEdit();
-        new AddNodeEdit(net, vU, NodeType.UTILITY).executeEdit();
+        new AddNodeEdit(net, vNum, NodeType.CHANCE, null).executeEdit();
+        new AddNodeEdit(net, vU, NodeType.UTILITY, null).executeEdit();
         new AddLinkEdit(net, vNum, vU, true).executeEdit();
 
         Node nodeU = net.getNode(vU);
@@ -361,8 +361,8 @@ class RemoveLinkEditPropertyTest {
 
         Variable vA = new Variable("A", 2);
         Variable vB = new Variable("B", 2);
-        new AddNodeEdit(net, vA, NodeType.CHANCE).executeEdit();
-        new AddNodeEdit(net, vB, NodeType.CHANCE).executeEdit();
+        new AddNodeEdit(net, vA, NodeType.CHANCE, null).executeEdit();
+        new AddNodeEdit(net, vB, NodeType.CHANCE, null).executeEdit();
         new AddLinkEdit(net, vA, vB, true).executeEdit();
 
         // Convert to explicit links and set all three properties on the link

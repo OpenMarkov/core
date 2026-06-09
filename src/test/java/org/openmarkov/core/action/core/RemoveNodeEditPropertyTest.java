@@ -58,7 +58,7 @@ class RemoveNodeEditPropertyTest {
     @Property
     void afterDoEdit_nodeIsAbsent(@ForAll("chanceVariables") Variable v) throws DoEditException {
         ProbNet net = freshBayesianNet();
-        new AddNodeEdit(net, v, NodeType.CHANCE).executeEdit();
+        new AddNodeEdit(net, v, NodeType.CHANCE, null).executeEdit();
         new RemoveNodeEdit(net, v).executeEdit();
         assertThat(net.getNode(v)).isNull();
     }
@@ -69,7 +69,7 @@ class RemoveNodeEditPropertyTest {
     @Property
     void afterDoEdit_chanceCountDecreasesBy1(@ForAll("chanceVariables") Variable v) throws DoEditException {
         ProbNet net = freshBayesianNet();
-        new AddNodeEdit(net, v, NodeType.CHANCE).executeEdit();
+        new AddNodeEdit(net, v, NodeType.CHANCE, null).executeEdit();
         int before = net.getNumNodes(NodeType.CHANCE);
         new RemoveNodeEdit(net, v).executeEdit();
         assertThat(net.getNumNodes(NodeType.CHANCE)).isEqualTo(before - 1);
@@ -83,7 +83,7 @@ class RemoveNodeEditPropertyTest {
             @ForAll("distinctChanceVariableLists") List<Variable> vars) throws DoEditException {
         ProbNet net = freshBayesianNet();
         for (Variable v : vars) {
-            new AddNodeEdit(net, v, NodeType.CHANCE).executeEdit();
+            new AddNodeEdit(net, v, NodeType.CHANCE, null).executeEdit();
         }
         Variable toRemove = vars.getFirst();
         new RemoveNodeEdit(net, toRemove).executeEdit();
@@ -101,8 +101,8 @@ class RemoveNodeEditPropertyTest {
         ProbNet net = freshBayesianNet();
         Variable vA = new Variable("A", sA);
         Variable vB = new Variable("B", sB);
-        new AddNodeEdit(net, vA, NodeType.CHANCE).executeEdit();
-        new AddNodeEdit(net, vB, NodeType.CHANCE).executeEdit();
+        new AddNodeEdit(net, vA, NodeType.CHANCE, null).executeEdit();
+        new AddNodeEdit(net, vB, NodeType.CHANCE, null).executeEdit();
         new AddLinkEdit(net, vA, vB, true).executeEdit();
 
         Node nodeA = net.getNode(vA);
@@ -122,7 +122,7 @@ class RemoveNodeEditPropertyTest {
     @Property
     void afterUndo_nodeIsPresent(@ForAll("chanceVariables") Variable v) throws DoEditException {
         ProbNet net = freshBayesianNet();
-        new AddNodeEdit(net, v, NodeType.CHANCE).executeEdit();
+        new AddNodeEdit(net, v, NodeType.CHANCE, null).executeEdit();
         RemoveNodeEdit edit = new RemoveNodeEdit(net, v);
         edit.executeEdit();
         edit.undo();
@@ -135,7 +135,7 @@ class RemoveNodeEditPropertyTest {
     @Property
     void afterUndo_chanceCountRestored(@ForAll("chanceVariables") Variable v) throws DoEditException {
         ProbNet net = freshBayesianNet();
-        new AddNodeEdit(net, v, NodeType.CHANCE).executeEdit();
+        new AddNodeEdit(net, v, NodeType.CHANCE, null).executeEdit();
         int countBefore = net.getNumNodes(NodeType.CHANCE);
         RemoveNodeEdit edit = new RemoveNodeEdit(net, v);
         edit.executeEdit();
@@ -151,7 +151,7 @@ class RemoveNodeEditPropertyTest {
     @Property
     void afterUndo_potentialsPreserved(@ForAll("chanceVariables") Variable v) throws DoEditException {
         ProbNet net = freshBayesianNet();
-        new AddNodeEdit(net, v, NodeType.CHANCE).executeEdit();
+        new AddNodeEdit(net, v, NodeType.CHANCE, null).executeEdit();
         Node node = net.getNode(v);
         var potentialsBefore = new ArrayList<>(node.getPotentials());
 
@@ -173,7 +173,7 @@ class RemoveNodeEditPropertyTest {
     @Property
     void afterUndoRedo_nodeIsAbsentAgain(@ForAll("chanceVariables") Variable v) throws DoEditException {
         ProbNet net = freshBayesianNet();
-        new AddNodeEdit(net, v, NodeType.CHANCE).executeEdit();
+        new AddNodeEdit(net, v, NodeType.CHANCE, null).executeEdit();
         RemoveNodeEdit edit = new RemoveNodeEdit(net, v);
         edit.executeEdit();
         edit.undo();
@@ -187,7 +187,7 @@ class RemoveNodeEditPropertyTest {
     @Property
     void afterUndoRedo_chanceCountMatchesAfterDoEdit(@ForAll("chanceVariables") Variable v) throws DoEditException {
         ProbNet net = freshBayesianNet();
-        new AddNodeEdit(net, v, NodeType.CHANCE).executeEdit();
+        new AddNodeEdit(net, v, NodeType.CHANCE, null).executeEdit();
         RemoveNodeEdit edit = new RemoveNodeEdit(net, v);
         edit.executeEdit();
         int afterDo = net.getNumNodes(NodeType.CHANCE);
@@ -211,8 +211,8 @@ class RemoveNodeEditPropertyTest {
         ProbNet net = freshInfluenceDiagram();
         Variable vC = new Variable("C", 2);
         Variable vU = new Variable("U");
-        new AddNodeEdit(net, vC, NodeType.CHANCE).executeEdit();
-        new AddNodeEdit(net, vU, NodeType.UTILITY).executeEdit();
+        new AddNodeEdit(net, vC, NodeType.CHANCE, null).executeEdit();
+        new AddNodeEdit(net, vU, NodeType.UTILITY, null).executeEdit();
         // Add the constraint AFTER the network has its utility node
         net.addConstraint(new ProperUtilityPotentials());
 
@@ -233,9 +233,9 @@ class RemoveNodeEditPropertyTest {
         Variable vC = new Variable("C", 2);
         Variable vU1 = new Variable("U1");
         Variable vU2 = new Variable("U2");
-        new AddNodeEdit(net, vC, NodeType.CHANCE).executeEdit();
-        new AddNodeEdit(net, vU1, NodeType.UTILITY).executeEdit();
-        new AddNodeEdit(net, vU2, NodeType.UTILITY).executeEdit();
+        new AddNodeEdit(net, vC, NodeType.CHANCE, null).executeEdit();
+        new AddNodeEdit(net, vU1, NodeType.UTILITY, null).executeEdit();
+        new AddNodeEdit(net, vU2, NodeType.UTILITY, null).executeEdit();
         // Add the constraint AFTER the network has its utility nodes
         net.addConstraint(new ProperUtilityPotentials());
 

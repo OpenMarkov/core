@@ -7,11 +7,14 @@
 
 package org.openmarkov.core.action.core;
 
+import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.action.base.ConstraintChecker;
 import org.openmarkov.core.action.base.PNEdit;
 import org.openmarkov.core.exception.ConstraintViolatedException;
 import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.constraint.*;
+
+import java.util.Optional;
 
 /**
  * {@code AddNodeEdit} is a edit that allow add a node to
@@ -52,24 +55,12 @@ public class AddNodeEdit extends PNEdit {
      * @param nodeType       The new node type.
      * @param cursorPosition the position (coordinates X,Y) of the node.
      */
-    public AddNodeEdit(ProbNet probNet, Variable variable, NodeType nodeType, Point2D.Double cursorPosition) {
+    public AddNodeEdit(ProbNet probNet, Variable variable, NodeType nodeType, @Nullable Point2D.Double cursorPosition) {
         super(probNet);
-        this.cursorPosition = cursorPosition.clone();
+        this.cursorPosition = cursorPosition==null? new Point2D.Double(): cursorPosition.clone();
         this.probNet = probNet;
         this.nodeType = nodeType;
         this.variable = variable;
-    }
-    
-    /**
-     * Creates a new {@code AddNodeEdit} with the network where the new
-     * new node will be added and basic information about it.
-     *
-     * @param probNet  the {@code ProbNet} where the new node will be added.
-     * @param variable the variable contained in the new node
-     * @param nodeType The new node type.
-     */
-    public AddNodeEdit(ProbNet probNet, Variable variable, NodeType nodeType) {
-        this(probNet, variable, nodeType, new Point2D.Double());
     }
     
     @Override public void checkConstraintsWillBeMet(ConstraintChecker constraintChecker) {

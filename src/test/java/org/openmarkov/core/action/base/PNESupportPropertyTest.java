@@ -102,7 +102,7 @@ class PNESupportPropertyTest {
         net.getPNESupport().addListener(listener);
 
         Variable v = new Variable("X", states);
-        new AddNodeEdit(net, v, NodeType.CHANCE).executeEdit();
+        new AddNodeEdit(net, v, NodeType.CHANCE, null).executeEdit();
 
         listener.clear();
         net.getPNESupport().undo();
@@ -123,7 +123,7 @@ class PNESupportPropertyTest {
         net.getPNESupport().addListener(listener);
 
         Variable v = new Variable("X", states);
-        new AddNodeEdit(net, v, NodeType.CHANCE).executeEdit();
+        new AddNodeEdit(net, v, NodeType.CHANCE, null).executeEdit();
         net.getPNESupport().undo();
 
         listener.clear();
@@ -146,7 +146,7 @@ class PNESupportPropertyTest {
             @ForAll @IntRange(min = 2, max = 5) int states) throws DoEditException {
         ProbNet net = freshBN();
         Variable v = new Variable("X", states);
-        new AddNodeEdit(net, v, NodeType.CHANCE).executeEdit();
+        new AddNodeEdit(net, v, NodeType.CHANCE, null).executeEdit();
 
         int countAfterDo = net.getNumNodes(NodeType.CHANCE);
 
@@ -181,9 +181,9 @@ class PNESupportPropertyTest {
         net.getPNESupport().openNewSubEditHistory();
         Variable vA = new Variable("A", 2);
         Variable vB = new Variable("B", 3);
-        AddNodeEdit editA = new AddNodeEdit(net, vA, NodeType.CHANCE);
+        AddNodeEdit editA = new AddNodeEdit(net, vA, NodeType.CHANCE, null);
         editA.executeEdit();
-        AddNodeEdit editB = new AddNodeEdit(net, vB, NodeType.CHANCE);
+        AddNodeEdit editB = new AddNodeEdit(net, vB, NodeType.CHANCE, null);
         editB.executeEdit();
         net.getPNESupport().closeSubEditHistory();
 
@@ -215,8 +215,8 @@ class PNESupportPropertyTest {
         Variable vB = new Variable("B", 3);
 
         net.getPNESupport().openNewSubEditHistory();
-        new AddNodeEdit(net, vA, NodeType.CHANCE).executeEdit();
-        new AddNodeEdit(net, vB, NodeType.CHANCE).executeEdit();
+        new AddNodeEdit(net, vA, NodeType.CHANCE, null).executeEdit();
+        new AddNodeEdit(net, vB, NodeType.CHANCE, null).executeEdit();
         new AddLinkEdit(net, vA, vB, true).executeEdit();
         net.getPNESupport().closeSubEditHistory();
 
@@ -243,8 +243,8 @@ class PNESupportPropertyTest {
         Variable vB = new Variable("B", 3);
 
         net.getPNESupport().openNewSubEditHistory();
-        new AddNodeEdit(net, vA, NodeType.CHANCE).executeEdit();
-        new AddNodeEdit(net, vB, NodeType.CHANCE).executeEdit();
+        new AddNodeEdit(net, vA, NodeType.CHANCE, null).executeEdit();
+        new AddNodeEdit(net, vB, NodeType.CHANCE, null).executeEdit();
         new AddLinkEdit(net, vA, vB, true).executeEdit();
         net.getPNESupport().closeSubEditHistory();
 

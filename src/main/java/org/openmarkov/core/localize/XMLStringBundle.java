@@ -49,11 +49,7 @@ public class XMLStringBundle implements StringBundle {
      * exist, then a special string is returned.
      */
     @Override public @Nullable String getString(String key) {
-        try {
-            return this.resourceBundle.getString(key);
-        } catch (MissingResourceException | NullPointerException e1) {
-            return null;
-        }
+        return this.resourceBundle.containsKey(key)?this.resourceBundle.getString(key):null;
     }
     
     @Override public @NotNull Set<String> getKeys() {

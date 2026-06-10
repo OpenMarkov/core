@@ -12,13 +12,7 @@ import org.openmarkov.core.exception.IncompatibleEvidenceException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.inference.InferenceOptions;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.TablePotentialSampler;
 import org.openmarkov.core.model.network.modelUncertainty.UncertainValue;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
@@ -133,6 +127,9 @@ public class TablePotential extends AbstractIndexedPotential
      * @return True   if an instance of a certain Potential type makes sense given the variables and the potential role.
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
+        if (node.getNodeType() == NodeType.EVENT) {
+            return false;
+        }
         return variables.stream()
                         .map(Variable::getVariableType)
                         .noneMatch(type -> type != VariableType.FINITE_STATES && type != VariableType.DISCRETIZED);

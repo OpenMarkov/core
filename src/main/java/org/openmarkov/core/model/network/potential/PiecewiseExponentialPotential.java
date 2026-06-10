@@ -6,12 +6,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.inference.InferenceOptions;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import org.openmarkov.core.model.network.type.DESNetworkType;
 
@@ -210,7 +205,7 @@ public class PiecewiseExponentialPotential extends Potential implements DESSimul
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
 		return (node.getProbNet().getNetworkType() instanceof DESNetworkType) &&
-				((variables.get(0).getVariableType() ==VariableType.EVENT)
+				((node.getNodeType() == NodeType.EVENT)
 				|| (variables.get(0).getVariableType()==VariableType.NUMERIC));
 	}
 

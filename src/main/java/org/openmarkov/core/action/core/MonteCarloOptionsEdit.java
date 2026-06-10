@@ -15,12 +15,7 @@ import javax.swing.undo.CannotUndoException;
  */
 public class MonteCarloOptionsEdit extends PNEdit {
 
-	/**
-	 * Serial Version UID
-	 */
-	private static final long serialVersionUID = 1L;
-
-	private MonteCarloOptions oldMonteCarloOptions;
+    private MonteCarloOptions oldMonteCarloOptions;
 	private MonteCarloOptions newMonteCarloOptions;
 
 	public MonteCarloOptionsEdit(ProbNet probNet, MonteCarloOptions options) {

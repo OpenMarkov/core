@@ -5,13 +5,7 @@ import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.inference.InferenceOptions;
-import org.openmarkov.core.model.network.Configuration;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Finding;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.modelUncertainty.ParametrizedFunction.ParametrizedFunctionManager;
 import org.openmarkov.core.model.network.modelUncertainty.ProbDensFunctionWithKnownInverseCDF;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
@@ -121,15 +115,8 @@ public class DistributionTablePotential extends Potential implements DESSimulabl
      * @param role      . <code>PotentialRole</code>.
      */
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-//        boolean hasEventParent = node.getParents().stream().anyMatch(parent -> parent.getNodeType()==EVENT);
-//        return ((node.getNodeType()== EVENT) && hasEventParent);
-//When used in TreeWithEventsPotential it do not have and event parent.
-        //11/01/2023 FIXME Provisional; Potential for DESnets
-        if (!(node.getProbNet().getNetworkType() instanceof DESNetworkType)) return false;
-//18/05/2022. For event and numeric variables.
-        //       return (node.getNodeType()== EVENT);
-        VariableType variableType = variables.get(0).getVariableType();
-        return ((variableType == VariableType.EVENT) || (variableType == VariableType.NUMERIC));
+        VariableType variableType = variables.getFirst().getVariableType();
+        return ((node.getNodeType() == NodeType.EVENT) || (variableType == VariableType.NUMERIC));
 
     }
 

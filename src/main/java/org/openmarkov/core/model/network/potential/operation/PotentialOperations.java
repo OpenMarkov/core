@@ -273,8 +273,7 @@ public class PotentialOperations {
         if (auxNodeType == NodeType.DECISION) {
             role = PotentialRole.POLICY;
         }
-        UniformPotential uniformPotential = new UniformPotential(variables, role);
-        return uniformPotential;
+        return new UniformPotential(variables, role);
     }
     public static Potential getTablePotential(ProbNet probNet, Variable variable, NodeType auxNodeType) {
 
@@ -287,8 +286,7 @@ public class PotentialOperations {
         if (auxNodeType == NodeType.DECISION) {
             role = PotentialRole.POLICY;
         }
-        TablePotential tablePotential = new TablePotential(variables, role);
-        return tablePotential;
+        return new TablePotential(variables, role);
     }
 
     public static Potential getExactPotential(ProbNet probNet, Variable variable, NodeType auxNodeType) {
@@ -302,8 +300,7 @@ public class PotentialOperations {
         if (auxNodeType == NodeType.DECISION) {
             role = PotentialRole.POLICY;
         }
-        ExactDistrPotential exactDistrPotential = new ExactDistrPotential(variables, role);
-        return exactDistrPotential;
+        return new ExactDistrPotential(variables, role);
     }
     
     private static boolean hasFiniteStates(List<Variable> variables) {

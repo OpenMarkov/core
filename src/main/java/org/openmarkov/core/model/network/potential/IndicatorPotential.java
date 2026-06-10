@@ -12,12 +12,7 @@ import org.openmarkov.core.exception.InvalidArgumentException;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.OpenMarkovException;
 import org.openmarkov.core.inference.InferenceOptions;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.List;
@@ -67,7 +62,7 @@ public class IndicatorPotential extends Potential implements DESSimulablePotenti
 	 * @return True the node is an event
 	 */
 	public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
-		return (variables.get(0).getVariableType() == VariableType.EVENT);
+		return (node.getNodeType() == NodeType.EVENT);
 	}
 
 	/**

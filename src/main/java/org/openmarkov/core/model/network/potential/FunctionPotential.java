@@ -6,19 +6,13 @@
  */
 package org.openmarkov.core.model.network.potential;
 
-import net.sourceforge.jeval.EvaluationException;
 import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.NonProjectablePotentialException;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.exception.UnrecoverableException;
 import org.openmarkov.core.expression.VariableExpression;
 import org.openmarkov.core.inference.InferenceOptions;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.ProbNet;
-import org.openmarkov.core.model.network.State;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 
 import java.util.ArrayList;
@@ -92,7 +86,7 @@ public class FunctionPotential extends GLMPotential implements DESSimulablePoten
     public static boolean validate(Node node, List<Variable> variables, PotentialRole role) {
         return (
                 !variables.isEmpty() && (variables.get(0).getVariableType() == VariableType.NUMERIC
-                        || variables.get(0).getVariableType() == VariableType.EVENT)
+                        || node.getNodeType() == NodeType.EVENT)
         );
     }
     

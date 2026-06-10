@@ -23,7 +23,7 @@ import org.openmarkov.core.model.network.Node;
 	/**
 	 * The edited node
 	 */
-	private Node node = null;
+	private Node node;
 
 	/**
 	 * Creates a new <code>AlwaysAppendEdit</code> with the node and new 'alwaysObserved'

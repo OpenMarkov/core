@@ -302,6 +302,20 @@ public class PotentialOperations {
         }
         return new ExactDistrPotential(variables, role);
     }
+
+    public static Potential getDeltaPotential(ProbNet probNet, Variable variable, NodeType auxNodeType) {
+
+        List<Variable> variables = new ArrayList<>();
+        variables.add(variable);
+        for (Node node : probNet.getParents(probNet.getNode(variable))) {
+            variables.add(node.getVariable());
+        }
+        PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
+        if (auxNodeType == NodeType.DECISION) {
+            role = PotentialRole.POLICY;
+        }
+        return new DeltaPotential(variables, role, 0.02);
+    }
     
     private static boolean hasFiniteStates(List<Variable> variables) {
         boolean result = true;

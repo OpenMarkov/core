@@ -123,6 +123,9 @@ public class Node implements Cloneable, ClassLocalizable {
         if (nodeType == NodeType.UTILITY) {
             this.variable.setVariableType(NUMERIC);
         }
+        if (nodeType == NodeType.EVENT) {
+            this.variable.setVariableType(EVENT);
+        }
         this.nodeType = nodeType;
         potentials = Collections.synchronizedList(new ArrayList<>());
         additionalProperties = new LinkedHashMap<>();  // mutable backing map

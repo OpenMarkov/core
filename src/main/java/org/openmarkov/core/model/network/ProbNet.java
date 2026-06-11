@@ -770,7 +770,8 @@ public class ProbNet implements PotentialNetwork, Cloneable, ClassLocalizable {
         switch (nodeType) {
             case DECISION -> newNode.setPolicyType(PolicyType.OPTIMAL);
             case CHANCE -> addPotential(PotentialOperations.getTablePotential(this, variable, nodeType));
-            case UTILITY, EVENT -> addPotential(PotentialOperations.getExactPotential(this, variable, nodeType));
+            case UTILITY -> addPotential(PotentialOperations.getExactPotential(this, variable, nodeType));
+            case EVENT -> addPotential(PotentialOperations.getDeltaPotential(this, variable, nodeType));
             default -> { /* SV_PRODUCT, SV_SUM: no initial potential */ }
         }
         newNode.setCoordinateX((int) cursorPosition.getX());

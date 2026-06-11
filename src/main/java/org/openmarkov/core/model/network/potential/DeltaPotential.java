@@ -101,7 +101,7 @@ import java.util.*;
     
     private void initNumeric(Variable conditionedVariable, double numericValue) {
         this.numericValue = numericValue;
-        if (conditionedVariable.getVariableType() == VariableType.DISCRETIZED) {
+        if (conditionedVariable.getVariableType() == VariableType.DISCRETIZED || conditionedVariable.getVariableType() == VariableType.EVENT) {
             int index = conditionedVariable.getStateIndex(numericValue);
             this.stateIndex = Math.max(this.stateIndex, index);
         }

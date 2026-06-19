@@ -246,6 +246,8 @@
                                                     <!-- Function Structure -->
                                                     <xs:element name="Function" minOccurs="0"/>
                                                     <xs:element name="Parameters" minOccurs="0"/>
+                                                    <!--Event potentials structure -->
+                                                    <xs:element name="Value" minOccurs="0"/>
                                                 </xs:choice>
                                                 <xs:anyAttribute processContents="skip"/>
                                             </xs:complexType>

@@ -1,11 +1,7 @@
 package org.openmarkov.core.model.network.potential;
 
 import org.openmarkov.core.exception.OpenMarkovException;
-import org.openmarkov.core.model.network.EvidenceCase;
-import org.openmarkov.core.model.network.Node;
-import org.openmarkov.core.model.network.NodeType;
-import org.openmarkov.core.model.network.Variable;
-import org.openmarkov.core.model.network.VariableType;
+import org.openmarkov.core.model.network.*;
 import org.openmarkov.core.model.network.potential.plugin.PotentialType;
 import org.openmarkov.core.model.network.type.DESNetworkType;
 
@@ -78,6 +74,21 @@ public class TransitionTablePotential extends TableWithEvents implements DESSimu
         return tablePotential.sampleConditionedVariable(randomNumbers,convert(parents));
     }
 
+    @Override
+    public Potential deepCopy(ProbNet copyNet) {
+        TransitionTablePotential potential = (TransitionTablePotential) super.deepCopy(copyNet);
 
+        potential.setTablePotential(this.tablePotential);
+        potential.setUseTableWithFunctions(this.useTableWithFunctions);
+        potential.setTableWithFunctions(this.tableWithFunctions);
+        potential.setEvents(this.events);
+        potential.setTableVariables(this.tableVariables);
+        potential.setHasImpossibleConfigurations(this.hasImpossibleConfigurations);
+        potential.setImpossibleConfigurations(this.impossibleConfigurations);
+        potential.properties =  this.properties;
+
+        return potential;
+
+    }
 }
 

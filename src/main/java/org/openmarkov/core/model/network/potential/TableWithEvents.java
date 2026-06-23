@@ -38,12 +38,12 @@ public class TableWithEvents extends Potential implements DESSimulablePotential 
     /**
      * True if a tableWithFunctions is used
      */
-    private boolean useTableWithFunctions = false;
+    protected boolean useTableWithFunctions = false;
     protected TableWithFunctions tableWithFunctions = null;
     
     protected Variable events = null;
     
-    private List<Variable> tableVariables = null;
+    protected List<Variable> tableVariables = null;
     
     //Incompatible configurations. Looking the better way of representing them.
     protected boolean hasImpossibleConfigurations;
@@ -241,7 +241,15 @@ public class TableWithEvents extends Potential implements DESSimulablePotential 
     public void setImpossibleConfigurations(ArrayList<Configuration> impossibleConfigurations) {
         this.impossibleConfigurations = impossibleConfigurations;
     }
-    
+
+    public void setHasImpossibleConfigurations(boolean hasImpossibleConfigurations) {
+        this.hasImpossibleConfigurations = hasImpossibleConfigurations;
+    }
+
+    public boolean hasImpossibleConfigurations() {
+        return hasImpossibleConfigurations;
+    }
+
     //TODO
     @Override public void setComment(String comment) {
         super.setComment(comment);
@@ -431,5 +439,6 @@ public class TableWithEvents extends Potential implements DESSimulablePotential 
     public double sampleConditionedVariable(double[] randomNumbers, EvidenceCase parents) throws OpenMarkovException {
         return Double.NaN;
     }
+
 }
 

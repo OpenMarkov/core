@@ -7,12 +7,19 @@
 package org.openmarkov.core.model.network.potential.plugin;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.openmarkov.core.exception.UnreachableException;
 import org.openmarkov.core.model.network.CycleLength;
 import org.openmarkov.core.model.network.Node;
+import org.openmarkov.core.model.network.NodeType;
+import org.openmarkov.core.model.network.ProbNet;
 import org.openmarkov.core.model.network.Variable;
+import org.openmarkov.core.model.network.potential.DeltaPotential;
+import org.openmarkov.core.model.network.potential.ExactDistrPotential;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
+import org.openmarkov.core.model.network.potential.TablePotential;
+import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
 import org.openmarkov.plugin.ExtensionTree;
 import org.openmarkov.plugin.PluginSearch;
 
@@ -114,9 +121,9 @@ public class PotentialUtils {
     public static List<Class<? extends Potential>> getFilteredPotentialClasses(Node node) {
         List<Class<? extends Potential>> filteredPotentials = new ArrayList<>();
         
-        Potential potential = node.getPotentials().getFirst();
-        List<Variable> variables = potential.getVariables();
-        PotentialRole potentialRole = potential.getPotentialRole();
+        Potential potential = node.getPotential();
+        List<Variable> variables = potential != null ? potential.getVariables() : PotentialOperations.variableAndParents(node.getProbNet(), node.getVariable());
+        PotentialRole potentialRole = potential != null ? potential.getPotentialRole() : PotentialRole.CONDITIONAL_PROBABILITY;
         for (Class<? extends Potential> potentialClass : PotentialUtils.findAllPotentials().toList()) {
             try {
                 Method validateMethod = potentialClass.getMethod("validate", Node.class, List.class, PotentialRole.class);
@@ -140,6 +147,20 @@ public class PotentialUtils {
                            .annotatedWith(PotentialType.class)
                            .childrenOf(Potential.class)
                            .stream();
+    }
+    
+    @Nullable public static Potential generateDefaultPotential(ProbNet probNet, Variable variable, NodeType nodeType) {
+        final ArrayList<Variable> variableAndParents = PotentialOperations.variableAndParents(probNet, variable);
+        return switch (nodeType) {
+            case DECISION, SV_PRODUCT, SV_SUM -> null;
+            case CHANCE -> new TablePotential(variableAndParents, PotentialRole.CONDITIONAL_PROBABILITY);
+            case UTILITY -> new ExactDistrPotential(variableAndParents, PotentialRole.CONDITIONAL_PROBABILITY);
+            case EVENT -> new DeltaPotential(variableAndParents, PotentialRole.CONDITIONAL_PROBABILITY, 0.02);
+        };
+    }
+    
+    @Nullable public static Potential generateDefaultPotential(Node node) {
+        return PotentialUtils.generateDefaultPotential(node.getProbNet(), node.getVariable(), node.getNodeType());
     }
     
 }

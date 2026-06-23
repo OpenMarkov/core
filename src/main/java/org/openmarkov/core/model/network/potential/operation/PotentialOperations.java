@@ -7,6 +7,7 @@
 
 package org.openmarkov.core.model.network.potential.operation;
 
+import org.jetbrains.annotations.NotNull;
 import org.openmarkov.core.exception.NotSupportedOperationException;
 import org.openmarkov.core.model.network.Node;
 import org.openmarkov.core.model.network.NodeType;
@@ -18,6 +19,7 @@ import org.openmarkov.core.model.network.potential.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * The class {@code PotentialOperations} contains method for performing
@@ -275,46 +277,12 @@ public class PotentialOperations {
         }
         return new UniformPotential(variables, role);
     }
-    public static Potential getTablePotential(ProbNet probNet, Variable variable, NodeType auxNodeType) {
-
-        List<Variable> variables = new ArrayList<>();
-        variables.add(variable);
-        for (Node node : probNet.getParents(probNet.getNode(variable))) {
-            variables.add(node.getVariable());
-        }
-        PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
-        if (auxNodeType == NodeType.DECISION) {
-            role = PotentialRole.POLICY;
-        }
-        return new TablePotential(variables, role);
-    }
-
-    public static Potential getExactPotential(ProbNet probNet, Variable variable, NodeType auxNodeType) {
-
-        List<Variable> variables = new ArrayList<>();
-        variables.add(variable);
-        for (Node node : probNet.getParents(probNet.getNode(variable))) {
-            variables.add(node.getVariable());
-        }
-        PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
-        if (auxNodeType == NodeType.DECISION) {
-            role = PotentialRole.POLICY;
-        }
-        return new ExactDistrPotential(variables, role);
-    }
-
-    public static Potential getDeltaPotential(ProbNet probNet, Variable variable, NodeType auxNodeType) {
-
-        List<Variable> variables = new ArrayList<>();
-        variables.add(variable);
-        for (Node node : probNet.getParents(probNet.getNode(variable))) {
-            variables.add(node.getVariable());
-        }
-        PotentialRole role = PotentialRole.CONDITIONAL_PROBABILITY;
-        if (auxNodeType == NodeType.DECISION) {
-            role = PotentialRole.POLICY;
-        }
-        return new DeltaPotential(variables, role, 0.02);
+    
+    public static @NotNull ArrayList<Variable> variableAndParents(ProbNet probNet, Variable variable) {
+        return new ArrayList<>(Stream.concat(Stream.of(variable),
+                                             probNet.getParents(probNet.getNode(variable))
+                                                    .stream()
+                                                    .map(Node::getVariable)).toList());
     }
     
     private static boolean hasFiniteStates(List<Variable> variables) {

@@ -12,11 +12,12 @@ import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.SumPotential;
 import org.openmarkov.core.model.network.potential.UniformPotential;
 import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
+import org.openmarkov.core.model.network.potential.plugin.PotentialUtils;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
-import static org.openmarkov.core.model.network.VariableType.*;
 
 /**
  * Handles the conversion of a node's variable type (FINITE_STATES, NUMERIC,
@@ -32,36 +33,39 @@ public final class VariableTypeConverter {
 
     private VariableTypeConverter() {
     }
+    
+    public enum VariableConversionOptions{
+        DontUpdateSelfPotential
+    }
 
     /**
      * Changes the variable type of a node and updates potentials for the node
      * and its children accordingly.
      *
-     * @param node    the node whose variable type is being changed
-     * @param newType the new variable type
+     * @param node            the node whose variable type is being changed
+     * @param newType         the new variable type
+     * @param updatePotential
      */
-    public static void convertVariableType(Node node, VariableType newType) {
+    public static void convertVariableType(Node node, VariableType newType, EnumSet<VariableConversionOptions> options) {
+        if(options==null){
+            options = EnumSet.noneOf(VariableConversionOptions.class);
+        }
+        
         VariableType currentType = node.getVariable().getVariableType();
 
         // Set the new variable type
         node.getVariable().setVariableType(newType);
-
-        boolean needsUniformPotential = false;
-
-        switch (currentType) {
-            case FINITE_STATES:
-            case DISCRETIZED:
-                if (newType == NUMERIC) {
-                    setPotentialsNodeAndChildren(node);
+        switch (currentType){
+            case FINITE_STATES, DISCRETIZED -> {
+                if (newType == VariableType.NUMERIC) {
+                    setPotentialsNodeAndChildren(node, options);
                 }
-                break;
-
-            case NUMERIC:
-                setPotentialsNodeAndChildren(node);
-
-                if (newType == DISCRETIZED
+            }
+            case NUMERIC -> {
+                setPotentialsNodeAndChildren(node, options);
+                if (newType == VariableType.DISCRETIZED
                         && node.getVariable().getPartitionedInterval().getNumSubintervals() == 1) {
-
+                    
                     // If there is only one interval, set default partitioned interval
                     PartitionedInterval interval = new PartitionedInterval(
                             node.getVariable().getDefaultInterval(node.getVariable().getNumStates()),
@@ -69,16 +73,14 @@ public final class VariableTypeConverter {
                     );
                     node.getVariable().setPartitionedInterval(interval);
                 }
-
-                // Mark to set uniform potential later
-                needsUniformPotential = true;
-                break;
-
-            default:
-                break;
+            }
+            case EVENT -> {
+            }
         }
+        
 
-        if (needsUniformPotential) {
+
+        if (currentType==VariableType.NUMERIC) {
             // Build the list of variables (node and its parents)
             List<Variable> variables = new ArrayList<>();
             if (node.getNodeType() != NodeType.UTILITY) {
@@ -95,7 +97,9 @@ public final class VariableTypeConverter {
             );
 
             node.setPotentials(new ArrayList<>(List.of(uniformPotential)));
-            setUniformPotentialToNode(node);
+            if(!options.contains(VariableConversionOptions.DontUpdateSelfPotential)){
+                setUniformPotentialToNode(node);
+            }
         }
     }
 
@@ -127,9 +131,11 @@ public final class VariableTypeConverter {
     // Private helpers
     // -------------------------------------------------------------------------
 
-    private static void setPotentialsNodeAndChildren(Node node) {
+    private static void setPotentialsNodeAndChildren(Node node, EnumSet<VariableConversionOptions> options) {
         ProbNet probNet = node.getProbNet();
-        setUniformPotentialToNode(node);
+        if(!options.contains(VariableConversionOptions.DontUpdateSelfPotential)){
+            setUniformPotentialToNode(node);
+        }
         for (Node child : probNet.getChildren(node)) {
             if (child.getNodeType() == NodeType.UTILITY) {
                 List<Potential> newPotentials = new ArrayList<>();

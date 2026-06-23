@@ -25,10 +25,27 @@ public enum VariableType implements Serializable, Localizable {
     NUMERIC,
     DISCRETIZED,
     EVENT;
+    
+    /*
+                <Continuous value="Numeric"/>
+                <Discrete value="Finite states"/>
+                <Discretized value="Discretized"/>
+                <Event value="Event"/>
+     */
+    
 
 	public String toString() {
-        return EnumUtils.toCamelCase(this);
+        return switch (this){
+            case FINITE_STATES -> "Finite states";
+            case NUMERIC -> "Numeric";
+            case DISCRETIZED -> "Discretized";
+            case EVENT -> "Event";
+        };
 	}
+    
+    public String toXMLTag(){
+        return EnumUtils.toCamelCase(this);
+    }
     
     @Override public @NotNull String path() {
         return "";
@@ -37,4 +54,14 @@ public enum VariableType implements Serializable, Localizable {
     @Override public @NotNull String localize(LocalizationFormatter formatter) {
         return this.toString();
     }
+    
+    public static VariableType[] of(NodeType nodeType){
+       return switch (nodeType){
+           case CHANCE, DECISION -> new VariableType[]{VariableType.FINITE_STATES, VariableType.DISCRETIZED, VariableType.NUMERIC};
+           case UTILITY -> new VariableType[]{VariableType.NUMERIC};
+           case EVENT -> new VariableType[]{VariableType.EVENT};
+           case SV_SUM, SV_PRODUCT -> new VariableType[]{};
+       };
+    }
+    
 }

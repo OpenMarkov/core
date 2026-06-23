@@ -50,4 +50,5 @@ public enum NodeType implements Serializable, Localizable {
     @Override public @NotNull String localize(LocalizationFormatter formatter) {
         return this.toString();
     }
+    
 }

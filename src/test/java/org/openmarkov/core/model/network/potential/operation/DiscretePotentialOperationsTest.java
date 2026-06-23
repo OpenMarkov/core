@@ -593,7 +593,7 @@ public class DiscretePotentialOperationsTest {
         Variable disease = perfectKnowledge.getVariable("Disease");
         Variable therapy = perfectKnowledge.getVariable("Therapy");
         List<Potential> networkPotentials = perfectKnowledge.getPotentials(disease);
-        List<TablePotential> networkTablePotentials = getTablePotentials(networkPotentials);
+        List<TablePotential> networkTablePotentials = generateTablePotentials(networkPotentials);
         Marginalization marginalization = new SumOutVariable(disease, networkTablePotentials);
         // Asserts
         TablePotential utility = marginalization.getUtility();
@@ -875,7 +875,7 @@ public class DiscretePotentialOperationsTest {
         assertEquals(3, ch.getNumValues(), "All three tied states must be recorded");
     }
 
-    private List<TablePotential> getTablePotentials(List<Potential> potentials) throws NonProjectablePotentialException {
+    private List<TablePotential> generateTablePotentials(List<Potential> potentials) throws NonProjectablePotentialException {
         List<TablePotential> tablePotentials = new ArrayList<>(potentials.size());
         for (Potential potential : potentials) {
             if (potential instanceof ExactDistrPotential) {

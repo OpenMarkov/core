@@ -19,6 +19,8 @@ import org.openmarkov.core.model.network.constraint.OnlyFiniteStatesVariables;
 import org.openmarkov.core.model.network.constraint.OnlyNumericVariables;
 import org.openmarkov.core.action.base.PNEdit;
 
+import java.util.EnumSet;
+
 /**
  * @author Manuel Arias
  */
@@ -28,15 +30,16 @@ public class VariableTypeEdit extends PNEdit {
     private final Node node;
     private final VariableType newType;
     private final VariableType currentType;
+    private final boolean updatePotential;
     private State[] currentStates;
     private PartitionedInterval currentPartitionedInterval;
 
-    public VariableTypeEdit(Node node, VariableType newType) {
+    public VariableTypeEdit(Node node, VariableType newType, boolean updatePotential) {
         super(node.getProbNet());
         this.node = node;
         this.newType = newType;
         this.currentType = node.getVariable().getVariableType();
-
+        this.updatePotential = updatePotential;
     }
 
     @Override
@@ -77,11 +80,15 @@ public class VariableTypeEdit extends PNEdit {
                 : currentStates);
 
         if (currentType != newType) {
-            VariableTypeConverter.convertVariableType(node, newType);
+            var conversionOptions = EnumSet.noneOf(VariableTypeConverter.VariableConversionOptions.class);
+            if(!this.updatePotential){
+                conversionOptions.add(VariableTypeConverter.VariableConversionOptions.DontUpdateSelfPotential);
+            }
+            VariableTypeConverter.convertVariableType(node, newType, conversionOptions);
         }
 
         VariableTypeConverter.resetLinks(node);
-
+        System.out.println();
     }
 
     @Override

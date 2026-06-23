@@ -21,7 +21,7 @@ import org.openmarkov.core.model.network.constraint.*;
 import org.openmarkov.core.model.network.potential.Potential;
 import org.openmarkov.core.model.network.potential.PotentialRole;
 import org.openmarkov.core.model.network.potential.TablePotential;
-import org.openmarkov.core.model.network.potential.operation.PotentialOperations;
+import org.openmarkov.core.model.network.potential.plugin.PotentialUtils;
 import org.openmarkov.core.model.network.type.BayesianNetworkType;
 import org.openmarkov.core.model.network.type.NetworkType;
 
@@ -767,16 +767,17 @@ public class ProbNet implements PotentialNetwork, Cloneable, ClassLocalizable {
     public void addNodeConsistently(Variable variable, NodeType nodeType, Point2D.Double cursorPosition) {
         cursorPosition = cursorPosition.clone();
         Node newNode = addNode(variable, nodeType);
-        switch (nodeType) {
-            case DECISION -> newNode.setPolicyType(PolicyType.OPTIMAL);
-            case CHANCE -> addPotential(PotentialOperations.getTablePotential(this, variable, nodeType));
-            case UTILITY -> addPotential(PotentialOperations.getExactPotential(this, variable, nodeType));
-            case EVENT -> addPotential(PotentialOperations.getDeltaPotential(this, variable, nodeType));
-            default -> { /* SV_PRODUCT, SV_SUM: no initial potential */ }
+        if (nodeType == NodeType.DECISION) {
+            newNode.setPolicyType(PolicyType.OPTIMAL);
+        }
+        var defaultPotential = PotentialUtils.generateDefaultPotential(this, variable, nodeType);
+        if (defaultPotential != null) {
+            addPotential(defaultPotential);
         }
         newNode.setCoordinateX((int) cursorPosition.getX());
         newNode.setCoordinateY((int) cursorPosition.getY());
     }
+    
     
     /**
      * @param nameOfVariable {@code String}
@@ -1338,4 +1339,5 @@ public class ProbNet implements PotentialNetwork, Cloneable, ClassLocalizable {
         }
         return out;
     }
+    
 }
